@@ -14,7 +14,7 @@ matrix:
   allow_failures:
   - os: windows
 
-env: UTIL_DIR=util
+env: UTIL_DIR=gwion-util
 
 addons:
   apt:
