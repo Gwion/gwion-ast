@@ -1,0 +1,28 @@
+language: c
+
+os:
+  - linux
+  - osx
+  - windows
+
+compiler:
+  - gcc
+  - clang
+
+matrix:
+  fast_finish: true
+  allow_failures:
+  - os: windows
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-8
+
+before_script:
+  - if [ $(uname) = "Linux" ]; then if [ "$CC" = "gcc" ]; then export CC=gcc-8; fi; fi
+#elif [ $(uname) = "Darwin" ]; then brew update; else sed -i 's#/#\\#g' Makefile; fi
+
+script: make
