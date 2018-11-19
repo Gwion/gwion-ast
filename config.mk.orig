@@ -1,0 +1,3 @@
+YACC ?=yacc
+LEX ?=flex
+UTIL_DIR ?= ../util
