@@ -1,8 +1,7 @@
-ifneq (,$(wildcard config.mk))
-include config.mk
-else
+ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
 endif
+include config.mk
 
 DEPDIR := .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
