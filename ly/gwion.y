@@ -8,6 +8,7 @@
 #include <math.h>
 #include "defs.h"
 #include "err_msg.h"
+#include "vector.h"
 #include "map.h"
 #include "symbol.h"
 #include "absyn.h"

@@ -1,7 +1,5 @@
-#include "defs.h"
-#include "map.h"
-#include "absyn.h"
-#include "mpool.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
 
 Var_Decl new_var_decl(struct Symbol_* xid, const Array_Sub array, const uint pos) {
   Var_Decl a = mp_alloc(Var_Decl);

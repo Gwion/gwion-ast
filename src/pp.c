@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "gwion_util.h"
+#include "absyn.h"
 #include "macro.h"
 #include "pp.h"
+#include "scanner.h"
 
 ANEW PP* new_pp(const uint size) {
   PP* pp = (PP*)xcalloc(1, sizeof(struct PP_));

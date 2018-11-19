@@ -1,0 +1,12 @@
+component_depth: 1
+
+languages:
+  - name: cpp
+    production:
+      include:
+        - /src/.*\.c
+      exclude:
+        - /include/parser\.h
+        - /include/lexer\.h
+        - /src/parser\.c
+        - /src/lexer\.c

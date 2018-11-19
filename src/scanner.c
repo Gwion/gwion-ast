@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "gwion_util.h"
+#include "absyn.h"
 #include "macro.h"
+#include "scanner.h"
 #include "parser.h"
 #include "lexer.h"
 #include "pp.h"

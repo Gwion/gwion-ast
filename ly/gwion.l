@@ -4,6 +4,7 @@ IS          (u|U|l|L)*
 #include <ctype.h>
 #include "defs.h"
 #include "symbol.h"
+#include "vector.h"
 #include "map.h"
 #include "absyn.h"
 #include "hash.h"

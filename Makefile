@@ -37,7 +37,7 @@ generate_lexer:
 
 .c.o: $(DEPDIR)/%.d
 	$(info compile $(<:.c=))
-	${CC} $(DEPFLAGS) ${CFLAGS} -c $< -o $(<:.c=.o)
+	@${CC} $(DEPFLAGS) ${CFLAGS} -c $< -o $(<:.c=.o)
 	@mv -f $(DEPDIR)/$(@F:.o=.Td) $(DEPDIR)/$(@F:.o=.d) && touch $@
 
 clean:
