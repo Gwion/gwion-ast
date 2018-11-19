@@ -199,7 +199,6 @@ ANN static m_str macro_data(void* data, const m_bool);
 "^"                                 { adjust(yyscanner); return S_XOR; }
 ">>"                                { adjust(yyscanner); return SHIFT_RIGHT; }
 "<<"                                { adjust(yyscanner); return SHIFT_LEFT; }
-"="                                 { adjust(yyscanner); return ASSIGN; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }

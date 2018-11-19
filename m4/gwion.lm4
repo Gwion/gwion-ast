@@ -201,7 +201,6 @@ ifdef([[[TINY_MODE]]], [[[]]],
 "^"                                 { adjust(yyscanner); return S_XOR; }
 ">>"                                { adjust(yyscanner); return SHIFT_RIGHT; }
 "<<"                                { adjust(yyscanner); return SHIFT_LEFT; }
-"="                                 { adjust(yyscanner); return ASSIGN; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }

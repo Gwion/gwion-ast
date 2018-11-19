@@ -559,8 +559,8 @@ static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
 	yyg->yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
 	yyg->yy_c_buf_p = yy_cp;
-#define YY_NUM_RULES 134
-#define YY_END_OF_BUFFER 135
+#define YY_NUM_RULES 133
+#define YY_END_OF_BUFFER 134
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -571,46 +571,46 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[387] =
     {   0,
         0,    0,    0,    0,    0,    0,   11,   11,    0,    0,
-        0,    0,    0,    0,  135,  133,   30,   29,   63,  133,
-      133,   34,   61,   78,  133,   84,   85,   64,   58,   32,
-       59,  100,   60,  128,  128,   91,   31,   70,   83,   72,
-       90,   33,  130,   86,   87,   80,  130,  130,  130,  130,
-      130,  130,  130,  130,  130,  130,  130,  130,  130,  130,
-      130,  130,  130,   88,   79,   89,   62,  133,   30,   24,
-      133,   28,   27,   28,  134,   14,  134,  134,   11,   12,
-       10,  134,    9,    7,  134,    6,   19,   18,   19,    4,
-        2,    3,    1,   69,    0,  131,    0,  122,   54,  123,
+        0,    0,    0,    0,  134,  132,   30,   29,   63,  132,
+      132,   34,   61,   78,  132,   83,   84,   64,   58,   32,
+       59,   99,   60,  127,  127,   90,   31,   70,  132,   72,
+       89,   33,  129,   85,   86,   80,  129,  129,  129,  129,
+      129,  129,  129,  129,  129,  129,  129,  129,  129,  129,
+      129,  129,  129,   87,   79,   88,   62,  132,   30,   24,
+      132,   28,   27,   28,  133,   14,  133,  133,   11,   12,
+       10,  133,    9,    7,  133,    6,   19,   18,   19,    4,
+        2,    3,    1,   69,    0,  130,    0,  121,   54,  122,
 
        55,    0,   76,    0,    0,    0,    0,   48,    0,    0,
-        0,   49,    0,    0,  129,   25,    0,  129,  128,    0,
-      128,    0,   92,   82,   74,   36,   68,   35,   75,   81,
-       56,    0,  130,    0,    0,  130,  130,  130,  130,  130,
-      130,  112,  130,  130,  130,  130,  130,  130,  130,  130,
-      106,  130,  130,  130,  130,  130,  130,  130,  130,  130,
-      130,  130,    0,   77,    0,    0,   24,  123,  123,  123,
-      123,   26,    0,   14,   13,   11,    0,    7,    9,    7,
-        0,    6,    0,  123,   41,   45,  132,   39,   37,    0,
-       38,   99,   40,  129,  127,  126,   52,    0,    0,   53,
+        0,   49,    0,    0,  128,   25,    0,  128,  127,    0,
+      127,    0,   91,   82,   74,   36,   68,   35,   75,   81,
+       56,    0,  129,    0,    0,  129,  129,  129,  129,  129,
+      129,  111,  129,  129,  129,  129,  129,  129,  129,  129,
+      105,  129,  129,  129,  129,  129,  129,  129,  129,  129,
+      129,  129,    0,   77,    0,    0,   24,  122,  122,  122,
+      122,   26,    0,   14,   13,   11,    0,    7,    9,    7,
+        0,    6,    0,  122,   41,   45,  131,   39,   37,    0,
+       38,   98,   40,  128,  126,  125,   52,    0,    0,   53,
 
-       42,   94,   93,   47,  130,  130,  130,  130,  130,  130,
-      130,  130,  130,  130,  130,  115,   50,  130,  130,   65,
-      130,  130,  130,  130,  130,  130,  130,  130,  130,  130,
-      130,  130,  130,   46,   71,   73,  123,  123,  123,  123,
-      123,  123,    0,    0,    0,  127,  126,   43,   44,  130,
-      130,  121,  130,  118,  130,  130,  130,   96,  107,  119,
-      130,  130,  130,  116,  130,  130,  130,  130,  130,  130,
-      130,  130,  130,  130,  130,  130,  130,  123,  123,  123,
-      123,  123,  123,  123,    0,    8,    0,    0,  130,  130,
-      108,   95,  105,  130,  130,  130,  130,  130,  130,  130,
+       42,   93,   92,   47,  129,  129,  129,  129,  129,  129,
+      129,  129,  129,  129,  129,  114,   50,  129,  129,   65,
+      129,  129,  129,  129,  129,  129,  129,  129,  129,  129,
+      129,  129,  129,   46,   71,   73,  122,  122,  122,  122,
+      122,  122,    0,    0,    0,  126,  125,   43,   44,  129,
+      129,  120,  129,  117,  129,  129,  129,   95,  106,  118,
+      129,  129,  129,  115,  129,  129,  129,  129,  129,  129,
+      129,  129,  129,  129,  129,  129,  129,  122,  122,  122,
+      122,  122,  122,  122,    0,    8,    0,    0,  129,  129,
+      107,   94,  104,  129,  129,  129,  129,  129,  129,  129,
 
-      130,  130,   66,  130,  130,  130,  130,  130,   67,  113,
-      111,  123,  123,  123,  123,  123,  123,    8,    0,    0,
-      130,  130,  130,  130,  130,  101,  130,  130,  130,  114,
-      110,  102,  117,  130,  130,  120,  123,    0,   16,  123,
-      123,  123,  123,    0,   20,    0,  130,  130,  130,   98,
-      130,  130,  104,  103,  130,   51,  123,    0,   17,    0,
-      123,    0,    0,   21,  125,  124,  109,   50,   97,   57,
-        0,   15,  123,   23,    5,   15,   15,    0,    0,   23,
+      129,  129,   66,  129,  129,  129,  129,  129,   67,  112,
+      110,  122,  122,  122,  122,  122,  122,    8,    0,    0,
+      129,  129,  129,  129,  129,  100,  129,  129,  129,  113,
+      109,  101,  116,  129,  129,  119,  122,    0,   16,  122,
+      122,  122,  122,    0,   20,    0,  129,  129,  129,   97,
+      129,  129,  103,  102,  129,   51,  122,    0,   17,    0,
+      122,    0,    0,   21,  124,  123,  108,   50,   96,   57,
+        0,   15,  122,   23,    5,   15,   15,    0,    0,   23,
        23,    5,    0,   22,   22,    0
     } ;
 
@@ -1756,208 +1756,203 @@ YY_RULE_SETUP
 case 83:
 YY_RULE_SETUP
 #line 202 "ly/gwion.l"
-{ adjust(yyscanner); return ASSIGN; }
+{ adjust(yyscanner); return LPAREN; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 203 "ly/gwion.l"
-{ adjust(yyscanner); return LPAREN; }
+{ adjust(yyscanner); return RPAREN; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 204 "ly/gwion.l"
-{ adjust(yyscanner); return RPAREN; }
+{ adjust(yyscanner); return LBRACK; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 205 "ly/gwion.l"
-{ adjust(yyscanner); return LBRACK; }
+{ adjust(yyscanner); return RBRACK; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 206 "ly/gwion.l"
-{ adjust(yyscanner); return RBRACK; }
+{ adjust(yyscanner); return LBRACE; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 207 "ly/gwion.l"
-{ adjust(yyscanner); return LBRACE; }
+{ adjust(yyscanner); return RBRACE; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 208 "ly/gwion.l"
-{ adjust(yyscanner); return RBRACE; }
+{ adjust(yyscanner); return QUESTION; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 209 "ly/gwion.l"
-{ adjust(yyscanner); return QUESTION; }
+{ adjust(yyscanner); return COLON; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 210 "ly/gwion.l"
-{ adjust(yyscanner); return COLON; }
+{ adjust(yyscanner); return COLONCOLON; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 211 "ly/gwion.l"
-{ adjust(yyscanner); return COLONCOLON; }
+{ adjust(yyscanner); return TRIG; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
 #line 212 "ly/gwion.l"
-{ adjust(yyscanner); return TRIG; }
+{ adjust(yyscanner); return UNTRIG; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 213 "ly/gwion.l"
-{ adjust(yyscanner); return UNTRIG; }
+#line 215 "ly/gwion.l"
+{ adjust(yyscanner); return CLASS;}
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
 #line 216 "ly/gwion.l"
-{ adjust(yyscanner); return CLASS;}
+{ adjust(yyscanner); return AST_DTOR;}
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
 #line 217 "ly/gwion.l"
-{ adjust(yyscanner); return AST_DTOR;}
+{ adjust(yyscanner); return OPERATOR;}
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 218 "ly/gwion.l"
-{ adjust(yyscanner); return OPERATOR;}
+{ adjust(yyscanner); return EXTENDS;}
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
 #line 219 "ly/gwion.l"
-{ adjust(yyscanner); return EXTENDS;}
+{ adjust(yyscanner); return ELLIPSE;}
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
 #line 220 "ly/gwion.l"
-{ adjust(yyscanner); return ELLIPSE;}
-	YY_BREAK
-case 100:
-YY_RULE_SETUP
-#line 221 "ly/gwion.l"
 { adjust(yyscanner); return DOT;}
 	YY_BREAK
  /* storage modifiers */
+case 100:
+YY_RULE_SETUP
+#line 223 "ly/gwion.l"
+{ adjust(yyscanner); return GLOBAL;}
+	YY_BREAK
 case 101:
 YY_RULE_SETUP
 #line 224 "ly/gwion.l"
-{ adjust(yyscanner); return GLOBAL;}
-	YY_BREAK
-case 102:
-YY_RULE_SETUP
-#line 225 "ly/gwion.l"
 { adjust(yyscanner); return STATIC;}
 	YY_BREAK
  /*access modifiers */
+case 102:
+YY_RULE_SETUP
+#line 227 "ly/gwion.l"
+{ adjust(yyscanner); return PROTECT;}
+	YY_BREAK
 case 103:
 YY_RULE_SETUP
 #line 228 "ly/gwion.l"
-{ adjust(yyscanner); return PROTECT;}
+{ adjust(yyscanner); return PRIVATE;}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
 #line 229 "ly/gwion.l"
-{ adjust(yyscanner); return PRIVATE;}
+{ adjust(yyscanner); return CONST;}
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 230 "ly/gwion.l"
-{ adjust(yyscanner); return CONST;}
+#line 231 "ly/gwion.l"
+{ adjust(yyscanner); return IF;}
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
 #line 232 "ly/gwion.l"
-{ adjust(yyscanner); return IF;}
+{ adjust(yyscanner); return ELSE;}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
 #line 233 "ly/gwion.l"
-{ adjust(yyscanner); return ELSE;}
+{ adjust(yyscanner); return BREAK;}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
 #line 234 "ly/gwion.l"
-{ adjust(yyscanner); return BREAK;}
+{ adjust(yyscanner); return CONTINUE;}
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
 #line 235 "ly/gwion.l"
-{ adjust(yyscanner); return CONTINUE;}
+{ adjust(yyscanner); return RETURN;}
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
 #line 236 "ly/gwion.l"
-{ adjust(yyscanner); return RETURN;}
+{ adjust(yyscanner); return WHILE;}
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
 #line 237 "ly/gwion.l"
-{ adjust(yyscanner); return WHILE;}
+{ adjust(yyscanner); return DO;}
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
 #line 238 "ly/gwion.l"
-{ adjust(yyscanner); return DO;}
+{ adjust(yyscanner); return UNTIL;}
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
 #line 239 "ly/gwion.l"
-{ adjust(yyscanner); return UNTIL;}
+{ adjust(yyscanner); return LOOP;}
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
 #line 240 "ly/gwion.l"
-{ adjust(yyscanner); return LOOP;}
+{ adjust(yyscanner); return FOR;}
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
 #line 241 "ly/gwion.l"
-{ adjust(yyscanner); return FOR;}
+{ adjust(yyscanner); return GOTO;}
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
 #line 242 "ly/gwion.l"
-{ adjust(yyscanner); return GOTO;}
+{ adjust(yyscanner); return SWITCH;}
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
 #line 243 "ly/gwion.l"
-{ adjust(yyscanner); return SWITCH;}
+{ adjust(yyscanner); return CASE;}
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
 #line 244 "ly/gwion.l"
-{ adjust(yyscanner); return CASE;}
+{ adjust(yyscanner); return ENUM;}
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
 #line 245 "ly/gwion.l"
-{ adjust(yyscanner); return ENUM;}
+{ adjust(yyscanner); return TYPEOF;}
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
 #line 246 "ly/gwion.l"
-{ adjust(yyscanner); return TYPEOF;}
+{ adjust(yyscanner); return AUTO;}
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 247 "ly/gwion.l"
-{ adjust(yyscanner); return AUTO;}
+#line 248 "ly/gwion.l"
+{ adjust(yyscanner); return PASTE; }
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
 #line 249 "ly/gwion.l"
-{ adjust(yyscanner); return PASTE; }
-	YY_BREAK
-case 123:
-YY_RULE_SETUP
-#line 250 "ly/gwion.l"
 {
   adjust(yyscanner);
   const m_str text = get_arg_text(yyscanner, yytext + 1);
@@ -1970,20 +1965,25 @@ YY_RULE_SETUP
   }
 }
 	YY_BREAK
+case 123:
+YY_RULE_SETUP
+#line 260 "ly/gwion.l"
+{ adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
+	YY_BREAK
 case 124:
 YY_RULE_SETUP
 #line 261 "ly/gwion.l"
-{ adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
+{ adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 262 "ly/gwion.l"
-{ adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
+#line 263 "ly/gwion.l"
+{ adjust(yyscanner); yylval->lval = htol(yytext);                 return NUM;        }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
 #line 264 "ly/gwion.l"
-{ adjust(yyscanner); yylval->lval = htol(yytext);                 return NUM;        }
+{ adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
@@ -1993,16 +1993,11 @@ YY_RULE_SETUP
 case 128:
 YY_RULE_SETUP
 #line 266 "ly/gwion.l"
-{ adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
+{ adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOAT;      }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
 #line 267 "ly/gwion.l"
-{ adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOAT;      }
-	YY_BREAK
-case 130:
-YY_RULE_SETUP
-#line 268 "ly/gwion.l"
 {
   adjust(yyscanner);
   const int ret = is_macro(yyscanner, yytext, 
@@ -2015,29 +2010,29 @@ YY_CURRENT_BUFFER);
 
 }
 	YY_BREAK
+case 130:
+/* rule 130 can match eol */
+YY_RULE_SETUP
+#line 279 "ly/gwion.l"
+{ adjust(yyscanner); yylval->sval = alloc_str(strip_lit(yytext)); return STRING_LIT; }
+	YY_BREAK
 case 131:
 /* rule 131 can match eol */
 YY_RULE_SETUP
 #line 280 "ly/gwion.l"
-{ adjust(yyscanner); yylval->sval = alloc_str(strip_lit(yytext)); return STRING_LIT; }
+{ adjust(yyscanner); yylval->sval = alloc_str(strip_lit(yytext)); return CHAR_LIT;   }
 	YY_BREAK
 case 132:
-/* rule 132 can match eol */
 YY_RULE_SETUP
 #line 281 "ly/gwion.l"
-{ adjust(yyscanner); yylval->sval = alloc_str(strip_lit(yytext)); return CHAR_LIT;   }
+{ gw_err("error: stray in program\n"); return 1; }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 282 "ly/gwion.l"
-{ gw_err("error: stray in program\n"); return 1; }
-	YY_BREAK
-case 134:
-YY_RULE_SETUP
-#line 284 "ly/gwion.l"
+#line 283 "ly/gwion.l"
 ECHO;
 	YY_BREAK
-#line 2040 "src/lexer.c"
+#line 2035 "src/lexer.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 case YY_STATE_EOF(define):
@@ -3079,7 +3074,7 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 284 "ly/gwion.l"
+#line 283 "ly/gwion.l"
 
 // LCOV_EXCL_LINE
 #include <stdio.h>

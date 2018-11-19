@@ -61,7 +61,7 @@ m_str op2str(const Operator op);
   Ast ast;
 };
 
-%token SEMICOLON CHUCK COMMA ASSIGN DIVIDE TIMES PERCENT L_HACK R_HACK
+%token SEMICOLON CHUCK COMMA DIVIDE TIMES PERCENT L_HACK R_HACK
   LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE PLUSCHUCK MINUSCHUCK TIMESCHUCK
   DIVIDECHUCK MODULOCHUCK ATCHUCK UNCHUCK TRIG UNTRIG PERCENTPAREN SHARPPAREN
   ATSYM FUNCTION DOLLAR TILDA QUESTION COLON EXCLAMATION IF ELSE WHILE DO UNTIL
@@ -252,7 +252,6 @@ op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
   | TRIG { $$ = op_trig; } | UNTRIG { $$ = op_untrig; }
   | RSL { $$ = op_rsl; } | RSR { $$ = op_rsr; } | RSAND { $$ = op_rsand; }
   | RSOR { $$ = op_rsor; } | RSXOR { $$ = op_rsxor; }
-  | ASSIGN { $$ = op_assign; }
   ;
 
 array_exp
