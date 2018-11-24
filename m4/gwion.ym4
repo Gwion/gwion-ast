@@ -213,7 +213,9 @@ enum_stmt
 label_stmt: id COLON {  $$ = new_stmt_jump($1, 1, get_pos(arg)); };
 
 goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump($2, 0, get_pos(arg)); };
-case_stmt: CASE exp COLON { $$ = new_stmt_exp(ae_stmt_case, $2); };
+
+case_stmt: CASE post_exp COLON { $$ = new_stmt_exp(ae_stmt_case, $2); };
+
 switch_stmt: SWITCH exp code_stmt { $$ = new_stmt_switch($2, $3);};
 
 loop_stmt
