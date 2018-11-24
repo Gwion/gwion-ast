@@ -315,7 +315,7 @@ func_def_base
         YYERROR;
       }
       $2->tmpl = new_tmpl_list($1, -1);
-      $$ = $2; SET_FLAG($$, ae_flag_template);
+      $$ = $2; SET_FLAG($$, template);
     };
   ;
 
@@ -341,7 +341,7 @@ type_decl
   | LTB type_list GTB LT id_dot GT atsym { $$ = new_type_decl($5, $7);
       $$->types = $2; }
   | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl2($3, $5); }
-  | CONST type_decl { CHECK_FLAG(arg, $2, ae_flag_const); $$ = $2; }
+  | CONST type_decl { CHECK_FLAG(arg, $2, const); $$ = $2; }
   ;
 
 decl_list

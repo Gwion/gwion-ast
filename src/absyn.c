@@ -403,7 +403,7 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
 }
 
 void free_func_def(Func_Def a) {
-  if(!GET_FLAG(a, ae_flag_template)) {
+  if(!GET_FLAG(a, template)) {
     if(a->arg_list)
       free_arg_list(a->arg_list);
     free_type_decl(a->td);
@@ -417,7 +417,7 @@ Stmt new_stmt_fptr(struct Symbol_* xid, Type_Decl* td, const Arg_List args, cons
   Stmt a              = mp_alloc(Stmt);
   a->stmt_type        = ae_stmt_fptr;
   a->d.stmt_fptr.td    = td;
-  SET_FLAG(td, flag);
+  td->flag |= flag;
   a->d.stmt_fptr.xid   = xid;
   a->d.stmt_fptr.args  = args;
   a->pos = td->xid->pos;
@@ -805,13 +805,13 @@ Section* new_section_class_def(const Class_Def class_def) {
 }
 
 void free_class_def(Class_Def a) {
-  if(a->type && GET_FLAG(a, ae_flag_template))
+  if(a->type && GET_FLAG(a, template))
     return;
   if(a->ext)
     free_type_decl(a->ext);
   if(a->tmpl)
     free_tmpl_class(a->tmpl);
-  if(a->body && (!a->type || !GET_FLAG(a, ae_flag_ref)))
+  if(a->body && (!a->type || !GET_FLAG(a, ref)))
     free_class_body(a->body);
   free_id_list(a->name);
   mp_free(Class_Def, a);
@@ -824,7 +824,7 @@ ANN static void free_section(Section* section) {
   else if(t == ae_section_stmt)
     free_stmt_list(section->d.stmt_list);
   else if(t == ae_section_func) {
-    if(!GET_FLAG(section->d.func_def, ae_flag_builtin))
+    if(!GET_FLAG(section->d.func_def, builtin))
       free_stmt(section->d.func_def->d.code);
     free_func_def(section->d.func_def);
   }

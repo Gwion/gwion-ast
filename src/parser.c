@@ -2807,7 +2807,7 @@ yyreduce:
         YYERROR;
       }
       (yyvsp[0].func_def)->tmpl = new_tmpl_list((yyvsp[-1].id_list), -1);
-      (yyval.func_def) = (yyvsp[0].func_def); SET_FLAG((yyval.func_def), ae_flag_template);
+      (yyval.func_def) = (yyvsp[0].func_def); SET_FLAG((yyval.func_def), template);
     }
 #line 2813 "src/parser.c" /* yacc.c:1645  */
     break;
@@ -2877,7 +2877,7 @@ yyreduce:
 
   case 136:
 #line 329 "ly/gwion.y" /* yacc.c:1645  */
-    { CHECK_FLAG(arg, (yyvsp[0].type_decl), ae_flag_const); (yyval.type_decl) = (yyvsp[0].type_decl); }
+    { CHECK_FLAG(arg, (yyvsp[0].type_decl), const); (yyval.type_decl) = (yyvsp[0].type_decl); }
 #line 2882 "src/parser.c" /* yacc.c:1645  */
     break;
 
