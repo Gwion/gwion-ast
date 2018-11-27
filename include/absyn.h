@@ -72,7 +72,7 @@ struct ID_List_    {
   uint pos;
 };
 ANEW ANN ID_List new_id_list(struct Symbol_*, const uint);
-ANN ID_List prepend_id_list(struct Symbol_*, ID_List, const uint);
+ANEW ANN2(1) ID_List prepend_id_list(struct Symbol_*, ID_List, const uint);
 ANN void free_id_list(ID_List a);
 
 struct Type_List_  {
