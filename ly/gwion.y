@@ -20,14 +20,6 @@
 #define YYMALLOC xmalloc
 #define scan arg->scanner
 #define CHECK_FLAG(a,b,c) if(GET_FLAG(b, c)) { gwion_error(a, "flag set twice");  ; } SET_FLAG(b, c);
-#define CHECK_TEMPLATE(a, b, c, free_function) { if(c->tmpl) {\
-        free_id_list(b);\
-        free_function(c);\
-        gwion_error(a, "double template decl");\
-        YYERROR;\
-      }\
-      c->tmpl = new_tmpl_class(b, -1);\
-    };
 #define OP_SYM(a) insert_symbol(op2str(a))
 ANN uint get_pos(const Scanner*);
 ANN void gwion_error(const Scanner*, const m_str s);
@@ -124,10 +116,11 @@ section
   ;
 
 class_def
-  : CLASS opt_flag id_list class_ext LBRACE class_body RBRACE
-      { $$ = new_class_def($2, $3, $4, $6); }
-  | decl_template class_def { CHECK_TEMPLATE(arg, $1, $2, free_class_def); $$ = $2; }
-  ;
+  : decl_template CLASS opt_flag id_list class_ext LBRACE class_body RBRACE
+    { $$ = new_class_def($3, $4, $5, $7); 
+      if($1)
+        $$->tmpl = new_tmpl_class($1, -1);
+  };
 
 class_ext : EXTENDS type_decl2 { $$ = $2; } | { $$ = NULL; };
 
@@ -202,7 +195,7 @@ goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump($2, 0, get_pos(arg)); };
 case_stmt
   : CASE primary_exp COLON { $$ = new_stmt_exp(ae_stmt_case, $2); }
   | CASE dot_exp COLON { $$ = new_stmt_exp(ae_stmt_case, $2); }
-  | CASE error COLON { gw_err("unhandled expression type in case statement.\n"); YYERROR ; }
+  | CASE error COLON { gw_err("unhandled expression type in case statement.\n"); $$=NULL;YYERROR ; }
   ;
 
 switch_stmt: SWITCH exp code_stmt { $$ = new_stmt_switch($2, $3);};
@@ -281,7 +274,7 @@ decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: TEMPLATE LTB id_list GTB { $$ = $3; };
+decl_template: TEMPLATE LTB id_list GTB { $$ = $3; } | { $$ = NULL; };
 
 flag: flag flag { $$ = $1 | $2; }
   | STATIC { $$ = ae_flag_static; }
@@ -295,20 +288,13 @@ type_flag: TYPEDEF  { $$ = 0; } | TYPEDEF  flag { $$ = $2; };
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
-  : func_flag type_decl2 id func_args arg_type code_stmt
-    { $$ = new_func_def($2, $3, $4, $6, $1 | $5); }
-  | decl_template func_def_base
-    {
-      if($2->tmpl) {
-        free_id_list($1);
-        free_func_def($2);
-        gwion_error(arg, "double template decl");
-        YYERROR;
-      }
-      $2->tmpl = new_tmpl_list($1, -1);
-      $$ = $2; SET_FLAG($$, template);
-    };
-  ;
+  : decl_template func_flag type_decl2 id func_args arg_type code_stmt
+    { $$ = new_func_def($3, $4, $5, $7, $2 | $6);
+    if($1) {
+      SET_FLAG($$, template);
+      $$->tmpl = new_tmpl_list($1, -1);
+    }
+  };
 
 op_op: op | shift_op | post_op | rel_op | mul_op | add_op;
 func_def
@@ -349,6 +335,7 @@ union_stmt
     }
   | UNION opt_flag opt_id LBRACE error RBRACE opt_id SEMICOLON {
     err_msg(get_pos(arg), "Unions should only contain declarations.");
+    $$=NULL;
     YYERROR;
     }
   ;
