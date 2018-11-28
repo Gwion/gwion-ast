@@ -742,7 +742,7 @@ static const char *const yytname[] =
   "PP_INCLUDE", "PP_DEFINE", "PP_UNDEF", "PP_IFDEF", "PP_IFNDEF",
   "PP_ELSE", "PP_ENDIF", "PP_NL", "$accept", "ast", "section", "class_def",
   "class_ext", "class_body", "class_body2", "id_list", "id_dot",
-  "stmt_list", "func_type", "stmt_type", "type_decl2", "arg_list",
+  "stmt_list", "func_type", "stmt_type", "type_decl_array", "arg_list",
   "code_stmt", "stmt", "id", "opt_id", "enum_stmt", "label_stmt",
   "goto_stmt", "case_stmt", "switch_stmt", "loop_stmt", "selection_stmt",
   "jump_stmt", "exp_stmt", "exp", "binary_exp", "call_template", "op",

@@ -74,7 +74,7 @@ ifdef(`TINY_MODE', `', `
 %type<sym>id opt_id
 %type<var_decl> var_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl type_decl2 class_ext
+%type<type_decl> type_decl type_decl_array class_ext
 %type<exp> primary_exp decl_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
@@ -123,7 +123,7 @@ class_def
         $$->tmpl = new_tmpl_class($1, -1);
   };
 
-class_ext : EXTENDS type_decl2 { $$ = $2; } | { $$ = NULL; };
+class_ext : EXTENDS type_decl_array { $$ = $2; } | { $$ = NULL; };
 
 class_body : class_body2 | { $$ = NULL; };
 
@@ -137,10 +137,10 @@ id_dot:  id  { $$ = new_id_list($1, get_pos(arg)); } | id DOT id_dot     { $$ = 
 
 stmt_list: stmt { $$ = new_stmt_list($1, NULL);} | stmt stmt_list { $$ = new_stmt_list($1, $2);};
 
-func_type: type_flag type_decl2 id func_args arg_type { $$ = new_stmt_fptr($3, $2, $4, $5); $2->flag |= $1; };
-stmt_type: type_flag type_decl2 id SEMICOLON { $$ = new_stmt_type($2, $3); $2->flag |= $1; };;
+func_type: type_flag type_decl_array id func_args arg_type { $$ = new_stmt_fptr($3, $2, $4, $5); $2->flag |= $1; };
+stmt_type: type_flag type_decl_array id SEMICOLON { $$ = new_stmt_type($2, $3); $2->flag |= $1; };;
 
-type_decl2
+type_decl_array
   : type_decl
   | type_decl array_empty             { $$ = add_type_decl_array($1, $2); }
   | type_decl array_exp               { $$ = add_type_decl_array($1, $2); }
@@ -303,7 +303,7 @@ type_flag: TYPEDEF  { $$ = 0; } | TYPEDEF  flag { $$ = $2; };
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
-  : decl_template func_flag type_decl2 id func_args arg_type code_stmt
+  : decl_template func_flag type_decl_array id func_args arg_type code_stmt
     { $$ = new_func_def($3, $4, $5, $7, $2 | $6);
     if($1) {
       SET_FLAG($$, template);
@@ -314,9 +314,9 @@ func_def_base
 op_op: op | shift_op | post_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
-  |  OPERATOR op_op type_decl2 func_args RPAREN code_stmt
+  |  OPERATOR op_op type_decl_array func_args RPAREN code_stmt
     { $$ = new_func_def($3, OP_SYM($2), $4, $6, ae_flag_op); }
-  |  unary_op OPERATOR type_decl2 func_args RPAREN code_stmt
+  |  unary_op OPERATOR type_decl_array func_args RPAREN code_stmt
     { $$ = new_func_def($3, OP_SYM($1), $4, $6, ae_flag_op | ae_flag_unary); }
   | AST_DTOR code_stmt
     { $$ = new_func_def(new_type_decl(new_id_list(insert_symbol("void"), get_pos(arg)), 0),
@@ -385,7 +385,7 @@ shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary($1, $
 add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary($1, $2, $3); };
 mul_exp: cast_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary($1, $2, $3); };
 
-cast_exp: unary_exp | cast_exp DOLLAR type_decl2
+cast_exp: unary_exp | cast_exp DOLLAR type_decl_array
     { $$ = new_exp_cast($3, $1); };
 
 unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
@@ -394,7 +394,7 @@ unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
   ;
 
 unary_exp : dur_exp | unary_op unary_exp { $$ = new_exp_unary($1, $2); }
-  | NEW type_decl2
+  | NEW type_decl_array
     {
       if($2->array && !$2->array->exp) {
         free_type_decl($2);
@@ -411,8 +411,8 @@ dur_exp: post_exp | dur_exp COLONCOLON post_exp
     { $$ = new_exp_dur($1, $3); };
 
 type_list
-  : type_decl2 { $$ = new_type_list($1, NULL); }
-  | type_decl2 COMMA type_list { $$ = new_type_list($1, $3); }
+  : type_decl_array { $$ = new_type_list($1, NULL); }
+  | type_decl_array COMMA type_list { $$ = new_type_list($1, $3); }
   ;
 
 call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
