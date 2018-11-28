@@ -745,7 +745,7 @@ static const char *const yytname[] =
   "stmt_list", "func_type", "stmt_type", "type_decl2", "arg_list",
   "code_stmt", "stmt", "id", "opt_id", "enum_stmt", "label_stmt",
   "goto_stmt", "case_stmt", "switch_stmt", "loop_stmt", "selection_stmt",
-  "jump_stmt", "exp_stmt", "exp", "binary_exp", "template", "op",
+  "jump_stmt", "exp_stmt", "exp", "binary_exp", "call_template", "op",
   "array_exp", "array_empty", "decl_exp2", "decl_exp", "decl_exp3",
   "func_args", "arg_type", "decl_template", "flag", "func_flag",
   "type_flag", "opt_flag", "func_def_base", "op_op", "func_def", "atsym",
@@ -2305,7 +2305,7 @@ yyreduce:
 
   case 7:
 #line 120 "ly/gwion.y" /* yacc.c:1645  */
-    { (yyval.class_def) = new_class_def((yyvsp[-5].flag), (yyvsp[-4].id_list), (yyvsp[-3].type_decl), (yyvsp[-1].class_body)); 
+    { (yyval.class_def) = new_class_def((yyvsp[-5].flag), (yyvsp[-4].id_list), (yyvsp[-3].type_decl), (yyvsp[-1].class_body));
       if((yyvsp[-7].id_list))
         (yyval.class_def)->tmpl = new_tmpl_class((yyvsp[-7].id_list), -1);
   }
