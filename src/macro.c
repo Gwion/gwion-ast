@@ -68,7 +68,7 @@ haction(Macro, int, rem, Macro prev = NULL;,
       s->next = NULL;
       free_entry(s);
       return 0;
-,    prev = s;,return 1;)
+,    prev = s;,return GW_OK;)
 
 ANN void macro_del(const Hash h) {
   hdel(h, (void (*)(void *))free_entry);

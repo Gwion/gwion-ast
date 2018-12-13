@@ -107,10 +107,10 @@ ID_List prepend_id_list(struct Symbol_* xid, const ID_List list, const uint pos)
 }
 
 void free_id_list(ID_List a) {
-  if(a->ref)
-    free_id_list(a->ref);
   if(a->next)
     free_id_list(a->next);
+  if(a->ref)
+    free_id_list(a->ref);
   mp_free(ID_List, a);
 }
 
@@ -368,7 +368,7 @@ void free_tmpl_class(Tmpl_Class* a) {
 
 m_bool tmpl_list_base(const Tmpl_List* a) {
   if(a && a->base == -1)
-    return 1;
+    return GW_OK;
   return 0;
 }
 
@@ -393,13 +393,13 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
 
   while(e1 && e2) {
     if(e1->type != e2->type)
-      return -1;
+      return GW_ERROR;
     e1 = e1->next;
     e2 = e2->next;
   }
   if(e1 || e2)
-    return -1;
-  return 1;
+    return GW_ERROR;
+  return GW_OK;
 }
 
 void free_func_def(Func_Def a) {

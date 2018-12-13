@@ -1961,7 +1961,7 @@ YY_RULE_SETUP
     return STRING_LIT;
   } else {
     gw_err("can't stringify non argument token '%s'\n", yytext + 1);
-    return 1;
+    return GW_OK;
   }
 }
 	YY_BREAK
@@ -2025,7 +2025,7 @@ YY_RULE_SETUP
 case 132:
 YY_RULE_SETUP
 #line 281 "ly/gwion.l"
-{ gw_err("error: stray in program\n"); return 1; }
+{ gw_err("error: stray in program\n"); return GW_OK; }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
@@ -2932,14 +2932,14 @@ int yylex_init(yyscan_t* ptr_yy_globals)
 {
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
-        return 1;
+        return GW_OK;
     }
 
     *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), NULL );
 
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
-        return 1;
+        return GW_OK;
     }
 
     /* By setting to 0xAA, we expose bugs in yy_init_globals. Leave at 0x00 for releases. */
@@ -2963,14 +2963,14 @@ int yylex_init_extra( YY_EXTRA_TYPE yy_user_defined, yyscan_t* ptr_yy_globals )
 
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
-        return 1;
+        return GW_OK;
     }
 
     *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
 
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
-        return 1;
+        return GW_OK;
     }
 
     /* By setting to 0xAA, we expose bugs in
@@ -3369,7 +3369,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
           return 0;
         }
       }
-      return 1;
+      return GW_OK;
     }
     arg = arg->next;
   }
@@ -3404,10 +3404,10 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         scan->pos  = e->pos;
         scan->line = e->line;
         yy_scan_string(e->text, data);
-        return 1;
+        return GW_OK;
       }
     }
-    return 1;
+    return GW_OK;
   }
   return 0;
 }
@@ -3471,7 +3471,7 @@ int yywrap(void* data) {
     scan->line = (uint)vector_pop(&scan->pp->filename);
     return 0;
   }
-  return 1;
+  return GW_OK;
 }
 
 void handle_comma(void* data) {
@@ -3495,7 +3495,7 @@ static int handle_rpar(void* data) {
   scan->pp->entry->args = NULL;
   SCAN_NOLINT
     yy_scan_string(scan->pp->entry->text, data);
-  return 1;
+  return GW_OK;
 }
 
 void handle_char(void* data, const m_str str) {
