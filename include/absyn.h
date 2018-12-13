@@ -420,7 +420,6 @@ struct Stmt_ {
   } d;
   uint pos;
   ae_stmt_t stmt_type;
-  unsigned gc : 1;
 };
 
 ANEW Stmt new_stmt(const ae_stmt_t, const uint);
