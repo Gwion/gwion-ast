@@ -1,3 +1,4 @@
 .o
 config.mk
 .d
+libgwion_ast.a
