@@ -84,7 +84,7 @@ m_str op2str(const Operator op);
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
 %type<stmt> enum_stmt func_type stmt_type union_stmt 
 %type<stmt_list> stmt_list
-%type<arg_list> arg_list func_args
+%type<arg_list> arg arg_list func_args
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<section> section
@@ -145,9 +145,11 @@ type_decl_array
   | type_decl array_exp               { $$ = add_type_decl_array($1, $2); }
   ;
 
+
+arg: type_decl var_decl { $$ = new_arg_list($1, $2, NULL); }
 arg_list
-  : type_decl var_decl { $$ = new_arg_list($1, $2, NULL); }
-  | type_decl var_decl COMMA arg_list { $$ = new_arg_list($1, $2, $4); }
+  : arg { $$ = $1; }
+  | arg COMMA arg_list { $1->next = $3; $$ = $1; }
   ;
 
 code_stmt
@@ -296,13 +298,15 @@ func_def_base
     }
   };
 
-op_op: op | shift_op | post_op | rel_op | mul_op | add_op;
+op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
-  |  OPERATOR op_op type_decl_array func_args RPAREN code_stmt
-    { $$ = new_func_def($3, OP_SYM($2), $4, $6, ae_flag_op); }
-  |  unary_op OPERATOR type_decl_array func_args RPAREN code_stmt
-    { $$ = new_func_def($3, OP_SYM($1), $4, $6, ae_flag_op | ae_flag_unary); }
+  |  OPERATOR op_op type_decl_array LPAREN arg COMMA arg RPAREN code_stmt
+    { $$ = new_func_def($3, OP_SYM($2), $5, $9, ae_flag_op); $5->next = $7;}
+  |  OPERATOR post_op type_decl_array LPAREN arg RPAREN code_stmt
+    { $$ = new_func_def($3, OP_SYM($2), $5, $7, ae_flag_op); }
+  |  unary_op OPERATOR type_decl_array LPAREN arg RPAREN code_stmt
+    { $$ = new_func_def($3, OP_SYM($1), $5, $7, ae_flag_op | ae_flag_unary); }
   | AST_DTOR code_stmt
     { $$ = new_func_def(new_type_decl(new_id_list(insert_symbol("void"), get_pos(arg)), 0),
        insert_symbol("dtor"), NULL, $2, ae_flag_dtor); }
