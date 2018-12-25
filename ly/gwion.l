@@ -165,6 +165,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "^=>"                               { adjust(yyscanner); return RSXOR;}
 "++"                                { adjust(yyscanner); return PLUSPLUS;}
 "--"                                { adjust(yyscanner); return MINUSMINUS;}
+"->"                                { adjust(yyscanner); return RARROW;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
 "<<<"                               { adjust(yyscanner); return L_HACK;}
@@ -187,9 +188,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "=="                                { adjust(yyscanner); return EQ; }
 "!="                                { adjust(yyscanner); return NEQ; }
 "<"                                 { adjust(yyscanner); return LT; }
-"“"                                 { adjust(yyscanner); return LTB; }
 ">"                                 { adjust(yyscanner); return GT; }
-"”"                                { adjust(yyscanner); return GTB; }
 "<="                                { adjust(yyscanner); return LE; }
 ">="                                { adjust(yyscanner); return GE; }
 "&&"                                { adjust(yyscanner); return AND; }

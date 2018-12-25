@@ -131,29 +131,28 @@ extern int gwion_debug;
     RSXOR = 338,
     TEMPLATE = 339,
     NOELSE = 340,
-    LTB = 341,
-    GTB = 342,
-    UNION = 343,
-    ATPAREN = 344,
-    TYPEOF = 345,
-    CONST = 346,
-    AUTO = 347,
-    PASTE = 348,
-    ELLIPSE = 349,
-    NUM = 350,
-    FLOAT = 351,
-    ID = 352,
-    STRING_LIT = 353,
-    CHAR_LIT = 354,
-    PP_COMMENT = 355,
-    PP_INCLUDE = 356,
-    PP_DEFINE = 357,
-    PP_UNDEF = 358,
-    PP_IFDEF = 359,
-    PP_IFNDEF = 360,
-    PP_ELSE = 361,
-    PP_ENDIF = 362,
-    PP_NL = 363
+    UNION = 341,
+    ATPAREN = 342,
+    TYPEOF = 343,
+    CONST = 344,
+    AUTO = 345,
+    PASTE = 346,
+    ELLIPSE = 347,
+    RARROW = 348,
+    NUM = 349,
+    FLOAT = 350,
+    ID = 351,
+    STRING_LIT = 352,
+    CHAR_LIT = 353,
+    PP_COMMENT = 354,
+    PP_INCLUDE = 355,
+    PP_DEFINE = 356,
+    PP_UNDEF = 357,
+    PP_IFDEF = 358,
+    PP_IFNDEF = 359,
+    PP_ELSE = 360,
+    PP_ENDIF = 361,
+    PP_NL = 362
   };
 #endif
 /* Tokens.  */
@@ -240,29 +239,28 @@ extern int gwion_debug;
 #define RSXOR 338
 #define TEMPLATE 339
 #define NOELSE 340
-#define LTB 341
-#define GTB 342
-#define UNION 343
-#define ATPAREN 344
-#define TYPEOF 345
-#define CONST 346
-#define AUTO 347
-#define PASTE 348
-#define ELLIPSE 349
-#define NUM 350
-#define FLOAT 351
-#define ID 352
-#define STRING_LIT 353
-#define CHAR_LIT 354
-#define PP_COMMENT 355
-#define PP_INCLUDE 356
-#define PP_DEFINE 357
-#define PP_UNDEF 358
-#define PP_IFDEF 359
-#define PP_IFNDEF 360
-#define PP_ELSE 361
-#define PP_ENDIF 362
-#define PP_NL 363
+#define UNION 341
+#define ATPAREN 342
+#define TYPEOF 343
+#define CONST 344
+#define AUTO 345
+#define PASTE 346
+#define ELLIPSE 347
+#define RARROW 348
+#define NUM 349
+#define FLOAT 350
+#define ID 351
+#define STRING_LIT 352
+#define CHAR_LIT 353
+#define PP_COMMENT 354
+#define PP_INCLUDE 355
+#define PP_DEFINE 356
+#define PP_UNDEF 357
+#define PP_IFDEF 358
+#define PP_IFNDEF 359
+#define PP_ELSE 360
+#define PP_ENDIF 361
+#define PP_NL 362
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -296,7 +294,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 300 "include/parser.h" /* yacc.c:1906  */
+#line 298 "include/parser.h" /* yacc.c:1906  */
 };
 
 typedef union YYSTYPE YYSTYPE;
