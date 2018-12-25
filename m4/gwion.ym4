@@ -70,11 +70,12 @@ m_str op2str(const Operator op);
 %token<sval> ID STRING_LIT CHAR_LIT
 ifdef(`TINY_MODE', `', `
   PP_COMMENT PP_INCLUDE PP_DEFINE PP_UNDEF PP_IFDEF PP_IFNDEF PP_ELSE PP_ENDIF PP_NL')
-%type<flag> flag func_flag type_flag opt_flag arg_type
+%type<flag> flag class_flag func_flag type_flag opt_flag
+  storage_flag access_flag arg_type
 %type<sym>id opt_id
 %type<var_decl> var_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl type_decl_array class_ext
+%type<type_decl> type_decl0 type_decl type_decl_array class_ext
 %type<exp> primary_exp decl_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
@@ -82,7 +83,7 @@ ifdef(`TINY_MODE', `', `
 %type<array_sub> array_exp array_empty
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
-%type<stmt> enum_stmt func_type stmt_type union_stmt ifdef(`TINY_MODE', `', 
+%type<stmt> enum_stmt func_type stmt_type union_stmt ifdef(`TINY_MODE', `',
 ifdef(`TOOL_MODE', `stmt_pp', `'))
 %type<stmt_list> stmt_list
 %type<arg_list> arg arg_list func_args
@@ -120,8 +121,8 @@ section
   ;
 
 class_def
-  : decl_template CLASS opt_flag id_list class_ext LBRACE class_body RBRACE
-    { $$ = new_class_def($3, $4, $5, $7);
+  : decl_template class_flag id_list class_ext LBRACE class_body RBRACE
+    { $$ = new_class_def($2, $3, $4, $6);
       if($1)
         $$->tmpl = new_tmpl_class($1, -1);
   };
@@ -297,16 +298,23 @@ arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: TEMPLATE LT id_list GT { $$ = $3; } | { $$ = NULL; };
 
-flag: flag flag { $$ = $1 | $2; }
-  | STATIC { $$ = ae_flag_static; }
+storage_flag: STATIC { $$ = ae_flag_static; }
   | GLOBAL { $$ = ae_flag_global; }
-  | PRIVATE { $$ = ae_flag_private; }
+  ;
+
+access_flag: PRIVATE { $$ = ae_flag_private; }
   | PROTECT { $$ = ae_flag_protect; }
   ;
 
-func_flag: FUNCTION { $$ = 0; } | FUNCTION flag { $$ = $2; };
-type_flag: TYPEDEF  { $$ = 0; } | TYPEDEF  flag { $$ = $2; };
+flag: access_flag { $$ = $1; }
+  | storage_flag { $$ = $1; }
+  | storage_flag access_flag { $$ = $1 | $2; }
+  ;
+
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
+func_flag: FUNCTION opt_flag { $$ = $2; };
+type_flag: TYPEDEF  opt_flag { $$ = $2; };
+class_flag: CLASS opt_flag { $$ = $2; };
 
 func_def_base
   : decl_template func_flag type_decl_array id func_args arg_type code_stmt
@@ -333,13 +341,15 @@ func_def
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
 
-type_decl
+type_decl0
   : dot_decl atsym { $$ = new_type_decl($1, $2); }
   | LT type_list GT id_dot atsym { $$ = new_type_decl($4, $5);
       $$->types = $2; }
   | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl2($3, $5); }
-  | CONST type_decl { CHECK_FLAG(arg, $2, const); $$ = $2; }
   ;
+
+type_decl: type_decl0 { $$ = $1; }
+  | CONST type_decl0 { $$ = $2; SET_FLAG($$, const); };
 
 decl_list
   : decl_exp SEMICOLON { $$ = new_decl_list($1, NULL); }
