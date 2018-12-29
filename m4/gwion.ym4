@@ -75,7 +75,7 @@ ifdef(`TINY_MODE', `', `
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl0 type_decl type_decl_array class_ext
+%type<type_decl> type_decl0 type_decl type_decl_array type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
@@ -127,7 +127,7 @@ class_def
         $$->tmpl = new_tmpl_class($1, -1);
   };
 
-class_ext : EXTENDS type_decl_array { $$ = $2; } | { $$ = NULL; };
+class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
 
 class_body : class_body2 | { $$ = NULL; };
 
@@ -149,6 +149,10 @@ type_decl_array
   : type_decl
   | type_decl array             { $$ = add_type_decl_array($1, $2); }
   ;
+
+type_decl_exp: type_decl
+  | type_decl array_exp             { $$ = add_type_decl_array($1, $2); }
+  | type_decl array_empty             { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR; };
 
 
 arg: type_decl arg_decl { $$ = new_arg_list($1, $2, NULL); }
@@ -404,18 +408,8 @@ unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
   ;
 
 unary_exp : dur_exp | unary_op unary_exp { $$ = new_exp_unary($1, $2); }
-  | NEW type_decl_array
-    {
-      if($2->array && !$2->array->exp) {
-        free_type_decl($2);
-        gwion_error(arg, "can't use empty '[]' in 'new' expression");
-        YYERROR;
-      }
-      $$ = new_exp_unary2(op_new, $2);
-    }
-  | SPORK code_stmt
-        { $$ = new_exp_unary3(op_spork, $2); };
-  ;
+  | NEW type_decl_exp {$$ = new_exp_unary2(op_new, $2); }
+  | SPORK code_stmt   { $$ = new_exp_unary3(op_spork, $2); };
 
 dur_exp: post_exp | dur_exp COLONCOLON post_exp
     { $$ = new_exp_dur($1, $3); };
