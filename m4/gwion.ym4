@@ -76,7 +76,7 @@ ifdef(`TINY_MODE', `', `
 %type<var_decl> var_decl arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl0 type_decl type_decl_array class_ext
-%type<exp> primary_exp decl_exp decl_exp2 decl_exp3 binary_exp call_paren
+%type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
 %type<exp> post_exp dot_exp cast_exp exp
@@ -286,6 +286,7 @@ array_empty
 array: array_exp | array_empty;
 decl_exp2: con_exp | decl_exp3;
 decl_exp: type_decl var_decl_list { $$= new_exp_decl($1, $2); };
+union_exp: type_decl arg_decl { $$= new_exp_decl($1, new_var_decl_list($2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -346,10 +347,8 @@ type_decl0
 type_decl: type_decl0 { $$ = $1; }
   | CONST type_decl0 { $$ = $2; SET_FLAG($$, const); };
 
-decl_list
-  : decl_exp SEMICOLON { $$ = new_decl_list($1, NULL); }
-  | decl_exp SEMICOLON decl_list { $$ = new_decl_list($1, $3); }
-  ;
+decl_list: union_exp SEMICOLON { $$ = new_decl_list($1, NULL); }
+  | union_exp SEMICOLON decl_list { $$ = new_decl_list($1, $3); } ;
 
 union_stmt
   : UNION opt_flag opt_id LBRACE decl_list RBRACE opt_id SEMICOLON {
