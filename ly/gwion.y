@@ -73,14 +73,14 @@ m_str op2str(const Operator op);
 %type<flag> flag class_flag func_flag type_flag opt_flag
   storage_flag access_flag arg_type
 %type<sym>id opt_id
-%type<var_decl> var_decl
+%type<var_decl> var_decl arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl0 type_decl type_decl_array class_ext
 %type<exp> primary_exp decl_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
 %type<exp> post_exp dot_exp cast_exp exp
-%type<array_sub> array_exp array_empty
+%type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
 %type<stmt> enum_stmt func_type stmt_type union_stmt 
@@ -146,16 +146,12 @@ stmt_type: type_flag type_decl_array id SEMICOLON { $$ = new_stmt_type($2, $3); 
 
 type_decl_array
   : type_decl
-  | type_decl array_empty             { $$ = add_type_decl_array($1, $2); }
-  | type_decl array_exp               { $$ = add_type_decl_array($1, $2); }
+  | type_decl array             { $$ = add_type_decl_array($1, $2); }
   ;
 
 
-arg: type_decl var_decl { $$ = new_arg_list($1, $2, NULL); }
-arg_list
-  : arg { $$ = $1; }
-  | arg COMMA arg_list { $1->next = $3; $$ = $1; }
-  ;
+arg: type_decl arg_decl { $$ = new_arg_list($1, $2, NULL); }
+arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };
 
 code_stmt
   : LBRACE RBRACE { $$ = new_stmt(ae_stmt_code, get_pos(arg)); }
@@ -272,11 +268,10 @@ array_empty
   | array_empty array_exp     { gwion_error(arg, "partially empty array init [][...]"); free_array_sub($1); free_array_sub($2); YYERROR; }
   ;
 
+array: array_exp | array_empty;
 decl_exp2: con_exp | decl_exp3;
 decl_exp: type_decl var_decl_list { $$= new_exp_decl($1, $2); };
-
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
-  ;
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
@@ -360,11 +355,12 @@ var_decl_list
   | var_decl COMMA var_decl_list { $$ = new_var_decl_list($1, $3); }
   ;
 
-var_decl
-  : id              { $$ = new_var_decl($1, NULL, get_pos(arg)); }
-  | id array_exp    { $$ = new_var_decl($1,   $2, get_pos(arg)); }
-  | id array_empty  { $$ = new_var_decl($1,   $2, get_pos(arg)); }
-  ;
+var_decl: id { $$ = new_var_decl($1, NULL, get_pos(arg)); }
+  | id array    { $$ = new_var_decl($1,   $2, get_pos(arg)); };
+
+arg_decl: id { $$ = new_var_decl($1, NULL, get_pos(arg)); }
+  | id array_empty { $$ = new_var_decl($1,   $2, get_pos(arg)); }
+  | id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
 
 eq_op : EQ { $$ = op_eq; } | NEQ { $$ = op_ne; };
 rel_op: LT { $$ = op_lt; } | GT { $$ = op_gt; } | LE { $$ = op_le; } | GE { $$ = op_ge; };
@@ -439,8 +435,7 @@ primary_exp
   | FLOAT               { $$ = new_exp_prim_float(  $1, get_pos(arg)); }
   | STRING_LIT          { $$ = new_exp_prim_string( $1, get_pos(arg)); }
   | CHAR_LIT            { $$ = new_exp_prim_char(   $1, get_pos(arg)); }
-  | array_exp           { $$ = new_exp_prim_array(  $1, get_pos(arg)); }
-  | array_empty         { $$ = new_exp_prim_array(  $1, get_pos(arg)); }
+  | array               { $$ = new_exp_prim_array(  $1, get_pos(arg)); }
   | vec_type exp RPAREN { $$ = new_exp_prim_vec($1, $2); }
   | L_HACK exp R_HACK   { $$ = new_exp_prim_hack(   $2); }
   | LPAREN exp RPAREN   { $$ =                      $2;                }
