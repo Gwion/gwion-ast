@@ -74,7 +74,7 @@ m_str op2str(const Operator op);
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl0 type_decl type_decl_array type_decl_exp class_ext
+%type<type_decl> type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
@@ -100,16 +100,14 @@ m_str op2str(const Operator op);
 %nonassoc ELSE
 //%expect 51
 
-%destructor { free_stmt($$); } <stmt>
-%destructor { free_exp($$); } <exp>
 %%
 
 prg: ast { arg->ast = $1; }
-  | /* empty */ { arg->ast = NULL; gw_err("file is empty.\n");}
+  | /* empty */ { gwion_error(arg, "file is empty.\n"); YYERROR; }
 
 ast
-  : section { arg->ast = $$ = new_ast($1, NULL); }
-  | section ast { arg->ast = $$ = new_ast($1, $2); }
+  : section { $$ = new_ast($1, NULL); }
+  | section ast { $$ = new_ast($1, $2); }
   ;
 
 section
@@ -140,17 +138,21 @@ dot_decl:  id  { $$ = new_id_list($1, get_pos(arg)); } | id RARROW id_dot     { 
 
 stmt_list: stmt { $$ = new_stmt_list($1, NULL);} | stmt stmt_list { $$ = new_stmt_list($1, $2);};
 
-func_type: TYPEDEF opt_flag type_decl_array id func_args arg_type { $$ = new_stmt_fptr($4, $3, $5, $6); $3->flag |= $2; };
+func_type: TYPEDEF opt_flag type_decl_array id func_args arg_type {
+  if($3->array && !$3->array->exp)
+    { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
+$$ = new_stmt_fptr($4, $3, $5, $6); $3->flag |= $2; };
 stmt_type: TYPEDEF opt_flag type_decl_array id SEMICOLON { $$ = new_stmt_type($3, $4); $3->flag |= $2; };
 
-type_decl_array
-  : type_decl
-  | type_decl array             { $$ = add_type_decl_array($1, $2); }
-  ;
+type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
 
-type_decl_exp: type_decl
-  | type_decl array_exp             { $$ = add_type_decl_array($1, $2); }
-  | type_decl array_empty             { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR;};
+type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
+    { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR;}
+  $$ = $1; }
+
+type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
+    { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
+  $$ = $1; }
 
 arg: type_decl arg_decl { $$ = new_arg_list($1, $2, NULL); }
 arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };
@@ -200,7 +202,7 @@ goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump($2, 0, get_pos(arg)); };
 case_stmt
   : CASE primary_exp COLON { $$ = new_stmt_exp(ae_stmt_case, $2); }
   | CASE dot_exp COLON { $$ = new_stmt_exp(ae_stmt_case, $2); }
-  | CASE error COLON { gw_err("unhandled expression type in case statement.\n"); $$=NULL;YYERROR ; }
+  | CASE error COLON { gw_err("unhandled expression type in case statement.\n"); YYERROR; }
   ;
 
 switch_stmt: SWITCH exp code_stmt { $$ = new_stmt_switch($2, $3);};
@@ -260,14 +262,14 @@ op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
 
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub($2); }
-  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(arg, "invalid format for array init [...][...]..."); free_exp($2); free_array_sub($4); YYERROR; } $$ = prepend_array_sub($4, $2); }
-  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(arg, "partially empty array init [...][]..."); free_exp($2); YYERROR; }
+  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
+  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
   : LBRACK RBRACK             { $$ = new_array_sub(NULL); }
   | array_empty LBRACK RBRACK { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp     { gwion_error(arg, "partially empty array init [][...]"); free_array_sub($1); free_array_sub($2); YYERROR; }
+  | array_empty array_exp     { gwion_error(arg, "partially empty array init [][...]"); YYERROR; }
   ;
 
 array: array_exp | array_empty;
@@ -297,7 +299,7 @@ flag: access_flag { $$ = $1; }
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
-  : decl_template FUNCTION opt_flag type_decl_array id func_args arg_type code_stmt
+  : decl_template FUNCTION opt_flag type_decl_empty id func_args arg_type code_stmt
     { $$ = new_func_def($4, $5, $6, $8, $3 | $7);
     if($1) {
       SET_FLAG($$, template);
@@ -308,11 +310,11 @@ func_def_base
 op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
-  |  OPERATOR op_op type_decl_array LPAREN arg COMMA arg RPAREN code_stmt
+  |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
     { $$ = new_func_def($3, OP_SYM($2), $5, $9, ae_flag_op); $5->next = $7;}
-  |  OPERATOR post_op type_decl_array LPAREN arg RPAREN code_stmt
+  |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def($3, OP_SYM($2), $5, $7, ae_flag_op); }
-  |  unary_op OPERATOR type_decl_array LPAREN arg RPAREN code_stmt
+  |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def($3, OP_SYM($1), $5, $7, ae_flag_op | ae_flag_unary); }
   | AST_DTOR code_stmt
     { $$ = new_func_def(new_type_decl(new_id_list(insert_symbol("void"), get_pos(arg)), 0),
@@ -342,8 +344,7 @@ union_stmt
       $$->d.stmt_union.flag = $2;
     }
   | UNION opt_flag opt_id LBRACE error RBRACE opt_id SEMICOLON {
-    err_msg(get_pos(arg), "Unions should only contain declarations.");
-    $$=NULL;
+    gwion_error(arg, "Unions should only contain declarations.");
     YYERROR;
     }
   ;
@@ -379,7 +380,7 @@ shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary($1, $
 add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary($1, $2, $3); };
 mul_exp: cast_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary($1, $2, $3); };
 
-cast_exp: unary_exp | cast_exp DOLLAR type_decl_array
+cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast($3, $1); };
 
 unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
@@ -395,8 +396,8 @@ dur_exp: post_exp | dur_exp COLONCOLON post_exp
     { $$ = new_exp_dur($1, $3); };
 
 type_list
-  : type_decl_array { $$ = new_type_list($1, NULL); }
-  | type_decl_array COMMA type_list { $$ = new_type_list($1, $3); }
+  : type_decl_empty { $$ = new_type_list($1, NULL); }
+  | type_decl_empty COMMA type_list { $$ = new_type_list($1, $3); }
   ;
 
 call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
