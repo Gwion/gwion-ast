@@ -21,7 +21,6 @@
 #define scan arg->scanner
 #define OP_SYM(a) insert_symbol(op2str(a))
 ANN uint get_pos(const Scanner*);
-ANN static void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner);
 ANN void gwion_error(const Scanner*, const m_str s);
 m_str op2str(const Operator op);
 %}

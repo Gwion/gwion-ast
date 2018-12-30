@@ -6,10 +6,11 @@
 #include "parser.h"
 #include "lexer.h"
 #include "pp.h"
+#include "mpool.h"
 
 #define PP_SIZE 127
 ANEW static Scanner* new_scanner(const m_str filename, FILE* f) {
-  Scanner* scan = (Scanner*)xcalloc(1, sizeof(Scanner));
+  Scanner* scan = (Scanner*)mp_alloc(Scanner);
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
   scan->line = scan->pos  = 1;
@@ -23,7 +24,7 @@ ANN static void free_scanner(Scanner* scan) {
   free_pp(scan->pp, scan);
   xfree(scan->jmp);
   gwion_lex_destroy(scan->scanner);
-  xfree(scan);
+  mp_free(Scanner, scan);
 }
 
 Ast parse(const m_str name, FILE* f) {

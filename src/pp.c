@@ -6,9 +6,9 @@
 #include "scanner.h"
 
 ANEW PP* new_pp(const uint size, const m_str name) {
-  PP* pp = (PP*)xcalloc(1, sizeof(struct PP_));
-  pp->def = (struct pp_info*)xcalloc(1, sizeof(struct pp_info));
-  pp->macros = (Hash)xcalloc(1, sizeof(struct Hash_));
+  PP* pp = (PP*)mp_alloc(PP);
+  pp->def = (struct pp_info*)_mp_alloc(sizeof(struct pp_info));
+  pp->macros = (Hash)mp_alloc(Hash);
   hini(pp->macros, size);
   vector_init(&pp->filename);
   vector_add(&pp->filename, (vtype)NULL);
@@ -29,7 +29,7 @@ ANN void free_pp(PP* pp, void* data) {
   pp_post(pp, data);
   vector_release(&pp->filename);
   hend(pp->macros);
-  xfree(pp->macros);
-  xfree(pp->def);
-  xfree(pp);
+  mp_free(Hash, pp->macros);
+  _mp_free(sizeof(struct pp_info), pp->def);
+  mp_free(PP, pp);
 }
