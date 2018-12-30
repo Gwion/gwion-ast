@@ -69,7 +69,7 @@ m_str op2str(const Operator op);
 %token<sval> ID STRING_LIT CHAR_LIT
 
   PP_COMMENT PP_INCLUDE PP_DEFINE PP_UNDEF PP_IFDEF PP_IFNDEF PP_ELSE PP_ENDIF PP_NL
-%type<flag> flag class_flag func_flag type_flag opt_flag
+%type<flag> flag opt_flag
   storage_flag access_flag arg_type
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl
@@ -119,8 +119,8 @@ section
   ;
 
 class_def
-  : decl_template class_flag id_list class_ext LBRACE class_body RBRACE
-    { $$ = new_class_def($2, $3, $4, $6);
+  : decl_template CLASS opt_flag id_list class_ext LBRACE class_body RBRACE
+    { $$ = new_class_def($3, $4, $5, $7);
       if($1)
         $$->tmpl = new_tmpl_class($1, -1);
   };
@@ -140,8 +140,8 @@ dot_decl:  id  { $$ = new_id_list($1, get_pos(arg)); } | id RARROW id_dot     { 
 
 stmt_list: stmt { $$ = new_stmt_list($1, NULL);} | stmt stmt_list { $$ = new_stmt_list($1, $2);};
 
-func_type: type_flag type_decl_array id func_args arg_type { $$ = new_stmt_fptr($3, $2, $4, $5); $2->flag |= $1; };
-stmt_type: type_flag type_decl_array id SEMICOLON { $$ = new_stmt_type($2, $3); $2->flag |= $1; };;
+func_type: TYPEDEF opt_flag type_decl_array id func_args arg_type { $$ = new_stmt_fptr($4, $3, $5, $6); $3->flag |= $2; };
+stmt_type: TYPEDEF opt_flag type_decl_array id SEMICOLON { $$ = new_stmt_type($3, $4); $3->flag |= $2; };
 
 type_decl_array
   : type_decl
@@ -295,13 +295,10 @@ flag: access_flag { $$ = $1; }
   ;
 
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
-func_flag: FUNCTION opt_flag { $$ = $2; };
-type_flag: TYPEDEF  opt_flag { $$ = $2; };
-class_flag: CLASS opt_flag { $$ = $2; };
 
 func_def_base
-  : decl_template func_flag type_decl_array id func_args arg_type code_stmt
-    { $$ = new_func_def($3, $4, $5, $7, $2 | $6);
+  : decl_template FUNCTION opt_flag type_decl_array id func_args arg_type code_stmt
+    { $$ = new_func_def($4, $5, $6, $8, $3 | $7);
     if($1) {
       SET_FLAG($$, template);
       $$->tmpl = new_tmpl_list($1, -1);
