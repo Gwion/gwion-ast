@@ -14,7 +14,7 @@ ANEW static Scanner* new_scanner(const m_str filename, FILE* f) {
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
   scan->line = scan->pos  = 1;
-  scan->jmp = (jmp_buf*)xcalloc(1, sizeof(jmp_buf));
+  scan->jmp = (jmp_buf*)_mp_alloc(sizeof(jmp_buf));
   scan->pp = new_pp(PP_SIZE, filename);
   gwion_set_in(f, scan->scanner);
   return scan;
@@ -22,7 +22,7 @@ ANEW static Scanner* new_scanner(const m_str filename, FILE* f) {
 
 ANN static void free_scanner(Scanner* scan) {
   free_pp(scan->pp, scan);
-  xfree(scan->jmp);
+  _mp_free(sizeof(jmp_buf), scan->jmp);
   gwion_lex_destroy(scan->scanner);
   mp_free(Scanner, scan);
 }
