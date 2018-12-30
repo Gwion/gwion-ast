@@ -88,8 +88,7 @@ Exp new_exp_array(const Exp base, const Array_Sub array) {
   a->meta = ae_meta_var;
   a->d.exp_array.base = base;
   a->d.exp_array.array = array;
-  a->d.exp_array.self = a;
-  return a;
+  return a->d.exp_array.self = a;
 }
 
 ANN static void free_exp_array(Exp_Array* a) {
@@ -132,8 +131,7 @@ Exp new_exp_decl(Type_Decl* td, const Var_Decl_List list) {
   Exp a = new_exp(ae_exp_decl, td->xid->pos);
   a->d.exp_decl.td = td;
   a->d.exp_decl.list = list;
-  a->d.exp_decl.self = a;
-  return a;
+  return a->d.exp_decl.self = a;
 }
 
 ANN static void free_exp_decl(Exp_Decl* a) {
@@ -147,8 +145,7 @@ Exp new_exp_binary(const Exp lhs, const Operator op, const Exp rhs) {
   a->d.exp_binary.lhs = lhs;
   a->d.exp_binary.op = op;
   a->d.exp_binary.rhs = rhs;
-  a->d.exp_binary.self = a;
-  return a;
+  return a->d.exp_binary.self = a;
 }
 
 ANN static void free_exp_binary(Exp_Binary* binary) {
@@ -161,8 +158,7 @@ Exp new_exp_cast(Type_Decl* td, const Exp exp) {
   a->meta = ae_meta_value;
   a->d.exp_cast.td = td;
   a->d.exp_cast.exp = exp;
-  a->d.exp_cast.self = a;
-  return a;
+  return a->d.exp_cast.self = a;
 }
 
 ANN static void free_exp_cast(Exp_Cast* a) {
@@ -175,8 +171,7 @@ Exp new_exp_post(const Exp exp, const Operator op) {
   a->meta = ae_meta_var;
   a->d.exp_post.exp = exp;
   a->d.exp_post.op = op;
-  a->d.exp_post.self = a;
-  return a;
+  return a->d.exp_post.self = a;
 }
 
 ANN static inline void free_exp_post(Exp_Postfix* post) {
@@ -188,8 +183,7 @@ Exp new_exp_dur(const Exp base, const Exp unit) {
   a->meta = ae_meta_value;
   a->d.exp_dur.base = base;
   a->d.exp_dur.unit = unit;
-  a->d.exp_dur.self = a;
-  return a;
+  return a->d.exp_dur.self = a;
 }
 
 ANN static void free_exp_dur(Exp_Dur* a) {
@@ -265,8 +259,7 @@ Exp new_exp_prim_vec(const ae_prim_t t, Exp e) {
   a->d.exp_primary.d.vec.exp = e;
   do ++a->d.exp_primary.d.vec.dim;
   while((e = e->next));
-  a->d.exp_primary.self = a;
-  return a;
+  return a->d.exp_primary.self = a;
 }
 
 static Exp new_exp_unary_base(const uint pos)  {
@@ -316,8 +309,7 @@ Exp new_exp_if(const restrict Exp cond, const restrict Exp if_exp, const restric
   a->d.exp_if.cond = cond;
   a->d.exp_if.if_exp = if_exp;
   a->d.exp_if.else_exp = else_exp;
-  a->d.exp_if.self = a;
-  return a;
+  return a->d.exp_if.self = a;
 }
 
 ANN static void free_exp_if(Exp_If* a) {
@@ -446,8 +438,7 @@ Exp new_exp_call(const Exp base, const Exp args) {
   a->meta = ae_meta_value;
   a->d.exp_call.func = base;
   a->d.exp_call.args = args;
-  a->d.exp_call.self = a;
-  return a;
+  return a->d.exp_call.self = a;
 }
 
 ANN static void free_exp_call(Exp_Call* a) {
@@ -463,8 +454,7 @@ Exp new_exp_dot(const Exp base, struct Symbol_* xid) {
   a->meta = ae_meta_var;
   a->d.exp_dot.base = base;
   a->d.exp_dot.xid = xid;
-  a->d.exp_dot.self = a;
-  return a;
+  return a->d.exp_dot.self = a;
 }
 
 ANN static void free_exp_dot(Exp_Dot* dot) {
@@ -525,8 +515,7 @@ void free_arg_list(Arg_List a) {
 Stmt new_stmt_exp(const ae_stmt_t type, const Exp exp) {
   Stmt a = new_stmt(type, exp->pos);
   a->d.stmt_exp.val = exp;
-  a->d.stmt_exp.self = a;
-  return a;
+  return a->d.stmt_exp.self = a;
 }
 
 Stmt new_stmt_code(const Stmt_List list) {
@@ -557,8 +546,7 @@ Stmt new_stmt_flow(const ae_stmt_t type, const Exp cond, const Stmt body, const 
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond = cond;
   a->d.stmt_flow.body = body;
-  a->d.stmt_flow.self = a;
-  return a;
+  return a->d.stmt_flow.self = a;
 }
 
 ANN static void free_stmt_flow(struct Stmt_Flow_* a) {
@@ -572,8 +560,7 @@ Stmt new_stmt_for(const restrict Stmt c1, const restrict Stmt c2, const restrict
   a->d.stmt_for.c2 = c2;
   a->d.stmt_for.c3 = c3;
   a->d.stmt_for.body = body;
-  a->d.stmt_for.self = a;
-  return a;
+  return a->d.stmt_for.self = a;
 }
 
 ANN static void free_stmt_for(Stmt_For a) {
@@ -589,8 +576,7 @@ Stmt new_stmt_auto(struct Symbol_* sym, const Exp exp, const Stmt body) {
   a->d.stmt_auto.sym = sym;
   a->d.stmt_auto.exp = exp;
   a->d.stmt_auto.body = body;
-  a->d.stmt_auto.self = a;
-  return a;
+  return a->d.stmt_auto.self = a;
 }
 
 ANN static void free_stmt_auto(Stmt_Auto a) {
@@ -602,16 +588,14 @@ Stmt new_stmt_jump(struct Symbol_* xid, const m_bool is_label, const uint pos) {
   Stmt a = new_stmt(ae_stmt_jump, pos);
   a->d.stmt_jump.name = xid;
   a->d.stmt_jump.is_label = is_label;
-  a->d.stmt_jump.self = a;
-  return a;
+  return a->d.stmt_jump.self = a;
 }
 
 Stmt new_stmt_loop(const Exp cond, const Stmt body) {
   Stmt a = new_stmt(ae_stmt_loop, cond->pos);
   a->d.stmt_loop.cond = cond;
   a->d.stmt_loop.body = body;
-  a->d.stmt_loop.self = a;
-  return a;
+  return a->d.stmt_loop.self = a;
 }
 
 ANN static void free_stmt_loop(Stmt_Loop a) {
@@ -637,8 +621,7 @@ Stmt new_stmt_switch(const Exp val, Stmt stmt) {
   Stmt a = new_stmt(ae_stmt_switch, val->pos);
   a->d.stmt_switch.val = val;
   a->d.stmt_switch.stmt = stmt;
-  a->d.stmt_switch.self = a;
-  return a;
+  return a->d.stmt_switch.self = a;
 }
 
 ANN inline static void free_stmt_switch(Stmt_Switch a) {
@@ -651,9 +634,8 @@ Stmt new_stmt_enum(const ID_List list, struct Symbol_* xid) {
   a->d.stmt_enum.xid = xid;
   a->d.stmt_enum.list = list;
   a->d.stmt_enum.flag = 0;
-  a->d.stmt_enum.self = a;
   vector_init(&a->d.stmt_enum.values);
-  return a;
+  return a->d.stmt_enum.self = a;
 }
 
 ANN static void free_stmt_enum(Stmt_Enum a) {
@@ -664,8 +646,7 @@ ANN static void free_stmt_enum(Stmt_Enum a) {
 Stmt new_stmt_union(const Decl_List l, const uint pos) {
   Stmt a = new_stmt(ae_stmt_union, pos);
   a->d.stmt_union.l = l;
-  a->d.stmt_union.self = a;
-  return a;
+  return a->d.stmt_union.self = a;
 }
 
 #ifndef TINY_MODE
