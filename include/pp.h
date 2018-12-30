@@ -10,8 +10,6 @@ typedef struct PP_ {
   unsigned lint : 1;
 } PP;
 
-ANEW PP* new_pp(const uint size);
-ANN void free_pp(PP* pp);
-ANN void pp_pre(PP* pp, const m_str filename);
-void pp_post(PP* pp, void* data);
+ANEW PP* new_pp(const uint size, const m_str);
+ANN void free_pp(PP* pp, void* data);
 #endif

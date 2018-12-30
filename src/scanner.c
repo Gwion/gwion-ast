@@ -7,44 +7,30 @@
 #include "lexer.h"
 #include "pp.h"
 
-ANEW Scanner* new_scanner(const uint size) {
+#define PP_SIZE 127
+ANEW static Scanner* new_scanner(const m_str filename, FILE* f) {
   Scanner* scan = (Scanner*)xcalloc(1, sizeof(Scanner));
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
+  scan->line = scan->pos  = 1;
   scan->jmp = (jmp_buf*)xcalloc(1, sizeof(jmp_buf));
-  scan->pp = new_pp(size);
+  scan->pp = new_pp(PP_SIZE, filename);
+  gwion_set_in(f, scan->scanner);
   return scan;
 }
 
-ANN void free_scanner(Scanner* scan) {
-  free_pp(scan->pp);
+ANN static void free_scanner(Scanner* scan) {
+  free_pp(scan->pp, scan);
   xfree(scan->jmp);
   gwion_lex_destroy(scan->scanner);
   xfree(scan);
 }
 
-static inline void scanner_pre(Scanner* scan, const m_str filename, FILE* f) {
-  scan->line = scan->pos  = 1;
-  pp_pre(scan->pp, filename);
-  gwion_set_in(f, scan->scanner);
-}
-
-void scanner_post(Scanner* scan) {
-  pp_post(scan->pp, scan);
-/*
-  m_uint size = vector_size(&scan->pp->filename);
-  while(size > 2)
-    size = clear_buffer(&scan->pp->filename, scan, size > 6);
-  scan->pp->entry = NULL;
-  vector_clear(&scan->pp->filename);
-  macro_del(scan->pp->macros);
-*/
-}
-
-Ast parse(Scanner* scan, const m_str filename, FILE* f) {
-  scanner_pre(scan, filename, f);
-  if(setjmp(*scan->jmp) || gwion_parse(scan))
-    scan->ast = NULL;
-  scanner_post(scan);
-  return scan->ast;
+Ast parse(const m_str name, FILE* f) {
+  Scanner* s = new_scanner(name, f);
+  if(setjmp(*s->jmp) || gwion_parse(s))
+    s->ast = NULL;
+  const Ast ast = s->ast;
+  free_scanner(s);
+  return ast;
 }

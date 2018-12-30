@@ -946,7 +946,7 @@ static const flex_int16_t yy_chk[703] =
 #define gwion_free(a,b)  xfree(a)
 #define YY_FATAL_ERROR(msg) gwion_fatal_error(msg, yyscanner)
 
-ANN static void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner);
+ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(const char* str);
 ANN static unsigned long htol(const char* str);
@@ -3084,10 +3084,10 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 #include <string.h>
 #include <stdlib.h>
 
-ANN static void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner) {
+ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner) {
   struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
-  scanner_post(scan);
+  /*scanner_post(scan);*/
   gw_err("%s\n", msg);
   yy_flush_buffer(yyg->yy_buffer_stack[yyg->yy_buffer_stack_top], yyscanner);
   yyg->yy_start = 1 + 2 * INITIAL;

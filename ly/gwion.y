@@ -21,6 +21,7 @@
 #define scan arg->scanner
 #define OP_SYM(a) insert_symbol(op2str(a))
 ANN uint get_pos(const Scanner*);
+ANN static void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner);
 ANN void gwion_error(const Scanner*, const m_str s);
 m_str op2str(const Operator op);
 %}
@@ -150,8 +151,7 @@ type_decl_array
 
 type_decl_exp: type_decl
   | type_decl array_exp             { $$ = add_type_decl_array($1, $2); }
-  | type_decl array_empty             { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR; };
-
+  | type_decl array_empty             { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR;};
 
 arg: type_decl arg_decl { $$ = new_arg_list($1, $2, NULL); }
 arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };

@@ -10,9 +10,6 @@ typedef struct Scanner_ {
   jmp_buf* jmp;
 } Scanner;
 
-ANN Ast parse(struct Scanner_*, const m_str, FILE*);
-ANEW Scanner* new_scanner(const uint size);
-ANN void free_scanner(Scanner* scan);
-ANN void scanner_post(Scanner* scan);
+ANN Ast parse(const m_str, FILE*);
 uint clear_buffer(Vector, void*, const m_bool);
 #endif
