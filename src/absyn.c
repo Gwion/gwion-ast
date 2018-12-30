@@ -76,13 +76,18 @@ Type_Decl* add_type_decl_array(Type_Decl* a, const Array_Sub array) {
   return a;
 }
 
-Exp new_exp_array(const Exp base, const Array_Sub array) {
+ANN static Exp new_exp(const ae_exp_t type, const uint pos) {
   Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_array;
+  a->exp_type = type;
+  a->pos = pos;
+  return a;
+}
+
+Exp new_exp_array(const Exp base, const Array_Sub array) {
+  Exp a = new_exp(ae_exp_array, base->pos);
   a->meta = ae_meta_var;
   a->d.exp_array.base = base;
   a->d.exp_array.array = array;
-  a->pos = base->pos;
   a->d.exp_array.self = a;
   return a;
 }
@@ -124,11 +129,9 @@ void free_type_decl(Type_Decl* a) {
 }
 
 Exp new_exp_decl(Type_Decl* td, const Var_Decl_List list) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_decl;
+  Exp a = new_exp(ae_exp_decl, td->xid->pos);
   a->d.exp_decl.td = td;
   a->d.exp_decl.list = list;
-  a->pos = td->xid->pos;
   a->d.exp_decl.self = a;
   return a;
 }
@@ -139,13 +142,11 @@ ANN static void free_exp_decl(Exp_Decl* a) {
 }
 
 Exp new_exp_binary(const Exp lhs, const Operator op, const Exp rhs) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_binary;
+  Exp a = new_exp(ae_exp_binary, lhs->pos);
   a->meta = ae_meta_value;
   a->d.exp_binary.lhs = lhs;
   a->d.exp_binary.op = op;
   a->d.exp_binary.rhs = rhs;
-  a->pos = lhs->pos;
   a->d.exp_binary.self = a;
   return a;
 }
@@ -156,11 +157,9 @@ ANN static void free_exp_binary(Exp_Binary* binary) {
 }
 
 Exp new_exp_cast(Type_Decl* td, const Exp exp) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_cast;
+  Exp a = new_exp(ae_exp_cast, exp->pos);
   a->meta = ae_meta_value;
   a->d.exp_cast.td = td;
-  a->pos = exp->pos;
   a->d.exp_cast.exp = exp;
   a->d.exp_cast.self = a;
   return a;
@@ -172,12 +171,10 @@ ANN static void free_exp_cast(Exp_Cast* a) {
 }
 
 Exp new_exp_post(const Exp exp, const Operator op) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_post;
+  Exp a = new_exp(ae_exp_post, exp->pos);
   a->meta = ae_meta_var;
   a->d.exp_post.exp = exp;
   a->d.exp_post.op = op;
-  a->pos = exp->pos;
   a->d.exp_post.self = a;
   return a;
 }
@@ -187,12 +184,10 @@ ANN static inline void free_exp_post(Exp_Postfix* post) {
 }
 
 Exp new_exp_dur(const Exp base, const Exp unit) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_dur;
+  Exp a = new_exp(ae_exp_dur, base->pos);
   a->meta = ae_meta_value;
   a->d.exp_dur.base = base;
   a->d.exp_dur.unit = unit;
-  a->pos = base->pos;
   a->d.exp_dur.self = a;
   return a;
 }
@@ -203,12 +198,9 @@ ANN static void free_exp_dur(Exp_Dur* a) {
 }
 
 static Exp new_exp_prim(const uint pos) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_primary;
+  Exp a = new_exp(ae_exp_primary, pos);
   a->meta = ae_meta_value;
-  a->pos = pos;
-  a->d.exp_primary.self = a;
-  return a;
+  return a->d.exp_primary.self = a;
 }
 
 Exp new_exp_prim_int(const unsigned long i, const uint pos) {
@@ -278,12 +270,9 @@ Exp new_exp_prim_vec(const ae_prim_t t, Exp e) {
 }
 
 static Exp new_exp_unary_base(const uint pos)  {
-  Exp a = mp_alloc(Exp);
+  Exp a = new_exp(ae_exp_unary, pos);
   a->meta = ae_meta_value;
-  a->exp_type = ae_exp_unary;
-  a->pos = pos;
-  a->d.exp_unary.self = a;
-  return a;
+  return a->d.exp_unary.self = a;
 }
 
 Exp new_exp_unary(const Operator oper, const Exp exp) {
@@ -321,15 +310,13 @@ ANN static void free_exp_unary(Exp_Unary* a) {
 }
 
 Exp new_exp_if(const restrict Exp cond, const restrict Exp if_exp, const restrict Exp else_exp) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_if;
+  Exp a = new_exp(ae_exp_if, cond->pos);
   a->meta = ((if_exp->meta == ae_meta_var &&
               else_exp->meta == ae_meta_var) ? ae_meta_var : ae_meta_value);
   a->d.exp_if.cond = cond;
   a->d.exp_if.if_exp = if_exp;
   a->d.exp_if.else_exp = else_exp;
   a->d.exp_if.self = a;
-  a->pos = cond->pos;
   return a;
 }
 
@@ -455,12 +442,10 @@ ANN static void free_tmpl_call(Tmpl_Call* a) {
 }
 
 Exp new_exp_call(const Exp base, const Exp args) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_call;
+  Exp a = new_exp(ae_exp_call, base->pos);
   a->meta = ae_meta_value;
   a->d.exp_call.func = base;
   a->d.exp_call.args = args;
-  a->pos = base->pos;
   a->d.exp_call.self = a;
   return a;
 }
@@ -474,12 +459,10 @@ ANN static void free_exp_call(Exp_Call* a) {
 }
 
 Exp new_exp_dot(const Exp base, struct Symbol_* xid) {
-  Exp a = mp_alloc(Exp);
-  a->exp_type = ae_exp_dot;
+  Exp a = new_exp(ae_exp_dot, base->pos);
   a->meta = ae_meta_var;
   a->d.exp_dot.base = base;
   a->d.exp_dot.xid = xid;
-  a->pos = base->pos;
   a->d.exp_dot.self = a;
   return a;
 }
