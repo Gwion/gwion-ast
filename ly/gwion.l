@@ -185,7 +185,8 @@ ANN static m_str macro_data(void* data, const m_bool);
 "spork"                             { adjust(yyscanner); return SPORK; }
 "union"                             { adjust(yyscanner); return UNION; }
 
-"=="                                { adjust(yyscanner); return EQ; }
+"<~"                                { adjust(yyscanner); return LTMPL; }
+"~>"                                { adjust(yyscanner); return RTMPL; }
 "!="                                { adjust(yyscanner); return NEQ; }
 "<"                                 { adjust(yyscanner); return LT; }
 ">"                                 { adjust(yyscanner); return GT; }

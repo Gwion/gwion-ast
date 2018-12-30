@@ -59,7 +59,7 @@ m_str op2str(const Operator op);
   LOOP FOR GOTO SWITCH CASE ENUM RETURN BREAK CONTINUE PLUSPLUS MINUSMINUS NEW
   SPORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
   MINUS PLUS NEQ SHIFT_LEFT SHIFT_RIGHT S_AND S_OR S_XOR OR AST_DTOR OPERATOR
-  TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE
+  TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE LTMPL RTMPL
   NOELSE UNION ATPAREN TYPEOF CONST AUTO PASTE ELLIPSE RARROW
 
 %token<lval> NUM
@@ -262,7 +262,7 @@ exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
 
 binary_exp: decl_exp2 | binary_exp op decl_exp2     { $$ = new_exp_binary($1, $2, $3); };
 
-call_template: LT type_list GT { $$ = $2; } | { $$ = NULL; };
+call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
 op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
   | ATCHUCK     { $$ = op_ref; } | PLUSCHUCK   { $$ = op_radd; }
@@ -294,7 +294,7 @@ decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: TEMPLATE LT id_list GT { $$ = $3; } | { $$ = NULL; };
+decl_template: TEMPLATE LTMPL id_list RTMPL { $$ = $3; } | { $$ = NULL; };
 
 storage_flag: STATIC { $$ = ae_flag_static; }
   | GLOBAL { $$ = ae_flag_global; }
@@ -341,7 +341,7 @@ atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
 
 type_decl0
   : dot_decl atsym { $$ = new_type_decl($1, $2); }
-  | LT type_list GT id_dot atsym { $$ = new_type_decl($4, $5);
+  | LTMPL type_list RTMPL id_dot atsym { $$ = new_type_decl($4, $5);
       $$->types = $2; }
   | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl2($3, $5); }
   ;
