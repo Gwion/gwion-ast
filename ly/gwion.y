@@ -19,7 +19,6 @@
 #include "lexer.h"
 #define YYMALLOC xmalloc
 #define scan arg->scanner
-#define CHECK_FLAG(a,b,c) if(GET_FLAG(b, c)) { gwion_error(a, "flag set twice");  ; } SET_FLAG(b, c);
 #define OP_SYM(a) insert_symbol(op2str(a))
 ANN uint get_pos(const Scanner*);
 ANN void gwion_error(const Scanner*, const m_str s);
