@@ -414,23 +414,18 @@ void free_func_def(Func_Def a) {
 }
 
 Stmt new_stmt_fptr(struct Symbol_* xid, Type_Decl* td, const Arg_List args, const ae_flag flag) {
-  Stmt a              = mp_alloc(Stmt);
-  a->stmt_type        = ae_stmt_fptr;
+  Stmt a              = new_stmt(ae_stmt_fptr, td->xid->pos);
   a->d.stmt_fptr.td    = td;
   td->flag |= flag;
   a->d.stmt_fptr.xid   = xid;
   a->d.stmt_fptr.args  = args;
-  a->pos = td->xid->pos;
   return a;
-
 }
 
 Stmt new_stmt_type(Type_Decl* td, struct Symbol_* xid) {
-  Stmt a              = mp_alloc(Stmt);
-  a->stmt_type        = ae_stmt_type;
+  Stmt a              = new_stmt(ae_stmt_type, td->xid->pos);
   a->d.stmt_type.td   = td;
   a->d.stmt_type.xid  = xid;
-  a->pos = td->xid->pos;
   return a;
 }
 
@@ -545,19 +540,15 @@ void free_arg_list(Arg_List a) {
 }
 
 Stmt new_stmt_exp(const ae_stmt_t type, const Exp exp) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = type;
+  Stmt a = new_stmt(type, exp->pos);
   a->d.stmt_exp.val = exp;
   a->d.stmt_exp.self = a;
-  a->pos = exp->pos;
   return a;
 }
 
 Stmt new_stmt_code(const Stmt_List list) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_code;
+  Stmt a = new_stmt(ae_stmt_code, list->stmt->pos);
   a->d.stmt_code.stmt_list = list;
-  a->pos = list->stmt->pos;
   return a;
 }
 
@@ -579,12 +570,10 @@ Stmt new_stmt(const ae_stmt_t type, const uint pos) {
 }
 
 Stmt new_stmt_flow(const ae_stmt_t type, const Exp cond, const Stmt body, const m_bool is_do) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = type;
+  Stmt a = new_stmt(type, cond->pos);
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond = cond;
   a->d.stmt_flow.body = body;
-  a->pos = cond->pos;
   a->d.stmt_flow.self = a;
   return a;
 }
@@ -595,13 +584,11 @@ ANN static void free_stmt_flow(struct Stmt_Flow_* a) {
 }
 
 Stmt new_stmt_for(const restrict Stmt c1, const restrict Stmt c2, const restrict Exp c3, const Stmt body) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_for;
+  Stmt a = new_stmt(ae_stmt_for, c1->pos);
   a->d.stmt_for.c1 = c1;
   a->d.stmt_for.c2 = c2;
   a->d.stmt_for.c3 = c3;
   a->d.stmt_for.body = body;
-  a->pos = c1->pos;
   a->d.stmt_for.self = a;
   return a;
 }
@@ -615,13 +602,11 @@ ANN static void free_stmt_for(Stmt_For a) {
 }
 
 Stmt new_stmt_auto(struct Symbol_* sym, const Exp exp, const Stmt body) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_auto;
+  Stmt a = new_stmt(ae_stmt_auto, exp->pos);
   a->d.stmt_auto.sym = sym;
   a->d.stmt_auto.exp = exp;
   a->d.stmt_auto.body = body;
   a->d.stmt_auto.self = a;
-  a->pos = exp->pos;
   return a;
 }
 
@@ -631,21 +616,17 @@ ANN static void free_stmt_auto(Stmt_Auto a) {
 }
 
 Stmt new_stmt_jump(struct Symbol_* xid, const m_bool is_label, const uint pos) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_jump;
+  Stmt a = new_stmt(ae_stmt_jump, pos);
   a->d.stmt_jump.name = xid;
   a->d.stmt_jump.is_label = is_label;
   a->d.stmt_jump.self = a;
-  a->pos = pos;
   return a;
 }
 
 Stmt new_stmt_loop(const Exp cond, const Stmt body) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_loop;
+  Stmt a = new_stmt(ae_stmt_loop, cond->pos);
   a->d.stmt_loop.cond = cond;
   a->d.stmt_loop.body = body;
-  a->pos = cond->pos;
   a->d.stmt_loop.self = a;
   return a;
 }
@@ -656,11 +637,9 @@ ANN static void free_stmt_loop(Stmt_Loop a) {
 }
 
 Stmt new_stmt_if(const Exp cond, const restrict Stmt if_body) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_if;
+  Stmt a = new_stmt(ae_stmt_if, cond->pos);
   a->d.stmt_if.cond = cond;
   a->d.stmt_if.if_body = if_body;
-  a->pos = cond->pos;
   return a;
 }
 
@@ -672,12 +651,10 @@ ANN static void free_stmt_if(Stmt_If a) {
 }
 
 Stmt new_stmt_switch(const Exp val, Stmt stmt) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_switch;
+  Stmt a = new_stmt(ae_stmt_switch, val->pos);
   a->d.stmt_switch.val = val;
   a->d.stmt_switch.stmt = stmt;
   a->d.stmt_switch.self = a;
-  a->pos = val->pos;
   return a;
 }
 
@@ -687,14 +664,12 @@ ANN inline static void free_stmt_switch(Stmt_Switch a) {
 }
 
 Stmt new_stmt_enum(const ID_List list, struct Symbol_* xid) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_enum;
+  Stmt a = new_stmt(ae_stmt_enum, list->pos);
   a->d.stmt_enum.xid = xid;
   a->d.stmt_enum.list = list;
   a->d.stmt_enum.flag = 0;
   a->d.stmt_enum.self = a;
   vector_init(&a->d.stmt_enum.values);
-  a->pos = list->pos;
   return a;
 }
 
@@ -704,19 +679,16 @@ ANN static void free_stmt_enum(Stmt_Enum a) {
 }
 
 Stmt new_stmt_union(const Decl_List l, const uint pos) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_union;
+  Stmt a = new_stmt(ae_stmt_union, pos);
   a->d.stmt_union.l = l;
   a->d.stmt_union.self = a;
-  a->pos = pos;
   return a;
 }
 
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
 Stmt new_stmt_pp(const enum ae_pp_type type, const m_str data) {
-  Stmt a = mp_alloc(Stmt);
-  a->stmt_type = ae_stmt_pp;
+  Stmt a = new_stmt(ae_stmt_pp, 0);
   a->d.stmt_pp.type = type;
   a->d.stmt_pp.data = data;
   return a;
