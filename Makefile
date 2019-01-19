@@ -41,6 +41,6 @@ generate_lexer:
 
 clean:
 	$(info cleaning)
-	@rm src/*.o *.a
+	@rm -f src/*.o *.a
 
 include $(wildcard .d/*.d)

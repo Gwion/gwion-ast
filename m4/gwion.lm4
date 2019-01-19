@@ -189,6 +189,7 @@ ifdef([[[TINY_MODE]]], [[[]]],
 
 "<~"                                { adjust(yyscanner); return LTMPL; }
 "~>"                                { adjust(yyscanner); return RTMPL; }
+"=="                                { adjust(yyscanner); return EQ; }
 "!="                                { adjust(yyscanner); return NEQ; }
 "<"                                 { adjust(yyscanner); return LT; }
 ">"                                 { adjust(yyscanner); return GT; }
