@@ -382,14 +382,14 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
 }
 
 void free_func_def(Func_Def a) {
-  if(!GET_FLAG(a, template)) {
+  if(!a->tmpl) {
     if(a->arg_list)
       free_arg_list(a->arg_list);
     free_type_decl(a->td);
+    mp_free(Func_Def, a);
   }
-  if(a->tmpl)
-    free_tmpl_list(a->tmpl);
-  mp_free(Func_Def, a);
+//  if(a->tmpl)
+//    free_tmpl_list(a->tmpl);
 }
 
 Stmt new_stmt_fptr(struct Symbol_* xid, Type_Decl* td, const Arg_List args, const ae_flag flag) {
@@ -485,7 +485,6 @@ static const _exp_func exp_func[] = {
   (_exp_func)free_exp_primary, (_exp_func)free_exp_cast,   (_exp_func)free_exp_post,
   (_exp_func)free_exp_call,    (_exp_func)free_exp_array,  (_exp_func)free_exp_if,
   (_exp_func)free_exp_dot,     (_exp_func)free_exp_dur
-// (_exp_func)free_exp_constprop
 };
 
 void free_exp(Exp exp) {
@@ -760,8 +759,8 @@ ANN static void free_section(Section* section) {
   else if(t == ae_section_stmt)
     free_stmt_list(section->d.stmt_list);
   else if(t == ae_section_func) {
-    if(!GET_FLAG(section->d.func_def, builtin))
-      free_stmt(section->d.func_def->d.code);
+//    if(!GET_FLAG(section->d.func_def, builtin))
+//      free_stmt(section->d.func_def->d.code);
     free_func_def(section->d.func_def);
   }
   mp_free(Section, section);

@@ -2,6 +2,7 @@ ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
 endif
 include config.mk
+include ${UTIL_DIR}/config.mk
 
 DEPDIR := .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
@@ -10,10 +11,11 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$(@F:.o=.Td)
 src := $(wildcard src/*.c)
 obj := $(src:.c=.o)
 
-CFLAGS += -I${UTIL_DIR}/include -Iinclude -D_GNU_SOURCE
+#CFLAGS += -I${UTIL_DIR}/include -Iinclude -D_GNU_SOURCE
+CFLAGS += -Iinclude -D_GNU_SOURCE
 
 all: libgwion_ast.a
-
+	@$(info ${CFLAGS})
 libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	@ar rcs $@ $^
