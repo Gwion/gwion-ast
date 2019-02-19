@@ -1,3 +1,5 @@
 YACC ?=yacc
 LEX  ?=flex
 UTIL_DIR ?= ../util
+ast_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+CFLAGS += -I${ast_dir}/include
