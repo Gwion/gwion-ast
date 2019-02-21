@@ -758,11 +758,8 @@ ANN static void free_section(Section* section) {
     free_class_def(section->d.class_def);
   else if(t == ae_section_stmt)
     free_stmt_list(section->d.stmt_list);
-  else if(t == ae_section_func) {
-//    if(!GET_FLAG(section->d.func_def, builtin))
-//      free_stmt(section->d.func_def->d.code);
+  else if(t == ae_section_func)
     free_func_def(section->d.func_def);
-  }
   mp_free(Section, section);
 }
 
