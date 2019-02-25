@@ -72,7 +72,7 @@ m_str op2str(const Operator op);
 %type<flag> flag opt_flag
   storage_flag access_flag arg_type
 %type<sym>id opt_id
-%type<var_decl> var_decl arg_decl
+%type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
@@ -84,7 +84,7 @@ m_str op2str(const Operator op);
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
 %type<stmt> enum_stmt func_type stmt_type union_stmt 
 %type<stmt_list> stmt_list
-%type<arg_list> arg arg_list func_args lambda_arg lambda_list
+%type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<section> section
@@ -138,7 +138,7 @@ dot_decl:  id  { $$ = new_id_list($1, get_pos(arg)); } | id RARROW id_dot     { 
 
 stmt_list: stmt { $$ = new_stmt_list($1, NULL);} | stmt stmt_list { $$ = new_stmt_list($1, $2);};
 
-func_type: TYPEDEF opt_flag type_decl_array id func_args arg_type {
+func_type: TYPEDEF opt_flag type_decl_array id fptr_arg arg_type {
   if($3->array && !$3->array->exp)
     { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
 $$ = new_stmt_fptr($4, $3, $5, $6); $3->flag |= $2; };
@@ -156,6 +156,8 @@ type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
 
 arg: type_decl arg_decl { $$ = new_arg_list($1, $2, NULL); }
 arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };
+fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list($1, $2, NULL); }
+fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA arg_list { $1->next = $3; $$ = $1; };
 
 code_stmt
   : LBRACE RBRACE { $$ = new_stmt(ae_stmt_code, get_pos(arg)); }
@@ -279,6 +281,7 @@ union_exp: type_decl arg_decl { $$= new_exp_decl($1, new_var_decl_list($2, NULL)
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
+fptr_arg: LPAREN  fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: TEMPLATE LTMPL id_list RTMPL { $$ = $3; } | { $$ = NULL; };
@@ -360,6 +363,9 @@ var_decl: id { $$ = new_var_decl($1, NULL, get_pos(arg)); }
 arg_decl: id { $$ = new_var_decl($1, NULL, get_pos(arg)); }
   | id array_empty { $$ = new_var_decl($1,   $2, get_pos(arg)); }
   | id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
+fptr_arg_decl: opt_id { $$ = new_var_decl($1, NULL, get_pos(arg)); }
+  | opt_id array_empty { $$ = new_var_decl($1,   $2, get_pos(arg)); }
+  | opt_id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
 
 eq_op : EQ { $$ = op_eq; } | NEQ { $$ = op_ne; };
 rel_op: LT { $$ = op_lt; } | GT { $$ = op_gt; } | LE { $$ = op_le; } | GE { $$ = op_ge; };
