@@ -47,7 +47,7 @@ m_str op2str(const Operator op);
   ID_List id_list;
   Type_List type_list;
   Class_Body class_body;
-  ID_List class_ext;
+//  ID_List class_ext;
   Class_Def class_def;
   Ast ast;
 };
@@ -60,7 +60,7 @@ m_str op2str(const Operator op);
   SPORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
   MINUS PLUS NEQ SHIFT_LEFT SHIFT_RIGHT S_AND S_OR S_XOR OR AST_DTOR OPERATOR
   TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE LTMPL RTMPL
-  NOELSE UNION ATPAREN TYPEOF CONST AUTO PASTE ELLIPSE RARROW
+  NOELSE UNION ATPAREN TYPEOF CONST AUTO PASTE ELLIPSE RARROW BACKTICK
 
 %token<lval> NUM
 %type<ival>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
@@ -84,7 +84,7 @@ m_str op2str(const Operator op);
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
 %type<stmt> enum_stmt func_type stmt_type union_stmt 
 %type<stmt_list> stmt_list
-%type<arg_list> arg arg_list func_args
+%type<arg_list> arg arg_list func_args lambda_arg lambda_list
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<section> section
@@ -395,6 +395,12 @@ unary_exp : dur_exp | unary_op unary_exp { $$ = new_exp_unary($1, $2); }
 dur_exp: post_exp | dur_exp COLONCOLON post_exp
     { $$ = new_exp_dur($1, $3); };
 
+
+lambda_list:
+ id { $$ = new_arg_list(NULL, new_var_decl($1, NULL, get_pos(arg)), NULL); }
+|    id lambda_list { $$ = new_arg_list(NULL, new_var_decl($1, NULL, get_pos(arg)), $2); }
+lambda_arg: BACKTICK lambda_list BACKTICK { $$ = $2; } | BACKTICK BACKTICK { $$ = NULL; }
+
 type_list
   : type_decl_empty { $$ = new_type_list($1, NULL); }
   | type_decl_empty COMMA type_list { $$ = new_type_list($1, $3); }
@@ -428,6 +434,7 @@ primary_exp
   | vec_type exp RPAREN { $$ = new_exp_prim_vec($1, $2); }
   | L_HACK exp R_HACK   { $$ = new_exp_prim_hack(   $2); }
   | LPAREN exp RPAREN   { $$ =                      $2;                }
+  | lambda_arg code_stmt { $$ = new_exp_lambda($1, $2); };
   | LPAREN RPAREN       { $$ = new_exp_prim_nil(        get_pos(arg)); }
   ;
 %%

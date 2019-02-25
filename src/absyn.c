@@ -83,6 +83,21 @@ ANN static Exp new_exp(const ae_exp_t type, const uint pos) {
   return a;
 }
 
+Exp new_exp_lambda(const Arg_List arg,const Stmt code) {
+  Exp a = new_exp(ae_exp_lambda, arg->var_decl->pos);
+  a->meta = ae_meta_var;
+  a->d.exp_lambda.arg = arg;
+  a->d.exp_lambda.code = code;
+  return a->d.exp_lambda.self = a;
+}
+
+ANN static void free_exp_lambda(Exp_Lambda* lambda) {
+  free_arg_list(lambda->arg);
+  free_stmt(lambda->code);
+  if(lambda->def)
+    mp_free(Func_Def, lambda->def);
+}
+
 Exp new_exp_array(const Exp base, const Array_Sub array) {
   Exp a = new_exp(ae_exp_array, base->pos);
   a->meta = ae_meta_var;
@@ -417,7 +432,7 @@ ANN static void free_stmt_fptr(Stmt_Fptr a) {
   if(!a->func) {
     if(a->args)
       free_arg_list(a->args);
-    free_type_decl(a->td);
+      free_type_decl(a->td);
   }
 }
 
@@ -484,7 +499,7 @@ static const _exp_func exp_func[] = {
   (_exp_func)free_exp_decl,    (_exp_func)free_exp_binary, (_exp_func)free_exp_unary,
   (_exp_func)free_exp_primary, (_exp_func)free_exp_cast,   (_exp_func)free_exp_post,
   (_exp_func)free_exp_call,    (_exp_func)free_exp_array,  (_exp_func)free_exp_if,
-  (_exp_func)free_exp_dot,     (_exp_func)free_exp_dur
+  (_exp_func)free_exp_dot,     (_exp_func)free_exp_dur,    (_exp_func)free_exp_lambda
 };
 
 void free_exp(Exp exp) {
@@ -505,7 +520,8 @@ Arg_List new_arg_list(Type_Decl* td, const Var_Decl var_decl, const Arg_List arg
 void free_arg_list(Arg_List a) {
   if(a->next)
     free_arg_list(a->next);
-  free_type_decl(a->td);
+  if(a->td)
+    free_type_decl(a->td);
   free_var_decl(a->var_decl);
   mp_free(Arg_List, a);
 
