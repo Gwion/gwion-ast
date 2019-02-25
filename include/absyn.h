@@ -25,6 +25,7 @@ typedef struct {
   Stmt code;
   Func_Def def;
   struct Type_*owner;
+  Symbol name;
   Exp self;
 } Exp_Lambda;
 ANN Exp new_exp_lambda(const Arg_List,const Stmt);

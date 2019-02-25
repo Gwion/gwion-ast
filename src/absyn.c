@@ -83,12 +83,20 @@ ANN static Exp new_exp(const ae_exp_t type, const uint pos) {
   return a;
 }
 
+ANN void lambda_name(Exp_Lambda* lambda) {
+  char c[6 + 1 + num_digit(lambda->self->pos) + 1 + 16 + 1];
+  sprintf(c, "lambda:%u:%p\n", lambda->self->pos, lambda);
+  lambda->name = insert_symbol(c);
+}
+
 Exp new_exp_lambda(const Arg_List arg,const Stmt code) {
   Exp a = new_exp(ae_exp_lambda, arg->var_decl->pos);
   a->meta = ae_meta_var;
   a->d.exp_lambda.arg = arg;
   a->d.exp_lambda.code = code;
-  return a->d.exp_lambda.self = a;
+  a->d.exp_lambda.self = a;
+  lambda_name(&a->d.exp_lambda);
+  return a;
 }
 
 ANN static void free_exp_lambda(Exp_Lambda* lambda) {
@@ -432,7 +440,7 @@ ANN static void free_stmt_fptr(Stmt_Fptr a) {
   if(!a->func) {
     if(a->args)
       free_arg_list(a->args);
-      free_type_decl(a->td);
+    free_type_decl(a->td);
   }
 }
 
