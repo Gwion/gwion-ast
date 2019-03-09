@@ -141,7 +141,7 @@ extern int gwion_debug;
     PASTE = 348,
     ELLIPSE = 349,
     RARROW = 350,
-    BACKTICK = 351,
+    BACKSLASH = 351,
     NUM = 352,
     FLOAT = 353,
     ID = 354,
@@ -252,7 +252,7 @@ extern int gwion_debug;
 #define PASTE 348
 #define ELLIPSE 349
 #define RARROW 350
-#define BACKTICK 351
+#define BACKSLASH 351
 #define NUM 352
 #define FLOAT 353
 #define ID 354

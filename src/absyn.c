@@ -90,7 +90,7 @@ ANN void lambda_name(Exp_Lambda* lambda) {
 }
 
 Exp new_exp_lambda(const Arg_List arg,const Stmt code) {
-  Exp a = new_exp(ae_exp_lambda, arg->var_decl->pos);
+  Exp a = new_exp(ae_exp_lambda, code->pos);
   a->meta = ae_meta_var;
   a->d.exp_lambda.arg = arg;
   a->d.exp_lambda.code = code;
@@ -100,7 +100,8 @@ Exp new_exp_lambda(const Arg_List arg,const Stmt code) {
 }
 
 ANN static void free_exp_lambda(Exp_Lambda* lambda) {
-  free_arg_list(lambda->arg);
+  if(lambda->arg)
+    free_arg_list(lambda->arg);
   free_stmt(lambda->code);
   if(lambda->def)
     mp_free(Func_Def, lambda->def);
