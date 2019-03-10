@@ -206,7 +206,7 @@ struct Exp_ {
     Exp_Dot       exp_dot;
     Exp_Array     exp_array;
     Exp_Dur       exp_dur;
-    Exp_Lambda       exp_lambda;
+    Exp_Lambda    exp_lambda;
   } d;
   uint pos;
   ae_exp_t exp_type;
