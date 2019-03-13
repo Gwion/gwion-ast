@@ -26,7 +26,10 @@ addons:
 before_script:
   - git clone https://github.com/fennecdjay/gwion-util
   - cd gwion-util
-  - make
+  - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
+    then make;
+    else make.exe;
+    fi
   - cd ..
   - if [ $(uname) = "Linux" ]; then if [ "$CC" = "gcc" ]; then export CC=gcc-8; fi; fi
 #elif [ $(uname) = "Darwin" ]; then brew update; else sed -i 's#/#\\#g' Makefile; fi
