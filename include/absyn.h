@@ -211,7 +211,7 @@ struct Exp_ {
   uint pos;
   ae_exp_t exp_type;
   ae_Exp_Meta meta;
-  unsigned emit_var : 1;
+  uint emit_var;
 };
 
 ANEW ANN Exp new_exp_prim_id(struct Symbol_*, const uint);
@@ -285,7 +285,7 @@ struct Stmt_Flow_ {
   Exp cond;
   Stmt body;
   Stmt self;
-  unsigned is_do : 1;
+  uint is_do;
 };
 
 struct Stmt_Code_ {

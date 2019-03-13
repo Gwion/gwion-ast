@@ -7,7 +7,7 @@ typedef struct PP_ {
   struct pp_info* def;
   size_t arg_len, arg_cap;
   int npar;
-  unsigned lint : 1;
+  uint lint;
 } PP;
 
 ANEW PP* new_pp(const uint size, const m_str);
