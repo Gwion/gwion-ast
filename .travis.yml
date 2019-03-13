@@ -31,4 +31,8 @@ before_script:
   - if [ $(uname) = "Linux" ]; then if [ "$CC" = "gcc" ]; then export CC=gcc-8; fi; fi
 #elif [ $(uname) = "Darwin" ]; then brew update; else sed -i 's#/#\\#g' Makefile; fi
 
-script: make
+script:
+  - if [ [ $(uname) = "Linux" ] && [ $(uname) = "Darwin" ] ]
+    then make;
+    else make.exe;
+    fi
