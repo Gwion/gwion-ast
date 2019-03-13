@@ -24,6 +24,8 @@ addons:
     - gcc-8
 
 before_script:
+  - if [ $(uname) != "Linux" ] && [ $(uname) != "Darwin" ];
+    then choco install make; alias gcc=gcc.exe;export CC="gcc.exe"; fi
   - git clone https://github.com/fennecdjay/gwion-util
   - cd gwion-util
   - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
