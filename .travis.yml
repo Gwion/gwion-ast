@@ -26,7 +26,7 @@ addons:
 before_script:
   - if [ $(uname) != "Linux" ] && [ $(uname) != "Darwin" ];
     then choco install make; alias gcc=gcc.exe;export CC="gcc.exe";
-    export CFLAGS+=-DBUILD_ON_WINDOWS;
+    export CFLAGS+="-DBUILD_ON_WINDOWS -Iutil/libgw32c/include";
     fi
   - git clone https://github.com/fennecdjay/gwion-util
   - cd gwion-util
