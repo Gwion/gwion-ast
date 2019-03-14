@@ -32,7 +32,7 @@ before_script:
   - cd gwion-util
   - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
     then make;
-    else CFLAGS+=-DBUILD_ON_WINDOWS make.exe;
+    else CFLAGS=-DBUILD_ON_WINDOWS make.exe;
     fi
   - cd ..
   - if [ $(uname) = "Linux" ]; then if [ "$CC" = "gcc" ]; then export CC=gcc-8; fi; fi
