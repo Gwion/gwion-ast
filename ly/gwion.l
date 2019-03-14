@@ -228,7 +228,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %{ /*access modifiers */ %}
 "protect"                           { adjust(yyscanner); return PROTECT;}
 "private"                           { adjust(yyscanner); return PRIVATE;}
-"const"                             { adjust(yyscanner); return CONST;}
+"const"                             { adjust(yyscanner); return CONSTT;}
 
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}

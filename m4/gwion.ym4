@@ -60,7 +60,7 @@ m_str op2str(const Operator op);
   SPORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
   MINUS PLUS NEQ SHIFT_LEFT SHIFT_RIGHT S_AND S_OR S_XOR OR AST_DTOR OPERATOR
   TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE LTMPL RTMPL
-  NOELSE UNION ATPAREN TYPEOF CONST AUTO PASTE ELLIPSE RARROW BACKSLASH
+  NOELSE UNION ATPAREN TYPEOF CONSTT AUTO PASTE ELLIPSE RARROW BACKSLASH
 
 %token<lval> NUM
 %type<ival>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
@@ -349,7 +349,7 @@ type_decl0
   ;
 
 type_decl: type_decl0 { $$ = $1; }
-  | CONST type_decl0 { $$ = $2; SET_FLAG($$, const); };
+  | CONSTT type_decl0 { $$ = $2; SET_FLAG($$, const); };
 
 decl_list: union_exp SEMICOLON { $$ = new_decl_list($1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list($1, $3); } ;

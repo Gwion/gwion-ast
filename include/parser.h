@@ -136,7 +136,7 @@ extern int gwion_debug;
     UNION = 343,
     ATPAREN = 344,
     TYPEOF = 345,
-    CONST = 346,
+    CONSTT = 346,
     AUTO = 347,
     PASTE = 348,
     ELLIPSE = 349,
@@ -247,7 +247,7 @@ extern int gwion_debug;
 #define UNION 343
 #define ATPAREN 344
 #define TYPEOF 345
-#define CONST 346
+#define CONSTT 346
 #define AUTO 347
 #define PASTE 348
 #define ELLIPSE 349

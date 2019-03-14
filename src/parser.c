@@ -220,7 +220,7 @@ extern int gwion_debug;
     UNION = 343,
     ATPAREN = 344,
     TYPEOF = 345,
-    CONST = 346,
+    CONSTT = 346,
     AUTO = 347,
     PASTE = 348,
     ELLIPSE = 349,
@@ -331,7 +331,7 @@ extern int gwion_debug;
 #define UNION 343
 #define ATPAREN 344
 #define TYPEOF 345
-#define CONST 346
+#define CONSTT 346
 #define AUTO 347
 #define PASTE 348
 #define ELLIPSE 349
@@ -742,7 +742,7 @@ static const char *const yytname[] =
   "EQ", "GE", "GT", "LE", "LT", "MINUS", "PLUS", "NEQ", "SHIFT_LEFT",
   "SHIFT_RIGHT", "S_AND", "S_OR", "S_XOR", "OR", "AST_DTOR", "OPERATOR",
   "TYPEDEF", "RSL", "RSR", "RSAND", "RSOR", "RSXOR", "TEMPLATE", "LTMPL",
-  "RTMPL", "NOELSE", "UNION", "ATPAREN", "TYPEOF", "CONST", "AUTO",
+  "RTMPL", "NOELSE", "UNION", "ATPAREN", "TYPEOF", "CONSTT", "AUTO",
   "PASTE", "ELLIPSE", "RARROW", "BACKSLASH", "NUM", "FLOAT", "ID",
   "STRING_LIT", "CHAR_LIT", "PP_COMMENT", "PP_INCLUDE", "PP_DEFINE",
   "PP_UNDEF", "PP_IFDEF", "PP_IFNDEF", "PP_ELSE", "PP_ENDIF", "PP_NL",

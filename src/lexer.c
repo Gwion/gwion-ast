@@ -1881,7 +1881,7 @@ YY_RULE_SETUP
 case 106:
 YY_RULE_SETUP
 #line 231 "ly/gwion.l"
-{ adjust(yyscanner); return CONST;}
+{ adjust(yyscanner); return CONSTT;}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
