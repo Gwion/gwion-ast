@@ -143,7 +143,7 @@ extern int gwion_debug;
     RARROW = 350,
     BACKSLASH = 351,
     NUM = 352,
-    FLOAT = 353,
+    FLOATT = 353,
     ID = 354,
     STRING_LIT = 355,
     CHAR_LIT = 356,
@@ -254,7 +254,7 @@ extern int gwion_debug;
 #define RARROW 350
 #define BACKSLASH 351
 #define NUM 352
-#define FLOAT 353
+#define FLOATT 353
 #define ID 354
 #define STRING_LIT 355
 #define CHAR_LIT 356

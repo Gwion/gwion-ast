@@ -2011,7 +2011,7 @@ YY_RULE_SETUP
 case 130:
 YY_RULE_SETUP
 #line 268 "ly/gwion.l"
-{ adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOAT;      }
+{ adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP

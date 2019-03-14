@@ -227,7 +227,7 @@ extern int gwion_debug;
     RARROW = 350,
     BACKSLASH = 351,
     NUM = 352,
-    FLOAT = 353,
+    FLOATT = 353,
     ID = 354,
     STRING_LIT = 355,
     CHAR_LIT = 356,
@@ -338,7 +338,7 @@ extern int gwion_debug;
 #define RARROW 350
 #define BACKSLASH 351
 #define NUM 352
-#define FLOAT 353
+#define FLOATT 353
 #define ID 354
 #define STRING_LIT 355
 #define CHAR_LIT 356
@@ -743,7 +743,7 @@ static const char *const yytname[] =
   "SHIFT_RIGHT", "S_AND", "S_OR", "S_XOR", "OR", "AST_DTOR", "OPERATOR",
   "TYPEDEF", "RSL", "RSR", "RSAND", "RSOR", "RSXOR", "TEMPLATE", "LTMPL",
   "RTMPL", "NOELSE", "UNION", "ATPAREN", "TYPEOF", "CONSTT", "AUTO",
-  "PASTE", "ELLIPSE", "RARROW", "BACKSLASH", "NUM", "FLOAT", "ID",
+  "PASTE", "ELLIPSE", "RARROW", "BACKSLASH", "NUM", "FLOATT", "ID",
   "STRING_LIT", "CHAR_LIT", "PP_COMMENT", "PP_INCLUDE", "PP_DEFINE",
   "PP_UNDEF", "PP_IFDEF", "PP_IFNDEF", "PP_ELSE", "PP_ENDIF", "PP_NL",
   "$accept", "prg", "ast", "section", "class_def", "class_ext",

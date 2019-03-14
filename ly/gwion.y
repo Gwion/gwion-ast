@@ -65,7 +65,7 @@ m_str op2str(const Operator op);
 %token<lval> NUM
 %type<ival>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %type<ival> atsym vec_type
-%token<fval> FLOAT
+%token<fval> FLOATT
 %token<sval> ID STRING_LIT CHAR_LIT
 
   PP_COMMENT PP_INCLUDE PP_DEFINE PP_UNDEF PP_IFDEF PP_IFNDEF PP_ELSE PP_ENDIF PP_NL
@@ -433,7 +433,7 @@ vec_type: SHARPPAREN   { $$ = ae_primary_complex; }
 primary_exp
   : id                  { $$ = new_exp_prim_id(     $1, get_pos(arg)); }
   | NUM                 { $$ = new_exp_prim_int(    $1, get_pos(arg)); }
-  | FLOAT               { $$ = new_exp_prim_float(  $1, get_pos(arg)); }
+  | FLOATT              { $$ = new_exp_prim_float(  $1, get_pos(arg)); }
   | STRING_LIT          { $$ = new_exp_prim_string( $1, get_pos(arg)); }
   | CHAR_LIT            { $$ = new_exp_prim_char(   $1, get_pos(arg)); }
   | array               { $$ = new_exp_prim_array(  $1, get_pos(arg)); }
