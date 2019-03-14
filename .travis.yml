@@ -26,9 +26,7 @@ addons:
 before_script:
   - if [ $(uname) != "Linux" ] && [ $(uname) != "Darwin" ];
     then choco install make; alias gcc=gcc.exe;export CC="gcc.exe";
-    curl -L  http://downloads.sourceforge.net/project/gnuwin32/libgw32c/0.4/libgw32c-0.4-lib.zip > libgw32c.zip;
-    unzip libgw32c.zip -d libgw32c;
-    export CFLAGS+="-DBUILD_ON_WINDOWS -Ilibgw32c/include/glibc";
+    export CFLAGS+="-DBUILD_ON_WINDOWS -D_XOPEN_SOURCE=700";
     fi
   - git clone https://github.com/fennecdjay/gwion-util
   - cd gwion-util
@@ -38,6 +36,9 @@ before_script:
     fi
   - cd ..
   - if [ $(uname) = "Linux" ]; then if [ "$CC" = "gcc" ]; then export CC=gcc-8; fi; fi
+#    curl -L  http://downloads.sourceforge.net/project/gnuwin32/libgw32c/0.4/libgw32c-0.4-lib.zip > libgw32c.zip;
+#    unzip libgw32c.zip -d libgw32c;
+#    export CFLAGS+="-Ilibgw32c/include/glibc";
 #elif [ $(uname) = "Darwin" ]; then brew update; else sed -i 's#/#\\#g' Makefile; fi
 
 script:
