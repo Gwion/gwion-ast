@@ -26,12 +26,13 @@ addons:
 before_script:
   - if [ $(uname) != "Linux" ] && [ $(uname) != "Darwin" ];
     then choco install make; alias gcc=gcc.exe;export CC="gcc.exe";
-    export CFLAGS=-Duint='"unsigned int"'; fi
+    export CFLAGS+=-DBUILD_ON_WINDOWS
+    fi
   - git clone https://github.com/fennecdjay/gwion-util
   - cd gwion-util
   - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
     then make;
-    else make.exe;
+    else CFLAGS+=-DBUILD_ON_WINDOWS make.exe;
     fi
   - cd ..
   - if [ $(uname) = "Linux" ]; then if [ "$CC" = "gcc" ]; then export CC=gcc-8; fi; fi
