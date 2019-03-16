@@ -23,7 +23,7 @@ all: libgwion_ast.a
 	@$(info ${CFLAGS})
 libgwion_ast.a: ${obj}
 	@$(info linking $@)
-	@ar rcs $@ $^
+	@${AR} ${AR_OPT} $@ $^
 
 parser:
 	$(info generating parser)
