@@ -12,12 +12,13 @@ compiler:
 env: UTIL_DIR=gwion-util
 
 before_script:
-  - export CICFLAGS="-Wno-attributes -Wno-unknown-pragmas"
+  - export CICFLAGS="-Wno-attributes -Wno-unknown-pragmas";
   - if [ $(uname) != "Linux" ] && [ $(uname) != "Darwin" ];
     then choco install make; alias gcc=gcc.exe;export CC="gcc.exe";
     export CFLAGS+="-DBUILD_ON_WINDOWS -D_XOPEN_SOURCE=700";
     fi
-  - git clone https://github.com/fennecdjay/gwion-util
+  - git clone https://github.com/fennecdjay/gwion-util;
+    cd gwin-util && make include/generated.h && cd ..;
 
 script:
   - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
