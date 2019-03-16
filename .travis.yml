@@ -9,9 +9,6 @@ compiler:
   - gcc
   - clang
 
-matrix:
-  fast_finish: true
-
 env: UTIL_DIR=gwion-util
 
 addons:
