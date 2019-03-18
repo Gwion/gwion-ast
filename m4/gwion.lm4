@@ -185,6 +185,7 @@ ifdef([[[TINY_MODE]]], [[[]]],
 "*"                                 { adjust(yyscanner); return TIMES; }
 "new"                               { adjust(yyscanner); return NEW; }
 "spork"                             { adjust(yyscanner); return SPORK; }
+"fork"                              { adjust(yyscanner); return FORK; }
 "union"                             { adjust(yyscanner); return UNION; }
 
 "<~"                                { adjust(yyscanner); return LTMPL; }

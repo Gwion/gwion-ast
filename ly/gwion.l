@@ -183,6 +183,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "*"                                 { adjust(yyscanner); return TIMES; }
 "new"                               { adjust(yyscanner); return NEW; }
 "spork"                             { adjust(yyscanner); return SPORK; }
+"fork"                              { adjust(yyscanner); return FORK; }
 "union"                             { adjust(yyscanner); return UNION; }
 
 "<~"                                { adjust(yyscanner); return LTMPL; }

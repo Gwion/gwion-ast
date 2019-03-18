@@ -57,7 +57,7 @@ m_str op2str(const Operator op);
   DIVIDECHUCK MODULOCHUCK ATCHUCK UNCHUCK TRIG UNTRIG PERCENTPAREN SHARPPAREN
   ATSYM FUNCTION DOLLAR TILDA QUESTION COLON EXCLAMATION IF ELSE WHILE DO UNTIL
   LOOP FOR GOTO SWITCH CASE ENUM RETURN BREAK CONTINUE PLUSPLUS MINUSMINUS NEW
-  SPORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
+  SPORK FORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
   MINUS PLUS NEQ SHIFT_LEFT SHIFT_RIGHT S_AND S_OR S_XOR OR AST_DTOR OPERATOR
   TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE LTMPL RTMPL
   NOELSE UNION ATPAREN TYPEOF CONSTT AUTO PASTE ELLIPSE RARROW BACKSLASH
@@ -406,12 +406,13 @@ cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
 
 unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
   | post_op
-  | EXCLAMATION { $$ = op_not; } | SPORK { $$ = op_spork; } | TILDA { $$ = op_cmp; }
+  | EXCLAMATION { $$ = op_not; } | SPORK { $$ = op_spork; } | FORK { $$ = op_fork; } | TILDA { $$ = op_cmp; }
   ;
 
 unary_exp : dur_exp | unary_op unary_exp { $$ = new_exp_unary($1, $2); }
   | NEW type_decl_exp {$$ = new_exp_unary2(op_new, $2); }
   | SPORK code_stmt   { $$ = new_exp_unary3(op_spork, $2); };
+  | FORK code_stmt   { $$ = new_exp_unary3(op_fork, $2); };
 
 dur_exp: post_exp | dur_exp COLONCOLON post_exp
     { $$ = new_exp_dur($1, $3); };

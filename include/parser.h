@@ -98,64 +98,65 @@ extern int gwion_debug;
     MINUSMINUS = 305,
     NEW = 306,
     SPORK = 307,
-    CLASS = 308,
-    STATIC = 309,
-    GLOBAL = 310,
-    PRIVATE = 311,
-    PROTECT = 312,
-    EXTENDS = 313,
-    DOT = 314,
-    COLONCOLON = 315,
-    AND = 316,
-    EQ = 317,
-    GE = 318,
-    GT = 319,
-    LE = 320,
-    LT = 321,
-    MINUS = 322,
-    PLUS = 323,
-    NEQ = 324,
-    SHIFT_LEFT = 325,
-    SHIFT_RIGHT = 326,
-    S_AND = 327,
-    S_OR = 328,
-    S_XOR = 329,
-    OR = 330,
-    AST_DTOR = 331,
-    OPERATOR = 332,
-    TYPEDEF = 333,
-    RSL = 334,
-    RSR = 335,
-    RSAND = 336,
-    RSOR = 337,
-    RSXOR = 338,
-    TEMPLATE = 339,
-    LTMPL = 340,
-    RTMPL = 341,
-    NOELSE = 342,
-    UNION = 343,
-    ATPAREN = 344,
-    TYPEOF = 345,
-    CONSTT = 346,
-    AUTO = 347,
-    PASTE = 348,
-    ELLIPSE = 349,
-    RARROW = 350,
-    BACKSLASH = 351,
-    NUM = 352,
-    FLOATT = 353,
-    ID = 354,
-    STRING_LIT = 355,
-    CHAR_LIT = 356,
-    PP_COMMENT = 357,
-    PP_INCLUDE = 358,
-    PP_DEFINE = 359,
-    PP_UNDEF = 360,
-    PP_IFDEF = 361,
-    PP_IFNDEF = 362,
-    PP_ELSE = 363,
-    PP_ENDIF = 364,
-    PP_NL = 365
+    FORK = 308,
+    CLASS = 309,
+    STATIC = 310,
+    GLOBAL = 311,
+    PRIVATE = 312,
+    PROTECT = 313,
+    EXTENDS = 314,
+    DOT = 315,
+    COLONCOLON = 316,
+    AND = 317,
+    EQ = 318,
+    GE = 319,
+    GT = 320,
+    LE = 321,
+    LT = 322,
+    MINUS = 323,
+    PLUS = 324,
+    NEQ = 325,
+    SHIFT_LEFT = 326,
+    SHIFT_RIGHT = 327,
+    S_AND = 328,
+    S_OR = 329,
+    S_XOR = 330,
+    OR = 331,
+    AST_DTOR = 332,
+    OPERATOR = 333,
+    TYPEDEF = 334,
+    RSL = 335,
+    RSR = 336,
+    RSAND = 337,
+    RSOR = 338,
+    RSXOR = 339,
+    TEMPLATE = 340,
+    LTMPL = 341,
+    RTMPL = 342,
+    NOELSE = 343,
+    UNION = 344,
+    ATPAREN = 345,
+    TYPEOF = 346,
+    CONSTT = 347,
+    AUTO = 348,
+    PASTE = 349,
+    ELLIPSE = 350,
+    RARROW = 351,
+    BACKSLASH = 352,
+    NUM = 353,
+    FLOATT = 354,
+    ID = 355,
+    STRING_LIT = 356,
+    CHAR_LIT = 357,
+    PP_COMMENT = 358,
+    PP_INCLUDE = 359,
+    PP_DEFINE = 360,
+    PP_UNDEF = 361,
+    PP_IFDEF = 362,
+    PP_IFNDEF = 363,
+    PP_ELSE = 364,
+    PP_ENDIF = 365,
+    PP_NL = 366
   };
 #endif
 /* Tokens.  */
@@ -209,64 +210,65 @@ extern int gwion_debug;
 #define MINUSMINUS 305
 #define NEW 306
 #define SPORK 307
-#define CLASS 308
-#define STATIC 309
-#define GLOBAL 310
-#define PRIVATE 311
-#define PROTECT 312
-#define EXTENDS 313
-#define DOT 314
-#define COLONCOLON 315
-#define AND 316
-#define EQ 317
-#define GE 318
-#define GT 319
-#define LE 320
-#define LT 321
-#define MINUS 322
-#define PLUS 323
-#define NEQ 324
-#define SHIFT_LEFT 325
-#define SHIFT_RIGHT 326
-#define S_AND 327
-#define S_OR 328
-#define S_XOR 329
-#define OR 330
-#define AST_DTOR 331
-#define OPERATOR 332
-#define TYPEDEF 333
-#define RSL 334
-#define RSR 335
-#define RSAND 336
-#define RSOR 337
-#define RSXOR 338
-#define TEMPLATE 339
-#define LTMPL 340
-#define RTMPL 341
-#define NOELSE 342
-#define UNION 343
-#define ATPAREN 344
-#define TYPEOF 345
-#define CONSTT 346
-#define AUTO 347
-#define PASTE 348
-#define ELLIPSE 349
-#define RARROW 350
-#define BACKSLASH 351
-#define NUM 352
-#define FLOATT 353
-#define ID 354
-#define STRING_LIT 355
-#define CHAR_LIT 356
-#define PP_COMMENT 357
-#define PP_INCLUDE 358
-#define PP_DEFINE 359
-#define PP_UNDEF 360
-#define PP_IFDEF 361
-#define PP_IFNDEF 362
-#define PP_ELSE 363
-#define PP_ENDIF 364
-#define PP_NL 365
+#define FORK 308
+#define CLASS 309
+#define STATIC 310
+#define GLOBAL 311
+#define PRIVATE 312
+#define PROTECT 313
+#define EXTENDS 314
+#define DOT 315
+#define COLONCOLON 316
+#define AND 317
+#define EQ 318
+#define GE 319
+#define GT 320
+#define LE 321
+#define LT 322
+#define MINUS 323
+#define PLUS 324
+#define NEQ 325
+#define SHIFT_LEFT 326
+#define SHIFT_RIGHT 327
+#define S_AND 328
+#define S_OR 329
+#define S_XOR 330
+#define OR 331
+#define AST_DTOR 332
+#define OPERATOR 333
+#define TYPEDEF 334
+#define RSL 335
+#define RSR 336
+#define RSAND 337
+#define RSOR 338
+#define RSXOR 339
+#define TEMPLATE 340
+#define LTMPL 341
+#define RTMPL 342
+#define NOELSE 343
+#define UNION 344
+#define ATPAREN 345
+#define TYPEOF 346
+#define CONSTT 347
+#define AUTO 348
+#define PASTE 349
+#define ELLIPSE 350
+#define RARROW 351
+#define BACKSLASH 352
+#define NUM 353
+#define FLOATT 354
+#define ID 355
+#define STRING_LIT 356
+#define CHAR_LIT 357
+#define PP_COMMENT 358
+#define PP_INCLUDE 359
+#define PP_DEFINE 360
+#define PP_UNDEF 361
+#define PP_IFDEF 362
+#define PP_IFNDEF 363
+#define PP_ELSE 364
+#define PP_ENDIF 365
+#define PP_NL 366
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -300,7 +302,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 304 "include/parser.h" /* yacc.c:1906  */
+#line 306 "include/parser.h" /* yacc.c:1906  */
 };
 
 typedef union YYSTYPE YYSTYPE;
