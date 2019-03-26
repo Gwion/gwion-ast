@@ -106,7 +106,7 @@ ANN void free_arg_list(Arg_List a);
 
 typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
                ae_exp_cast, ae_exp_post, ae_exp_call, ae_exp_array,
-               ae_exp_if, ae_exp_dot, ae_exp_dur, ae_exp_lambda
+               ae_exp_if, ae_exp_dot, ae_exp_lambda
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_primary_id, ae_primary_num, ae_primary_float,
@@ -177,11 +177,6 @@ typedef struct {
   Exp self;
 } Exp_If;
 typedef struct {
-  Exp base;
-  Exp unit;
-  Exp self;
-} Exp_Dur;
-typedef struct {
   Operator op;
   struct Nspc_*nspc;
   Exp exp;
@@ -205,7 +200,6 @@ struct Exp_ {
     Exp_If        exp_if;
     Exp_Dot       exp_dot;
     Exp_Array     exp_array;
-    Exp_Dur       exp_dur;
     Exp_Lambda    exp_lambda;
   } d;
   uint pos;
@@ -229,7 +223,6 @@ ANEW ANN Exp new_exp_post(const Exp, const Operator);
 ANN2(1) ANEW Exp new_exp_call(const Exp, const Exp args);
 ANEW ANN Exp new_exp_cast(Type_Decl*, const Exp);
 ANN2(1,2) ANEW Exp new_exp_if(const Exp, const Exp, const Exp);
-ANEW ANN Exp new_exp_dur(const Exp, const Exp);
 ANEW ANN Exp new_exp_dot(const Exp, struct Symbol_*);
 ANEW ANN Exp new_exp_unary(const Operator, const Exp);
 ANEW ANN Exp new_exp_unary2(const Operator, Type_Decl*);

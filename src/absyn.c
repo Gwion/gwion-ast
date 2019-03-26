@@ -202,19 +202,6 @@ ANN static inline void free_exp_post(Exp_Postfix* post) {
   free_exp(post->exp);
 }
 
-Exp new_exp_dur(const Exp base, const Exp unit) {
-  Exp a = new_exp(ae_exp_dur, base->pos);
-  a->meta = ae_meta_value;
-  a->d.exp_dur.base = base;
-  a->d.exp_dur.unit = unit;
-  return a->d.exp_dur.self = a;
-}
-
-ANN static void free_exp_dur(Exp_Dur* a) {
-  free_exp(a->base);
-  free_exp(a->unit);
-}
-
 static Exp new_exp_prim(const uint pos) {
   Exp a = new_exp(ae_exp_primary, pos);
   a->meta = ae_meta_value;
@@ -508,7 +495,7 @@ static const _exp_func exp_func[] = {
   (_exp_func)free_exp_decl,    (_exp_func)free_exp_binary, (_exp_func)free_exp_unary,
   (_exp_func)free_exp_primary, (_exp_func)free_exp_cast,   (_exp_func)free_exp_post,
   (_exp_func)free_exp_call,    (_exp_func)free_exp_array,  (_exp_func)free_exp_if,
-  (_exp_func)free_exp_dot,     (_exp_func)free_exp_dur,    (_exp_func)free_exp_lambda
+  (_exp_func)free_exp_dot,     (_exp_func)free_exp_lambda
 };
 
 void free_exp(Exp exp) {

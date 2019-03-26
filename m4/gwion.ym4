@@ -77,7 +77,7 @@ ifdef(`TINY_MODE', `', `
 %type<type_decl> type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp dur_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp
 %type<exp> post_exp dot_exp cast_exp exp
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
@@ -274,7 +274,7 @@ op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
   | DIVIDECHUCK { $$ = op_rdiv; } | MODULOCHUCK { $$ = op_rmod; }
   | TRIG { $$ = op_trig; } | UNTRIG { $$ = op_untrig; }
   | RSL { $$ = op_rsl; } | RSR { $$ = op_rsr; } | RSAND { $$ = op_rsand; }
-  | RSOR { $$ = op_rsor; } | RSXOR { $$ = op_rsxor; }
+  | RSOR { $$ = op_rsor; } | RSXOR { $$ = op_rsxor; } | COLONCOLON { $$ = op_coloncolon; }
   ;
 
 array_exp
@@ -409,14 +409,10 @@ unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
   | EXCLAMATION { $$ = op_not; } | SPORK { $$ = op_spork; } | FORK { $$ = op_fork; } | TILDA { $$ = op_cmp; }
   ;
 
-unary_exp : dur_exp | unary_op unary_exp { $$ = new_exp_unary($1, $2); }
+unary_exp : post_exp | unary_op unary_exp { $$ = new_exp_unary($1, $2); }
   | NEW type_decl_exp {$$ = new_exp_unary2(op_new, $2); }
   | SPORK code_stmt   { $$ = new_exp_unary3(op_spork, $2); };
   | FORK code_stmt   { $$ = new_exp_unary3(op_fork, $2); };
-
-dur_exp: post_exp | dur_exp COLONCOLON post_exp
-    { $$ = new_exp_dur($1, $3); };
-
 
 lambda_list:
  id { $$ = new_arg_list(NULL, new_var_decl($1, NULL, get_pos(arg)), NULL); }
