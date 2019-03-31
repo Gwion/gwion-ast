@@ -160,8 +160,6 @@ typedef struct {
   Exp lhs, rhs;
   Operator op;
   struct Nspc_*nspc;
-  struct Func_ *func;
-  Tmpl_Call* tmpl;
   Exp self;
 } Exp_Binary;
 typedef struct {
