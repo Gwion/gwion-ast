@@ -69,14 +69,13 @@ typedef struct Type_Decl_ {
   ae_flag flag;
 } Type_Decl;
 ANEW ANN Type_Decl* new_type_decl(const ID_List, const ae_flag);
-ANEW ANN Type_Decl* new_type_decl2(const ID_List, const ae_flag);
 ANN void free_type_decl(Type_Decl* a);
 ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 
 struct ID_List_    {
   struct Symbol_* xid;
   ID_List next;
-  ID_List ref;
+  m_bool ref;
   uint pos;
 };
 ANEW ANN ID_List new_id_list(struct Symbol_*, const uint);

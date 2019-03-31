@@ -35,23 +35,10 @@ ANN static void free_var_decl_list(Var_Decl_List a) {
   mp_free(Var_Decl_List, a);
 }
 
-
-static Type_Decl* td_alloc(const ae_flag flag) {
+Type_Decl* new_type_decl(const ID_List xid, const ae_flag flag) {
   Type_Decl* a = mp_alloc(Type_Decl);
   a->flag = flag;
-  return a;
-}
-
-Type_Decl* new_type_decl(const ID_List xid, const ae_flag flag) {
-  Type_Decl* a = td_alloc(flag);
   a->xid = xid;
-  return a;
-}
-
-Type_Decl* new_type_decl2(const ID_List xid, const ae_flag flag) {
-  Type_Decl* a = td_alloc(flag);
-  a->xid = new_id_list(insert_symbol(""), xid->pos);
-  a->xid->ref = xid;
   return a;
 }
 
@@ -137,8 +124,6 @@ ID_List prepend_id_list(struct Symbol_* xid, const ID_List list, const uint pos)
 void free_id_list(ID_List a) {
   if(a->next)
     free_id_list(a->next);
-  if(a->ref)
-    free_id_list(a->ref);
   mp_free(ID_List, a);
 }
 
@@ -273,33 +258,29 @@ Exp new_exp_prim_vec(const ae_prim_t t, Exp e) {
   return a->d.exp_primary.self = a;
 }
 
-static Exp new_exp_unary_base(const uint pos)  {
+static inline Exp new_exp_unary_base(const Operator oper, const uint pos)  {
   Exp a = new_exp(ae_exp_unary, pos);
-  a->meta = ae_meta_value;
+  a->d.exp_unary.op = oper;
   return a->d.exp_unary.self = a;
 }
 
 Exp new_exp_unary(const Operator oper, const Exp exp) {
-  Exp a = new_exp_unary_base(exp->pos);
+  Exp a = new_exp_unary_base(oper, exp->pos);
   a->meta = exp->meta;
-  a->d.exp_unary.op = oper;
   a->d.exp_unary.exp = exp;
   return a;
 }
 
 Exp new_exp_unary2(const Operator oper, Type_Decl* td) {
-  Exp a = new_exp_unary_base(td->xid->pos);
-  a->d.exp_unary.op = oper;
+  Exp a = new_exp_unary_base(oper, td->xid->pos);
+  a->meta = ae_meta_value;
   a->d.exp_unary.td = td;
   return a;
 }
 
 Exp new_exp_unary3(const Operator oper, const Stmt code) {
-  const uint pos = code->pos;
-  Exp a = new_exp_unary_base(pos);
-  a->d.exp_unary.op = oper;
-  ID_List id = new_id_list(insert_symbol("void"), pos);
-  a->d.exp_unary.td = new_type_decl(id, 0);
+  Exp a = new_exp_unary_base(oper, code->pos);
+  a->meta = ae_meta_value;
   a->d.exp_unary.code = code;
   return a;
 }
@@ -340,7 +321,6 @@ Tmpl_Class* new_tmpl_class(ID_List list, const m_bool base) {
   Tmpl_Class* a = mp_alloc(Tmpl_Class);
   a->list.list = list;
   a->list.base = base;
-  a->base = NULL;
   return a;
 }
 
@@ -435,7 +415,6 @@ ANN static void free_stmt_fptr(Stmt_Fptr a) {
 Tmpl_Call* new_tmpl_call(const Type_List tl) {
   Tmpl_Call* a = mp_alloc(Tmpl_Call);
   a->types = tl;
-  a->base = NULL;
   return a;
 }
 

@@ -345,7 +345,7 @@ type_decl0
   : dot_decl atsym { $$ = new_type_decl($1, $2); }
   | LTMPL type_list RTMPL id_dot atsym { $$ = new_type_decl($4, $5);
       $$->types = $2; }
-  | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl2($3, $5); }
+  | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl($3, $5); $$->xid->ref = 1; }
   ;
 
 type_decl: type_decl0 { $$ = $1; }

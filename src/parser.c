@@ -2835,7 +2835,7 @@ yyreduce:
 
   case 147:
 #line 333 "ly/gwion.y" /* yacc.c:1652  */
-    { (yyval.type_decl) = new_type_decl2((yyvsp[-2].id_list), (yyvsp[0].ival)); }
+    { (yyval.type_decl) = new_type_decl((yyvsp[-2].id_list), (yyvsp[0].ival)); (yyval.type_decl)->xid->ref = 1; }
 #line 2840 "src/parser.c" /* yacc.c:1652  */
     break;
 
