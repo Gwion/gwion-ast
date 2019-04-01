@@ -11,6 +11,11 @@ typedef struct Scanner_ {
   jmp_buf* jmp;
 } Scanner;
 
-ANN Ast parse(SymTable *st, const m_str, FILE*);
+struct ScannerArg_ {
+  const m_str name;
+  FILE* f;
+  SymTable* st;
+};
+ANN Ast parse(const struct ScannerArg_ *arg);
 uint clear_buffer(Vector, void*, const m_bool);
 #endif
