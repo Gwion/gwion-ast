@@ -22,6 +22,7 @@
 #define OP_SYM(a) insert_symbol(op2str(a))
 ANN uint get_pos(const Scanner*);
 ANN void gwion_error(const Scanner*, const m_str s);
+ANN Symbol lambda_name(const Scanner*);
 m_str op2str(const Operator op);
 %}
 
@@ -118,7 +119,7 @@ section
   ;
 
 class_def
-  : decl_template CLASS opt_flag id_list class_ext LBRACE class_body RBRACE
+  : decl_template CLASS opt_flag id class_ext LBRACE class_body RBRACE
     { $$ = new_class_def($3, $4, $5, $7);
       if($1)
         $$->tmpl = new_tmpl_class($1, -1);
@@ -452,7 +453,7 @@ primary_exp
   | vec_type exp RPAREN { $$ = new_exp_prim_vec($1, $2); }
   | L_HACK exp R_HACK   { $$ = new_exp_prim_hack(   $2); }
   | LPAREN exp RPAREN   { $$ =                      $2;                }
-  | lambda_arg code_stmt { $$ = new_exp_lambda($1, $2); };
+  | lambda_arg code_stmt { $$ = new_exp_lambda(lambda_name(arg), $1, $2); };
   | LPAREN RPAREN       { $$ = new_exp_prim_nil(        get_pos(arg)); }
   ;
 %%

@@ -28,7 +28,7 @@ typedef struct {
   Symbol name;
   Exp self;
 } Exp_Lambda;
-ANN Exp new_exp_lambda(const Arg_List,const Stmt);
+ANN Exp new_exp_lambda(const Symbol, const Arg_List,const Stmt);
 struct Array_Sub_ {
   Exp    exp;
   struct Type_ *type;
@@ -485,14 +485,14 @@ ANEW ANN Tmpl_Class* new_tmpl_class(const ID_List, const m_bool);
 m_bool tmpl_class_base(const Tmpl_Class*);
 ANN void free_tmpl_class(Tmpl_Class*);
 struct Class_Def_ {
-  ID_List name;
+  Symbol xid;
   Type_Decl* ext;
   Class_Body body;
   struct Type_* type;
   Tmpl_Class*  tmpl;
   ae_flag flag;
 };
-ANN2(2) ANEW Class_Def new_class_def(const ae_flag, const ID_List,
+ANN2(2) ANEW Class_Def new_class_def(const ae_flag, const Symbol,
                         Type_Decl*, const Class_Body);
 ANN void free_class_def(Class_Def);
 ANN2(1) ANEW Class_Body new_class_body(Section*, const Class_Body);

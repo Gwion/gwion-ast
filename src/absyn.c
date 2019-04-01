@@ -70,19 +70,13 @@ ANN static Exp new_exp(const ae_exp_t type, const uint pos) {
   return a;
 }
 
-ANN void lambda_name(Exp_Lambda* lambda) {
-  char c[6 + 1 + num_digit(lambda->self->pos) + 1 + 16 + 1];
-  sprintf(c, "lambda:%u:%p\n", lambda->self->pos, lambda);
-  lambda->name = insert_symbol(c);
-}
-
-Exp new_exp_lambda(const Arg_List arg,const Stmt code) {
+Exp new_exp_lambda(const Symbol xid, const Arg_List arg,const Stmt code) {
   Exp a = new_exp(ae_exp_lambda, code->pos);
   a->meta = ae_meta_var;
   a->d.exp_lambda.arg = arg;
   a->d.exp_lambda.code = code;
   a->d.exp_lambda.self = a;
-  lambda_name(&a->d.exp_lambda);
+  a->d.exp_lambda.name = xid;
   return a;
 }
 
@@ -739,7 +733,6 @@ void free_class_def(Class_Def a) {
     free_tmpl_class(a->tmpl);
   if(a->body && (!a->type || !GET_FLAG(a, ref)))
     free_class_body(a->body);
-  free_id_list(a->name);
   mp_free(Class_Def, a);
 }
 
@@ -762,11 +755,11 @@ void free_class_body(Class_Body a) {
   mp_free(Class_Body, a);
 }
 
-Class_Def new_class_def(const ae_flag class_decl, const ID_List name, Type_Decl* ext,
+Class_Def new_class_def(const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
     const Class_Body body) {
   Class_Def a = mp_alloc(Class_Def);
   a->flag = class_decl;
-  a->name = name;
+  a->xid = xid;
   a->ext  = ext;
   a->body = body;
   return a;

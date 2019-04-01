@@ -3104,6 +3104,12 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 #include <string.h>
 #include <stdlib.h>
 
+ANN Symbol lambda_name(const Scanner *scan) {
+  char c[6 + 1 + num_digit(scan->pos) + 1 + 16 + 1];
+  sprintf(c, "lambda:%u:%u\n", scan->line, scan->pos);
+  return insert_symbol(c);
+}
+
 ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner) {
   struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
