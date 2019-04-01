@@ -20,7 +20,7 @@ IS          (u|U|l|L)*
 
 ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner);
 ANN static char* strip_lit(char* str);
-ANN static char* alloc_str(const char* str);
+ANN static char* alloc_str(void *, const char* str);
 ANN static unsigned long htol(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
@@ -118,12 +118,17 @@ ANN static m_str macro_data(void* data, const m_bool);
 <define>.*\n          { adjust(yyscanner); macro_append(yyscanner, yytext); BEGIN(INITIAL); GWYY_DEFINE };
 
 ^#ifn?def[ \r\t]+[A-Za-z_][A-Za-z0-9_]*[ \r\t]* {
-//  adjust(yyscanner);
+  adjust(yyscanner);
   const m_bool def = yytext[3] == 'n';
-  Scanner* scan = yyget_extra(yyscanner);
-  scan->pos += 7;
-  const m_str text = strip_comment(yyscanner, yytext + 6 + def);
-  GWYY_IFDEF(text, def)
+  m_str s = yytext + 6 + def;
+  GWYY_LINT(strdup(s), def ? PP_IFNDEF : PP_IFDEF)
+  while(isspace(*s))++s;
+  size_t sz = strlen(s);
+  while(isspace(s[--sz]));
+  char c[sz + 2];
+  strncpy(c, s, sz + 2);
+  if(!has_macro(yyscanner, c, def))
+    BEGIN(skip);
 }
 ^#else[ \r\t]*\n  { newline(yyscanner); GWYY_ELSE }
 ^#endif[ \r\t]*\n { newline(yyscanner); GWYY_ENDIF; BEGIN(INITIAL); }
@@ -253,7 +258,7 @@ ANN static m_str macro_data(void* data, const m_bool);
   adjust(yyscanner);
   const m_str text = get_arg_text(yyscanner, yytext + 1);
   if(text) {
-    yylval->sval = alloc_str(text);
+    yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
     gw_err("can't stringify non argument token '%s'\n", yytext + 1);
@@ -272,15 +277,15 @@ ANN static m_str macro_data(void* data, const m_bool);
   const int ret = is_macro(yyscanner, yytext, 
 YY_CURRENT_BUFFER);
   if(!ret) {
-    yylval->sval = alloc_str(yytext);
+    yylval->sval = alloc_str(yyscanner, yytext);
     return ID;
   } else
     continue;
 
 }
 
-\"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(strip_lit(yytext)); return STRING_LIT; }
-'(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(strip_lit(yytext)); return CHAR_LIT;   }
+\"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return STRING_LIT; }
+'(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
 .                                   { gw_err("error: stray in program\n"); return 1; }
 
 %% // LCOV_EXCL_LINE
@@ -292,7 +297,7 @@ YY_CURRENT_BUFFER);
 ANN Symbol lambda_name(const Scanner *scan) {
   char c[6 + 1 + num_digit(scan->pos) + 1 + 16 + 1];
   sprintf(c, "lambda:%u:%u\n", scan->line, scan->pos);
-  return insert_symbol(c);
+  return insert_symbol(scan->st, c);
 }
 
 ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner) {
@@ -310,8 +315,9 @@ char* strip_lit(char* str){
   return str+1;
 }
 
-char* alloc_str(const char* str) {
-  const Symbol sym = insert_symbol((m_str)str);
+char* alloc_str(void *data, const char* str) {
+  Scanner* scan = yyget_extra(data);
+  const Symbol sym = insert_symbol(scan->st, (m_str)str);
   return s_name(sym);
 }
 
@@ -351,7 +357,7 @@ static uint get_currline(void* data) {
 
 static char* get_currfile(void* data) {
   Scanner* scan = yyget_extra(data);
-  return alloc_str((m_str)vector_back(&scan->pp->filename));
+  return alloc_str(data, (m_str)vector_back(&scan->pp->filename));
 }
 
 static void adjust(void* data) {
@@ -529,7 +535,7 @@ static m_str macro_data(void* data, const m_bool call) {
   }
   c[offset] = '\0';
   scan->pp->entry = NULL;
-  return !call ? strdup(c) : s_name(insert_symbol(c));
+  return !call ? strdup(c) : s_name(insert_symbol(scan->st, c));
 }
 #endif
 static int macro_toggle(void* data) {

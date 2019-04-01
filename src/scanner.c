@@ -27,8 +27,9 @@ ANN static void free_scanner(Scanner* scan) {
   mp_free(Scanner, scan);
 }
 
-Ast parse(const m_str name, FILE* f) {
+Ast parse(SymTable* st, const m_str name, FILE* f) {
   Scanner* s = new_scanner(name, f);
+  s->st = st;
   if(setjmp(*s->jmp) || gwion_parse(s))
     s->ast = NULL;
   const Ast ast = s->ast;

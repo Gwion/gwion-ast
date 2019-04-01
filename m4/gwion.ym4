@@ -19,6 +19,7 @@
 #include "lexer.h"
 #define YYMALLOC xmalloc
 #define scan arg->scanner
+#define insert_symbol(a) insert_symbol(arg->st, (a))
 #define OP_SYM(a) insert_symbol(op2str(a))
 ANN uint get_pos(const Scanner*);
 ANN void gwion_error(const Scanner*, const m_str s);

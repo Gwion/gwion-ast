@@ -46,21 +46,9 @@ static inline Macro mkentry(const char* name, const Macro next) {
   return s;
 }
 
-#define haction(type, ret_type, func, pre, action, post, ret) \
-ret_type macro_##func(const Hash h, const char* name) { \
-  const unsigned int idx = hash(name) % h->size;        \
-  const type sym = h->table[idx];                       \
-  pre                                                   \
-  for(type s = sym; s; s = s->next) {                   \
-    if(!strcmp(s->name, name)) { action }               \
-    post                                                \
-  }                                                     \
-  ret;                                                  \
-}
-
-haction(Macro, Macro, has,, return sym;, ,return 0)
-haction(Macro, Macro, add,, return NULL;,, return h->table[idx] = mkentry(name, sym);)
-haction(Macro, int, rem, Macro prev = NULL;,
+hstraction(Macro, Macro, has,, return sym;, ,return 0)
+hstraction(Macro, Macro, add,, return NULL;,, return h->table[idx] = mkentry(arg, sym);)
+hstraction(Macro, int, rem, Macro prev = NULL;,
       if(prev)
         prev->next = s->next;
       else
