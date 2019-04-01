@@ -5,8 +5,8 @@ typedef struct Scanner_ {
   void* scanner;
   Ast ast;
   SymTable *st;
-  unsigned int line;
-  unsigned int pos;
+  uint line;
+  uint pos;
   struct PP_* pp;
   jmp_buf* jmp;
 } Scanner;
