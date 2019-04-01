@@ -39,6 +39,7 @@ m_str op2str(const Operator op);
   Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
   Exp   exp;
+  struct Func_Base_ *func_base;
   Stmt_Fptr func_type;
   Stmt stmt;
   Stmt_List stmt_list;
@@ -89,6 +90,7 @@ m_str op2str(const Operator op);
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
+%type<func_base> fdef_base fptr_base
 %type<section> section
 %type<class_def> class_def
 %type<class_body> class_body class_body2
@@ -120,7 +122,7 @@ section
 
 class_def
   : decl_template CLASS opt_flag id class_ext LBRACE class_body RBRACE
-    { $$ = new_class_def($3, $4, $5, $7);
+    { $$ =new_class_def($3, $4, $5, $7, get_pos(arg));
       if($1)
         $$->tmpl = new_tmpl_class($1, -1);
   };
@@ -140,10 +142,13 @@ dot_decl:  id  { $$ = new_id_list($1, get_pos(arg)); } | id RARROW id_dot     { 
 
 stmt_list: stmt { $$ = new_stmt_list($1, NULL);} | stmt stmt_list { $$ = new_stmt_list($1, $2);};
 
-func_type: TYPEDEF opt_flag type_decl_array id fptr_arg arg_type {
-  if($3->array && !$3->array->exp)
+fptr_base: type_decl_array id fptr_arg { $$ = new_func_base($1, $2, $3); }
+fdef_base: type_decl_empty id func_args { $$ = new_func_base($1, $2, $3); }
+
+func_type: TYPEDEF opt_flag fptr_base arg_type {
+  if($3->td->array && !$3->td->array->exp)
     { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
-$$ = new_stmt_fptr($4, $3, $5, $6); $3->flag |= $2; };
+$$ = new_stmt_fptr($3, $2 | $4); };
 stmt_type: TYPEDEF opt_flag type_decl_array id SEMICOLON { $$ = new_stmt_type($3, $4); $3->flag |= $2; };
 
 type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
@@ -304,8 +309,8 @@ flag: access_flag { $$ = $1; }
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
-  : decl_template FUNCTION opt_flag type_decl_empty id func_args arg_type code_stmt
-    { $$ = new_func_def($4, $5, $6, $8, $3 | $7);
+  : decl_template FUNCTION opt_flag fdef_base arg_type code_stmt
+    { $$ = new_func_def($4, $6, $3 | $5);
     if($1) {
       SET_FLAG($$, template);
       $$->tmpl = new_tmpl_list($1, -1);
@@ -316,14 +321,17 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def($3, OP_SYM($2), $5, $9, ae_flag_op); $5->next = $7;}
+    { $$ = new_func_def(new_func_base($3, OP_SYM($2), $5), $9, ae_flag_op); $5->next = $7;}
   |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def($3, OP_SYM($2), $5, $7, ae_flag_op); }
+    { $$ = new_func_def(new_func_base($3, OP_SYM($2), $5), $7, ae_flag_op); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def($3, OP_SYM($1), $5, $7, ae_flag_op | ae_flag_unary); }
+    { $$ = new_func_def(new_func_base($3, OP_SYM($1), $5), $7, ae_flag_op | ae_flag_unary); }
   | AST_DTOR code_stmt
-    { $$ = new_func_def(new_type_decl(new_id_list(insert_symbol("void"), get_pos(arg)), 0),
-       insert_symbol("dtor"), NULL, $2, ae_flag_dtor); }
+    {
+ID_List l = new_id_list(insert_symbol("void"), get_pos(arg));
+$$ = new_func_def(new_func_base(
+new_type_decl(l, 0),
+       insert_symbol("dtor"), NULL), $2, ae_flag_dtor); }
   ;
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };

@@ -70,10 +70,10 @@ ANN static Exp new_exp(const ae_exp_t type, const uint pos) {
   return a;
 }
 
-Exp new_exp_lambda(const Symbol xid, const Arg_List arg,const Stmt code) {
+Exp new_exp_lambda(const Symbol xid, const Arg_List args, const Stmt code) {
   Exp a = new_exp(ae_exp_lambda, code->pos);
   a->meta = ae_meta_var;
-  a->d.exp_lambda.arg = arg;
+  a->d.exp_lambda.args = args;
   a->d.exp_lambda.code = code;
   a->d.exp_lambda.self = a;
   a->d.exp_lambda.name = xid;
@@ -81,8 +81,8 @@ Exp new_exp_lambda(const Symbol xid, const Arg_List arg,const Stmt code) {
 }
 
 ANN static void free_exp_lambda(Exp_Lambda* lambda) {
-  if(lambda->arg)
-    free_arg_list(lambda->arg);
+  if(lambda->args)
+    free_arg_list(lambda->args);
   free_stmt(lambda->code);
   if(lambda->def)
     mp_free(Func_Def, lambda->def);
@@ -340,20 +340,17 @@ m_bool tmpl_class_base(const Tmpl_Class* a) {
   return a ? tmpl_list_base(&a->list) : 0;
 }
 
-Func_Def new_func_def(Type_Decl* td, struct Symbol_* xid,
-  const Arg_List args, const Stmt code, const ae_flag flag) {
+Func_Def new_func_def(struct Func_Base_ *base,const Stmt code, const ae_flag flag) {
   Func_Def a = mp_alloc(Func_Def);
-  a->td   = td;
-  a->name = xid;
-  a->args = args;
+  a->base = base;
   a->d.code = code;
   a->flag = flag;
   return a;
 }
 
 ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs) {
-  Arg_List e1 = lhs->args;
-  Arg_List e2 = rhs->args;
+  Arg_List e1 = lhs->base->args;
+  Arg_List e2 = rhs->base->args;
 
   while(e1 && e2) {
     if(e1->type != e2->type)
@@ -366,44 +363,49 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
   return GW_OK;
 }
 
-void free_func_def(Func_Def a) {
-  if(!a->tmpl) {
-    if(a->args)
-      free_arg_list(a->args);
-    free_type_decl(a->td);
-    mp_free(Func_Def, a);
-  }
-//  if(a->tmpl)
-//    free_tmpl_list(a->tmpl);
-}
-
-Stmt new_stmt_fptr(struct Symbol_* xid, Type_Decl* td, const Arg_List args, const ae_flag flag) {
-  Stmt a              = new_stmt(ae_stmt_fptr, td->xid->pos);
-  a->d.stmt_fptr.td    = td;
-  td->flag |= flag;
-  a->d.stmt_fptr.xid   = xid;
-  a->d.stmt_fptr.args  = args;
-  return a;
-}
-
-Stmt new_stmt_type(Type_Decl* td, struct Symbol_* xid) {
-  Stmt a              = new_stmt(ae_stmt_type, td->xid->pos);
-  a->d.stmt_type.td   = td;
-  a->d.stmt_type.xid  = xid;
-  return a;
-}
-
-ANN static void free_stmt_type(Stmt_Type a){
-  if(!a->type)
-    free_type_decl(a->td);
-}
-
-ANN static void free_stmt_fptr(Stmt_Fptr a) {
+ANN static void free_func_base(struct Func_Base_ * a) {
   if(!a->func) {
     if(a->args)
       free_arg_list(a->args);
     free_type_decl(a->td);
   }
+}
+
+void free_func_def(Func_Def a) {
+  if(!a->tmpl && !GET_FLAG(a, global)) {
+    free_func_base(a->base);
+    mp_free(Func_Def, a);
+  }
+}
+struct Func_Base_* new_func_base(Type_Decl* td, const Symbol xid, const Arg_List args) {
+  struct Func_Base_ *a = (struct Func_Base_*)mp_alloc(Func_Base);
+  a->td = td;
+  a->xid = xid;
+  a->args = args;
+  return a;
+}
+
+Stmt new_stmt_fptr(struct Func_Base_ *base, const ae_flag flag) {
+  Stmt a              = new_stmt(ae_stmt_fptr, base->td->xid->pos);
+  a->d.stmt_fptr.base = base;
+  base->td->flag |= flag;
+  return a;
+}
+
+Stmt new_stmt_type(Type_Decl* ext, struct Symbol_ *xid) {
+  Stmt a             = new_stmt(ae_stmt_type, ext->xid->pos);
+  a->d.stmt_type.ext = ext;
+  a->d.stmt_type.xid = xid;
+  return a;
+}
+
+ANN static void free_stmt_type(Stmt_Type a){
+  if(!a->type)
+    free_type_decl(a->ext);
+}
+
+ANN static void free_stmt_fptr(Stmt_Fptr a) {
+  free_func_base(a->base);
 }
 
 Tmpl_Call* new_tmpl_call(const Type_List tl) {
@@ -725,13 +727,13 @@ Section* new_section_class_def(const Class_Def class_def) {
 }
 
 void free_class_def(Class_Def a) {
-  if(a->type && GET_FLAG(a, template))
+  if(a->base.type && GET_FLAG(a, template))
     return;
-  if(a->ext)
-    free_type_decl(a->ext);
+  if(a->base.ext)
+    free_type_decl(a->base.ext);
   if(a->tmpl)
     free_tmpl_class(a->tmpl);
-  if(a->body && (!a->type || !GET_FLAG(a, ref)))
+  if(a->body && (!a->base.type || !GET_FLAG(a, ref)))
     free_class_body(a->body);
   mp_free(Class_Def, a);
 }
@@ -756,12 +758,13 @@ void free_class_body(Class_Body a) {
 }
 
 Class_Def new_class_def(const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
-    const Class_Body body) {
+    const Class_Body body, const uint pos) {
   Class_Def a = mp_alloc(Class_Def);
   a->flag = class_decl;
-  a->xid = xid;
-  a->ext  = ext;
+  a->base.xid = xid;
+  a->base.ext  = ext;
   a->body = body;
+  a->pos = pos;
   return a;
 }
 

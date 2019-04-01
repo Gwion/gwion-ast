@@ -21,7 +21,7 @@ typedef struct {
   Exp self;
 } Exp_Dot;
 typedef struct {
-  Arg_List arg;
+  Arg_List args;
   Stmt code;
   Func_Def def;
   struct Type_*owner;
@@ -336,18 +336,22 @@ struct Stmt_Enum_ {
   ae_flag flag;
 };
 
-struct Stmt_Fptr_ {
+struct Func_Base_ {
   Type_Decl* td;
-  struct Type_*       type;
   struct Symbol_*     xid;
   Arg_List   args;
-  struct Type_*       ret_type;
   struct Func_       *func;
+  struct Type_*       ret_type;
+};
+struct Func_Base_* new_func_base(Type_Decl*, const Symbol, const Arg_List);
+struct Stmt_Fptr_ {
+  struct Func_Base_ *base;
+  struct Type_*       type;
   struct Value_      *value;
 };
 
 struct Stmt_Type_ {
-  Type_Decl* td;
+  Type_Decl* ext;
   struct Type_*       type;
   struct Symbol_*     xid;
 };
@@ -418,7 +422,7 @@ ANEW ANN Stmt new_stmt_jump(struct Symbol_*, const m_bool, const uint);
 ANN2(1) ANEW Stmt new_stmt_enum(const ID_List, struct Symbol_*);
 ANEW ANN Stmt new_stmt_switch(Exp, Stmt);
 ANEW ANN Stmt new_stmt_union(const Decl_List, const uint);
-ANEW ANN Stmt new_stmt_fptr(struct Symbol_*, Type_Decl*, const Arg_List, const ae_flag);
+ANEW ANN Stmt new_stmt_fptr(struct Func_Base_*, const ae_flag);
 ANEW ANN Stmt new_stmt_type(Type_Decl*, struct Symbol_*);
 #ifndef TINY_MODE
 ANEW     Stmt new_stmt_pp(const enum ae_pp_type, const m_str);
@@ -439,12 +443,8 @@ typedef struct Tmpl_List_ {
 } Tmpl_List;
 
 struct Func_Def_ {
-  Type_Decl* td;
-  struct Type_* ret_type;
-  struct Symbol_* name;
-  Arg_List args;
+  struct Func_Base_* base;
   m_uint stack_depth;
-  struct Func_* func;
   union func_def_data {
     Stmt code;
     void* dl_func_ptr;
@@ -455,7 +455,7 @@ struct Func_Def_ {
 ANEW ANN Tmpl_List* new_tmpl_list(const ID_List, const m_int);
 ANN void free_tmpl_list(Tmpl_List*);
 m_bool tmpl_list_base(const Tmpl_List*);
-ANEW Func_Def new_func_def(Type_Decl*, struct Symbol_*, const Arg_List, const Stmt, const ae_flag);
+ANEW Func_Def new_func_def(struct Func_Base_*, const Stmt, const ae_flag);
 ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs);
 ANN void free_func_def(Func_Def def);
 
@@ -485,15 +485,14 @@ ANEW ANN Tmpl_Class* new_tmpl_class(const ID_List, const m_bool);
 m_bool tmpl_class_base(const Tmpl_Class*);
 ANN void free_tmpl_class(Tmpl_Class*);
 struct Class_Def_ {
-  Symbol xid;
-  Type_Decl* ext;
+  struct Stmt_Type_ base;
   Class_Body body;
-  struct Type_* type;
   Tmpl_Class*  tmpl;
+  uint pos;
   ae_flag flag;
 };
 ANN2(2) ANEW Class_Def new_class_def(const ae_flag, const Symbol,
-                        Type_Decl*, const Class_Body);
+                        Type_Decl*, const Class_Body, const uint);
 ANN void free_class_def(Class_Def);
 ANN2(1) ANEW Class_Body new_class_body(Section*, const Class_Body);
 ANN void free_class_body(Class_Body);

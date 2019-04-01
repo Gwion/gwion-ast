@@ -289,6 +289,7 @@ union YYSTYPE
   Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
   Exp   exp;
+  struct Func_Base_ *func_base;
   Stmt_Fptr func_type;
   Stmt stmt;
   Stmt_List stmt_list;
@@ -303,7 +304,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 307 "include/parser.h" /* yacc.c:1921  */
+#line 308 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;
