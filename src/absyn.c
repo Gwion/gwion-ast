@@ -341,19 +341,19 @@ m_bool tmpl_class_base(const Tmpl_Class* a) {
 }
 
 Func_Def new_func_def(Type_Decl* td, struct Symbol_* xid,
-  const Arg_List arg_list, const Stmt code, const ae_flag flag) {
+  const Arg_List args, const Stmt code, const ae_flag flag) {
   Func_Def a = mp_alloc(Func_Def);
   a->td   = td;
   a->name = xid;
-  a->arg_list = arg_list;
+  a->args = args;
   a->d.code = code;
   a->flag = flag;
   return a;
 }
 
 ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs) {
-  Arg_List e1 = lhs->arg_list;
-  Arg_List e2 = rhs->arg_list;
+  Arg_List e1 = lhs->args;
+  Arg_List e2 = rhs->args;
 
   while(e1 && e2) {
     if(e1->type != e2->type)
@@ -368,8 +368,8 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
 
 void free_func_def(Func_Def a) {
   if(!a->tmpl) {
-    if(a->arg_list)
-      free_arg_list(a->arg_list);
+    if(a->args)
+      free_arg_list(a->args);
     free_type_decl(a->td);
     mp_free(Func_Def, a);
   }

@@ -442,7 +442,7 @@ struct Func_Def_ {
   Type_Decl* td;
   struct Type_* ret_type;
   struct Symbol_* name;
-  Arg_List arg_list;
+  Arg_List args;
   m_uint stack_depth;
   struct Func_* func;
   union func_def_data {
