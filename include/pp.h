@@ -10,6 +10,6 @@ typedef struct PP_ {
   uint lint;
 } PP;
 
-ANEW PP* new_pp(const uint size, const m_str);
-ANN void free_pp(PP* pp, void* data);
+ANEW PP* new_pp(MemPool p, const uint size, const m_str);
+ANN void free_pp(MemPool p, PP* pp, void* data);
 #endif

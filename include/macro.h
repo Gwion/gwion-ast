@@ -14,7 +14,7 @@ struct Args_ {
   Args next;
 };
 
-Args new_args(const char*);
+Args new_args(MemPool p, const char*);
 void clean_args(const Args);
 struct Macro_ {
   char* name;
