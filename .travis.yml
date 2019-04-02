@@ -17,7 +17,9 @@ before_script:
     export CC="gcc.exe";
     export CFLAGS+="-DBUILD_ON_WINDOWS -D_XOPEN_SOURCE=700";
     fi
-  - git clone https://github.com/fennecdjay/gwion-util;
+  - BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    git clone https://github.com/fennecdjay/gwion-util;
+    git branch $BRANCH
     cd gwion-util && make include/generated.h && cd ..;
 
 script:
