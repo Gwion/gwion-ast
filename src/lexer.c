@@ -930,7 +930,7 @@ static const flex_int16_t yy_chk[706] =
 #line 3 "ly/gwion.l"
 #include <stdio.h>
 #include <ctype.h>
-#include "defs.h"
+#include "gwion_util.h"
 #include "symbol.h"
 #include "vector.h"
 #include "map.h"
@@ -3364,7 +3364,7 @@ static int macro_toggle(void* data) {
 
 static void macro_arg(void* data, const m_str id) {
   const Scanner* scan = yyget_extra(data);
-  const Args arg = new_args(id);
+  const Args arg = new_args(scan->st->p, id);
   if(scan->pp->entry->base) {
     Args a = scan->pp->entry->base;
     while(a->next)

@@ -5,11 +5,12 @@
 #include "pp.h"
 #include "scanner.h"
 
-ANEW PP* new_pp(const uint size, const m_str name) {
-  PP* pp = (PP*)mp_alloc(PP);
-  pp->def = (struct pp_info*)_mp_alloc(sizeof(struct pp_info));
-  pp->macros = (Hash)mp_alloc(Hash);
+ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
+  PP* pp = (PP*)mp_alloc(p, PP);
+  pp->def = (struct pp_info*)mp_alloc2(p, sizeof(struct pp_info));// watchme
+  pp->macros = (Hash)mp_alloc(p, Hash);
   hini(pp->macros, size);
+  pp->macros->p = p; // in ctor ?
   vector_init(&pp->filename);
   vector_add(&pp->filename, (vtype)NULL);
   vector_add(&pp->filename, (vtype)name);
@@ -25,11 +26,11 @@ static void pp_post(PP* pp, void* data) {
   macro_del(pp->macros);
 }
 
-ANN void free_pp(PP* pp, void* data) {
+ANN void free_pp(MemPool p, PP* pp, void* data) {
   pp_post(pp, data);
   vector_release(&pp->filename);
   hend(pp->macros);
-  mp_free(Hash, pp->macros);
-  _mp_free(sizeof(struct pp_info), pp->def);
-  mp_free(PP, pp);
+  mp_free(p, Hash, pp->macros);
+  mp_free2(p, sizeof(struct pp_info), pp->def); // watch me
+  mp_free(p, PP, pp);
 }
