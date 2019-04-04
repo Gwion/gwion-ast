@@ -58,7 +58,7 @@ m_str op2str(const Operator op);
   LOOP FOR GOTO SWITCH CASE ENUM RETURN BREAK CONTINUE PLUSPLUS MINUSMINUS NEW
   SPORK FORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
   MINUS PLUS NEQ SHIFT_LEFT SHIFT_RIGHT S_AND S_OR S_XOR OR AST_DTOR OPERATOR
-  TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE LTMPL RTMPL
+  TYPEDEF RSL RSR RSAND RSOR RSXOR LTMPL RTMPL
   NOELSE UNION ATPAREN TYPEOF CONSTT AUTO PASTE ELLIPSE RARROW BACKSLASH
 
 %token<lval> NUM
@@ -118,10 +118,10 @@ section
   ;
 
 class_def
-  : decl_template CLASS opt_flag id class_ext LBRACE class_body RBRACE
+  : CLASS decl_template opt_flag id class_ext LBRACE class_body RBRACE
     { $$ =new_class_def(mpool(arg), $3, $4, $5, $7, get_pos(arg));
-      if($1)
-        $$->tmpl = new_tmpl_class(mpool(arg), $1, -1);
+      if($2)
+        $$->tmpl = new_tmpl_class(mpool(arg), $2, -1);
   };
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
@@ -302,7 +302,7 @@ func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_arg: LPAREN  fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: TEMPLATE LTMPL id_list RTMPL { $$ = $3; } | { $$ = NULL; };
+decl_template: LTMPL id_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
 storage_flag: STATIC { $$ = ae_flag_static; }
   | GLOBAL { $$ = ae_flag_global; }
@@ -320,11 +320,11 @@ flag: access_flag { $$ = $1; }
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
-  : decl_template FUNCTION opt_flag fdef_base arg_type code_stmt
+  : FUNCTION decl_template opt_flag fdef_base arg_type code_stmt
     { $$ = new_func_def(mpool(arg), $4, $6, $3 | $5);
-    if($1) {
+    if($2) {
       SET_FLAG($$, template);
-      $$->tmpl = new_tmpl_list(mpool(arg), $1, -1);
+      $$->tmpl = new_tmpl_list(mpool(arg), $2, -1);
     }
   };
 

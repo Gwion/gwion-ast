@@ -178,7 +178,6 @@ ANN static m_str macro_data(void* data, const m_bool);
 "#("                                { adjust(yyscanner); return SHARPPAREN;}
 "%("                                { adjust(yyscanner); return PERCENTPAREN;}
 "@("                                { adjust(yyscanner); return ATPAREN;}
-"template"                          { adjust(yyscanner); return TEMPLATE;}
 "+"                                 { adjust(yyscanner); return PLUS; }
 "-"                                 { adjust(yyscanner); return MINUS; }
 "/"                                 { adjust(yyscanner); return DIVIDE; }
