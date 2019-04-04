@@ -671,7 +671,7 @@ ANN inline static void free_stmt_union(MemPool p, Stmt_Union a) {
   free_decl_list(p, a->l);
 }
 
-ANN static void free_stmt_xxx(MemPool p __attribute__((unused)), const union stmt_data *d __attribute__((unused))) { return; }
+ANN static void free_stmt_xxx(MemPool p NUSED, const union stmt_data *d NUSED) { return; }
 typedef void (*_stmt_func)(MemPool, const union stmt_data *);
 static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_exp,  (_stmt_func)free_stmt_flow, (_stmt_func)free_stmt_flow,
