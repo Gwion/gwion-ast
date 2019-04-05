@@ -18,8 +18,9 @@ before_script:
     export CFLAGS+="-DBUILD_ON_WINDOWS -D_XOPEN_SOURCE=700";
     fi
   - git clone https://github.com/fennecdjay/gwion-util;
+    cd gwion-util;
     git checkout $TRAVIS_BRANCH && echo "";
-    cd gwion-util && make include/generated.h && cd ..;
+    make include/generated.h && cd ..;
 
 script:
   - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
