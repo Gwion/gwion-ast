@@ -254,7 +254,7 @@ selection_stmt
   ;
 
 jump_stmt
-  : RETURN SEMICOLON    { $$ = new_stmt(mpool(arg), ae_stmt_return, get_pos(arg)); $$->d.stmt_exp.self = $$; }
+  : RETURN SEMICOLON    { $$ = new_stmt(mpool(arg), ae_stmt_return, get_pos(arg)); }
   | RETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2); }
   | BREAK SEMICOLON      { $$ = new_stmt(mpool(arg), ae_stmt_break, get_pos(arg)); }
   | CONTINUE SEMICOLON   { $$ = new_stmt(mpool(arg), ae_stmt_continue, get_pos(arg)); }

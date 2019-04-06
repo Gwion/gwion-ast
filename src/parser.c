@@ -2400,7 +2400,7 @@ yyreduce:
 
   case 74:
 #line 242 "ly/gwion.y" /* yacc.c:1652  */
-    { (yyval.stmt) = new_stmt(mpool(arg), ae_stmt_return, get_pos(arg)); (yyval.stmt)->d.stmt_exp.self = (yyval.stmt); }
+    { (yyval.stmt) = new_stmt(mpool(arg), ae_stmt_return, get_pos(arg)); }
 #line 2405 "src/parser.c" /* yacc.c:1652  */
     break;
 

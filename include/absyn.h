@@ -18,7 +18,6 @@ typedef struct {
   Exp base;
   struct Type_ *t_base;
   struct Symbol_ *xid;
-  Exp self;
 } Exp_Dot;
 typedef struct {
   Arg_List args;
@@ -26,7 +25,6 @@ typedef struct {
   Func_Def def;
   struct Type_*owner;
   Symbol name;
-  Exp self;
 } Exp_Lambda;
 ANN Exp new_exp_lambda(MemPool p, const Symbol, const Arg_List,const Stmt);
 struct Array_Sub_ {
@@ -41,7 +39,6 @@ ANN void free_array_sub(MemPool p, Array_Sub);
 typedef struct {
   Exp       base;
   Array_Sub array;
-  Exp       self;
 } Exp_Array;
 
 ANEW ANN Exp new_exp_array(MemPool p, const Exp, const Array_Sub);
@@ -118,7 +115,6 @@ typedef struct {
   struct Type_* type;
   Var_Decl_List list;
   Class_Def base;
-  Exp self;
 } Exp_Decl;
 typedef struct {
   struct Value_ * value;
@@ -132,7 +128,6 @@ typedef struct {
     Exp exp;
     Vec vec;
   } d;
-  Exp self;
   ae_prim_t primary_type;
 } Exp_Primary;
 
@@ -146,12 +141,10 @@ typedef struct {
   Exp args;
   struct Func_* m_func;
   Tmpl_Call* tmpl;
-  Exp self;
 } Exp_Call;
 typedef struct {
   Type_Decl* td;
   Exp exp;
-  Exp self;
   struct Nspc_*nspc;
   struct Func_* func;
 } Exp_Cast;
@@ -159,19 +152,16 @@ typedef struct {
   Exp lhs, rhs;
   Operator op;
   struct Nspc_*nspc;
-  Exp self;
 } Exp_Binary;
 typedef struct {
   Operator op;
   struct Nspc_*nspc;
   Exp exp;
-  Exp self;
 } Exp_Postfix;
 typedef struct {
   Exp cond;
   Exp if_exp;
   Exp else_exp;
-  Exp self;
 } Exp_If;
 typedef struct {
   Operator op;
@@ -179,7 +169,6 @@ typedef struct {
   Exp exp;
   Type_Decl* td;
   Stmt code;
-  Exp self;
 } Exp_Unary;
 struct Exp_ {
   struct Type_* type;
@@ -203,6 +192,10 @@ struct Exp_ {
   ae_Exp_Meta meta;
   uint emit_var;
 };
+
+static inline Exp exp_self(const void *data) {
+  return container_of((char*)data, struct Exp_, d);
+}
 
 ANEW ANN Exp new_exp_prim_id(MemPool p, struct Symbol_*, const uint);
 ANEW Exp new_exp_prim_int(MemPool p, const unsigned long, const uint);
@@ -267,13 +260,11 @@ struct Stmt_Basic_ {
 
 struct Stmt_Exp_ {
   Exp val;
-  Stmt self;
 };
 
 struct Stmt_Flow_ {
   Exp cond;
   Stmt body;
-  Stmt self;
   uint is_do;
 };
 
@@ -286,7 +277,6 @@ struct Stmt_For_ {
   Stmt c2;
   Exp c3;
   Stmt body;
-  Stmt self;
 };
 
 struct Stmt_Auto_ {
@@ -295,13 +285,11 @@ struct Stmt_Auto_ {
   Stmt body;
   struct Value_* v;
   m_bool is_ptr;
-  Stmt self;
 };
 
 struct Stmt_Loop_ {
   Exp cond;
   Stmt body;
-  Stmt self;
 };
 
 struct Stmt_If_ {
@@ -317,13 +305,11 @@ struct Stmt_Jump_ {
     struct Instr_* instr;
   } data;
   m_bool is_label;
-  Stmt self;
 };
 
 struct Stmt_Switch_ {
   Exp val;
   Stmt stmt;
-  Stmt self;
 };
 
 struct Stmt_Enum_ {
@@ -331,7 +317,6 @@ struct Stmt_Enum_ {
   struct Symbol_* xid;
   struct Type_* t;
   struct Vector_ values;
-  Stmt self;
   ae_flag flag;
 };
 
@@ -365,7 +350,6 @@ union {
 };
   m_uint s;
   m_uint o;
-  Stmt self;
   ae_flag flag;
 };
 
@@ -408,6 +392,10 @@ struct Stmt_ {
   uint pos;
   ae_stmt_t stmt_type;
 };
+
+static inline Stmt stmt_self(const void *data) {
+  return container_of((char*)data, struct Stmt_, d);
+}
 
 ANEW Stmt new_stmt(MemPool p, const ae_stmt_t, const uint);
 ANN ANEW Stmt new_stmt_exp(MemPool p, const ae_stmt_t, const Exp);
