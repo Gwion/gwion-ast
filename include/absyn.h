@@ -179,7 +179,6 @@ typedef struct {
   Exp exp;
   Type_Decl* td;
   Stmt code;
-  m_uint code_depth;
   Exp self;
 } Exp_Unary;
 struct Exp_ {
