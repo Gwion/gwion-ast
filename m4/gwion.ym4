@@ -348,7 +348,7 @@ atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
 
 type_decl0
   : dot_decl atsym { $$ = new_type_decl(mpool(arg), $1, $2); }
-  | LTMPL type_list RTMPL id_dot atsym { $$ = new_type_decl(mpool(arg), $4, $5);
+  | LTMPL type_list RTMPL dot_decl atsym { $$ = new_type_decl(mpool(arg), $4, $5);
       $$->types = $2; }
   | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl(mpool(arg), $3, $5); $$->xid->ref = 1; }
   ;
