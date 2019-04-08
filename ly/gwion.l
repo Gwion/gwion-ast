@@ -461,6 +461,8 @@ static void rem_macro(void* data, const m_str str) {
 
 static int has_macro(void* data, const m_str id, const m_bool def) {
   Scanner* scan = yyget_extra(data);
+  if(scan->pp->def->idx == 59) // beware magic number
+    gwpp_error(scan, "macros too nested");
   return scan->pp->def->data[++scan->pp->def->idx] = def ?
     !!macro_has(scan->pp->macros, id) : !macro_has(scan->pp->macros, id);
 }
