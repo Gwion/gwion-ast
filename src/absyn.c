@@ -42,6 +42,13 @@ Type_Decl* new_type_decl(MemPool p, const ID_List xid, const ae_flag flag) {
   return a;
 }
 
+Type_Decl* new_type_decl2(MemPool p, const Exp exp, const ae_flag flag) {
+  Type_Decl* a = mp_alloc(p, Type_Decl);
+  a->flag = flag;
+  a->exp = exp;
+  return a;
+}
+
 Array_Sub new_array_sub(MemPool p, const Exp exp) {
   Array_Sub a = mp_alloc(p, Array_Sub);
   a->exp = exp;
@@ -100,6 +107,12 @@ ANN static void free_exp_array(MemPool p, Exp_Array* a) {
   free_exp(p, a->base);
 }
 
+Exp new_exp_typeof(MemPool p, Exp exp) {
+  Exp a = new_exp(p, ae_exp_typeof, exp->pos);
+  a->d.exp_typeof.exp = exp;
+  return a;
+}
+
 ID_List new_id_list(MemPool p, struct Symbol_* xid, const uint pos) {
   ID_List a = mp_alloc(p, ID_List);
   a->xid = xid;
@@ -125,12 +138,15 @@ void free_type_decl(MemPool p, Type_Decl* a) {
     free_type_list(p, a->types);
   if(a->array)
     free_array_sub(p, a->array);
-  free_id_list(p, a->xid);
+  if(a->xid)
+    free_id_list(p, a->xid);
+  if(a->exp)
+    free_exp(p, a->exp);
   mp_free(p, Type_Decl, a);
 }
 
 Exp new_exp_decl(MemPool p, Type_Decl* td, const Var_Decl_List list) {
-  Exp a = new_exp(p, ae_exp_decl, td->xid->pos);
+  Exp a = new_exp(p, ae_exp_decl, td->xid ? td->xid->pos : td->exp->pos);
   a->d.exp_decl.td = td;
   a->d.exp_decl.list = list;
   return a;
@@ -465,12 +481,16 @@ ANN static void free_exp_primary(MemPool p, Exp_Primary* a) {
     free_exp(p, a->d.vec.exp);
 }
 
+ANN static void free_exp_typeof(MemPool p, Exp_Typeof* a) {
+  free_exp(p, a->exp);
+}
+
 typedef void (*_exp_func)(MemPool, const union exp_data *);
 static const _exp_func exp_func[] = {
   (_exp_func)free_exp_decl,    (_exp_func)free_exp_binary, (_exp_func)free_exp_unary,
   (_exp_func)free_exp_primary, (_exp_func)free_exp_cast,   (_exp_func)free_exp_post,
   (_exp_func)free_exp_call,    (_exp_func)free_exp_array,  (_exp_func)free_exp_if,
-  (_exp_func)free_exp_dot,     (_exp_func)free_exp_lambda
+  (_exp_func)free_exp_dot,     (_exp_func)free_exp_lambda, (_exp_func)free_exp_typeof
 };
 
 void free_exp(MemPool p, Exp exp) {

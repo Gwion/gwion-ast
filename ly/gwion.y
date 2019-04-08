@@ -76,7 +76,7 @@ m_str op2str(const Operator op);
 %type<type_decl> type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
@@ -335,7 +335,9 @@ type_decl0
   : dot_decl atsym { $$ = new_type_decl(mpool(arg), $1, $2); }
   | LTMPL type_list RTMPL dot_decl atsym { $$ = new_type_decl(mpool(arg), $4, $5);
       $$->types = $2; }
-  | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl(mpool(arg), $3, $5); $$->xid->ref = 1; }
+  | TILDA TILDA exp TILDA TILDA atsym { $$ = new_type_decl2(mpool(arg), $3, $6); }
+  | LTMPL type_list RTMPL TILDA TILDA exp TILDA TILDA atsym
+    { $$ = new_type_decl2(mpool(arg), $6, $9); $$->types = $2; }
   ;
 
 type_decl: type_decl0 { $$ = $1; }
@@ -389,7 +391,9 @@ eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool
 rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-mul_exp: cast_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+mul_exp: typeof_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+
+typeof_exp: cast_exp | TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg), $3); }
 
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };

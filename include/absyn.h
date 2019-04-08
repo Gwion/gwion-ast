@@ -60,11 +60,13 @@ ANN2(1, 2) ANEW Var_Decl_List new_var_decl_list(MemPool p, const Var_Decl, const
 
 typedef struct Type_Decl_ {
   ID_List xid;
+  Exp exp;
   Array_Sub array;
   Type_List types;
   ae_flag flag;
 } Type_Decl;
 ANEW ANN Type_Decl* new_type_decl(MemPool p, const ID_List, const ae_flag);
+ANEW ANN Type_Decl* new_type_decl2(MemPool p, const Exp, const ae_flag);
 ANN void free_type_decl(MemPool p, Type_Decl* a);
 ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 
@@ -101,7 +103,7 @@ ANN void free_arg_list(MemPool p, Arg_List a);
 
 typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
                ae_exp_cast, ae_exp_post, ae_exp_call, ae_exp_array,
-               ae_exp_if, ae_exp_dot, ae_exp_lambda
+               ae_exp_if, ae_exp_dot, ae_exp_lambda, ae_exp_typeof
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_primary_id, ae_primary_num, ae_primary_float,
@@ -169,6 +171,10 @@ typedef struct {
   Type_Decl* td;
   Stmt code;
 } Exp_Unary;
+typedef struct {
+  Exp exp;
+} Exp_Typeof;
+
 struct Exp_ {
   struct Type_* type;
   struct Type_* cast_to;
@@ -185,6 +191,7 @@ struct Exp_ {
     Exp_Dot       exp_dot;
     Exp_Array     exp_array;
     Exp_Lambda    exp_lambda;
+    Exp_Typeof    exp_typeof;
   } d;
   uint pos;
   ae_exp_t exp_type;
@@ -215,6 +222,7 @@ ANEW ANN Exp new_exp_dot(MemPool p, const Exp, struct Symbol_*);
 ANEW ANN Exp new_exp_unary(MemPool p, const Operator, const Exp);
 ANEW ANN Exp new_exp_unary2(MemPool p, const Operator, Type_Decl*);
 ANEW ANN Exp new_exp_unary3(MemPool p, const Operator, const Stmt);
+ANEW ANN Exp new_exp_typeof(MemPool p, Exp exp);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
 ANN void free_exp(MemPool p, Exp exp);
 
