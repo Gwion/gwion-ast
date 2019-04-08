@@ -3179,7 +3179,7 @@ static void err_line(const Scanner* scan, const m_str filename) {
   m_str line = NULL;
   while(getline(&line, &len, f) != -1) {
     if(n == scan->line) {
-      gw_err("%s", line);
+      gw_err("%s\n", line);
       break;
     }
     n++;
@@ -3205,8 +3205,7 @@ ANN int gwion_error(Scanner* scan, const char* s) {
       filename = (m_str)vector_at(&scan->pp->filename, i);
     }
   }
-  err_msg(0, "in file '%s'.", filename);
-  err_msg(scan->line, "%s. at pos %i\n", s, scan->pos);
+  gw_err("\033[1m%s:%u:%u:\033[0m %s\n", filename, scan->line, scan->pos, s);
   err_line(scan, filename);
   err_marker(scan);
   return 0;
