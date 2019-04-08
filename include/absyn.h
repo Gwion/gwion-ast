@@ -61,7 +61,6 @@ ANN2(1, 2) ANEW Var_Decl_List new_var_decl_list(MemPool p, const Var_Decl, const
 typedef struct Type_Decl_ {
   ID_List xid;
   Array_Sub array;
-  Exp_Dot* dot;
   Type_List types;
   ae_flag flag;
 } Type_Decl;
