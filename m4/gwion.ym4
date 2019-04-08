@@ -293,7 +293,9 @@ array_empty
   ;
 
 array: array_exp | array_empty;
-decl_exp2: con_exp | decl_exp3;
+decl_exp2: con_exp | decl_exp3
+  | AUTO atsym var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
+     new_id_list(mpool(arg), insert_symbol("auto"), get_pos(arg)), 0), $3); }
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
 union_exp: type_decl arg_decl { $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
