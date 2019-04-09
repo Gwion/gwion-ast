@@ -96,6 +96,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %x comment
 %x define define_arg_start define_arg skip get_arg 
 %%
+
 <get_arg>"," { adjust(yyscanner); handle_comma(yyscanner); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
 <get_arg>")" { adjust(yyscanner); if(handle_rpar(yyscanner)) { BEGIN(INITIAL); GWYY_CALL }}
@@ -373,7 +374,7 @@ static void err_line(const Scanner* scan, const m_str filename) {
   m_str line = NULL;
   while(getline(&line, &len, f) != -1) {
     if(n == scan->line) {
-      gw_err("%s", line);
+      gw_err("%s\n", line);
       break;
     }
     n++;
@@ -416,8 +417,11 @@ ANN uint get_pos(const Scanner* scan) {
 
 static Macro add_macro(void* data, const m_str line) {
   Scanner* scan = yyget_extra(data);
-  scan->pos += 8;
-  m_str id = strip_comment(data, line + 8);
+  int i = 7;
+//  while(line[i] == ' ' || line[i] == '\r' ||)++i;
+  while(isspace(line[i]))++i;
+  scan->pos += i;
+  m_str id = strip_comment(data, line + i);
   scan->pp->entry = macro_add(scan->pp->macros, id);
   xfree(id);
   if(!scan->pp->entry)

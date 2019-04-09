@@ -11,6 +11,7 @@
 #include "parser.h"
 #include "lexer.h"
 
+#define YYERROR_VERBOSE
 #define YYMALLOC xmalloc
 #define scan arg->scanner
 #define mpool(arg) arg->st->p

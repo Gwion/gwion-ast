@@ -31,7 +31,7 @@ parser:
 
 lexer:
 	$(info generating lexer)
-	@${LEX}  -o src/lexer.c ly/gwion.l
+	@${LEX} -o src/lexer.c ly/gwion.l
 
 generate_parser:
 	$(info meta-generating parser)

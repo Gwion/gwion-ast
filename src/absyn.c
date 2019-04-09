@@ -537,7 +537,7 @@ ANN static void free_stmt_code(MemPool p, Stmt_Code a) {
     free_stmt_list(p, a->stmt_list);
 }
 
-ANN inline static void free_stmt_exp(MemPool p, struct Stmt_Exp_* a) {
+ANN static inline void free_stmt_exp(MemPool p, struct Stmt_Exp_* a) {
   if(a->val)
     free_exp(p, a->val);
 }
@@ -632,7 +632,7 @@ Stmt new_stmt_switch(MemPool p, const Exp val, Stmt stmt) {
   return a;
 }
 
-ANN inline static void free_stmt_switch(MemPool p, Stmt_Switch a) {
+ANN static inline void free_stmt_switch(MemPool p, Stmt_Switch a) {
   free_exp(p, a->val);
   free_stmt(p, a->stmt);
 }
@@ -666,7 +666,7 @@ Stmt new_stmt_pp(MemPool p, const enum ae_pp_type type, const m_str data) {
   return a;
 }
 
-ANN inline static void free_stmt_pp(MemPool p, Stmt_PP a) {
+ANN static inline void free_stmt_pp(MemPool p, Stmt_PP a) {
   if(a->data)
     xfree(a->data);
 }
@@ -688,7 +688,7 @@ ANN static void free_decl_list(MemPool p, Decl_List a) {
   mp_free(p, Decl_List, a);
 }
 
-ANN inline static void free_stmt_union(MemPool p, Stmt_Union a) {
+ANN static inline void free_stmt_union(MemPool p, Stmt_Union a) {
   free_decl_list(p, a->l);
 }
 
