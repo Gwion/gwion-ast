@@ -418,7 +418,6 @@ ANN uint get_pos(const Scanner* scan) {
 static Macro add_macro(void* data, const m_str line) {
   Scanner* scan = yyget_extra(data);
   int i = 7;
-//  while(line[i] == ' ' || line[i] == '\r' ||)++i;
   while(isspace(line[i]))++i;
   scan->pos += i;
   m_str id = strip_comment(data, line + i);

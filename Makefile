@@ -16,8 +16,7 @@ endif
 
 obj := $(src:.c=.o)
 
-#CFLAGS += -I${UTIL_DIR}/include -Iinclude -D_GNU_SOURCE
-CFLAGS += -Iinclude -D_GNU_SOURCE
+CFLAGS += -Iinclude -DYYENABLE_NLS=1 -DENABLE_NLS
 
 all: libgwion_ast.a
 	@$(info ${CFLAGS})
