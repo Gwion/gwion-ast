@@ -146,7 +146,7 @@ void free_type_decl(MemPool p, Type_Decl* a) {
 }
 
 Exp new_exp_decl(MemPool p, Type_Decl* td, const Var_Decl_List list) {
-  Exp a = new_exp(p, ae_exp_decl, td->xid ? td->xid->pos : td->exp->pos);
+  Exp a = new_exp(p, ae_exp_decl, td_pos(td));
   a->d.exp_decl.td = td;
   a->d.exp_decl.list = list;
   return a;
@@ -281,7 +281,7 @@ Exp new_exp_unary(MemPool p, const Operator oper, const Exp exp) {
 }
 
 Exp new_exp_unary2(MemPool p, const Operator oper, Type_Decl* td) {
-  Exp a = new_exp_unary_base(p, oper, td->xid->pos);
+  Exp a = new_exp_unary_base(p, oper, td_pos(td));
   a->meta = ae_meta_value;
   a->d.exp_unary.td = td;
   return a;
@@ -355,11 +355,13 @@ m_bool tmpl_class_base(const Tmpl_Class* a) {
   return a ? tmpl_list_base(&a->list) : 0;
 }
 
-Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code, const ae_flag flag) {
+Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code,
+    const ae_flag flag, const uint pos) {
   Func_Def a = mp_alloc(p, Func_Def);
   a->base = base;
   a->d.code = code;
   a->flag = flag;
+  a->pos = pos;
   return a;
 }
 
@@ -402,7 +404,7 @@ struct Func_Base_* new_func_base(MemPool p, Type_Decl* td, const Symbol xid, con
 }
 
 Stmt new_stmt_fptr(MemPool p, struct Func_Base_ *base, const ae_flag flag) {
-  Stmt a              = new_stmt(p, ae_stmt_fptr, base->td->xid->pos);
+  Stmt a              = new_stmt(p, ae_stmt_fptr, td_pos(base->td));
   a->d.stmt_fptr.base = base;
   base->td->flag |= flag;
   return a;

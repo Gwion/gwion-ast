@@ -323,7 +323,7 @@ opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
   : FUNCTION decl_template opt_flag fdef_base arg_type code_stmt
-    { $$ = new_func_def(mpool(arg), $4, $6, $3 | $5);
+    { $$ = new_func_def(mpool(arg), $4, $6, $3 | $5, get_pos(arg));
     if($2) {
       SET_FLAG($$, template);
       $$->tmpl = new_tmpl_list(mpool(arg), $2, -1);
@@ -334,16 +334,16 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $9, ae_flag_op); $5->next = $7;}
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $9, ae_flag_op, get_pos(arg)); $5->next = $7;}
   |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $7, ae_flag_op); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $7, ae_flag_op, get_pos(arg)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($1), $5), $7, ae_flag_op | ae_flag_unary); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($1), $5), $7, ae_flag_op | ae_flag_unary, get_pos(arg)); }
   | AST_DTOR code_stmt
     {
 ID_List l = new_id_list(mpool(arg), insert_symbol("void"), get_pos(arg));
-$$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l, 0),
-       insert_symbol("dtor"), NULL), $2, ae_flag_dtor); }
+$$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l, get_pos(arg)),
+       insert_symbol("dtor"), NULL), $2, ae_flag_dtor, get_pos(arg)); }
   ;
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
@@ -371,7 +371,8 @@ union_stmt
       $$->d.stmt_union.flag = $2;
     }
   | UNION opt_flag opt_id LBRACE error RBRACE opt_id SEMICOLON {
-    gwion_error(arg, "Unions should only contain declarations.");
+//    gwion_error(arg, "Unions should only contain declarations.");
+    gw_err("Unions should only contain declarations.\n");
     YYERROR;
     }
   ;

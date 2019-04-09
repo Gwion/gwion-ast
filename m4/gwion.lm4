@@ -377,7 +377,7 @@ static void err_line(const Scanner* scan, const m_str filename) {
   m_str line = NULL;
   while(getline(&line, &len, f) != -1) {
     if(n == scan->line) {
-      gw_err("%s\n", line);
+      gw_err("%s", line);
       break;
     }
     n++;
@@ -398,13 +398,13 @@ ifdef([[[TINY_MODE]]], [[[const m_str filename = scan->filename;]]],
   m_str filename = name;
   m_uint i = vector_size(&scan->pp->filename) - 1;
   if(*filename == '@') {
-    err_msg(0, "in macro '%s'.", filename);
+    gw_err("in macro '%s'.", filename);
     while(*filename == '@') {
       i -= 5;
       filename = (m_str)vector_at(&scan->pp->filename, i);
     }
   }]]])
-  gw_err("\033[1m%s:%u:%u:\033[0m %s\n", filename, scan->line, scan->pos, s);
+  gw_err("\033[1m%s:%u:%u:\033[0m\n\t%s\n", filename, scan->line, scan->pos, s);
   err_line(scan, filename);
   err_marker(scan);
   return 0;

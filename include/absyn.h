@@ -65,6 +65,7 @@ typedef struct Type_Decl_ {
   Type_List types;
   ae_flag flag;
 } Type_Decl;
+
 ANEW ANN Type_Decl* new_type_decl(MemPool p, const ID_List, const ae_flag);
 ANEW ANN Type_Decl* new_type_decl2(MemPool p, const Exp, const ae_flag);
 ANN void free_type_decl(MemPool p, Type_Decl* a);
@@ -76,6 +77,7 @@ struct ID_List_    {
   m_bool ref;
   uint pos;
 };
+
 ANEW ANN ID_List new_id_list(MemPool p, struct Symbol_*, const uint);
 ANEW ANN2(1, 2) ID_List prepend_id_list(MemPool p, struct Symbol_*, ID_List, const uint);
 ANN void free_id_list(MemPool p, ID_List a);
@@ -98,6 +100,7 @@ struct Arg_List_ {
   struct Type_* type;
   Arg_List  next;
 };
+
 ANN2(1, 3) ANEW Arg_List new_arg_list(MemPool p, Type_Decl*, const Var_Decl, const Arg_List);
 ANN void free_arg_list(MemPool p, Arg_List a);
 
@@ -198,6 +201,8 @@ struct Exp_ {
   ae_Exp_Meta meta;
   uint emit_var;
 };
+
+static inline uint td_pos(const Type_Decl *td) { return td->xid ? td->xid->pos : td->exp->pos; }
 
 static inline Exp exp_self(const void *data) {
   return container_of((char*)data, struct Exp_, d);
@@ -444,12 +449,13 @@ struct Func_Def_ {
     void* dl_func_ptr;
   } d;
   Tmpl_List* tmpl;
+  uint pos;
   ae_flag flag;
 };
 ANEW ANN Tmpl_List* new_tmpl_list(MemPool p, const ID_List, const m_int);
 ANN void free_tmpl_list(MemPool p, Tmpl_List*);
 m_bool tmpl_list_base(const Tmpl_List*);
-ANEW Func_Def new_func_def(MemPool p, struct Func_Base_*, const Stmt, const ae_flag);
+ANEW Func_Def new_func_def(MemPool p, struct Func_Base_*, const Stmt, const ae_flag, const uint);
 ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs);
 ANN void free_func_def(MemPool p, Func_Def def);
 
