@@ -16,7 +16,12 @@ endif
 
 obj := $(src:.c=.o)
 
-CFLAGS += -Iinclude -DYYENABLE_NLS=1 -DENABLE_NLS
+CFLAGS += -Iinclude
+
+# (parser) internationalization (linux only for now)
+ifeq ($(shell uname), Linux)
+-DYYENABLE_NLS=1 -DENABLE_NLS
+endif
 
 all: libgwion_ast.a
 	@$(info ${CFLAGS})
