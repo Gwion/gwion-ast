@@ -16,9 +16,9 @@ IS          (u|U|l|L)*
 #define gwion_alloc(a,b) xmalloc(a)
 #define gwion_realloc(a,b,c) xrealloc(a,b)
 #define gwion_free(a,b)  xfree(a)
-#define YY_FATAL_ERROR(msg) gwion_fatal_error(msg, yyscanner)
+#define YY_FATAL_ERROR(msg) gwion_lex_error(yyscanner, msg)
 
-ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner);
+ANN void yynoreturn gwion_lex_error(yyscan_t yyscanner, const char*);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static unsigned long htol(const char* str);
@@ -26,7 +26,7 @@ ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static char* get_currfile(void* data);
-ANN int gwion_error(Scanner* scan, const char* s);
+ANN int gwion_error(Scanner* scan, const char *);
 ANN uint get_pos(const Scanner* scan);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
@@ -300,13 +300,17 @@ ANN Symbol lambda_name(const Scanner *scan) {
   return insert_symbol(scan->st, c);
 }
 
-ANN void yynoreturn gwion_fatal_error (const char* msg , yyscan_t yyscanner) {
+static inline void header(const Scanner *scan, const char *msg, const m_uint i) {
+  gw_err("\033[1m%s:%u:%u:\033[0m\n\t%s\n", (m_str)vector_at(&scan->pp->filename, i),
+    scan->line, scan->pos, msg);
+}
+
+ANN void yynoreturn gwion_lex_error (yyscan_t yyscanner, const char *msg) {
   struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   /*scanner_post(scan);*/
+  header(scan, msg, 1);
   gw_err("%s\n", msg);
-  yy_flush_buffer(yyg->yy_buffer_stack[yyg->yy_buffer_stack_top], yyscanner);
-  yyg->yy_start = 1 + 2 * INITIAL;
   longjmp(*scan->jmp, 1);
 }
 
@@ -369,7 +373,8 @@ static void err_line(const Scanner* scan, const m_str filename) {
   m_uint n = 1;
   size_t len = 0;
   FILE* f = fopen(filename, "r");
-  if(!f)return; //exit(67);
+  if(!f)
+    return;
   fseek(f, 0, SEEK_SET);
   m_str line = NULL;
   while(getline(&line, &len, f) != -1) {
@@ -383,7 +388,7 @@ static void err_line(const Scanner* scan, const m_str filename) {
   free(line);
 }
 
-static void err_marker(Scanner* scan) {
+static inline void err_marker(Scanner* scan) {
   while(--scan->pos > 0)
     gw_err(" ");
   gw_err("\033[1;31m^\033[0m\n");
@@ -406,11 +411,6 @@ ANN int gwion_error(Scanner* scan, const char* s) {
   return 0;
 }
 
-static inline void gwpp_error(Scanner* scan, char* s) {
-  gwion_error(scan, s);
-  gwion_fatal_error("in macro expansion", scan->scanner);
-}
-
 ANN uint get_pos(const Scanner* scan) {
   return scan->line;
 }
@@ -423,8 +423,9 @@ static Macro add_macro(void* data, const m_str line) {
   m_str id = strip_comment(data, line + i);
   scan->pp->entry = macro_add(scan->pp->macros, id);
   xfree(id);
+printf("file->ptr %p\n", scan->pp->filename.ptr);
   if(!scan->pp->entry)
-    gwpp_error(scan, "macro already defined");
+    gwion_lex_error(data, "macro already defined");
   else {
     scan->pp->entry->line = scan->line;
     scan->pp->entry->pos = scan->pos;
@@ -458,13 +459,13 @@ static void rem_macro(void* data, const m_str str) {
   const m_bool ret = macro_rem(scan->pp->macros, id);
   xfree(id);
   if(ret)
-    gwpp_error(scan, "undefined macro");
+    gwion_lex_error(data, "undefined macro");
 }
 
 static int has_macro(void* data, const m_str id, const m_bool def) {
   Scanner* scan = yyget_extra(data);
   if(scan->pp->def->idx == 59) // beware magic number
-    gwpp_error(scan, "macros too nested");
+    gwion_lex_error(data, "macros too nested");
   return scan->pp->def->data[++scan->pp->def->idx] = def ?
     !!macro_has(scan->pp->macros, id) : !macro_has(scan->pp->macros, id);
 }
@@ -484,7 +485,7 @@ static void handle_include(void* data, const m_str filename, YY_BUFFER_STATE han
   FILE* f = fopen(str, "r");
   if(!f) {
     xfree(str);
-    gwpp_error(scan, "file not found");
+    gwion_lex_error(data, "file not found");
   }
   gwpp_stack(scan, handle, f, str);
   scan->pos = 1;
@@ -613,7 +614,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   char c;
   while(isspace(c = (char)input(data)))++scan->pos;
   if(c != '(')
-    gwpp_error(scan, "macro needs arguments");
+    gwion_lex_error(data, "macro needs arguments");
   ++scan->pp->npar;
   struct yyguts_t * yyg = (struct yyguts_t*)data;
   yyg->yy_start = 1 + 2 * get_arg;
@@ -701,7 +702,7 @@ void handle_comma(void* data) {
   Scanner* scan = yyget_extra(data);
   Args a = scan->pp->entry->args;
   if(strcmp(a->name, "__VA_ARGS__") && !(scan->pp->entry->args = a->next))
-    gwpp_error(scan, "too many arguments");
+    gwion_lex_error(data, "too many arguments");
 }
 
 void handle_lpar(void* data) {
@@ -714,7 +715,7 @@ static int handle_rpar(void* data) {
   if(--scan->pp->npar)
     return 0;
   if(scan->pp->entry->args->next)
-    gwpp_error(scan, "not enough arguments");
+    gwion_lex_error(data, "not enough arguments");
   scan->pp->entry->args = NULL;
   SCAN_NOLINT
     yy_scan_string(scan->pp->entry->text, data);

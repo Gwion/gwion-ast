@@ -11,6 +11,7 @@
 #include "parser.h"
 #include "lexer.h"
 
+
 #define YYERROR_VERBOSE
 #define YYMALLOC xmalloc
 #define scan arg->scanner
@@ -19,7 +20,7 @@
 #define OP_SYM(a) insert_symbol(op2str(a))
 
 ANN uint get_pos(const Scanner*);
-ANN void gwion_error(const Scanner*, const m_str s);
+ANN void gwion_error(const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
 m_str op2str(const Operator op);
 %}

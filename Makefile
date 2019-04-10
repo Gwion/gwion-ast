@@ -16,7 +16,7 @@ endif
 
 obj := $(src:.c=.o)
 
-CFLAGS += -Iinclude
+CFLAGS += -Iinclude -D_GNU_SOURCE
 
 # (parser) internationalization (linux only for now)
 ifeq ($(shell uname), Linux)
