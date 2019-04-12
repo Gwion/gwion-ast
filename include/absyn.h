@@ -48,7 +48,7 @@ struct Var_Decl_ {
   struct Value_ * value;
   Array_Sub array;
   void* addr;
-  uint pos;
+  loc_t pos;
 };
 ANN2(1, 2) ANEW Var_Decl new_var_decl(MemPool p, struct Symbol_*, const Array_Sub, const uint);
 
@@ -75,7 +75,7 @@ struct ID_List_    {
   struct Symbol_* xid;
   ID_List next;
   m_bool ref;
-  uint pos;
+  loc_t pos;
 };
 
 ANEW ANN ID_List new_id_list(MemPool p, struct Symbol_*, const uint);
@@ -196,7 +196,7 @@ struct Exp_ {
     Exp_Lambda    exp_lambda;
     Exp_Typeof    exp_typeof;
   } d;
-  uint pos;
+  loc_t pos;
   ae_exp_t exp_type;
   ae_Exp_Meta meta;
   uint emit_var;
@@ -267,7 +267,7 @@ typedef struct Stmt_Union_   * Stmt_Union;
 typedef struct Stmt_PP_      * Stmt_PP;
 #endif
 struct Stmt_Basic_ {
-  uint pos;
+  loc_t pos;
 };
 
 struct Stmt_Exp_ {
@@ -401,7 +401,7 @@ struct Stmt_ {
     struct Stmt_PP_    stmt_pp;
 #endif
   } d;
-  uint pos;
+  loc_t pos;
   ae_stmt_t stmt_type;
 };
 
@@ -449,7 +449,7 @@ struct Func_Def_ {
     void* dl_func_ptr;
   } d;
   Tmpl_List* tmpl;
-  uint pos;
+  loc_t pos;
   ae_flag flag;
 };
 ANEW ANN Tmpl_List* new_tmpl_list(MemPool p, const ID_List, const m_int);
@@ -488,7 +488,7 @@ struct Class_Def_ {
   struct Stmt_Type_ base;
   Class_Body body;
   Tmpl_Class*  tmpl;
-  uint pos;
+  loc_t pos;
   ae_flag flag;
 };
 ANN2(1, 3) ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,

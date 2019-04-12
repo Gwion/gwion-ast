@@ -6,7 +6,7 @@ typedef struct Scanner_ {
   Ast ast;
   SymTable *st;
   uint line;
-  uint pos;
+  loc_t pos;
   struct PP_* pp;
   jmp_buf* jmp;
 } Scanner;

@@ -1,7 +1,7 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-Var_Decl new_var_decl(MemPool p, struct Symbol_* xid, const Array_Sub array, const uint pos) {
+Var_Decl new_var_decl(MemPool p, struct Symbol_* xid, const Array_Sub array, const loc_t pos) {
   Var_Decl a = mp_alloc(p, Var_Decl);
   a->xid = xid;
   a->array = array;
@@ -70,7 +70,7 @@ Type_Decl* add_type_decl_array(Type_Decl* a, const Array_Sub array) {
   return a;
 }
 
-ANN static Exp new_exp(MemPool p, const ae_exp_t type, const uint pos) {
+ANN static Exp new_exp(MemPool p, const ae_exp_t type, const loc_t pos) {
   Exp a = mp_alloc(p, Exp);
   a->exp_type = type;
   a->pos = pos;
@@ -113,14 +113,14 @@ Exp new_exp_typeof(MemPool p, Exp exp) {
   return a;
 }
 
-ID_List new_id_list(MemPool p, struct Symbol_* xid, const uint pos) {
+ID_List new_id_list(MemPool p, struct Symbol_* xid, const loc_t pos) {
   ID_List a = mp_alloc(p, ID_List);
   a->xid = xid;
   a->pos = pos;
   return a;
 }
 
-ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list, const uint pos) {
+ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list, const loc_t pos) {
   ID_List a = new_id_list(p, xid, pos);
   a->next = list;
   a->pos = pos;
@@ -196,40 +196,40 @@ ANN static inline void free_exp_post(MemPool p, Exp_Postfix* post) {
   free_exp(p, post->exp);
 }
 
-static Exp new_exp_prim(MemPool p, const uint pos) {
+static Exp new_exp_prim(MemPool p, const loc_t pos) {
   Exp a = new_exp(p, ae_exp_primary, pos);
   a->meta = ae_meta_value;
   return a;
 }
 
-Exp new_exp_prim_int(MemPool p, const unsigned long i, const uint pos) {
+Exp new_exp_prim_int(MemPool p, const unsigned long i, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->d.exp_primary.primary_type = ae_primary_num;
   a->d.exp_primary.d.num = i;
   return a;
 }
 
-Exp new_exp_prim_float(MemPool p, const m_float num, const uint pos) {
+Exp new_exp_prim_float(MemPool p, const m_float num, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->d.exp_primary.primary_type = ae_primary_float;
   a->d.exp_primary.d.fnum = num;
   return a;
 }
 
-Exp new_exp_prim_string(MemPool p, const m_str s, const uint pos) {
+Exp new_exp_prim_string(MemPool p, const m_str s, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->d.exp_primary.primary_type = ae_primary_str;
   a->d.exp_primary.d.str = s;
   return a;
 }
 
-Exp new_exp_prim_nil(MemPool p, const uint pos) {
+Exp new_exp_prim_nil(MemPool p, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->d.exp_primary.primary_type = ae_primary_nil;
   return a;
 }
 
-Exp new_exp_prim_id(MemPool p, struct Symbol_* xid, const uint pos) {
+Exp new_exp_prim_id(MemPool p, struct Symbol_* xid, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->meta = ae_meta_var;
   a->d.exp_primary.primary_type = ae_primary_id;
@@ -244,14 +244,14 @@ Exp new_exp_prim_hack(MemPool p, const Exp exp) {
   return a;
 }
 
-Exp new_exp_prim_char(MemPool p, const m_str chr, const uint pos) {
+Exp new_exp_prim_char(MemPool p, const m_str chr, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->d.exp_primary.primary_type = ae_primary_char;
   a->d.exp_primary.d.chr = chr;
   return a;
 }
 
-Exp new_exp_prim_array(MemPool p, const Array_Sub exp, const uint pos) {
+Exp new_exp_prim_array(MemPool p, const Array_Sub exp, const loc_t pos) {
   Exp a = new_exp_prim(p, pos);
   a->d.exp_primary.primary_type = ae_primary_array;
   a->d.exp_primary.d.array = exp;
@@ -267,7 +267,7 @@ Exp new_exp_prim_vec(MemPool p, const ae_prim_t t, Exp e) {
   return a;
 }
 
-static inline Exp new_exp_unary_base(MemPool p, const Operator oper, const uint pos)  {
+static inline Exp new_exp_unary_base(MemPool p, const Operator oper, const loc_t pos)  {
   Exp a = new_exp(p, ae_exp_unary, pos);
   a->d.exp_unary.op = oper;
   return a;
@@ -356,7 +356,7 @@ m_bool tmpl_class_base(const Tmpl_Class* a) {
 }
 
 Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code,
-    const ae_flag flag, const uint pos) {
+    const ae_flag flag, const loc_t pos) {
   Func_Def a = mp_alloc(p, Func_Def);
   a->base = base;
   a->d.code = code;
@@ -542,7 +542,7 @@ ANN static inline void free_stmt_exp(MemPool p, struct Stmt_Exp_* a) {
     free_exp(p, a->val);
 }
 
-Stmt new_stmt(MemPool p, const ae_stmt_t type, const uint pos) {
+Stmt new_stmt(MemPool p, const ae_stmt_t type, const loc_t pos) {
   Stmt a = mp_alloc(p, Stmt);
   a->stmt_type = type;
   a->pos = pos;
@@ -592,7 +592,7 @@ ANN static void free_stmt_auto(MemPool p, Stmt_Auto a) {
   free_stmt(p, a->body);
 }
 
-Stmt new_stmt_jump(MemPool p, struct Symbol_* xid, const m_bool is_label, const uint pos) {
+Stmt new_stmt_jump(MemPool p, struct Symbol_* xid, const m_bool is_label, const loc_t pos) {
   Stmt a = new_stmt(p, ae_stmt_jump, pos);
   a->d.stmt_jump.name = xid;
   a->d.stmt_jump.is_label = is_label;
@@ -651,7 +651,7 @@ ANN static void free_stmt_enum(MemPool p, Stmt_Enum a) {
   vector_release(&a->values);
 }
 
-Stmt new_stmt_union(MemPool p, const Decl_List l, const uint pos) {
+Stmt new_stmt_union(MemPool p, const Decl_List l, const loc_t pos) {
   Stmt a = new_stmt(p, ae_stmt_union, pos);
   a->d.stmt_union.l = l;
   return a;
@@ -780,7 +780,7 @@ void free_class_body(MemPool p, Class_Body a) {
 }
 
 Class_Def new_class_def(MemPool p, const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
-    const Class_Body body, const uint pos) {
+    const Class_Body body, const loc_t pos) {
   Class_Def a = mp_alloc(p, Class_Def);
   a->flag = class_decl;
   a->base.xid = xid;
