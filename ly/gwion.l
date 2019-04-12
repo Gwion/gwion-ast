@@ -13,6 +13,19 @@ IS          (u|U|l|L)*
 #include "parser.h"
 #include "err_msg.h"
 #include "pp.h"
+
+  #define YY_USER_ACTION                                             \
+    yylloc->first_line = yylloc->last_line;                          \
+    yylloc->first_column = yylloc->last_column;                      \
+    if (yylloc->last_line == (int)get_currline(yyscanner)/*yylineno*/)    \
+      yylloc->last_column += yyleng;                                 \
+    else {                                                           \
+      yylloc->last_line = (int)get_currline(yyscanner)/*yylineno*/;       \
+/*      yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n'); */\
+      yylloc->last_column = get_currpos(yyscanner) + yyleng; \
+    }
+
+
 #define gwion_alloc(a,b) xmalloc(a)
 #define gwion_realloc(a,b,c) xrealloc(a,b)
 #define gwion_free(a,b)  xfree(a)
@@ -25,8 +38,9 @@ ANN static unsigned long htol(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
+ANN static uint  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
-ANN int gwion_error(Scanner* scan, const char *);
+ANN int gwion_error(YYLTYPE*, Scanner*, const char *);
 ANN uint get_pos(const Scanner* scan);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
@@ -85,7 +99,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %option noyyget_lval noyyset_lval
 %option noyyget_lloc noyyset_lloc
 %option noyyget_debug noyyset_debug
-%option bison-bridge reentrant
+%option bison-bridge reentrant bison-locations
 %option header-file="include/lexer.h"
 %option prefix="gwion_"
 %option yywrap
@@ -274,7 +288,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
 [A-Za-z_][A-Za-z0-9_]*              {
   adjust(yyscanner);
-  const int ret = is_macro(yyscanner, yytext, 
+  const int ret = is_macro(yyscanner, yytext,
 YY_CURRENT_BUFFER);
   if(!ret) {
     yylval->sval = alloc_str(yyscanner, yytext);
@@ -359,6 +373,11 @@ static uint get_currline(void* data) {
   return scan->line;
 }
 
+static uint get_currpos(void* data) {
+  Scanner* scan = yyget_extra(data);
+  return scan->pos;
+}
+
 static char* get_currfile(void* data) {
   Scanner* scan = yyget_extra(data);
   return alloc_str(data, (m_str)vector_back(&scan->pp->filename));
@@ -369,18 +388,33 @@ static void adjust(void* data) {
   scan->pos += (uint)gwion_get_leng((void*)data);
 }
 
-static void err_line(const Scanner* scan, const m_str filename) {
-  m_uint n = 1;
+static void loc_err(const YYLTYPE* loc, const m_str filename) {
+  int n = 1;
   size_t len = 0;
+  gw_err("\033[1m%s:%u:%u:\033[0m\n\n", filename, loc->first_line, loc->first_column);
   FILE* f = fopen(filename, "r");
   if(!f)
     return;
   fseek(f, 0, SEEK_SET);
   m_str line = NULL;
-  while(getline(&line, &len, f) != -1) {
-    if(n == scan->line) {
-      gw_err("%s\n", line);
+  ssize_t sz;
+  while((sz = getline(&line, &len, f)) != -1) {
+    if(n > loc->last_line)
       break;
+    if(n >= loc->first_line) {
+      int pos = 0;
+      if(n == loc->first_line) {
+        do gw_err("%c", line[pos]);
+        while(++pos < loc->first_column - 1);
+        gw_err("\033[1m");
+      }
+      if(n == loc->last_line) {
+        do gw_err("%c", line[pos]);
+        while(++pos < loc->last_column);
+        gw_err("\033[0m");
+      }
+      do gw_err("%c", line[pos]);
+      while(++pos <= sz);
     }
     n++;
   }
@@ -388,13 +422,7 @@ static void err_line(const Scanner* scan, const m_str filename) {
   free(line);
 }
 
-static inline void err_marker(Scanner* scan) {
-  while(--scan->pos > 0)
-    gw_err(" ");
-  gw_err("\033[1;31m^\033[0m\n");
-}
-
-ANN int gwion_error(Scanner* scan, const char* s) {
+ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
   const m_str name = (m_str)vector_back(&scan->pp->filename);
   m_str filename = name;
   m_uint i = vector_size(&scan->pp->filename) - 1;
@@ -405,9 +433,8 @@ ANN int gwion_error(Scanner* scan, const char* s) {
       filename = (m_str)vector_at(&scan->pp->filename, i);
     }
   }
-  gw_err("\033[1m%s:%u:%u:\033[0m\n\t%s\n", filename, scan->line, scan->pos, s);
-  err_line(scan, filename);
-  err_marker(scan);
+  loc_err(loc, filename);
+  gw_err("%s\n", s);
   return 0;
 }
 

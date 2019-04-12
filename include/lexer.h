@@ -222,6 +222,18 @@
 #define yyset_lval gwion_set_lval
 #endif
 
+#ifdef yyget_lloc
+#define gwion_get_lloc_ALREADY_DEFINED
+#else
+#define yyget_lloc gwion_get_lloc
+#endif
+
+#ifdef yyset_lloc
+#define gwion_set_lloc_ALREADY_DEFINED
+#else
+#define yyset_lloc gwion_set_lloc
+#endif
+
 #ifdef yyalloc
 #define gwion_alloc_ALREADY_DEFINED
 #else
@@ -532,10 +544,10 @@ static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #define YY_DECL_IS_OURS 1
 
 extern int yylex \
-               (YYSTYPE * yylval_param , yyscan_t yyscanner);
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner);
 
 #define YY_DECL int yylex \
-               (YYSTYPE * yylval_param , yyscan_t yyscanner)
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
@@ -697,9 +709,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 291 "ly/gwion.l"
+#line 305 "ly/gwion.l"
 
 
-#line 703 "include/lexer.h"
+#line 715 "include/lexer.h"
 #undef gwion_IN_HEADER
 #endif /* gwion_HEADER_H */

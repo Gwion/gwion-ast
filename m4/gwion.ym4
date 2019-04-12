@@ -2,6 +2,7 @@
 %parse-param { Scanner* arg }
 %lex-param  { void* scan }
 %name-prefix "gwion_"
+%locations
 %{
 #include <stdio.h> // strlen in paste operation
 #include <string.h> // strlen in paste operation
@@ -20,7 +21,7 @@
 #define OP_SYM(a) insert_symbol(op2str(a))
 
 ANN uint get_pos(const Scanner*);
-ANN void gwion_error(const Scanner*, const char *);
+ANN void gwion_error(YYLTYPE*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
 m_str op2str(const Operator op);
 %}
@@ -115,7 +116,7 @@ ifdef(`TOOL_MODE', `stmt_pp', `'))
 %%
 
 prg: ast { arg->ast = $1; }
-  | /* empty */ { gwion_error(arg, "file is empty.\n"); YYERROR; }
+  | /* empty */ { gwion_error(&@$, arg, "file is empty.\n"); YYERROR; }
 
 ast
   : section { $$ = new_ast(mpool(arg), $1, NULL); }
@@ -155,18 +156,18 @@ fdef_base: type_decl_empty id func_args { $$ = new_func_base(mpool(arg), $1, $2,
 
 func_type: TYPEDEF opt_flag fptr_base arg_type {
   if($3->td->array && !$3->td->array->exp)
-    { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
+    { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
 $$ = new_stmt_fptr(mpool(arg), $3, $2 | $4); };
 stmt_type: TYPEDEF opt_flag type_decl_array id SEMICOLON { $$ = new_stmt_type(mpool(arg), $3, $4); $3->flag |= $2; };
 
 type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
 
 type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
-    { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR;}
+    { gwion_error(&@$, arg, "can't instantiate with empty '[]'"); YYERROR;}
   $$ = $1; }
 
 type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
-    { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
+    { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
   $$ = $1; }
 
 arg: type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
@@ -293,14 +294,14 @@ op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
 
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
-  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
-  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(arg, "partially empty array init [...][]..."); YYERROR; }
+  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
+  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
   : LBRACK RBRACK             { $$ = new_array_sub(mpool(arg), NULL); }
   | array_empty LBRACK RBRACK { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp     { gwion_error(arg, "partially empty array init [][...]"); YYERROR; }
+  | array_empty array_exp     { gwion_error(&@$, arg, "partially empty array init [][...]"); YYERROR; }
   ;
 
 array: array_exp | array_empty;
@@ -398,10 +399,10 @@ var_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, get_pos(arg)); }
 
 arg_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, get_pos(arg)); }
   | id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, get_pos(arg)); }
-  | id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
+  | id array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
 fptr_arg_decl: opt_id { $$ = new_var_decl(mpool(arg), $1, NULL, get_pos(arg)); }
   | opt_id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, get_pos(arg)); }
-  | opt_id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
+  | opt_id array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
 
 eq_op : EQ { $$ = op_eq; } | NEQ { $$ = op_ne; };
 rel_op: LT { $$ = op_lt; } | GT { $$ = op_gt; } | LE { $$ = op_le; } | GE { $$ = op_ge; };

@@ -1,6 +1,7 @@
 #ifndef __ABSYN
 #define __ABSYN
 
+typedef uint loc_t;
 typedef struct Ast_           * Ast;
 typedef struct Class_Def_     * Class_Def;
 typedef struct Func_Def_      * Func_Def;
