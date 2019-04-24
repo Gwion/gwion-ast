@@ -14,15 +14,14 @@ changequote(`[[[',`]]]')IS          (u|U|l|L)*
 #include "err_msg.h"
 #include "pp.h"
 
-  #define YY_USER_ACTION                                             \
-    yylloc->first_line = yylloc->last_line;                          \
-    yylloc->first_column = yylloc->last_column;                      \
-    if (yylloc->last_line == (int)get_currline(yyscanner)/*yylineno*/)    \
-      yylloc->last_column += yyleng;                                 \
-    else {                                                           \
-      yylloc->last_line = (int)get_currline(yyscanner)/*yylineno*/;       \
-/*      yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n'); */\
+  #define YY_USER_ACTION                                     \
+    yylloc->first_line = yylloc->last_line;                  \
+    yylloc->first_column = get_currpos(yyscanner) ;          \
+    if (yylloc->last_line == (int)get_currline(yyscanner))   \
       yylloc->last_column = get_currpos(yyscanner) + yyleng; \
+    else {                                                   \
+      yylloc->last_line = (int)get_currline(yyscanner);      \
+      yylloc->last_column = get_currpos(yyscanner);          \
     }
 
 
@@ -41,7 +40,6 @@ ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
 ANN int gwion_error(YYLTYPE*, Scanner*, const char *);
-ANN uint get_pos(const Scanner* scan);
 ifdef([[[TINY_MODE]]], [[[]]],
 [[[ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
@@ -78,12 +76,12 @@ ANN static m_str macro_data(void* data, const m_bool);
 #define GWYY_LINT(a,b)
 #endif
 #define GWYY_COMMENT     GWYY_DOLINT(yymore()); continue;
-#define GWYY_COMMENT2    GWYY_DOLINT(yymore()); newline(yyscanner); continue;
+#define GWYY_COMMENT2    GWYY_DOLINT(yymore()); newline(yyscanner); YY_USER_ACTION; continue;
 #define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) continue;
 
 #define GWYY_INCLUDE GWYY_LINT(strip_include(yyscanner, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
 #define GWYY_UNDEF   GWYY_LINT(strdup(yytext), PP_UNDEF) rem_macro(yyscanner, yytext);
-#define GWYY_DEFINE  GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner);
+#define GWYY_DEFINE  GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION;
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
 #define GWYY_NL      GWYY_LINT(NULL, PP_NL)
 #define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) if(!has_macro(yyscanner, a, !b)) BEGIN(skip); xfree(a);
@@ -113,7 +111,7 @@ ifdef([[[TINY_MODE]]], [[[]]], [[[%x define define_arg_start define_arg skip get
 %%
 
 ifdef([[[TINY_MODE]]], [[[]]],
-[[[<get_arg>"," { adjust(yyscanner); handle_comma(yyscanner); }
+[[[<get_arg>[ \r\t]*","[ \r\t]* { adjust(yyscanner); handle_comma(yyscanner); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
 <get_arg>")" { adjust(yyscanner); if(handle_rpar(yyscanner)) { BEGIN(INITIAL); GWYY_CALL }}
 <get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
@@ -125,6 +123,7 @@ ifdef([[[TINY_MODE]]], [[[]]],
 <define_arg>[A-Za-z_][A-Za-z0-9_]* { adjust(yyscanner); macro_arg(yyscanner, yytext); }
 <define_arg>[ \r\t]*","[ \r\t]*    { adjust(yyscanner); }
 <define_arg>"..."[ \r\t]*")"[ \r\t]* { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
+<define_arg>" "   { gwion_lex_error(yyscanner, "Invalid"); }
 <define_arg>")"[ \r\t]* { adjust(yyscanner); BEGIN(define); }
 
 <define_arg_start>"("      { adjust(yyscanner); BEGIN(define_arg); };
@@ -147,10 +146,10 @@ ifdef([[[TINY_MODE]]], [[[]]],
   if(!has_macro(yyscanner, c, def))
     BEGIN(skip);
 }
-^#else[ \r\t]*\n  { newline(yyscanner); GWYY_ELSE }
-^#endif[ \r\t]*\n { newline(yyscanner); GWYY_ENDIF; BEGIN(INITIAL); }
+^#else[ \r\t]*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
+^#endif[ \r\t]*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
-<skip>\n      { newline(yyscanner); }
+<skip>\n      { newline(yyscanner); YY_USER_ACTION; }
 <skip>.         { continue;}
 <skip>^#else[ \r\t]*\n { BEGIN(macro_toggle(yyscanner)); }
 <skip>^#endif[ \r\t]*\n { macro_end(yyscanner); BEGIN(INITIAL); }
@@ -159,14 +158,14 @@ ifdef([[[TINY_MODE]]], [[[]]],
 
 ^#undef[ \r\t]+[A-Za-z_][A-Za-z0-9_]*[ \r\t]* { GWYY_UNDEF }
 
-^[ \r\t]*"\n"                       { newline(yyscanner); GWYY_NL; continue; }
+^[ \r\t]*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 ]]])
-"//"              { BEGIN(comment); }
-<comment>\\\n    { newline(yyscanner); ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT2]]]) }
-<comment>\n      { newline(yyscanner); BEGIN(INITIAL); ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT_END;]]]) }
+"//"              { YY_USER_ACTION;BEGIN(comment); }
+<comment>\\\n    { newline(yyscanner); YY_USER_ACTION; ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT2]]]) }
+<comment>\n      { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT_END;]]]) }
 <comment>.      { ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT;]]])  }
 
-"\n"                                { newline(yyscanner); continue; }
+"\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 [ \r\t]                             { adjust(yyscanner); continue; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 ","                                 { adjust(yyscanner); return COMMA;}
@@ -327,7 +326,8 @@ ANN void yynoreturn gwion_lex_error (yyscan_t yyscanner, const char *msg) {
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   ifdef([[[TINY_MODE]]],[[[]]],[[[/*scanner_post(scan);*/]]])
   header(scan, msg, 1);
-  gw_err("%s\n", msg);
+//  gw_err("[%lu] %s\n", vector_size(&scan->pp->filename), msg);
+//  gw_err("[%s] %s\n", vector_at(&scan->pp->filename, 1), msg);
   longjmp(*scan->jmp, 1);
 }
 
@@ -392,10 +392,10 @@ static void adjust(void* data) {
   scan->pos += (uint)gwion_get_leng((void*)data);
 }
 
-static void loc_err(const YYLTYPE* loc, const m_str filename) {
+void loc_err(const YYLTYPE* loc, const m_str filename) {
+  gw_err("\033[1m%s:%u:%u:\033[0m\n", filename, loc->first_line, loc->first_column);
   int n = 1;
   size_t len = 0;
-  gw_err("\033[1m%s:%u:%u:\033[0m\n\n", filename, loc->first_line, loc->first_column);
   FILE* f = fopen(filename, "r");
   if(!f)
     return;
@@ -408,13 +408,13 @@ static void loc_err(const YYLTYPE* loc, const m_str filename) {
     if(n >= loc->first_line) {
       int pos = 0;
       if(n == loc->first_line) {
-        do gw_err("%c", line[pos]);
-        while(++pos < loc->first_column - 1);
-        gw_err("\033[1m");
+        while(pos < loc->first_column - 1)
+          gw_err("%c", line[pos++]);
+        gw_err("\033[4m");
       }
       if(n == loc->last_line) {
         do gw_err("%c", line[pos]);
-        while(++pos < loc->last_column);
+        while(++pos < loc->last_column - 1);
         gw_err("\033[0m");
       }
       do gw_err("%c", line[pos]);
@@ -443,10 +443,6 @@ ifdef([[[TINY_MODE]]], [[[const m_str filename = scan->filename;]]],
   return 0;
 }
 
-ANN uint get_pos(const Scanner* scan) {
-  return scan->line;
-}
-
 ifdef([[[TINY_MODE]]], [[[]]],
 [[[static Macro add_macro(void* data, const m_str line) {
   Scanner* scan = yyget_extra(data);
@@ -456,7 +452,6 @@ ifdef([[[TINY_MODE]]], [[[]]],
   m_str id = strip_comment(data, line + i);
   scan->pp->entry = macro_add(scan->pp->macros, id);
   xfree(id);
-printf("file->ptr %p\n", scan->pp->filename.ptr);
   if(!scan->pp->entry)
     gwion_lex_error(data, "macro already defined");
   else {
@@ -585,8 +580,10 @@ static int macro_toggle(void* data) {
 }
 
 static void macro_arg(void* data, const m_str id) {
-  const Scanner* scan = yyget_extra(data);
-  const Args arg = new_args(scan->st->p, id);
+  Scanner* scan = yyget_extra(data);
+  const m_str str = strip_comment(scan, id);
+  const Args arg = new_args(scan->st->p, str);
+  xfree(str);
   if(scan->pp->entry->base) {
     Args a = scan->pp->entry->base;
     while(a->next)
@@ -606,6 +603,8 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   const m_bool is_str = s[0] == '#';
   m_str id = is_str ? s+1 : s;
   const m_str name = (m_str)vector_back(&scan->pp->filename);
+  if(name[0] == '@' && !strncmp(s, name + 8, strlen(name + 8) - 1))
+    gwion_lex_error(data, "recursive macro use detected");
   Args arg = name[0] == '@' ? (Args)vector_at(&scan->pp->filename,
     vector_size(&scan->pp->filename) - 2) : NULL;
   while(arg) {
@@ -632,25 +631,27 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   }
   Macro e = macro_has(scan->pp->macros, id);
   if(e) {
+    m_str str;
     scan->pp->entry = e;
     if(e->text) {
       if(e->base) {
         e->args = e->base;
         SCAN_NOLINT {
-          m_str str;
           if(asprintf(&str, "@macro '%s'", e->name) < 0)
             return 0;
-          gwpp_stack(scan, handle, e->base, str);
-          scan->pos      = e->pos;
-          scan->line     = e->line;
+      }
+      char c;
+      while(isspace(c = (char)input(data)))++scan->pos;
+        if(c != '(') {
+          xfree(str);
+          gwion_lex_error(data, "macro needs arguments");
         }
-  char c;
-  while(isspace(c = (char)input(data)))++scan->pos;
-  if(c != '(')
-    gwion_lex_error(data, "macro needs arguments");
-  ++scan->pp->npar;
-  struct yyguts_t * yyg = (struct yyguts_t*)data;
-  yyg->yy_start = 1 + 2 * get_arg;
+        ++scan->pp->npar;
+        gwpp_stack(scan, handle, e->base, str);
+        scan->pos      = e->pos;
+        scan->line     = e->line;
+        struct yyguts_t * yyg = (struct yyguts_t*)data;
+        yyg->yy_start = 1 + 2 * get_arg;
         return 2;
       } else {
         SCAN_LINT(return 0);
@@ -717,6 +718,8 @@ int yywrap(void* data) {
     const m_str name = (m_str)vector_pop(&scan->pp->filename);
     const void* info = (void*)vector_pop(&scan->pp->filename);
     const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(&scan->pp->filename);
+if(handle == state)
+  return 1;
     yy_switch_to_buffer(state, data);
     yy_delete_buffer(handle, data);
     if(name[0] != '@')
@@ -745,6 +748,8 @@ void handle_lpar(void* data) {
 
 static int handle_rpar(void* data) {
   Scanner* scan = yyget_extra(data);
+  if(!scan->pp->npar)
+    gwion_lex_error(data, "invalid ')' token in macro");
   if(--scan->pp->npar)
     return 0;
   if(scan->pp->entry->args->next)
@@ -758,16 +763,17 @@ static int handle_rpar(void* data) {
 void handle_char(void* data, const m_str str) {
   Scanner* scan = yyget_extra(data);
   const Args a = scan->pp->entry->args;
+  //assert(a);
   if(!a->text) {
-    a->text = malloc(32);
+    a->text = (m_str)xmalloc(32);
     scan->pp->arg_cap = 32;
     scan->pp->arg_len = 1;
     a->text[0] = *str;
     a->text[1] = '\0';
   } else {
     if(++scan->pp->arg_len == scan->pp->arg_cap)
-      a->text = realloc(a->text, (scan->pp->arg_len << 1));
-    a->text[scan->pp->arg_len- 1] = *str;
+      a->text = (m_str)xrealloc(a->text, (scan->pp->arg_cap <<= 1));
+    a->text[scan->pp->arg_len - 1] = *str;
     a->text[scan->pp->arg_len] = '\0';
   }
 }

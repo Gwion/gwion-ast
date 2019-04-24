@@ -12,6 +12,7 @@ Var_Decl new_var_decl(MemPool p, struct Symbol_* xid, const Array_Sub array, con
 ANN static void free_var_decl(MemPool p, Var_Decl a) {
   if(a->array)
     free_array_sub(p, a->array);
+  free_loc(p, a->pos);
   mp_free(p, Var_Decl, a);
 }
 
@@ -78,7 +79,7 @@ ANN static Exp new_exp(MemPool p, const ae_exp_t type, const loc_t pos) {
 }
 
 Exp new_exp_lambda(MemPool p, const Symbol xid, const Arg_List args, const Stmt code) {
-  Exp a = new_exp(p, ae_exp_lambda, code->pos);
+  Exp a = new_exp(p, ae_exp_lambda, loc_cpy(p, code->pos));
   a->meta = ae_meta_var;
   a->d.exp_lambda.args = args;
   a->d.exp_lambda.code = code;
@@ -90,12 +91,14 @@ ANN static void free_exp_lambda(MemPool p, Exp_Lambda* lambda) {
   if(lambda->args)
     free_arg_list(p, lambda->args);
   free_stmt(p, lambda->code);
-  if(lambda->def)
+  if(lambda->def) {
+    free_loc(p, lambda->def->pos);
     mp_free(p, Func_Def, lambda->def);
+  }
 }
 
 Exp new_exp_array(MemPool p, const Exp base, const Array_Sub array) {
-  Exp a = new_exp(p, ae_exp_array, base->pos);
+  Exp a = new_exp(p, ae_exp_array, loc_cpy(p, base->pos));
   a->meta = ae_meta_var;
   a->d.exp_array.base = base;
   a->d.exp_array.array = array;
@@ -108,7 +111,7 @@ ANN static void free_exp_array(MemPool p, Exp_Array* a) {
 }
 
 Exp new_exp_typeof(MemPool p, Exp exp) {
-  Exp a = new_exp(p, ae_exp_typeof, exp->pos);
+  Exp a = new_exp(p, ae_exp_typeof, loc_cpy(p, exp->pos));
   a->d.exp_typeof.exp = exp;
   return a;
 }
@@ -123,13 +126,13 @@ ID_List new_id_list(MemPool p, struct Symbol_* xid, const loc_t pos) {
 ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list, const loc_t pos) {
   ID_List a = new_id_list(p, xid, pos);
   a->next = list;
-  a->pos = pos;
   return a;
 }
 
 void free_id_list(MemPool p, ID_List a) {
   if(a->next)
     free_id_list(p, a->next);
+  free_loc(p, a->pos);
   mp_free(p, ID_List, a);
 }
 
@@ -146,7 +149,7 @@ void free_type_decl(MemPool p, Type_Decl* a) {
 }
 
 Exp new_exp_decl(MemPool p, Type_Decl* td, const Var_Decl_List list) {
-  Exp a = new_exp(p, ae_exp_decl, td_pos(td));
+  Exp a = new_exp(p, ae_exp_decl, loc_cpy(p, td_pos(td)));
   a->d.exp_decl.td = td;
   a->d.exp_decl.list = list;
   return a;
@@ -158,7 +161,7 @@ ANN static void free_exp_decl(MemPool p, Exp_Decl* a) {
 }
 
 Exp new_exp_binary(MemPool p, const Exp lhs, const Operator op, const Exp rhs) {
-  Exp a = new_exp(p, ae_exp_binary, lhs->pos);
+  Exp a = new_exp(p, ae_exp_binary, loc_cpy(p, lhs->pos));
   a->meta = ae_meta_value;
   a->d.exp_binary.lhs = lhs;
   a->d.exp_binary.op = op;
@@ -172,7 +175,7 @@ ANN static void free_exp_binary(MemPool p, Exp_Binary* binary) {
 }
 
 Exp new_exp_cast(MemPool p, Type_Decl* td, const Exp exp) {
-  Exp a = new_exp(p, ae_exp_cast, exp->pos);
+  Exp a = new_exp(p, ae_exp_cast, loc_cpy(p, exp->pos));
   a->meta = ae_meta_value;
   a->d.exp_cast.td = td;
   a->d.exp_cast.exp = exp;
@@ -185,7 +188,7 @@ ANN static void free_exp_cast(MemPool p, Exp_Cast* a) {
 }
 
 Exp new_exp_post(MemPool p, const Exp exp, const Operator op) {
-  Exp a = new_exp(p, ae_exp_post, exp->pos);
+  Exp a = new_exp(p, ae_exp_post, loc_cpy(p, exp->pos));
   a->meta = ae_meta_var;
   a->d.exp_post.exp = exp;
   a->d.exp_post.op = op;
@@ -238,7 +241,7 @@ Exp new_exp_prim_id(MemPool p, struct Symbol_* xid, const loc_t pos) {
 }
 
 Exp new_exp_prim_hack(MemPool p, const Exp exp) {
-  Exp a = new_exp_prim(p, exp->pos);
+  Exp a = new_exp_prim(p, loc_cpy(p, exp->pos));
   a->d.exp_primary.primary_type = ae_primary_hack;
   a->d.exp_primary.d.exp = exp;
   return a;
@@ -259,7 +262,7 @@ Exp new_exp_prim_array(MemPool p, const Array_Sub exp, const loc_t pos) {
 }
 
 Exp new_exp_prim_vec(MemPool p, const ae_prim_t t, Exp e) {
-  Exp a = new_exp_prim(p, e->pos);
+  Exp a = new_exp_prim(p, loc_cpy(p, e->pos));
   a->d.exp_primary.primary_type = t;
   a->d.exp_primary.d.vec.exp = e;
   do ++a->d.exp_primary.d.vec.dim;
@@ -274,21 +277,21 @@ static inline Exp new_exp_unary_base(MemPool p, const Operator oper, const loc_t
 }
 
 Exp new_exp_unary(MemPool p, const Operator oper, const Exp exp) {
-  Exp a = new_exp_unary_base(p, oper, exp->pos);
+  Exp a = new_exp_unary_base(p, oper, loc_cpy(p, exp->pos));
   a->meta = exp->meta;
   a->d.exp_unary.exp = exp;
   return a;
 }
 
 Exp new_exp_unary2(MemPool p, const Operator oper, Type_Decl* td) {
-  Exp a = new_exp_unary_base(p, oper, td_pos(td));
+  Exp a = new_exp_unary_base(p, oper, loc_cpy(p, td_pos(td)));
   a->meta = ae_meta_value;
   a->d.exp_unary.td = td;
   return a;
 }
 
 Exp new_exp_unary3(MemPool p, const Operator oper, const Stmt code) {
-  Exp a = new_exp_unary_base(p, oper, code->pos);
+  Exp a = new_exp_unary_base(p, oper, loc_cpy(p, code->pos));
   a->meta = ae_meta_value;
   a->d.exp_unary.code = code;
   return a;
@@ -304,7 +307,7 @@ ANN static void free_exp_unary(MemPool p, Exp_Unary* a) {
 }
 
 Exp new_exp_if(MemPool p, const restrict Exp cond, const restrict Exp if_exp, const restrict Exp else_exp) {
-  Exp a = new_exp(p, ae_exp_if, cond->pos);
+  Exp a = new_exp(p, ae_exp_if, loc_cpy(p, cond->pos));
   a->meta = ((if_exp->meta == ae_meta_var &&
               else_exp->meta == ae_meta_var) ? ae_meta_var : ae_meta_value);
   a->d.exp_if.cond = cond;
@@ -380,7 +383,7 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
   return GW_OK;
 }
 
-ANN static void free_func_base(MemPool p, struct Func_Base_ * a) {
+ANN /* static */void free_func_base(MemPool p, struct Func_Base_ * a) {
   if(!a->func) {
     if(a->args)
       free_arg_list(p, a->args);
@@ -391,6 +394,8 @@ ANN static void free_func_base(MemPool p, struct Func_Base_ * a) {
 void free_func_def(MemPool p, Func_Def a) {
   if(!a->tmpl && !GET_FLAG(a, global)) {
     free_func_base(p, a->base);
+    free_stmt(p, a->d.code);
+    free_loc(p, a->pos);
     mp_free(p, Func_Def, a);
   }
 }
@@ -404,14 +409,14 @@ struct Func_Base_* new_func_base(MemPool p, Type_Decl* td, const Symbol xid, con
 }
 
 Stmt new_stmt_fptr(MemPool p, struct Func_Base_ *base, const ae_flag flag) {
-  Stmt a              = new_stmt(p, ae_stmt_fptr, td_pos(base->td));
+  Stmt a              = new_stmt(p, ae_stmt_fptr, loc_cpy(p, td_pos(base->td)));
   a->d.stmt_fptr.base = base;
   base->td->flag |= flag;
   return a;
 }
 
 Stmt new_stmt_type(MemPool p, Type_Decl* ext, struct Symbol_ *xid) {
-  Stmt a             = new_stmt(p, ae_stmt_type, ext->xid->pos);
+  Stmt a             = new_stmt(p, ae_stmt_type, loc_cpy(p, td_pos(ext)));
   a->d.stmt_type.ext = ext;
   a->d.stmt_type.xid = xid;
   return a;
@@ -438,7 +443,7 @@ ANN static void free_tmpl_call(MemPool p, Tmpl_Call* a) {
 }
 
 Exp new_exp_call(MemPool p, const Exp base, const Exp args) {
-  Exp a = new_exp(p, ae_exp_call, base->pos);
+  Exp a = new_exp(p, ae_exp_call, loc_cpy(p, base->pos));
   a->meta = ae_meta_value;
   a->d.exp_call.func = base;
   a->d.exp_call.args = args;
@@ -454,7 +459,7 @@ ANN static void free_exp_call(MemPool p, Exp_Call* a) {
 }
 
 Exp new_exp_dot(MemPool p, const Exp base, struct Symbol_* xid) {
-  Exp a = new_exp(p, ae_exp_dot, base->pos);
+  Exp a = new_exp(p, ae_exp_dot, loc_cpy(p, base->pos));
   a->meta = ae_meta_var;
   a->d.exp_dot.base = base;
   a->d.exp_dot.xid = xid;
@@ -499,6 +504,7 @@ void free_exp(MemPool p, Exp exp) {
   if(exp->next)
     free_exp(p, exp->next);
   exp_func[exp->exp_type](p, &exp->d);
+  free_loc(p, exp->pos);
   mp_free(p, Exp, exp);
 }
 
@@ -521,13 +527,13 @@ void free_arg_list(MemPool p, Arg_List a) {
 }
 
 Stmt new_stmt_exp(MemPool p, const ae_stmt_t type, const Exp exp) {
-  Stmt a = new_stmt(p, type, exp->pos);
+  Stmt a = new_stmt(p, type, loc_cpy(p, exp->pos));
   a->d.stmt_exp.val = exp;
   return a;
 }
 
 Stmt new_stmt_code(MemPool p, const Stmt_List list) {
-  Stmt a = new_stmt(p, ae_stmt_code, list->stmt->pos);
+  Stmt a = new_stmt(p, ae_stmt_code, loc_cpy(p, list->stmt->pos));
   a->d.stmt_code.stmt_list = list;
   return a;
 }
@@ -550,7 +556,7 @@ Stmt new_stmt(MemPool p, const ae_stmt_t type, const loc_t pos) {
 }
 
 Stmt new_stmt_flow(MemPool p, const ae_stmt_t type, const Exp cond, const Stmt body, const m_bool is_do) {
-  Stmt a = new_stmt(p, type, cond->pos);
+  Stmt a = new_stmt(p, type, loc_cpy(p, cond->pos));
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond = cond;
   a->d.stmt_flow.body = body;
@@ -563,7 +569,7 @@ ANN static void free_stmt_flow(MemPool p, struct Stmt_Flow_* a) {
 }
 
 Stmt new_stmt_for(MemPool p, const restrict Stmt c1, const restrict Stmt c2, const restrict Exp c3, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_for, c1->pos);
+  Stmt a = new_stmt(p, ae_stmt_for, loc_cpy(p, c1->pos));
   a->d.stmt_for.c1 = c1;
   a->d.stmt_for.c2 = c2;
   a->d.stmt_for.c3 = c3;
@@ -580,7 +586,7 @@ ANN static void free_stmt_for(MemPool p, Stmt_For a) {
 }
 
 Stmt new_stmt_auto(MemPool p, struct Symbol_* sym, const Exp exp, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_auto, exp->pos);
+  Stmt a = new_stmt(p, ae_stmt_auto, loc_cpy(p, exp->pos));
   a->d.stmt_auto.sym = sym;
   a->d.stmt_auto.exp = exp;
   a->d.stmt_auto.body = body;
@@ -600,7 +606,7 @@ Stmt new_stmt_jump(MemPool p, struct Symbol_* xid, const m_bool is_label, const 
 }
 
 Stmt new_stmt_loop(MemPool p, const Exp cond, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_loop, cond->pos);
+  Stmt a = new_stmt(p, ae_stmt_loop, loc_cpy(p, cond->pos));
   a->d.stmt_loop.cond = cond;
   a->d.stmt_loop.body = body;
   return a;
@@ -612,7 +618,7 @@ ANN static void free_stmt_loop(MemPool p, Stmt_Loop a) {
 }
 
 Stmt new_stmt_if(MemPool p, const Exp cond, const restrict Stmt if_body) {
-  Stmt a = new_stmt(p, ae_stmt_if, cond->pos);
+  Stmt a = new_stmt(p, ae_stmt_if, loc_cpy(p, cond->pos));
   a->d.stmt_if.cond = cond;
   a->d.stmt_if.if_body = if_body;
   return a;
@@ -626,7 +632,7 @@ ANN static void free_stmt_if(MemPool p, Stmt_If a) {
 }
 
 Stmt new_stmt_switch(MemPool p, const Exp val, Stmt stmt) {
-  Stmt a = new_stmt(p, ae_stmt_switch, val->pos);
+  Stmt a = new_stmt(p, ae_stmt_switch, loc_cpy(p, val->pos));
   a->d.stmt_switch.val = val;
   a->d.stmt_switch.stmt = stmt;
   return a;
@@ -638,7 +644,7 @@ ANN static inline void free_stmt_switch(MemPool p, Stmt_Switch a) {
 }
 
 Stmt new_stmt_enum(MemPool p, const ID_List list, struct Symbol_* xid) {
-  Stmt a = new_stmt(p, ae_stmt_enum, list->pos);
+  Stmt a = new_stmt(p, ae_stmt_enum, loc_cpy(p, list->pos));
   a->d.stmt_enum.xid = xid;
   a->d.stmt_enum.list = list;
   a->d.stmt_enum.flag = 0;
@@ -659,6 +665,7 @@ Stmt new_stmt_union(MemPool p, const Decl_List l, const loc_t pos) {
 
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
+// TODO: fix me
 Stmt new_stmt_pp(MemPool p, const enum ae_pp_type type, const m_str data) {
   Stmt a = new_stmt(p, ae_stmt_pp, 0);
   a->d.stmt_pp.type = type;
@@ -692,6 +699,11 @@ ANN static inline void free_stmt_union(MemPool p, Stmt_Union a) {
   free_decl_list(p, a->l);
 }
 
+ANN static inline void free_stmt_jump(MemPool p NUSED, Stmt_Jump a) {
+  if(a->is_label && a->data.v.ptr)
+    vector_release(&a->data.v);
+}
+
 ANN static void free_stmt_xxx(MemPool p NUSED, const union stmt_data *d NUSED) { return; }
 typedef void (*_stmt_func)(MemPool, const union stmt_data *);
 static const _stmt_func stmt_func[] = {
@@ -699,7 +711,7 @@ static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_for,  (_stmt_func)free_stmt_auto, (_stmt_func)free_stmt_loop,
   (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_switch,
   (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,
-  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_enum,
+  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_jump,  (_stmt_func)free_stmt_enum,
   (_stmt_func)free_stmt_fptr, (_stmt_func)free_stmt_type, (_stmt_func)free_stmt_union,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
@@ -710,6 +722,7 @@ static const _stmt_func stmt_func[] = {
 
 void free_stmt(MemPool p, Stmt stmt) {
   stmt_func[stmt->stmt_type](p, &stmt->d);
+  free_loc(p, stmt->pos);
   mp_free(p, Stmt, stmt);
 }
 
@@ -757,6 +770,7 @@ void free_class_def(MemPool p, Class_Def a) {
     free_tmpl_class(p, a->tmpl);
   if(a->body && (!a->base.type || !GET_FLAG(a, ref)))
     free_class_body(p, a->body);
+  free_loc(p, a->pos);
   mp_free(p, Class_Def, a);
 }
 

@@ -23,7 +23,7 @@ struct Macro_ {
   Args  args;
   Macro next;
   uint line;
-  loc_t pos;
+  uint pos;
 };
 
 void  macro_del(const Hash);
