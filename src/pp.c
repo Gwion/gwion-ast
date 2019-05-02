@@ -20,7 +20,7 @@ ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
 static void pp_post(PP* pp, void* data) {
   m_uint size = vector_size(&pp->filename);
   while(size > 2)
-    size = clear_buffer(&pp->filename, data, size > 6);
+    size = clear_buffer(&pp->filename, data, size > 2);
   pp->entry = NULL;
   vector_clear(&pp->filename);
   macro_del(pp->macros);

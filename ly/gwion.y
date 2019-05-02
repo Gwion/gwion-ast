@@ -76,7 +76,7 @@ m_str op2str(const Operator op);
 %type<ival>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %type<ival> atsym vec_type
 %token<fval> FLOATT
-%token<sval> ID "<identifier>" STRING_LIT "<string>" CHAR_LIT "<char>"
+%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
 
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define>" PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<flag> flag opt_flag

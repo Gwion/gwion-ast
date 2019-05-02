@@ -174,6 +174,7 @@ typedef struct {
   Exp exp;
   Type_Decl* td;
   Stmt code;
+uint fork_ok; // fork only info
 } Exp_Unary;
 typedef struct {
   Exp exp;
