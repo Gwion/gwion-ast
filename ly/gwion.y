@@ -171,7 +171,7 @@ type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
 arg: type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
 arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };
 fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
-fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA arg_list { $1->next = $3; $$ = $1; };
+fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list { $1->next = $3; $$ = $1; };
 
 code_stmt
   : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, loc_cpy(mpool(arg), &@$)); }
