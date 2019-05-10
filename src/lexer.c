@@ -3445,16 +3445,14 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   const m_bool is_str = s[0] == '#';
   m_str id = is_str ? s+1 : s;
   const m_str name = (m_str)vector_back(&scan->pp->filename);
-//for(m_uint i = vector_size(&scan->pp->filename) + 1; --i;) {
-/*
-for(m_uint i = vector_size(&scan->pp->filename) + 1; --i; i-= i > 4 ? 4 : 0) {
-  const m_str name = (m_str)vector_at(&scan->pp->filename, i - 1);
-  if(name)
-    if(name[0] == '@' && !strncmp(s, name + 8, strlen(name + 8) - 1))
+  for(m_uint i = vector_size(&scan->pp->filename) + 1; --i; i-= i > 4 ? 4 : 0) {
+    const m_str name = (m_str)vector_at(&scan->pp->filename, i - 1);
+    if(name && name[0] == '@' && !strncmp(s, name + 8, strlen(name + 8) - 1)) {
+      yywrap(data);
       gwion_lex_error(data, "recursive macro use detected");
+    }
   }
-*/
-  Args arg = name[0] == '@' ? (Args)vector_at(&scan->pp->filename,
+  Args arg = (vector_size(&scan->pp->filename) >= 2) ? (Args)vector_at(&scan->pp->filename,
     vector_size(&scan->pp->filename) - 2) : NULL;
   while(arg) {
     if(!strcmp(id, arg->name)) {
@@ -3512,13 +3510,20 @@ for(m_uint i = vector_size(&scan->pp->filename) + 1; --i; i-= i > 4 ? 4 : 0) {
         gwpp_stack(scan, handle, e->base, str);
         scan->pos  = e->pos;
         scan->line = e->line;
-//struct yyguts_t * yyg = (struct yyguts_t*)data;
-//void *yyscanner = data;
-//YY_USER_ACTION
         yy_scan_string(e->text, data);
         return 1;
       }
     }
+    return 1;
+  } else if(!strcmp(id, "__VA_ARGS__")) { // vararg macro with no args
+    Macro e = macro_has(scan->pp->macros, name);
+    m_str str;
+    if(asprintf(&str, "@argument '__VA_ARGS__'") < 0)
+      return 0;
+    gwpp_stack(scan, handle, NULL, str);
+    scan->pos  = e->pos;
+    scan->line = e->line;
+    yy_scan_string(e->base->text, data);
     return 1;
   }
   return 0;
@@ -3554,13 +3559,11 @@ uint clear_buffer(Vector v, void* data, const m_bool last NUSED) {
   const m_str name = (m_str)vector_pop(v);
   const void* info = (void*)vector_pop(v);
   const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(v);
-//  if(!last)
-//    yy_delete_buffer(state, data);
   if(name[0] != '@')
     fclose((FILE*)info);
   vector_pop(v);
   vector_pop(v);
-  if(vector_size(v) > 2 && strncmp(name, "@a", 2))
+  if(vector_size(v) > 2)
     yy_delete_buffer(state, data);
   xfree(name);
   return (uint)vector_size(v);
@@ -3574,7 +3577,6 @@ int yywrap(void* data) {
     const m_str name = (m_str)vector_pop(&scan->pp->filename);
     const void* info = (void*)vector_pop(&scan->pp->filename);
     const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(&scan->pp->filename);
-//    if(handle && state && handle != state) {
     if(handle != state) {
       yy_switch_to_buffer(state, data);
       yy_delete_buffer(handle, data);
@@ -3583,8 +3585,8 @@ int yywrap(void* data) {
       fclose((FILE*)info);
     else if(info)
       clean_args((Args)info);
-if(strlen(name))
-    xfree(name);
+    if(strlen(name))
+      xfree(name);
     scan->pos  = (uint)vector_pop(&scan->pp->filename);
     scan->line = (uint)vector_pop(&scan->pp->filename);
     void* yyscanner = data;
@@ -3597,7 +3599,6 @@ if(strlen(name))
 static void handle_comma(void* data) {
   const Scanner *scan = yyget_extra(data);
   const Args a = scan->pp->entry->args;
-//  if(strcmp(a->name, "__VA_ARGS__") && !(scan->pp->entry->args = a->next))
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next))
       gwion_lex_error(data, "too many arguments");
@@ -3619,13 +3620,11 @@ static int handle_rpar(void* data) {
     gwion_lex_error(data, "not enough arguments");
   scan->pp->entry->args = NULL;
   SCAN_NOLINT {
-if(!strcmp(scan->pp->entry->text, "__VA_ARGS__")) {
-  struct yyguts_t *yyg = (struct yyguts_t*)data;
-  YY_BUFFER_STATE handle = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
-    gwpp_stack(scan, handle, NULL, strdup(scan->pp->entry->name));
-}
-    //scan->pos      = e->pos;
-    //scan->line     = e->line;
+    if(!strcmp(scan->pp->entry->text, "__VA_ARGS__")) {
+      struct yyguts_t *yyg = (struct yyguts_t*)data;
+      YY_BUFFER_STATE handle = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
+      gwpp_stack(scan, handle, NULL, strdup(scan->pp->entry->name));
+    }
     yy_scan_string(scan->pp->entry->text, data);
   }
   return 1;
