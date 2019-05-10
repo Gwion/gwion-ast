@@ -10,14 +10,21 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$(@F:.o=.Td)
 
 src := $(wildcard src/*.c)
 
-ifeq (${BUILD_ON_WINDOW}, 1)
+ifeq (${BUILD_ON_WINDOWS}, 1)
+ifeq (${CC}, clang)
+CFLAGS += -DYY_NO_UNISTD_H
+endif
 CFLAGS+=-DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700
 endif
 
 obj := $(src:.c=.o)
 
-#CFLAGS += -I${UTIL_DIR}/include -Iinclude -D_GNU_SOURCE
 CFLAGS += -Iinclude -D_GNU_SOURCE
+
+# (parser) internationalization (linux only for now)
+ifeq ($(shell uname), Linux)
+-DYYENABLE_NLS=1 -DENABLE_NLS
+endif
 
 all: libgwion_ast.a
 	@$(info ${CFLAGS})
@@ -27,11 +34,11 @@ libgwion_ast.a: ${obj}
 
 parser:
 	$(info generating parser)
-	@${YACC} -o src/parser.c --defines=include/parser.h ly/gwion.y
+	@${YACC} -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
 
 lexer:
 	$(info generating lexer)
-	@${LEX}  -o src/lexer.c ly/gwion.l
+	@${LEX} -o src/lexer.c ly/gwion.l
 
 generate_parser:
 	$(info meta-generating parser)

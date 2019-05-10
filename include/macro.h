@@ -4,7 +4,7 @@ typedef struct Args_* Args;
 typedef struct Macro_* Macro;
 
 struct pp_info {
-  int data[32];
+  m_bit data[60];
   int idx;
 };
 

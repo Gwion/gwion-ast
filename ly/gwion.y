@@ -2,6 +2,7 @@
 %parse-param { Scanner* arg }
 %lex-param  { void* scan }
 %name-prefix "gwion_"
+%locations
 %{
 #include <stdio.h> // strlen in paste operation
 #include <string.h> // strlen in paste operation
@@ -11,14 +12,15 @@
 #include "parser.h"
 #include "lexer.h"
 
+
+#define YYERROR_VERBOSE
 #define YYMALLOC xmalloc
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
 #define OP_SYM(a) insert_symbol(op2str(a))
 
-ANN uint get_pos(const Scanner*);
-ANN void gwion_error(const Scanner*, const m_str s);
+ANN void gwion_error(YYLTYPE*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
 m_str op2str(const Operator op);
 %}
@@ -51,23 +53,32 @@ m_str op2str(const Operator op);
   Ast ast;
 };
 
-%token SEMICOLON CHUCK COMMA DIVIDE TIMES PERCENT L_HACK R_HACK
-  LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE PLUSCHUCK MINUSCHUCK TIMESCHUCK
-  DIVIDECHUCK MODULOCHUCK ATCHUCK UNCHUCK TRIG UNTRIG PERCENTPAREN SHARPPAREN
-  ATSYM FUNCTION DOLLAR TILDA QUESTION COLON EXCLAMATION IF ELSE WHILE DO UNTIL
-  LOOP FOR GOTO SWITCH CASE ENUM RETURN BREAK CONTINUE PLUSPLUS MINUSMINUS NEW
-  SPORK FORK CLASS STATIC GLOBAL PRIVATE PROTECT EXTENDS DOT COLONCOLON AND EQ GE GT LE LT
-  MINUS PLUS NEQ SHIFT_LEFT SHIFT_RIGHT S_AND S_OR S_XOR OR AST_DTOR OPERATOR
-  TYPEDEF RSL RSR RSAND RSOR RSXOR TEMPLATE LTMPL RTMPL
-  NOELSE UNION ATPAREN TYPEOF CONSTT AUTO PASTE ELLIPSE RARROW BACKSLASH
+%token SEMICOLON ";" CHUCK "=>" COMMA "," DIVIDE "/" TIMES "*" PERCENT "%"
+  L_HACK "<<<" R_HACK ">>>" LPAREN "(" RPAREN ")"
+  LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}" PLUSCHUCK "+=>" MINUSCHUCK "-=>"
+  TIMESCHUCK "*=>" DIVIDECHUCK "/=>" MODULOCHUCK "%=>" ATCHUCK "@=>" UNCHUCK "@=<" TRIG "]=>" UNTRIG "[=<" 
+  PERCENTPAREN "%(" SHARPPAREN "#("
+  ATSYM "@" FUNCTION "fun" DOLLAR "$" TILDA "~" QUESTION "?" COLON ":" EXCLAMATION "!"
+  IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
+  LOOP "repeat" FOR "for" GOTO "goto" SWITCH "switch" CASE "case" ENUM "enum"
+  RETURN "return" BREAK "break" CONTINUE "continue"
+  PLUSPLUS "++" MINUSMINUS "--" NEW "new"
+  SPORK "spork" FORK "fork" CLASS "class" STATIC "static" GLOBAL "global" PRIVATE "private"
+  PROTECT "protect" EXTENDS "extends" DOT "." COLONCOLON "::" AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
+  MINUS "-" PLUS "+" NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
+  AST_DTOR "dtor" OPERATOR "operator"
+  TYPEDEF "typedef" RSL "<<=>" RSR ">>=>" RSAND "&=>" RSOR "|=>" RSXOR "^=>"
+  LTMPL "<~" RTMPL "~>"
+  NOELSE UNION "union" ATPAREN "@(" TYPEOF "typeof" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
+  RARROW "->" BACKSLASH "\\"
 
-%token<lval> NUM
+%token<lval> NUM "<integer>"
 %type<ival>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %type<ival> atsym vec_type
 %token<fval> FLOATT
-%token<sval> ID STRING_LIT CHAR_LIT
+%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
 
-  PP_COMMENT PP_INCLUDE PP_DEFINE PP_UNDEF PP_IFDEF PP_IFNDEF PP_ELSE PP_ENDIF PP_NL
+  PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define>" PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<flag> flag opt_flag
   storage_flag access_flag arg_type
 %type<sym>id opt_id
@@ -76,7 +87,7 @@ m_str op2str(const Operator op);
 %type<type_decl> type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
@@ -103,7 +114,7 @@ m_str op2str(const Operator op);
 %%
 
 prg: ast { arg->ast = $1; }
-  | /* empty */ { gwion_error(arg, "file is empty.\n"); YYERROR; }
+  | /* empty */ { gwion_error(&@$, arg, "file is empty.\n"); YYERROR; }
 
 ast
   : section { $$ = new_ast(mpool(arg), $1, NULL); }
@@ -117,10 +128,10 @@ section
   ;
 
 class_def
-  : decl_template CLASS opt_flag id class_ext LBRACE class_body RBRACE
-    { $$ =new_class_def(mpool(arg), $3, $4, $5, $7, get_pos(arg));
-      if($1)
-        $$->tmpl = new_tmpl_class(mpool(arg), $1, -1);
+  : CLASS decl_template opt_flag id class_ext LBRACE class_body RBRACE
+    { $$ =new_class_def(mpool(arg), $3, $4, $5, $7, loc_cpy(mpool(arg), &@$));
+      if($2)
+        $$->tmpl = new_tmpl_class(mpool(arg), $2, -1);
   };
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
@@ -132,9 +143,9 @@ class_body2
   | section class_body2 { $$ = new_class_body(mpool(arg), $1, $2); }
   ;
 
-id_list: id { $$ = new_id_list(mpool(arg), $1, get_pos(arg)); } | id COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, get_pos(arg)); };
-id_dot:  id  { $$ = new_id_list(mpool(arg), $1, get_pos(arg)); } | id DOT id_dot     { $$ = prepend_id_list(mpool(arg), $1, $3, get_pos(arg)); };
-dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, get_pos(arg)); } | id RARROW id_dot     { $$ = prepend_id_list(mpool(arg), $1, $3, get_pos(arg)); };
+id_list: id { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@$)); } | id COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
+id_dot:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } | id DOT id_dot     { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
+dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } | id RARROW id_dot     { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
 
@@ -143,27 +154,27 @@ fdef_base: type_decl_empty id func_args { $$ = new_func_base(mpool(arg), $1, $2,
 
 func_type: TYPEDEF opt_flag fptr_base arg_type {
   if($3->td->array && !$3->td->array->exp)
-    { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
+    { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
 $$ = new_stmt_fptr(mpool(arg), $3, $2 | $4); };
 stmt_type: TYPEDEF opt_flag type_decl_array id SEMICOLON { $$ = new_stmt_type(mpool(arg), $3, $4); $3->flag |= $2; };
 
 type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
 
 type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
-    { gwion_error(arg, "can't instantiate with empty '[]'"); YYERROR;}
+    { gwion_error(&@$, arg, "can't instantiate with empty '[]'"); YYERROR;}
   $$ = $1; }
 
 type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
-    { gwion_error(arg, "type must be defined with empty []'s"); YYERROR;}
+    { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
   $$ = $1; }
 
 arg: type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
 arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };
 fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
-fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA arg_list { $1->next = $3; $$ = $1; };
+fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list { $1->next = $3; $$ = $1; };
 
 code_stmt
-  : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, get_pos(arg)); }
+  : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, loc_cpy(mpool(arg), &@$)); }
   | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2); }
   ;
 
@@ -200,9 +211,9 @@ enum_stmt
   : ENUM opt_flag LBRACE id_list RBRACE opt_id SEMICOLON    { $$ = new_stmt_enum(mpool(arg), $4, $6);
     $$->d.stmt_enum.flag = $2; };
 
-label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, get_pos(arg)); };
+label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, loc_cpy(mpool(arg), &@$)); };
 
-goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, get_pos(arg)); };
+goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, loc_cpy(mpool(arg), &@$)); };
 
 case_stmt
   : CASE primary_exp COLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_case, $2); }
@@ -239,15 +250,15 @@ selection_stmt
   ;
 
 jump_stmt
-  : RETURN SEMICOLON    { $$ = new_stmt(mpool(arg), ae_stmt_return, get_pos(arg)); $$->d.stmt_exp.self = $$; }
+  : RETURN SEMICOLON    { $$ = new_stmt(mpool(arg), ae_stmt_return, loc_cpy(mpool(arg), &@$)); }
   | RETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2); }
-  | BREAK SEMICOLON      { $$ = new_stmt(mpool(arg), ae_stmt_break, get_pos(arg)); }
-  | CONTINUE SEMICOLON   { $$ = new_stmt(mpool(arg), ae_stmt_continue, get_pos(arg)); }
+  | BREAK SEMICOLON      { $$ = new_stmt(mpool(arg), ae_stmt_break, loc_cpy(mpool(arg), &@$)); }
+  | CONTINUE SEMICOLON   { $$ = new_stmt(mpool(arg), ae_stmt_continue, loc_cpy(mpool(arg), &@$)); }
   ;
 
 exp_stmt
   : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1); }
-  | SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_exp, get_pos(arg)); }
+  | SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_exp, loc_cpy(mpool(arg), &@$)); }
   ;
 
 exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
@@ -267,18 +278,20 @@ op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
 
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
-  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
-  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(arg, "partially empty array init [...][]..."); YYERROR; }
+  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
+  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
   : LBRACK RBRACK             { $$ = new_array_sub(mpool(arg), NULL); }
   | array_empty LBRACK RBRACK { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp     { gwion_error(arg, "partially empty array init [][...]"); YYERROR; }
+  | array_empty array_exp     { gwion_error(&@$, arg, "partially empty array init [][...]"); YYERROR; }
   ;
 
 array: array_exp | array_empty;
-decl_exp2: con_exp | decl_exp3;
+decl_exp2: con_exp | decl_exp3
+  | AUTO atsym var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
+     new_id_list(mpool(arg), insert_symbol("auto"), loc_cpy(mpool(arg), &@$)), 0), $3); }
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
 union_exp: type_decl arg_decl { $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
@@ -287,7 +300,7 @@ func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_arg: LPAREN  fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: TEMPLATE LTMPL id_list RTMPL { $$ = $3; } | { $$ = NULL; };
+decl_template: LTMPL id_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
 storage_flag: STATIC { $$ = ae_flag_static; }
   | GLOBAL { $$ = ae_flag_global; }
@@ -305,11 +318,11 @@ flag: access_flag { $$ = $1; }
 opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
-  : decl_template FUNCTION opt_flag fdef_base arg_type code_stmt
-    { $$ = new_func_def(mpool(arg), $4, $6, $3 | $5);
-    if($1) {
+  : FUNCTION decl_template opt_flag fdef_base arg_type code_stmt
+    { $$ = new_func_def(mpool(arg), $4, $6, $3 | $5, loc_cpy(mpool(arg), &@$));
+    if($2) {
       SET_FLAG($$, template);
-      $$->tmpl = new_tmpl_list(mpool(arg), $1, -1);
+      $$->tmpl = new_tmpl_list(mpool(arg), $2, -1);
     }
   };
 
@@ -317,25 +330,26 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $9, ae_flag_op); $5->next = $7;}
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $9, ae_flag_op, loc_cpy(mpool(arg), &@$)); $5->next = $7;}
   |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $7, ae_flag_op); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $7, ae_flag_op, loc_cpy(mpool(arg), &@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($1), $5), $7, ae_flag_op | ae_flag_unary); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($1), $5), $7, ae_flag_op | ae_flag_unary, loc_cpy(mpool(arg), &@$)); }
   | AST_DTOR code_stmt
     {
-ID_List l = new_id_list(mpool(arg), insert_symbol("void"), get_pos(arg));
+ID_List l = new_id_list(mpool(arg), insert_symbol("void"), loc_cpy(mpool(arg), &@$));
 $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l, 0),
-       insert_symbol("dtor"), NULL), $2, ae_flag_dtor); }
-  ;
+       insert_symbol("dtor"), NULL), $2, ae_flag_dtor, loc_cpy(mpool(arg), &@$)); }  ;
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
 
 type_decl0
   : dot_decl atsym { $$ = new_type_decl(mpool(arg), $1, $2); }
-  | LTMPL type_list RTMPL id_dot atsym { $$ = new_type_decl(mpool(arg), $4, $5);
+  | LTMPL type_list RTMPL dot_decl atsym { $$ = new_type_decl(mpool(arg), $4, $5);
       $$->types = $2; }
-  | TYPEOF LPAREN id_dot RPAREN atsym { $$ = new_type_decl(mpool(arg), $3, $5); $$->xid->ref = 1; }
+  | TILDA TILDA exp TILDA TILDA atsym { $$ = new_type_decl2(mpool(arg), $3, $6); }
+  | LTMPL type_list RTMPL TILDA TILDA exp TILDA TILDA atsym
+    { $$ = new_type_decl2(mpool(arg), $6, $9); $$->types = $2; }
   ;
 
 type_decl: type_decl0 { $$ = $1; }
@@ -346,13 +360,14 @@ decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
 
 union_stmt
   : UNION opt_flag opt_id LBRACE decl_list RBRACE opt_id SEMICOLON {
-      $$ = new_stmt_union(mpool(arg), $5, get_pos(arg));
+      $$ = new_stmt_union(mpool(arg), $5, loc_cpy(mpool(arg), &@$));
       $$->d.stmt_union.type_xid = $3;
       $$->d.stmt_union.xid = $7;
       $$->d.stmt_union.flag = $2;
     }
   | UNION opt_flag opt_id LBRACE error RBRACE opt_id SEMICOLON {
-    gwion_error(arg, "Unions should only contain declarations.");
+//    gwion_error(arg, "Unions should only contain declarations.");
+    gw_err("Unions should only contain declarations.\n");
     YYERROR;
     }
   ;
@@ -362,15 +377,15 @@ var_decl_list
   | var_decl COMMA var_decl_list { $$ = new_var_decl_list(mpool(arg), $1, $3); }
   ;
 
-var_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, get_pos(arg)); }
-  | id array    { $$ = new_var_decl(mpool(arg), $1,   $2, get_pos(arg)); };
+var_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, loc_cpy(mpool(arg), &@$)); }
+  | id array    { $$ = new_var_decl(mpool(arg), $1,   $2, loc_cpy(mpool(arg), &@$)); };
 
-arg_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, get_pos(arg)); }
-  | id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, get_pos(arg)); }
-  | id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
-fptr_arg_decl: opt_id { $$ = new_var_decl(mpool(arg), $1, NULL, get_pos(arg)); }
-  | opt_id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, get_pos(arg)); }
-  | opt_id array_exp { gwion_error(arg, "argument/union must be defined with empty []'s"); YYERROR; };
+arg_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, loc_cpy(mpool(arg), &@$)); }
+  | id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, loc_cpy(mpool(arg), &@$)); }
+  | id array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
+fptr_arg_decl: opt_id { $$ = new_var_decl(mpool(arg), $1, NULL, loc_cpy(mpool(arg), &@$)); }
+  | opt_id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, loc_cpy(mpool(arg), &@$)); }
+  | opt_id array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
 
 eq_op : EQ { $$ = op_eq; } | NEQ { $$ = op_ne; };
 rel_op: LT { $$ = op_lt; } | GT { $$ = op_gt; } | LE { $$ = op_le; } | GE { $$ = op_ge; };
@@ -389,7 +404,9 @@ eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool
 rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-mul_exp: cast_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+mul_exp: typeof_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+
+typeof_exp: cast_exp | TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg), $3); }
 
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };
@@ -405,8 +422,8 @@ unary_exp : post_exp | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), op_fork, $2); };
 
 lambda_list:
- id { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, get_pos(arg)), NULL); }
-|    id lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, get_pos(arg)), $2); }
+ id { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, loc_cpy(mpool(arg), &@$)), NULL); }
+|    id lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, loc_cpy(mpool(arg), &@$)), $2); }
 lambda_arg: BACKSLASH lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 type_list
@@ -433,16 +450,16 @@ vec_type: SHARPPAREN   { $$ = ae_primary_complex; }
         | ATPAREN      { $$ = ae_primary_vec;     };
 
 primary_exp
-  : id                  { $$ = new_exp_prim_id(     mpool(arg), $1, get_pos(arg)); }
-  | NUM                 { $$ = new_exp_prim_int(    mpool(arg), $1, get_pos(arg)); }
-  | FLOATT              { $$ = new_exp_prim_float(  mpool(arg), $1, get_pos(arg)); }
-  | STRING_LIT          { $$ = new_exp_prim_string( mpool(arg), $1, get_pos(arg)); }
-  | CHAR_LIT            { $$ = new_exp_prim_char(   mpool(arg), $1, get_pos(arg)); }
-  | array               { $$ = new_exp_prim_array(  mpool(arg), $1, get_pos(arg)); }
+  : id                  { $$ = new_exp_prim_id(     mpool(arg), $1, loc_cpy(mpool(arg), &@$)); }
+  | NUM                 { $$ = new_exp_prim_int(    mpool(arg), $1, loc_cpy(mpool(arg), &@$)); }
+  | FLOATT              { $$ = new_exp_prim_float(  mpool(arg), $1, loc_cpy(mpool(arg), &@$)); }
+  | STRING_LIT          { $$ = new_exp_prim_string( mpool(arg), $1, loc_cpy(mpool(arg), &@$)); }
+  | CHAR_LIT            { $$ = new_exp_prim_char(   mpool(arg), $1, loc_cpy(mpool(arg), &@$)); }
+  | array               { $$ = new_exp_prim_array(  mpool(arg), $1, loc_cpy(mpool(arg), &@$)); }
   | vec_type exp RPAREN { $$ = new_exp_prim_vec(    mpool(arg), $1 ,$2); }
   | L_HACK exp R_HACK   { $$ = new_exp_prim_hack(   mpool(arg), $2); }
   | LPAREN exp RPAREN   { $$ = $2;                }
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };
-  | LPAREN RPAREN       { $$ = new_exp_prim_nil(    mpool(arg),     get_pos(arg)); }
+  | LPAREN RPAREN       { $$ = new_exp_prim_nil(    mpool(arg),     loc_cpy(mpool(arg), &@$)); }
   ;
 %%

@@ -131,33 +131,32 @@ extern int gwion_debug;
     RSAND = 337,
     RSOR = 338,
     RSXOR = 339,
-    TEMPLATE = 340,
-    LTMPL = 341,
-    RTMPL = 342,
-    NOELSE = 343,
-    UNION = 344,
-    ATPAREN = 345,
-    TYPEOF = 346,
-    CONSTT = 347,
-    AUTO = 348,
-    PASTE = 349,
-    ELLIPSE = 350,
-    RARROW = 351,
-    BACKSLASH = 352,
-    NUM = 353,
-    FLOATT = 354,
-    ID = 355,
-    STRING_LIT = 356,
-    CHAR_LIT = 357,
-    PP_COMMENT = 358,
-    PP_INCLUDE = 359,
-    PP_DEFINE = 360,
-    PP_UNDEF = 361,
-    PP_IFDEF = 362,
-    PP_IFNDEF = 363,
-    PP_ELSE = 364,
-    PP_ENDIF = 365,
-    PP_NL = 366
+    LTMPL = 340,
+    RTMPL = 341,
+    NOELSE = 342,
+    UNION = 343,
+    ATPAREN = 344,
+    TYPEOF = 345,
+    CONSTT = 346,
+    AUTO = 347,
+    PASTE = 348,
+    ELLIPSE = 349,
+    RARROW = 350,
+    BACKSLASH = 351,
+    NUM = 352,
+    FLOATT = 353,
+    ID = 354,
+    STRING_LIT = 355,
+    CHAR_LIT = 356,
+    PP_COMMENT = 357,
+    PP_INCLUDE = 358,
+    PP_DEFINE = 359,
+    PP_UNDEF = 360,
+    PP_IFDEF = 361,
+    PP_IFNDEF = 362,
+    PP_ELSE = 363,
+    PP_ENDIF = 364,
+    PP_NL = 365
   };
 #endif
 /* Tokens.  */
@@ -243,40 +242,39 @@ extern int gwion_debug;
 #define RSAND 337
 #define RSOR 338
 #define RSXOR 339
-#define TEMPLATE 340
-#define LTMPL 341
-#define RTMPL 342
-#define NOELSE 343
-#define UNION 344
-#define ATPAREN 345
-#define TYPEOF 346
-#define CONSTT 347
-#define AUTO 348
-#define PASTE 349
-#define ELLIPSE 350
-#define RARROW 351
-#define BACKSLASH 352
-#define NUM 353
-#define FLOATT 354
-#define ID 355
-#define STRING_LIT 356
-#define CHAR_LIT 357
-#define PP_COMMENT 358
-#define PP_INCLUDE 359
-#define PP_DEFINE 360
-#define PP_UNDEF 361
-#define PP_IFDEF 362
-#define PP_IFNDEF 363
-#define PP_ELSE 364
-#define PP_ENDIF 365
-#define PP_NL 366
+#define LTMPL 340
+#define RTMPL 341
+#define NOELSE 342
+#define UNION 343
+#define ATPAREN 344
+#define TYPEOF 345
+#define CONSTT 346
+#define AUTO 347
+#define PASTE 348
+#define ELLIPSE 349
+#define RARROW 350
+#define BACKSLASH 351
+#define NUM 352
+#define FLOATT 353
+#define ID 354
+#define STRING_LIT 355
+#define CHAR_LIT 356
+#define PP_COMMENT 357
+#define PP_INCLUDE 358
+#define PP_DEFINE 359
+#define PP_UNDEF 360
+#define PP_IFDEF 361
+#define PP_IFNDEF 362
+#define PP_ELSE 363
+#define PP_ENDIF 364
+#define PP_NL 365
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 26 "ly/gwion.y" /* yacc.c:1921  */
+#line 28 "ly/gwion.y" /* yacc.c:1921  */
 
   char* sval;
   int ival;
@@ -304,12 +302,26 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 308 "include/parser.h" /* yacc.c:1921  */
+#line 306 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
+#endif
+
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
 #endif
 
 

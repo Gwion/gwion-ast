@@ -27,7 +27,8 @@ static void free_args(MemPool p, const Args a) {
   mp_free(p, Args, a);
 }
 
-void free_entry(MemPool p, const Macro s) {
+void free_entry(MemPool p, void *data) {
+  const Macro s = (Macro)data;
   if(s->next)
     free_entry(p, s->next);
   xfree(s->name);

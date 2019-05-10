@@ -7,6 +7,7 @@ os:
 
 compiler:
   - gcc
+  - clang
 
 env: UTIL_DIR=gwion-util
 
@@ -18,8 +19,9 @@ before_script:
     export CFLAGS+="-DBUILD_ON_WINDOWS -D_XOPEN_SOURCE=700";
     fi
   - git clone https://github.com/fennecdjay/gwion-util;
-    git branch $TRAVIS_BRANCH;
-    cd gwion-util && make include/generated.h && cd ..;
+    cd gwion-util;
+    git checkout $TRAVIS_BRANCH && echo "";
+    make include/generated.h && cd ..;
 
 script:
   - if [ $(uname) = "Linux" ] || [ $(uname) = "Darwin" ];
