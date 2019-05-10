@@ -10,7 +10,7 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$(@F:.o=.Td)
 
 src := $(wildcard src/*.c)
 
-ifeq (${BUILD_ON_WINDOW}, 1)
+ifeq (${BUILD_ON_WINDOWS}, 1)
 CFLAGS+=-DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700
 endif
 
