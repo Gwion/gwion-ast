@@ -355,12 +355,12 @@ struct Stmt_Union_ {
   Decl_List l;
   struct Symbol_* xid;
   struct Symbol_* type_xid;
-union {
-  struct Value_ *value;
-  struct Type_* type;
-};
-  m_uint s;
-  m_uint o;
+  union {
+    struct Value_ *value;
+    struct Type_* type;
+  };
+  uint s;
+  uint o;
   ae_flag flag;
 };
 
