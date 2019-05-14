@@ -114,7 +114,7 @@ ifdef([[[TINY_MODE]]], [[[]]],
 [[[<get_arg>[ \r\t]*","[ \r\t]* { adjust(yyscanner); handle_comma(yyscanner); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
 <get_arg>")" { adjust(yyscanner); if(handle_rpar(yyscanner)) { BEGIN(INITIAL); GWYY_CALL }}
-<get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
+<get_arg>.+   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
 ^#define[ \r\t]+[A-Za-z_][A-Za-z0-9_]* {
   add_macro(yyscanner, yytext);
@@ -151,9 +151,9 @@ ifdef([[[TINY_MODE]]], [[[]]],
 ^#endif[ \r\t]*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
 <skip>\n      { newline(yyscanner); YY_USER_ACTION; }
-<skip>.         { continue;}
 <skip>^#else[ \r\t]*\n { BEGIN(macro_toggle(yyscanner)); }
 <skip>^#endif[ \r\t]*\n { macro_end(yyscanner); BEGIN(INITIAL); }
+<skip>.+         { continue;}
 
 ^#include[ \r\t]*<[A-Za-z0-9_./]*>[ \r\t]* { GWYY_INCLUDE }
 
@@ -164,7 +164,7 @@ ifdef([[[TINY_MODE]]], [[[]]],
 "//"              { YY_USER_ACTION;BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT2]]]) }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT_END;]]]) }
-<comment>.      { ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT;]]])  }
+<comment>.+      { ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT;]]])  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 [ \r\t]                             { adjust(yyscanner); continue; }

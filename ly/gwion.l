@@ -112,7 +112,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <get_arg>[ \r\t]*","[ \r\t]* { adjust(yyscanner); handle_comma(yyscanner); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
 <get_arg>")" { adjust(yyscanner); if(handle_rpar(yyscanner)) { BEGIN(INITIAL); GWYY_CALL }}
-<get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
+<get_arg>.+   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
 ^#define[ \r\t]+[A-Za-z_][A-Za-z0-9_]* {
   add_macro(yyscanner, yytext);
@@ -149,9 +149,9 @@ ANN static m_str macro_data(void* data, const m_bool);
 ^#endif[ \r\t]*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
 <skip>\n      { newline(yyscanner); YY_USER_ACTION; }
-<skip>.         { continue;}
 <skip>^#else[ \r\t]*\n { BEGIN(macro_toggle(yyscanner)); }
 <skip>^#endif[ \r\t]*\n { macro_end(yyscanner); BEGIN(INITIAL); }
+<skip>.+         { continue;}
 
 ^#include[ \r\t]*<[A-Za-z0-9_./]*>[ \r\t]* { GWYY_INCLUDE }
 
@@ -162,7 +162,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "//"              { YY_USER_ACTION;BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); GWYY_COMMENT_END; }
-<comment>.      { GWYY_COMMENT;  }
+<comment>.+      { GWYY_COMMENT;  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 [ \r\t]                             { adjust(yyscanner); continue; }
