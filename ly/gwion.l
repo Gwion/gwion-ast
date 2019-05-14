@@ -786,17 +786,21 @@ static int handle_rpar(void* data) {
 
 static void handle_char(void* data, const m_str str) {
   const Scanner *scan = yyget_extra(data);
-  const Args a = scan->pp->entry->args;
+  struct PP_ *const pp = scan->pp;
+  const Args a = pp->entry->args;
   if(!a->text) {
-    a->text = (m_str)xmalloc(32);
-    scan->pp->arg_cap = 32;
-    scan->pp->arg_len = 1;
-    a->text[0] = *str;
+    pp->arg_cap = round2szint(pp->arg_len = strlen(str) + 1);
+    a->text = (m_str)xmalloc(pp->arg_cap);
+    strcpy(a->text, str);
   } else {
-    if(++scan->pp->arg_len == scan->pp->arg_cap)
-      a->text = (m_str)xrealloc(a->text, (scan->pp->arg_cap <<= 1));
-    a->text[scan->pp->arg_len - 1] = *str;
+    size_t sz = strlen(str);
+    if(sz + pp->arg_len >= pp->arg_cap) {
+      while(pp->arg_cap < pp->arg_len + sz)
+        pp->arg_cap <<= 1;
+        a->text = (m_str)xrealloc(a->text, pp->arg_cap);
+    }
+    strcpy(a->text + pp->arg_len, str);
+    pp->arg_len += sz;
   }
-  a->text[scan->pp->arg_len] = '\0';
 }
 
