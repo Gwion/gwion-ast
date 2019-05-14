@@ -44,7 +44,7 @@ ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
 ANN2(1,2) static void handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static void rem_macro(void* data, const m_str id);
-ANN static int has_macro(void* data, const m_str id, const m_bool);
+ANN static int has_macro(void* data, const m_str id);
 ANN static int macro_toggle(void*);
 ANN static void macro_end(void*);
 ANN2(1,2) static int is_macro(void*, const m_str, YY_BUFFER_STATE);
@@ -83,7 +83,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #define GWYY_DEFINE  GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION;
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
 #define GWYY_NL      GWYY_LINT(NULL, PP_NL)
-#define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) if(!has_macro(yyscanner, a, !b)) BEGIN(skip); xfree(a);
+#define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) if(has_macro(yyscanner, a)) BEGIN(skip); xfree(a);
 #define GWYY_ELSE    GWYY_LINT(NULL, PP_ELSE) BEGIN(macro_toggle(yyscanner));
 #define GWYY_ENDIF   GWYY_LINT(NULL, PP_ENDIF) macro_end(yyscanner);
 
@@ -123,6 +123,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <define_arg>"..."[ \r\t]*")"[ \r\t]* { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
 <define_arg>" "   { gwion_lex_error(yyscanner, "Invalid"); }
 <define_arg>")"[ \r\t]* { adjust(yyscanner); BEGIN(define); }
+<define_arg>. { gw_err("invalid char in macro"); return 1; }
 
 <define_arg_start>"("      { adjust(yyscanner); BEGIN(define_arg); };
 <define_arg_start>[ \r\t]* { adjust(yyscanner); BEGIN(define); };
@@ -141,7 +142,7 @@ ANN static m_str macro_data(void* data, const m_bool);
   while(isspace(s[--sz]));
   char c[sz + 2];
   strncpy(c, s, sz + 2);
-  if(!has_macro(yyscanner, c, def))
+  if(!has_macro(yyscanner, c))
     BEGIN(skip);
 }
 ^#else[ \r\t]*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
@@ -309,7 +310,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 ANN Symbol lambda_name(const Scanner *scan) {
   char c[6 + 1 + num_digit(scan->pos) + 1 + 16 + 1];
-  sprintf(c, "lambda:%u:%u\n", scan->line, scan->pos);
+  sprintf(c, "lambda:%u:%u", scan->line, scan->pos);
   return insert_symbol(scan->st, c);
 }
 
@@ -323,8 +324,6 @@ ANN void yynoreturn gwion_lex_error (yyscan_t yyscanner, const char *msg) {
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   /*scanner_post(scan);*/
   header(scan, msg, 1);
-//  gw_err("[%lu] %s\n", vector_size(&scan->pp->filename), msg);
-//  gw_err("[%s] %s\n", vector_at(&scan->pp->filename, 1), msg);
   longjmp(*scan->jmp, 1);
 }
 
@@ -429,8 +428,8 @@ ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
   if(!scan->pp->npar) {
     m_uint i = vector_size(&scan->pp->filename) - 1;
     if(*filename == '@') {
-      gw_err("in macro '%s'.", filename);
       while(*filename == '@') {
+        gw_err("in expansion of %s.\n", filename + 1);
         i -= 5;
         filename = (m_str)vector_at(&scan->pp->filename, i);
       }
@@ -489,12 +488,11 @@ static void rem_macro(void* data, const m_str str) {
     gwion_lex_error(data, "undefined macro");
 }
 
-static int has_macro(void* data, const m_str id, const m_bool def) {
+static int has_macro(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
   if(scan->pp->def->idx == 59) // beware magic number
     gwion_lex_error(data, "macros too nested");
-  return scan->pp->def->data[++scan->pp->def->idx] = def ?
-    !!macro_has(scan->pp->macros, id) : !macro_has(scan->pp->macros, id);
+  return scan->pp->def->data[++scan->pp->def->idx] = !!macro_has(scan->pp->macros, id);
 }
 
 static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt, const m_str str) {
@@ -580,6 +578,8 @@ static void macro_arg(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_comment(scan, id);
   const Args arg = new_args(scan->st->p, str);
+  arg->line = scan->line;
+  arg->pos = scan->pos;
   xfree(str);
   if(scan->pp->entry->base) {
     Args a = scan->pp->entry->base;
@@ -618,8 +618,8 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
             if(asprintf(&str, "@argument '%s'", arg->name) < 0)
               return 0;
             gwpp_stack(scan, handle, NULL, str);
-            //scan->pos      = e->pos;
-            //scan->line     = e->line;
+            scan->line     = arg->line;
+            scan->pos      = arg->pos;
             yy_scan_string(arg->text, data);
           }
         } else {
@@ -672,6 +672,8 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     return 1;
   } else if(!strcmp(id, "__VA_ARGS__")) { // vararg macro with no args
     Macro e = macro_has(scan->pp->macros, name);
+    if(!e)
+      return 0;
     m_str str;
     if(asprintf(&str, "@argument '__VA_ARGS__'") < 0)
       return 0;
@@ -714,11 +716,14 @@ uint clear_buffer(Vector v, void* data, const m_bool last NUSED) {
   const m_str name = (m_str)vector_pop(v);
   const void* info = (void*)vector_pop(v);
   const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(v);
+  struct yyguts_t * yyg = (struct yyguts_t*)data;
+  YY_BUFFER_STATE curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
+  YY_BUFFER_STATE base = yyg->yy_buffer_stack[0];
   if(name[0] != '@')
     fclose((FILE*)info);
   vector_pop(v);
   vector_pop(v);
-  if(vector_size(v) > 2)
+  if(state != base && state != curr)
     yy_delete_buffer(state, data);
   xfree(name);
   return (uint)vector_size(v);
@@ -774,14 +779,8 @@ static int handle_rpar(void* data) {
   if(scan->pp->entry->args->next)
     gwion_lex_error(data, "not enough arguments");
   scan->pp->entry->args = NULL;
-  SCAN_NOLINT {
-    if(!strcmp(scan->pp->entry->text, "__VA_ARGS__")) {
-      struct yyguts_t *yyg = (struct yyguts_t*)data;
-      YY_BUFFER_STATE handle = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
-      gwpp_stack(scan, handle, NULL, strdup(scan->pp->entry->name));
-    }
+  SCAN_NOLINT
     yy_scan_string(scan->pp->entry->text, data);
-  }
   return 1;
 }
 

@@ -19,7 +19,7 @@ ANEW static Scanner* new_scanner(const struct ScannerArg_ *arg) {
 }
 
 ANN static void free_scanner(Scanner* scan) {
-  free_pp(scan->st->p, scan->pp, scan);
+  free_pp(scan->st->p, scan->pp, scan->scanner);
   mp_free2(scan->st->p, sizeof(jmp_buf), scan->jmp);
   gwion_lex_destroy(scan->scanner);
   mp_free(scan->st->p, Scanner, scan);

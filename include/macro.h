@@ -11,6 +11,8 @@ struct pp_info {
 struct Args_ {
   char* name;
   char* text;
+  uint line;
+  uint pos;
   Args next;
 };
 
