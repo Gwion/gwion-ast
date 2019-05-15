@@ -10,7 +10,7 @@ struct pp_info {
 
 struct Args_ {
   char* name;
-  char* text;
+  GwText text;
   uint line;
   uint pos;
   Args next;
@@ -20,7 +20,7 @@ Args new_args(MemPool p, const char*);
 void clean_args(const Args);
 struct Macro_ {
   char* name;
-  char* text;
+  GwText text;
   Args  base;
   Args  args;
   Macro next;

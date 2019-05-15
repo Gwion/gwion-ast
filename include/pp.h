@@ -5,7 +5,6 @@ typedef struct PP_ {
   struct Hash_* macros;
   struct Macro_* entry;
   struct pp_info* def;
-  size_t arg_len, arg_cap;
   int npar;
   uint lint;
 } PP;

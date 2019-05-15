@@ -13,16 +13,13 @@ Args new_args(MemPool p, const char* name) {
 void clean_args(const Args a) {
   if(a->next)
     clean_args(a->next);
-  if(a->text)
-    xfree(a->text);
-  a->text = NULL;
+  text_release(&a->text);
 }
 
 static void free_args(MemPool p, const Args a) {
   if(a->next)
     free_args(p, a->next);
-  if(a->text)
-    xfree(a->text);
+  text_release(&a->text);
   xfree(a->name);
   mp_free(p, Args, a);
 }
@@ -32,8 +29,7 @@ void free_entry(MemPool p, void *data) {
   if(s->next)
     free_entry(p, s->next);
   xfree(s->name);
-  if(s->text)
-    xfree(s->text);
+  text_release(&s->text);
   if(s->base)
     free_args(p, s->base);
   mp_free(p, Macro, s);
