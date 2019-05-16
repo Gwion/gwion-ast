@@ -154,7 +154,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "//"              { YY_USER_ACTION;BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); GWYY_COMMENT_END; }
-<comment>.+      { GWYY_COMMENT;  }
+<comment>.       { GWYY_COMMENT;  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 [ \r\t]                             { adjust(yyscanner); continue; }
