@@ -478,18 +478,10 @@ struct Class_Body_ {
   Class_Body next;
 };
 
-typedef struct Tmpl_Class_ {
-  ID_List list;
-  m_int base;
-  Type_List call;
-} Tmpl_Class;
-ANEW ANN Tmpl_Class* new_tmpl_class(MemPool p, const ID_List, const m_bool);
-m_bool tmpl_class_base(const Tmpl_Class*);
-ANN void free_tmpl_class(MemPool p, Tmpl_Class*);
 struct Class_Def_ {
   struct Stmt_Type_ base;
   Class_Body body;
-  Tmpl_Class*  tmpl;
+  Tmpl_List*  tmpl;
   loc_t pos;
   ae_flag flag;
 };

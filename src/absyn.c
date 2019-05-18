@@ -329,32 +329,13 @@ Tmpl_List* new_tmpl_list(MemPool p, const ID_List list, const m_int base) {
   return a;
 }
 
-Tmpl_Class* new_tmpl_class(MemPool p, ID_List list, const m_bool base) {
-  Tmpl_Class* a = mp_alloc(p, Tmpl_Class);
-  a->list = list;
-  a->base = base;
-  return a;
-}
-
 void free_tmpl_list(MemPool p, Tmpl_List* a) {
   if(a->base == -1)
     free_id_list(p, a->list);
   mp_free(p, Tmpl_List, a);
 }
 
-void free_tmpl_class(MemPool p, Tmpl_Class* a) {
-  if(a->base == -1)
-    free_id_list(p, a->list);
-  mp_free(p, Tmpl_Class, a);
-}
-
 m_bool tmpl_list_base(const Tmpl_List* a) {
-  if(a && a->base == -1)
-    return GW_OK;
-  return 0;
-}
-
-m_bool tmpl_class_base(const Tmpl_Class* a) {
   if(a && a->base == -1)
     return GW_OK;
   return 0;
@@ -769,7 +750,7 @@ void free_class_def(MemPool p, Class_Def a) {
   if(a->base.ext)
     free_type_decl(p, a->base.ext);
   if(a->tmpl)
-    free_tmpl_class(p, a->tmpl);
+    free_tmpl_list(p, a->tmpl);
   if(a->body && (!a->base.type || !GET_FLAG(a, ref)))
     free_class_body(p, a->body);
   free_loc(p, a->pos);

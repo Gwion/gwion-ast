@@ -131,7 +131,7 @@ class_def
   : CLASS decl_template opt_flag id class_ext LBRACE class_body RBRACE
     { $$ =new_class_def(mpool(arg), $3, $4, $5, $7, loc_cpy(mpool(arg), &@$));
       if($2)
-        $$->tmpl = new_tmpl_class(mpool(arg), $2, -1);
+        $$->tmpl = new_tmpl_list(mpool(arg), $2, -1);
   };
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
