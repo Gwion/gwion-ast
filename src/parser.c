@@ -2230,7 +2230,7 @@ yyreduce:
 #line 132 "ly/gwion.y" /* yacc.c:1652  */
     { (yyval.class_def) =new_class_def(mpool(arg), (yyvsp[-5].flag), (yyvsp[-4].sym), (yyvsp[-3].type_decl), (yyvsp[-1].class_body), loc_cpy(mpool(arg), &(yyloc)));
       if((yyvsp[-6].id_list))
-        (yyval.class_def)->tmpl = new_tmpl_list(mpool(arg), (yyvsp[-6].id_list), -1);
+        (yyval.class_def)->tmpl = new_tmpl(mpool(arg), (yyvsp[-6].id_list), -1);
   }
 #line 2236 "src/parser.c" /* yacc.c:1652  */
     break;
@@ -2865,7 +2865,7 @@ yyreduce:
     { (yyval.func_def) = new_func_def(mpool(arg), (yyvsp[-2].func_base), (yyvsp[0].stmt), (yyvsp[-3].flag) | (yyvsp[-1].flag), loc_cpy(mpool(arg), &(yyloc)));
     if((yyvsp[-4].id_list)) {
       SET_FLAG((yyval.func_def), template);
-      (yyval.func_def)->tmpl = new_tmpl_list(mpool(arg), (yyvsp[-4].id_list), -1);
+      (yyval.func_def)->tmpl = new_tmpl(mpool(arg), (yyvsp[-4].id_list), -1);
     }
   }
 #line 2872 "src/parser.c" /* yacc.c:1652  */

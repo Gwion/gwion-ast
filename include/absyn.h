@@ -136,16 +136,22 @@ typedef struct {
   ae_prim_t primary_type;
 } Exp_Primary;
 
-typedef struct Tmpl_Call_ {
-  Type_List types;
-  ID_List base;
-} Tmpl_Call;
-ANEW ANN Tmpl_Call* new_tmpl_call(MemPool p, Type_List);
+typedef struct Tmpl_ {
+  ID_List list;
+  m_int  base;
+  Type_List call;
+} Tmpl;
+
+ANEW ANN Tmpl* new_tmpl(MemPool p, const ID_List, const m_int);
+ANEW ANN Tmpl* new_tmpl_call(MemPool p, Type_List);
+ANN void free_tmpl(MemPool p, Tmpl*);
+m_bool tmpl_base(const Tmpl*);
+
 typedef struct {
   Exp func;
   Exp args;
   struct Func_* m_func;
-  Tmpl_Call* tmpl;
+  Tmpl* tmpl;
 } Exp_Call;
 typedef struct {
   Type_Decl* td;
@@ -435,12 +441,6 @@ ANN void free_stmt_list(MemPool p, Stmt_List);
 
 typedef struct Class_Body_ * Class_Body;
 
-typedef struct Tmpl_List_ {
-  ID_List list;
-  m_int  base;
-  Type_List call;
-} Tmpl_List;
-
 struct Func_Def_ {
   struct Func_Base_* base;
   m_uint stack_depth;
@@ -448,13 +448,11 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
-  Tmpl_List* tmpl;
+  Tmpl* tmpl;
   loc_t pos;
   ae_flag flag;
 };
-ANEW ANN Tmpl_List* new_tmpl_list(MemPool p, const ID_List, const m_int);
-ANN void free_tmpl_list(MemPool p, Tmpl_List*);
-m_bool tmpl_list_base(const Tmpl_List*);
+
 ANEW Func_Def new_func_def(MemPool p, struct Func_Base_*, const Stmt, const ae_flag, const loc_t);
 ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs);
 ANN void free_func_base(MemPool p, struct Func_Base_*);
@@ -481,7 +479,7 @@ struct Class_Body_ {
 struct Class_Def_ {
   struct Stmt_Type_ base;
   Class_Body body;
-  Tmpl_List*  tmpl;
+  Tmpl*  tmpl;
   loc_t pos;
   ae_flag flag;
 };

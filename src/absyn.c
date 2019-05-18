@@ -322,20 +322,20 @@ ANN static void free_exp_if(MemPool p, Exp_If* a) {
   free_exp(p, a->else_exp);
 }
 
-Tmpl_List* new_tmpl_list(MemPool p, const ID_List list, const m_int base) {
-  Tmpl_List* a = mp_alloc(p, Tmpl_List);
+Tmpl* new_tmpl(MemPool p, const ID_List list, const m_int base) {
+  Tmpl* a = mp_alloc(p, Tmpl);
   a->list = list;
   a->base = base;
   return a;
 }
 
-void free_tmpl_list(MemPool p, Tmpl_List* a) {
+void free_tmpl(MemPool p, Tmpl* a) {
   if(a->base == -1)
     free_id_list(p, a->list);
-  mp_free(p, Tmpl_List, a);
+  mp_free(p, Tmpl, a);
 }
 
-m_bool tmpl_list_base(const Tmpl_List* a) {
+m_bool tmpl_base(const Tmpl* a) {
   if(a && a->base == -1)
     return GW_OK;
   return 0;
@@ -414,15 +414,15 @@ ANN static void free_stmt_fptr(MemPool p, Stmt_Fptr a) {
   free_func_base(p, a->base);
 }
 
-Tmpl_Call* new_tmpl_call(MemPool p, const Type_List tl) {
-  Tmpl_Call* a = mp_alloc(p, Tmpl_Call);
-  a->types = tl;
+Tmpl* new_tmpl_call(MemPool p, const Type_List tl) {
+  Tmpl* a = mp_alloc(p, Tmpl);
+  a->call = tl;
   return a;
 }
 
-ANN static void free_tmpl_call(MemPool p, Tmpl_Call* a) {
-  free_type_list(p, a->types);
-  mp_free(p, Tmpl_Call, a);
+ANN static void free_tmpl_call(MemPool p, Tmpl* a) {
+  free_type_list(p, a->call);
+  mp_free(p, Tmpl, a);
 }
 
 Exp new_exp_call(MemPool p, const Exp base, const Exp args) {
@@ -750,7 +750,7 @@ void free_class_def(MemPool p, Class_Def a) {
   if(a->base.ext)
     free_type_decl(p, a->base.ext);
   if(a->tmpl)
-    free_tmpl_list(p, a->tmpl);
+    free_tmpl(p, a->tmpl);
   if(a->body && (!a->base.type || !GET_FLAG(a, ref)))
     free_class_body(p, a->body);
   free_loc(p, a->pos);
