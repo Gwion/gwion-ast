@@ -438,6 +438,7 @@ typedef struct Class_Body_ * Class_Body;
 typedef struct Tmpl_List_ {
   ID_List list;
   m_int  base;
+  Type_List call;
 } Tmpl_List;
 
 struct Func_Def_ {
@@ -479,7 +480,7 @@ struct Class_Body_ {
 
 typedef struct Tmpl_Class_ {
   Tmpl_List list;
-  Type_List base;
+  Type_List call;
 } Tmpl_Class;
 ANEW ANN Tmpl_Class* new_tmpl_class(MemPool p, const ID_List, const m_bool);
 m_bool tmpl_class_base(const Tmpl_Class*);
