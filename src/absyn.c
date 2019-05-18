@@ -331,8 +331,8 @@ Tmpl_List* new_tmpl_list(MemPool p, const ID_List list, const m_int base) {
 
 Tmpl_Class* new_tmpl_class(MemPool p, ID_List list, const m_bool base) {
   Tmpl_Class* a = mp_alloc(p, Tmpl_Class);
-  a->list.list = list;
-  a->list.base = base;
+  a->list = list;
+  a->base = base;
   return a;
 }
 
@@ -343,8 +343,8 @@ void free_tmpl_list(MemPool p, Tmpl_List* a) {
 }
 
 void free_tmpl_class(MemPool p, Tmpl_Class* a) {
-  if(a->list.base == -1)
-    free_id_list(p, a->list.list);
+  if(a->base == -1)
+    free_id_list(p, a->list);
   mp_free(p, Tmpl_Class, a);
 }
 
@@ -355,7 +355,9 @@ m_bool tmpl_list_base(const Tmpl_List* a) {
 }
 
 m_bool tmpl_class_base(const Tmpl_Class* a) {
-  return a ? tmpl_list_base(&a->list) : 0;
+  if(a && a->base == -1)
+    return GW_OK;
+  return 0;
 }
 
 Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code,

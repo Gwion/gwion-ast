@@ -479,7 +479,8 @@ struct Class_Body_ {
 };
 
 typedef struct Tmpl_Class_ {
-  Tmpl_List list;
+  ID_List list;
+  m_int base;
   Type_List call;
 } Tmpl_Class;
 ANEW ANN Tmpl_Class* new_tmpl_class(MemPool p, const ID_List, const m_bool);
