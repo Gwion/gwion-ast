@@ -2,7 +2,7 @@
 #include "gwion_ast.h"
 
 Var_Decl new_var_decl(MemPool p, struct Symbol_* xid, const Array_Sub array, const loc_t pos) {
-  Var_Decl a = mp_alloc(p, Var_Decl);
+  Var_Decl a = mp_calloc(p, Var_Decl);
   a->xid = xid;
   a->array = array;
   a->pos = pos;
@@ -23,7 +23,7 @@ void free_array_sub(MemPool p, Array_Sub a) {
 }
 
 Var_Decl_List new_var_decl_list(MemPool p, const Var_Decl decl, const Var_Decl_List list) {
-  Var_Decl_List a = mp_alloc(p, Var_Decl_List);
+  Var_Decl_List a = mp_calloc(p, Var_Decl_List);
   a->self = decl;
   a->next = list;
   return a;
@@ -37,21 +37,21 @@ ANN static void free_var_decl_list(MemPool p, Var_Decl_List a) {
 }
 
 Type_Decl* new_type_decl(MemPool p, const ID_List xid, const ae_flag flag) {
-  Type_Decl* a = mp_alloc(p, Type_Decl);
+  Type_Decl* a = mp_calloc(p, Type_Decl);
   a->flag = flag;
   a->xid = xid;
   return a;
 }
 
 Type_Decl* new_type_decl2(MemPool p, const Exp exp, const ae_flag flag) {
-  Type_Decl* a = mp_alloc(p, Type_Decl);
+  Type_Decl* a = mp_calloc(p, Type_Decl);
   a->flag = flag;
   a->exp = exp;
   return a;
 }
 
 Array_Sub new_array_sub(MemPool p, const Exp exp) {
-  Array_Sub a = mp_alloc(p, Array_Sub);
+  Array_Sub a = mp_calloc(p, Array_Sub);
   a->exp = exp;
   a->depth = 1;
   return a;
@@ -72,7 +72,7 @@ Type_Decl* add_type_decl_array(Type_Decl* a, const Array_Sub array) {
 }
 
 ANN static Exp new_exp(MemPool p, const ae_exp_t type, const loc_t pos) {
-  Exp a = mp_alloc(p, Exp);
+  Exp a = mp_calloc(p, Exp);
   a->exp_type = type;
   a->pos = pos;
   return a;
@@ -117,7 +117,7 @@ Exp new_exp_typeof(MemPool p, Exp exp) {
 }
 
 ID_List new_id_list(MemPool p, struct Symbol_* xid, const loc_t pos) {
-  ID_List a = mp_alloc(p, ID_List);
+  ID_List a = mp_calloc(p, ID_List);
   a->xid = xid;
   a->pos = pos;
   return a;
@@ -323,7 +323,7 @@ ANN static void free_exp_if(MemPool p, Exp_If* a) {
 }
 
 Tmpl* new_tmpl(MemPool p, const ID_List list, const m_int base) {
-  Tmpl* a = mp_alloc(p, Tmpl);
+  Tmpl* a = mp_calloc(p, Tmpl);
   a->list = list;
   a->base = base;
   return a;
@@ -343,7 +343,7 @@ m_bool tmpl_base(const Tmpl* a) {
 
 Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code,
     const ae_flag flag, const loc_t pos) {
-  Func_Def a = mp_alloc(p, Func_Def);
+  Func_Def a = mp_calloc(p, Func_Def);
   a->base = base;
   a->d.code = code;
   a->flag = flag;
@@ -375,7 +375,7 @@ ANN /* static */void free_func_base(MemPool p, struct Func_Base_ * a) {
 }
 
 void free_func_def(MemPool p, Func_Def a) {
-  if(!a->tmpl && !GET_FLAG(a, global)) {
+  if(!a->base->tmpl && !GET_FLAG(a, global)) {
     free_func_base(p, a->base);
     free_stmt(p, a->d.code);
     free_loc(p, a->pos);
@@ -384,7 +384,7 @@ void free_func_def(MemPool p, Func_Def a) {
 }
 
 struct Func_Base_* new_func_base(MemPool p, Type_Decl* td, const Symbol xid, const Arg_List args) {
-  struct Func_Base_ *a = (struct Func_Base_*)mp_alloc(p, Func_Base);
+  struct Func_Base_ *a = (struct Func_Base_*)mp_calloc(p, Func_Base);
   a->td = td;
   a->xid = xid;
   a->args = args;
@@ -415,7 +415,7 @@ ANN static void free_stmt_fptr(MemPool p, Stmt_Fptr a) {
 }
 
 Tmpl* new_tmpl_call(MemPool p, const Type_List tl) {
-  Tmpl* a = mp_alloc(p, Tmpl);
+  Tmpl* a = mp_calloc(p, Tmpl);
   a->call = tl;
   return a;
 }
@@ -492,7 +492,7 @@ void free_exp(MemPool p, Exp exp) {
 }
 
 Arg_List new_arg_list(MemPool p, Type_Decl* td, const Var_Decl var_decl, const Arg_List arg_list) {
-  Arg_List a = mp_alloc(p, Arg_List);
+  Arg_List a = mp_calloc(p, Arg_List);
   a->td       = td;
   a->var_decl = var_decl;
   a->next     = arg_list;
@@ -532,7 +532,7 @@ ANN static inline void free_stmt_exp(MemPool p, struct Stmt_Exp_* a) {
 }
 
 Stmt new_stmt(MemPool p, const ae_stmt_t type, const loc_t pos) {
-  Stmt a = mp_alloc(p, Stmt);
+  Stmt a = mp_calloc(p, Stmt);
   a->stmt_type = type;
   a->pos = pos;
   return a;
@@ -664,7 +664,7 @@ ANN static inline void free_stmt_pp(MemPool p, Stmt_PP a) {
 #endif
 
 Decl_List new_decl_list(MemPool p, const Exp d, const Decl_List l) {
-  Decl_List a = mp_alloc(p, Decl_List);
+  Decl_List a = mp_calloc(p, Decl_List);
   a->self = d;
   a->next = l;
   return a;
@@ -710,7 +710,7 @@ void free_stmt(MemPool p, Stmt stmt) {
 }
 
 Stmt_List new_stmt_list(MemPool p, Stmt stmt, Stmt_List next) {
-  Stmt_List list = mp_alloc(p, Stmt_List);
+  Stmt_List list = mp_calloc(p, Stmt_List);
   list->stmt = stmt;
   list->next = next;
   return list;
@@ -724,21 +724,21 @@ void free_stmt_list(MemPool p, Stmt_List list) {
 }
 
 Section* new_section_stmt_list(MemPool p, const Stmt_List list) {
-  Section* a = mp_alloc(p, Section);
+  Section* a = mp_calloc(p, Section);
   a->section_type = ae_section_stmt;
   a->d.stmt_list = list;
   return a;
 }
 
 Section* new_section_func_def(MemPool p, const Func_Def func_def) {
-  Section* a = mp_alloc(p, Section);
+  Section* a = mp_calloc(p, Section);
   a->section_type = ae_section_func;
   a->d.func_def = func_def;
   return a;
 }
 
 Section* new_section_class_def(MemPool p, const Class_Def class_def) {
-  Section* a = mp_alloc(p, Section);
+  Section* a = mp_calloc(p, Section);
   a->section_type = ae_section_class;
   a->d.class_def = class_def;
   return a;
@@ -749,8 +749,8 @@ void free_class_def(MemPool p, Class_Def a) {
     return;
   if(a->base.ext)
     free_type_decl(p, a->base.ext);
-  if(a->tmpl)
-    free_tmpl(p, a->tmpl);
+  if(a->base.tmpl)
+    free_tmpl(p, a->base.tmpl);
   if(a->body && (!a->base.type || !GET_FLAG(a, ref)))
     free_class_body(p, a->body);
   free_loc(p, a->pos);
@@ -778,7 +778,7 @@ void free_class_body(MemPool p, Class_Body a) {
 
 Class_Def new_class_def(MemPool p, const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
     const Class_Body body, const loc_t pos) {
-  Class_Def a = mp_alloc(p, Class_Def);
+  Class_Def a = mp_calloc(p, Class_Def);
   a->flag = class_decl;
   a->base.xid = xid;
   a->base.ext  = ext;
@@ -788,14 +788,14 @@ Class_Def new_class_def(MemPool p, const ae_flag class_decl, const Symbol xid, T
 }
 
 Class_Body new_class_body(MemPool p, Section* section, const Class_Body body) {
-  Class_Body a = mp_alloc(p, Class_Body);
+  Class_Body a = mp_calloc(p, Class_Body);
   a->section = section;
   a->next = body;
   return a;
 }
 
 Type_List new_type_list(MemPool p, Type_Decl* td, const Type_List next) {
-  Type_List a = mp_alloc(p, Type_List);
+  Type_List a = mp_calloc(p, Type_List);
   a->td   = td;
   a->next = next;
   return a;
@@ -809,7 +809,7 @@ void free_type_list(MemPool p, Type_List a) {
 }
 
 Ast new_ast(MemPool p, Section* section, const Ast next) {
-  Ast ast = mp_alloc(p, Ast);
+  Ast ast = mp_calloc(p, Ast);
   ast->section = section;
   ast->next = next;
   return ast;

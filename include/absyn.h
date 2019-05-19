@@ -343,6 +343,7 @@ struct Func_Base_ {
   Arg_List   args;
   struct Func_       *func;
   struct Type_*       ret_type;
+  Tmpl *tmpl;
 };
 struct Func_Base_* new_func_base(MemPool p, Type_Decl*, const Symbol, const Arg_List);
 struct Stmt_Fptr_ {
@@ -355,6 +356,7 @@ struct Stmt_Type_ {
   Type_Decl* ext;
   struct Type_*       type;
   struct Symbol_*     xid;
+  Tmpl*  tmpl;
 };
 
 struct Stmt_Union_ {
@@ -448,7 +450,6 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
-  Tmpl* tmpl;
   loc_t pos;
   ae_flag flag;
 };
@@ -479,7 +480,6 @@ struct Class_Body_ {
 struct Class_Def_ {
   struct Stmt_Type_ base;
   Class_Body body;
-  Tmpl*  tmpl;
   loc_t pos;
   ae_flag flag;
 };

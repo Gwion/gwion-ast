@@ -7,11 +7,11 @@
 #define PP_SIZE 127
 
 ANEW static Scanner* new_scanner(const struct ScannerArg_ *arg) {
-  Scanner* scan = (Scanner*)mp_alloc(arg->st->p, Scanner);
+  Scanner* scan = (Scanner*)mp_calloc(arg->st->p, Scanner);
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
   scan->line = scan->pos  = 1;
-  scan->jmp = (jmp_buf*)mp_alloc2(arg->st->p, sizeof(jmp_buf));
+  scan->jmp = (jmp_buf*)mp_calloc2(arg->st->p, sizeof(jmp_buf));
   scan->pp = new_pp(arg->st->p, PP_SIZE, arg->name);
   gwion_set_in(arg->f, scan->scanner);
   scan->st = arg->st;

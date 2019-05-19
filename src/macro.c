@@ -5,7 +5,7 @@
 #include "gwion_ast.h"
 
 Args new_args(MemPool p, const char* name) {
-  const Args a = mp_alloc(p, Args);
+  const Args a = mp_calloc(p, Args);
   a->name = strdup(name);
   return a;
 }
@@ -36,7 +36,7 @@ void free_entry(MemPool p, void *data) {
 }
 
 static inline Macro mkentry(MemPool p, const char* name, const Macro next) {
-  const Macro s = mp_alloc(p, Macro);
+  const Macro s = mp_calloc(p, Macro);
   s->name = strdup(name);
   s->next = next;
   return s;

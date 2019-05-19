@@ -6,9 +6,9 @@
 #include "scanner.h"
 
 ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
-  PP* pp = (PP*)mp_alloc(p, PP);
-  pp->def = (struct pp_info*)mp_alloc2(p, sizeof(struct pp_info));// watchme
-  pp->macros = (Hash)mp_alloc(p, Hash);
+  PP* pp = (PP*)mp_calloc(p, PP);
+  pp->def = (struct pp_info*)mp_calloc2(p, sizeof(struct pp_info));// watchme
+  pp->macros = (Hash)mp_calloc(p, Hash);
   hini(pp->macros, size);
   pp->macros->p = p; // in ctor ?
   vector_init(&pp->filename);
