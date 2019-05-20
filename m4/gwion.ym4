@@ -150,14 +150,22 @@ dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } |
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
 
-fptr_base: type_decl_array id fptr_arg { $$ = new_func_base(mpool(arg), $1, $2, $3); }
+fptr_base: type_decl_array id decl_template fptr_arg { $$ = new_func_base(mpool(arg), $1, $2, $4); }
 fdef_base: type_decl_empty id func_args { $$ = new_func_base(mpool(arg), $1, $2, $3); }
 
 func_type: TYPEDEF opt_flag fptr_base arg_type {
-  if($3->td->array && !$3->td->array->exp)
-    { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
-$$ = new_stmt_fptr(mpool(arg), $3, $2 | $4); };
-stmt_type: TYPEDEF opt_flag type_decl_array id SEMICOLON { $$ = new_stmt_type(mpool(arg), $3, $4); $3->flag |= $2; };
+  if($3->td->array && !$3->td->array->exp) {
+    gwion_error(&@$, arg, "type must be defined with empty []'s");
+    YYERROR;
+  }
+  $$ = new_stmt_fptr(mpool(arg), $3, $2 | $4);
+};
+stmt_type: TYPEDEF opt_flag type_decl_array id decl_template SEMICOLON {
+  $$ = new_stmt_type(mpool(arg), $3, $4);
+  $3->flag |= $2;
+  if($5)
+    $$->d.stmt_type.tmpl = new_tmpl(mpool(arg), $5, -1);
+};
 
 type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
 
