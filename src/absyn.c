@@ -670,7 +670,7 @@ Decl_List new_decl_list(MemPool p, const Exp d, const Decl_List l) {
   return a;
 }
 
-ANN static void free_decl_list(MemPool p, Decl_List a) {
+ANN void free_decl_list(MemPool p, Decl_List a) {
   if(a->next)
     free_decl_list(p, a->next);
   if(a->self)
@@ -679,7 +679,8 @@ ANN static void free_decl_list(MemPool p, Decl_List a) {
 }
 
 ANN static inline void free_stmt_union(MemPool p, Stmt_Union a) {
-  free_decl_list(p, a->l);
+  if(!GET_FLAG(a, template) && !GET_FLAG(a, global))
+    free_decl_list(p, a->l);
 }
 
 ANN static inline void free_stmt_jump(MemPool p NUSED, Stmt_Jump a) {

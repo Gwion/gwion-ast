@@ -367,14 +367,24 @@ decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
 union_stmt
-  : UNION opt_flag opt_id LBRACE decl_list RBRACE opt_id SEMICOLON {
-      $$ = new_stmt_union(mpool(arg), $5, loc_cpy(mpool(arg), &@$));
-      $$->d.stmt_union.type_xid = $3;
-      $$->d.stmt_union.xid = $7;
+  : UNION opt_flag decl_template opt_id LBRACE decl_list RBRACE opt_id SEMICOLON {
+      $$ = new_stmt_union(mpool(arg), $6, loc_cpy(mpool(arg), &@$));
+      $$->d.stmt_union.type_xid = $4;
+      $$->d.stmt_union.xid = $8;
       $$->d.stmt_union.flag = $2;
+      if($3) {
+        if(!$4) {
+          gw_err("Template unions requires type name\n");
+          YYERROR;
+        }
+        if(!$8) {
+          gw_err("Can't instantiate template union types at declaration site.\n");
+          YYERROR;
+        }
+        $$->d.stmt_union.tmpl = new_tmpl(mpool(arg), $3, -1);
+      }
     }
-  | UNION opt_flag opt_id LBRACE error RBRACE opt_id SEMICOLON {
-//    gwion_error(arg, "Unions should only contain declarations.");
+  | UNION opt_flag decl_template opt_id LBRACE error RBRACE opt_id SEMICOLON {
     gw_err("Unions should only contain declarations.\n");
     YYERROR;
     }

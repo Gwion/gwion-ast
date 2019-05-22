@@ -367,6 +367,7 @@ struct Stmt_Union_ {
     struct Value_ *value;
     struct Type_* type;
   };
+  Tmpl *tmpl;
   uint s;
   uint o;
   ae_flag flag;
@@ -479,7 +480,11 @@ struct Class_Body_ {
 
 struct Class_Def_ {
   struct Stmt_Type_ base;
-  Class_Body body;
+  union {
+    Class_Body body;
+    Decl_List list; // parent template union
+    Stmt stmt;// child template union
+  };
   loc_t pos;
   ae_flag flag;
 };

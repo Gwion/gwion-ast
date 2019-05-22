@@ -659,7 +659,7 @@ static m_str get_arg_text(void* data, const m_str id) {
 
 static void gwlex_textadd(GwText* text, const m_str str) {
   const size_t sz = strlen(str);
-  char c[sz];
+  char c[sz + 1];
   strcpy(c, str);
   c[sz-1] = '\0';
   text_add(text, c);
