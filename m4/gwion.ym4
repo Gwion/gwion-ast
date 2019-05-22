@@ -392,7 +392,7 @@ union_stmt
           gw_err("Template unions requires type name\n");
           YYERROR;
         }
-        if(!$8) {
+        if($8) {
           gw_err("Can't instantiate template union types at declaration site.\n");
           YYERROR;
         }

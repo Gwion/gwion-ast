@@ -2975,7 +2975,7 @@ ID_List l = new_id_list(mpool(arg), insert_symbol("void"), loc_cpy(mpool(arg), &
           gw_err("Template unions requires type name\n");
           YYERROR;
         }
-        if(!(yyvsp[-1].sym)) {
+        if((yyvsp[-1].sym)) {
           gw_err("Can't instantiate template union types at declaration site.\n");
           YYERROR;
         }
