@@ -344,12 +344,7 @@ opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
   : FUNCTION opt_flag fdef_base arg_type code_stmt
-    { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, loc_cpy(mpool(arg), &@$));
-//    if($1) {
-//      SET_FLAG($$, template);
-//      $$->base->tmpl = new_tmpl(mpool(arg), $1, -1);
-//    }
-  };
+    { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, loc_cpy(mpool(arg), &@$)); };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
