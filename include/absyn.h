@@ -246,6 +246,7 @@ struct Decl_List_ {
 };
 
 ANN2(1, 2) ANEW Decl_List new_decl_list(MemPool p, Exp d, Decl_List l);
+ANN void free_decl_list(MemPool p, Decl_List a);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_switch, ae_stmt_break,
