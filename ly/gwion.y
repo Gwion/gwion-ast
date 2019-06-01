@@ -150,7 +150,7 @@ dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } |
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
 
 fptr_base: type_decl_array id decl_template fptr_arg { $$ = new_func_base(mpool(arg), $1, $2, $4);
-  if(3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
+  if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
 
@@ -329,12 +329,7 @@ opt_flag:  { $$ = 0; } | flag { $$ = $1; };
 
 func_def_base
   : FUNCTION opt_flag fdef_base arg_type code_stmt
-    { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, loc_cpy(mpool(arg), &@$));
-//    if($1) {
-//      SET_FLAG($$, template);
-//      $$->base->tmpl = new_tmpl(mpool(arg), $1, -1);
-//    }
-  };
+    { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, loc_cpy(mpool(arg), &@$)); };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
