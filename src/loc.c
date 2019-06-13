@@ -23,8 +23,11 @@ void free_loc(MemPool p, struct YYLTYPE* loc) {
 }
 
 #define MIN(a,b) (a < b ? a : b)
+void loc_header(const YYLTYPE* loc, const m_str filename) {
+  gw_err("\033[1m%s:%u:%u:\033[0m ", filename, loc->first_line, loc->first_column);
+}
+
 void loc_err(const YYLTYPE* loc, const m_str filename) {
-  gw_err("\033[1m%s:%u:%u:\033[0m\n", filename, loc->first_line, loc->first_column);
   int n = 1;
   size_t len = 0;
   FILE* f = fopen(filename, "r");

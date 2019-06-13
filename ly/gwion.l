@@ -394,8 +394,9 @@ ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
   } else
     filename = (m_str)vector_at(&scan->pp->filename, 1);
   
-  loc_err(loc, filename);
+  loc_header(loc, filename);
   gw_err("%s\n", s);
+  loc_err(loc, filename);
   return 0;
 }
 

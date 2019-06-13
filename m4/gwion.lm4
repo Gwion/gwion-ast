@@ -399,8 +399,9 @@ ifdef([[[TINY_MODE]]], [[[const m_str filename = scan->filename;]]],
   } else
     filename = (m_str)vector_at(&scan->pp->filename, 1);
   ]]])
-  loc_err(loc, filename);
+  loc_header(loc, filename);
   gw_err("%s\n", s);
+  loc_err(loc, filename);
   return 0;
 }
 
