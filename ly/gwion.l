@@ -307,7 +307,7 @@ ANN Symbol lambda_name(const Scanner *scan) {
 }
 
 static inline void header(const Scanner *scan, const char *msg, const m_uint i) {
-  gw_err("\033[1m%s:%u:%u:\033[0m\n\t%s\n", (m_str)vector_at(&scan->pp->filename, i),
+  gw_err("\033[1m%s:%u:%u:\033[0m\n  %s\n", (m_str)vector_at(&scan->pp->filename, i),
     scan->line, scan->pos, msg);
 }
 
