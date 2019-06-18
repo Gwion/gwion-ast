@@ -1,12 +1,11 @@
+PACKAGE=gwion_ast
+CFLAGS += -DPACKAGE='"{PACKAGE}"'
+
 ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
 endif
 include config.mk
 include ${UTIL_DIR}/config.mk
-
-DEPDIR := .d
-$(shell mkdir -p $(DEPDIR) >/dev/null)
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$(@F:.o=.Td)
 
 src := $(wildcard src/*.c)
 
@@ -26,35 +25,33 @@ ifeq ($(shell uname), Linux)
 -DYYENABLE_NLS=1 -DENABLE_NLS
 endif
 
-all: libgwion_ast.a
+all: options libgwion_ast.a
 	@$(info ${CFLAGS})
+
 libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	@${AR} ${AR_OPT}
 
-parser:
+parser: ly/gwion.y
 	$(info generating parser)
 	@${YACC} -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
 
-lexer:
+lexer: ly/gwion.l
 	$(info generating lexer)
 	@${LEX} -o src/lexer.c ly/gwion.l
 
-generate_parser:
+ly/gwion.y: m4/gwion.lm4
 	$(info meta-generating parser)
 	m4 m4/gwion.ym4 > ly/gwion.y;
 
-generate_lexer:
+ly/gwion.l: m4/gwion.lm4
 	$(info meta-generating lexer)
 	m4 m4/gwion.lm4 > ly/gwion.l;
-
-.c.o: $(DEPDIR)/%.d
-	$(info compile $(<:.c=))
-	@${CC} $(DEPFLAGS) ${CFLAGS} ${CICFLAGS} -c $< -o $(<:.c=.o)
-	@mv -f $(DEPDIR)/$(@F:.o=.Td) $(DEPDIR)/$(@F:.o=.d) && touch $@
 
 clean:
 	$(info cleaning)
 	@rm -f src/*.o *.a
 
 include $(wildcard .d/*.d)
+include ${UTIL_DIR}/target.mk
+include ${UTIL_DIR}/intl.mk

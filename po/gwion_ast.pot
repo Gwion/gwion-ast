@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid   ""
+msgstr  "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: 2019-06-17 22:54+0200\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "Language: \n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=CHARSET\n"
+        "Content-Transfer-Encoding: 8bit\n"
+
+#: ly/gwion.y:231
+msgid   "unhandled expression type in case statement.\n"
+msgstr  ""
+
+#: ly/gwion.y:374
+msgid   "Template unions requires type name\n"
+msgstr  ""
+
+#: ly/gwion.y:378
+msgid   "Can't instantiate template union types at declaration site.\n"
+msgstr  ""
+
+#: ly/gwion.y:385
+msgid   "Unions should only contain declarations.\n"
+msgstr  ""
+
+#: ly/gwion.l:116
+msgid   "Invalid space in macro argument"
+msgstr  ""
+
+#: ly/gwion.l:118
+msgid   "invalid char in macro"
+msgstr  ""
+
+#: ly/gwion.l:270
+#, c-format
+msgid   "can't stringify non argument token '%s'\n"
+msgstr  ""
+
+#: ly/gwion.l:295
+msgid   "error: stray in program\n"
+msgstr  ""
+
+#: ly/gwion.l:310
+#, c-format
+msgid   "[1m%s:%u:%u:[0m\n"
+        "  %s\n"
+msgstr  ""
+
+#: ly/gwion.l:389
+#, c-format
+msgid   "in expansion of %s.\n"
+msgstr  ""

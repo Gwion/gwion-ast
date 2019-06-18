@@ -115,7 +115,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <define_arg>"..."[ \r\t]*")"[ \r\t]* { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
 <define_arg>" "   { gwlex_error(yyscanner, "Invalid"); }
 <define_arg>")"[ \r\t]* { adjust(yyscanner); BEGIN(define); }
-<define_arg>. { gw_err("invalid char in macro"); return 1; }
+<define_arg>. { gw_err(_("invalid char in macro")); return 1; }
 
 <define_arg_start>"("      { adjust(yyscanner); BEGIN(define_arg); };
 <define_arg_start>[ \r\t]* { adjust(yyscanner); BEGIN(define); };
@@ -267,7 +267,7 @@ ANN static m_str macro_data(void* data, const m_bool);
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
-    gw_err("can't stringify non argument token '%s'\n", yytext + 1);
+    gw_err(_("can't stringify non argument token '%s'\n"), yytext + 1);
     return 1;
   }
 }
@@ -292,7 +292,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 \"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return STRING_LIT; }
 '(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
-.                                   { gw_err("error: stray in program\n"); return 1; }
+.                                   { gw_err(_("error: stray in program\n")); return 1; }
 
 %% // LCOV_EXCL_LINE
 // LCOV_EXCL_LINE
@@ -386,7 +386,7 @@ ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
     m_uint i = vector_size(&scan->pp->filename) - 1;
     if(*filename == '@') {
       while(*filename == '@') {
-        gw_err("in expansion of %s.\n", filename + 1);
+        gw_err(_("in expansion of %s.\n"), filename + 1);
         i -= 5;
         filename = (m_str)vector_at(&scan->pp->filename, i);
       }

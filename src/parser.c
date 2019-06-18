@@ -2483,7 +2483,7 @@ yyreduce:
 
   case 62:
 #line 231 "ly/gwion.y" /* yacc.c:1652  */
-    { gw_err("unhandled expression type in case statement.\n"); YYERROR; }
+    { gw_err(_("unhandled expression type in case statement.\n")); YYERROR; }
 #line 2488 "src/parser.c" /* yacc.c:1652  */
     break;
 
@@ -2981,11 +2981,11 @@ ID_List l = new_id_list(mpool(arg), insert_symbol("void"), loc_cpy(mpool(arg), &
       (yyval.stmt)->d.stmt_union.flag = (yyvsp[-7].flag);
       if((yyvsp[-6].id_list)) {
         if(!(yyvsp[-5].sym)) {
-          gw_err("Template unions requires type name\n");
+          gw_err(_("Template unions requires type name\n"));
           YYERROR;
         }
         if((yyvsp[-1].sym)) {
-          gw_err("Can't instantiate template union types at declaration site.\n");
+          gw_err(_("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
         (yyval.stmt)->d.stmt_union.tmpl = new_tmpl(mpool(arg), (yyvsp[-6].id_list), -1);
@@ -2997,7 +2997,7 @@ ID_List l = new_id_list(mpool(arg), insert_symbol("void"), loc_cpy(mpool(arg), &
   case 157:
 #line 384 "ly/gwion.y" /* yacc.c:1652  */
     {
-    gw_err("Unions should only contain declarations.\n");
+    gw_err(_("Unions should only contain declarations.\n"));
     YYERROR;
     }
 #line 3004 "src/parser.c" /* yacc.c:1652  */

@@ -1421,7 +1421,7 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 118 "ly/gwion.l"
-{ gw_err("invalid char in macro"); return 1; }
+{ gw_err(_("invalid char in macro")); return 1; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -2028,7 +2028,7 @@ YY_RULE_SETUP
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
-    gw_err("can't stringify non argument token '%s'\n", yytext + 1);
+    gw_err(_("can't stringify non argument token '%s'\n"), yytext + 1);
     return 1;
   }
 }
@@ -2093,7 +2093,7 @@ YY_RULE_SETUP
 case 136:
 YY_RULE_SETUP
 #line 295 "ly/gwion.l"
-{ gw_err("error: stray in program\n"); return 1; }
+{ gw_err(_("error: stray in program\n")); return 1; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
@@ -3235,7 +3235,7 @@ ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
     m_uint i = vector_size(&scan->pp->filename) - 1;
     if(*filename == '@') {
       while(*filename == '@') {
-        gw_err("in expansion of %s.\n", filename + 1);
+        gw_err(_("in expansion of %s.\n"), filename + 1);
         i -= 5;
         filename = (m_str)vector_at(&scan->pp->filename, i);
       }

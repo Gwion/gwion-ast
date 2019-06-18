@@ -243,7 +243,7 @@ goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, loc_cpy(mp
 case_stmt
   : CASE primary_exp COLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_case, $2); }
   | CASE dot_exp COLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_case, $2); }
-  | CASE error COLON { gw_err("unhandled expression type in case statement.\n"); YYERROR; }
+  | CASE error COLON { gw_err(_("unhandled expression type in case statement.\n")); YYERROR; }
   ;
 
 switch_stmt: SWITCH exp code_stmt { $$ = new_stmt_switch(mpool(arg), $2, $3);};
@@ -386,18 +386,18 @@ union_stmt
       $$->d.stmt_union.flag = $2;
       if($3) {
         if(!$4) {
-          gw_err("Template unions requires type name\n");
+          gw_err(_("Template unions requires type name\n"));
           YYERROR;
         }
         if($8) {
-          gw_err("Can't instantiate template union types at declaration site.\n");
+          gw_err(_("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
         $$->d.stmt_union.tmpl = new_tmpl(mpool(arg), $3, -1);
       }
     }
   | UNION opt_flag decl_template opt_id LBRACE error RBRACE opt_id SEMICOLON {
-    gw_err("Unions should only contain declarations.\n");
+    gw_err(_("Unions should only contain declarations.\n"));
     YYERROR;
     }
   ;
