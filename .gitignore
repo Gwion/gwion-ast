@@ -1,4 +1,5 @@
 .o
 config.mk
 .d
+.po
 libgwion_ast.a
