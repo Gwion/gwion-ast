@@ -17,5 +17,5 @@ struct ScannerArg_ {
   SymTable* st;
 };
 ANN Ast parse(const struct ScannerArg_ *arg);
-uint clear_buffer(Vector, void*, const m_bool);
+uint clear_buffer(Vector, void*);
 #endif

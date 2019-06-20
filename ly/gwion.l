@@ -671,7 +671,7 @@ static void macro_append(void* data, const m_str text) {
   gwlex_textadd(&scan->pp->entry->text, text);
 }
 
-uint clear_buffer(Vector v, void* data, const m_bool last NUSED) {
+uint clear_buffer(Vector v, void* data) {
   const m_str name = (m_str)vector_pop(v);
   const void* info = (void*)vector_pop(v);
   const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(v);
