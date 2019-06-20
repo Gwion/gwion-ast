@@ -25,8 +25,11 @@ ifeq ($(shell uname), Linux)
 -DYYENABLE_NLS=1 -DENABLE_NLS
 endif
 
-all: options libgwion_ast.a
+all: options-show libgwion_ast.a
 	@$(info ${CFLAGS})
+
+options-show:
+	@$(call _options)
 
 libgwion_ast.a: ${obj}
 	@$(info linking $@)
@@ -53,5 +56,4 @@ clean:
 	@rm -f src/*.o *.a
 
 include $(wildcard .d/*.d)
-include ${UTIL_DIR}/target.mk
 include ${UTIL_DIR}/intl.mk
