@@ -42,7 +42,7 @@ lexer: ly/gwion.l
 	$(info generating lexer)
 	@${LEX} -o src/lexer.c ly/gwion.l
 
-ly/gwion.y: m4/gwion.lm4
+ly/gwion.y: m4/gwion.ym4
 	$(info meta-generating parser)
 	m4 m4/gwion.ym4 > ly/gwion.y;
 
