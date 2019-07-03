@@ -1,5 +1,5 @@
 PACKAGE=gwion_ast
-CFLAGS += -DPACKAGE='"{PACKAGE}"'
+CFLAGS += -DPACKAGE='"${PACKAGE}"'
 
 ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
@@ -26,7 +26,6 @@ ifeq ($(shell uname), Linux)
 endif
 
 all: options-show libgwion_ast.a
-	@$(info ${CFLAGS})
 
 options-show:
 	@$(call _options)
