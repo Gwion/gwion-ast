@@ -143,20 +143,21 @@ extern int gwion_debug;
     ELLIPSE = 349,
     RARROW = 350,
     BACKSLASH = 351,
-    NUM = 352,
-    FLOATT = 353,
-    ID = 354,
-    STRING_LIT = 355,
-    CHAR_LIT = 356,
-    PP_COMMENT = 357,
-    PP_INCLUDE = 358,
-    PP_DEFINE = 359,
-    PP_UNDEF = 360,
-    PP_IFDEF = 361,
-    PP_IFNDEF = 362,
-    PP_ELSE = 363,
-    PP_ENDIF = 364,
-    PP_NL = 365
+    BACKTICK = 352,
+    NUM = 353,
+    FLOATT = 354,
+    ID = 355,
+    STRING_LIT = 356,
+    CHAR_LIT = 357,
+    PP_COMMENT = 358,
+    PP_INCLUDE = 359,
+    PP_DEFINE = 360,
+    PP_UNDEF = 361,
+    PP_IFDEF = 362,
+    PP_IFNDEF = 363,
+    PP_ELSE = 364,
+    PP_ENDIF = 365,
+    PP_NL = 366
   };
 #endif
 /* Tokens.  */
@@ -254,20 +255,21 @@ extern int gwion_debug;
 #define ELLIPSE 349
 #define RARROW 350
 #define BACKSLASH 351
-#define NUM 352
-#define FLOATT 353
-#define ID 354
-#define STRING_LIT 355
-#define CHAR_LIT 356
-#define PP_COMMENT 357
-#define PP_INCLUDE 358
-#define PP_DEFINE 359
-#define PP_UNDEF 360
-#define PP_IFDEF 361
-#define PP_IFNDEF 362
-#define PP_ELSE 363
-#define PP_ENDIF 364
-#define PP_NL 365
+#define BACKTICK 352
+#define NUM 353
+#define FLOATT 354
+#define ID 355
+#define STRING_LIT 356
+#define CHAR_LIT 357
+#define PP_COMMENT 358
+#define PP_INCLUDE 359
+#define PP_DEFINE 360
+#define PP_UNDEF 361
+#define PP_IFDEF 362
+#define PP_IFNDEF 363
+#define PP_ELSE 364
+#define PP_ENDIF 365
+#define PP_NL 366
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -302,7 +304,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 306 "include/parser.h" /* yacc.c:1921  */
+#line 308 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;
