@@ -158,7 +158,7 @@ ANN static void free_exp_decl(MemPool p, Exp_Decl* a) {
   free_var_decl_list(p, a->list);
 }
 
-Exp new_exp_binary(MemPool p, const Exp lhs, const Operator op, const Exp rhs) {
+Exp new_exp_binary(MemPool p, const Exp lhs, const Symbol op, const Exp rhs) {
   Exp a = new_exp(p, ae_exp_binary, loc_cpy(p, lhs->pos));
   a->meta = ae_meta_value;
   a->d.exp_binary.lhs = lhs;
@@ -185,7 +185,7 @@ ANN static void free_exp_cast(MemPool p, Exp_Cast* a) {
   free_exp(p, a->exp);
 }
 
-Exp new_exp_post(MemPool p, const Exp exp, const Operator op) {
+Exp new_exp_post(MemPool p, const Exp exp, const Symbol op) {
   Exp a = new_exp(p, ae_exp_post, loc_cpy(p, exp->pos));
   a->meta = ae_meta_var;
   a->d.exp_post.exp = exp;
@@ -268,27 +268,27 @@ Exp new_exp_prim_vec(MemPool p, const ae_prim_t t, Exp e) {
   return a;
 }
 
-static inline Exp new_exp_unary_base(MemPool p, const Operator oper, const loc_t pos)  {
+static inline Exp new_exp_unary_base(MemPool p, const Symbol oper, const loc_t pos)  {
   Exp a = new_exp(p, ae_exp_unary, pos);
   a->d.exp_unary.op = oper;
   return a;
 }
 
-Exp new_exp_unary(MemPool p, const Operator oper, const Exp exp) {
+Exp new_exp_unary(MemPool p, const Symbol oper, const Exp exp) {
   Exp a = new_exp_unary_base(p, oper, loc_cpy(p, exp->pos));
   a->meta = exp->meta;
   a->d.exp_unary.exp = exp;
   return a;
 }
 
-Exp new_exp_unary2(MemPool p, const Operator oper, Type_Decl* td) {
+Exp new_exp_unary2(MemPool p, const Symbol oper, Type_Decl* td) {
   Exp a = new_exp_unary_base(p, oper, loc_cpy(p, td_pos(td)));
   a->meta = ae_meta_value;
   a->d.exp_unary.td = td;
   return a;
 }
 
-Exp new_exp_unary3(MemPool p, const Operator oper, const Stmt code) {
+Exp new_exp_unary3(MemPool p, const Symbol oper, const Stmt code) {
   Exp a = new_exp_unary_base(p, oper, loc_cpy(p, code->pos));
   a->meta = ae_meta_value;
   a->d.exp_unary.code = code;

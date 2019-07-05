@@ -50,105 +50,105 @@ extern int gwion_debug;
   enum yytokentype
   {
     SEMICOLON = 258,
-    CHUCK = 259,
-    COMMA = 260,
-    DIVIDE = 261,
-    TIMES = 262,
-    PERCENT = 263,
-    L_HACK = 264,
-    R_HACK = 265,
-    LPAREN = 266,
-    RPAREN = 267,
-    LBRACK = 268,
-    RBRACK = 269,
-    LBRACE = 270,
-    RBRACE = 271,
-    PLUSCHUCK = 272,
-    MINUSCHUCK = 273,
-    TIMESCHUCK = 274,
-    DIVIDECHUCK = 275,
-    MODULOCHUCK = 276,
-    ATCHUCK = 277,
-    UNCHUCK = 278,
-    TRIG = 279,
-    UNTRIG = 280,
-    PERCENTPAREN = 281,
-    SHARPPAREN = 282,
-    ATSYM = 283,
-    FUNCTION = 284,
-    DOLLAR = 285,
-    TILDA = 286,
-    QUESTION = 287,
-    COLON = 288,
-    EXCLAMATION = 289,
-    IF = 290,
-    ELSE = 291,
-    WHILE = 292,
-    DO = 293,
-    UNTIL = 294,
-    LOOP = 295,
-    FOR = 296,
-    GOTO = 297,
-    SWITCH = 298,
-    CASE = 299,
-    ENUM = 300,
-    RETURN = 301,
-    BREAK = 302,
-    CONTINUE = 303,
-    PLUSPLUS = 304,
-    MINUSMINUS = 305,
-    NEW = 306,
-    SPORK = 307,
-    FORK = 308,
-    CLASS = 309,
-    STATIC = 310,
-    GLOBAL = 311,
-    PRIVATE = 312,
-    PROTECT = 313,
-    EXTENDS = 314,
-    DOT = 315,
-    COLONCOLON = 316,
-    AND = 317,
-    EQ = 318,
-    GE = 319,
-    GT = 320,
-    LE = 321,
-    LT = 322,
-    MINUS = 323,
-    PLUS = 324,
-    NEQ = 325,
-    SHIFT_LEFT = 326,
-    SHIFT_RIGHT = 327,
-    S_AND = 328,
-    S_OR = 329,
-    S_XOR = 330,
-    OR = 331,
-    AST_DTOR = 332,
-    OPERATOR = 333,
-    TYPEDEF = 334,
-    RSL = 335,
-    RSR = 336,
-    RSAND = 337,
-    RSOR = 338,
-    RSXOR = 339,
-    LTMPL = 340,
-    RTMPL = 341,
-    NOELSE = 342,
-    UNION = 343,
-    ATPAREN = 344,
-    TYPEOF = 345,
-    CONSTT = 346,
-    AUTO = 347,
-    PASTE = 348,
-    ELLIPSE = 349,
-    RARROW = 350,
-    BACKSLASH = 351,
-    BACKTICK = 352,
-    NUM = 353,
-    FLOATT = 354,
-    ID = 355,
-    STRING_LIT = 356,
-    CHAR_LIT = 357,
+    COMMA = 259,
+    LPAREN = 260,
+    RPAREN = 261,
+    LBRACK = 262,
+    RBRACK = 263,
+    LBRACE = 264,
+    RBRACE = 265,
+    PERCENTPAREN = 266,
+    SHARPPAREN = 267,
+    ATPAREN = 268,
+    FUNCTION = 269,
+    IF = 270,
+    ELSE = 271,
+    WHILE = 272,
+    DO = 273,
+    UNTIL = 274,
+    LOOP = 275,
+    FOR = 276,
+    GOTO = 277,
+    SWITCH = 278,
+    CASE = 279,
+    ENUM = 280,
+    RETURN = 281,
+    BREAK = 282,
+    CONTINUE = 283,
+    CLASS = 284,
+    STATIC = 285,
+    GLOBAL = 286,
+    PRIVATE = 287,
+    PROTECT = 288,
+    EXTENDS = 289,
+    DOT = 290,
+    AST_DTOR = 291,
+    OPERATOR = 292,
+    TYPEDEF = 293,
+    NOELSE = 294,
+    UNION = 295,
+    CONSTT = 296,
+    AUTO = 297,
+    PASTE = 298,
+    ELLIPSE = 299,
+    RARROW = 300,
+    BACKSLASH = 301,
+    BACKTICK = 302,
+    NUM = 303,
+    FLOATT = 304,
+    ID = 305,
+    STRING_LIT = 306,
+    CHAR_LIT = 307,
+    PLUS = 308,
+    PLUSPLUS = 309,
+    MINUS = 310,
+    MINUSMINUS = 311,
+    TIMES = 312,
+    DIVIDE = 313,
+    PERCENT = 314,
+    DOLLAR = 315,
+    QUESTION = 316,
+    COLON = 317,
+    ATSYM = 318,
+    NEW = 319,
+    SPORK = 320,
+    FORK = 321,
+    TYPEOF = 322,
+    L_HACK = 323,
+    R_HACK = 324,
+    CHUCK = 325,
+    PLUSCHUCK = 326,
+    MINUSCHUCK = 327,
+    TIMESCHUCK = 328,
+    DIVIDECHUCK = 329,
+    MODULOCHUCK = 330,
+    ATCHUCK = 331,
+    UNCHUCK = 332,
+    TRIG = 333,
+    UNTRIG = 334,
+    COLONCOLON = 335,
+    AND = 336,
+    EQ = 337,
+    GE = 338,
+    GT = 339,
+    LE = 340,
+    LT = 341,
+    NEQ = 342,
+    SHIFT_LEFT = 343,
+    SHIFT_RIGHT = 344,
+    S_AND = 345,
+    S_OR = 346,
+    S_XOR = 347,
+    OR = 348,
+    RSL = 349,
+    RSR = 350,
+    RSAND = 351,
+    RSOR = 352,
+    RSXOR = 353,
+    LTMPL = 354,
+    RTMPL = 355,
+    TILDA = 356,
+    EXCLAMATION = 357,
     PP_COMMENT = 358,
     PP_INCLUDE = 359,
     PP_DEFINE = 360,
@@ -162,105 +162,105 @@ extern int gwion_debug;
 #endif
 /* Tokens.  */
 #define SEMICOLON 258
-#define CHUCK 259
-#define COMMA 260
-#define DIVIDE 261
-#define TIMES 262
-#define PERCENT 263
-#define L_HACK 264
-#define R_HACK 265
-#define LPAREN 266
-#define RPAREN 267
-#define LBRACK 268
-#define RBRACK 269
-#define LBRACE 270
-#define RBRACE 271
-#define PLUSCHUCK 272
-#define MINUSCHUCK 273
-#define TIMESCHUCK 274
-#define DIVIDECHUCK 275
-#define MODULOCHUCK 276
-#define ATCHUCK 277
-#define UNCHUCK 278
-#define TRIG 279
-#define UNTRIG 280
-#define PERCENTPAREN 281
-#define SHARPPAREN 282
-#define ATSYM 283
-#define FUNCTION 284
-#define DOLLAR 285
-#define TILDA 286
-#define QUESTION 287
-#define COLON 288
-#define EXCLAMATION 289
-#define IF 290
-#define ELSE 291
-#define WHILE 292
-#define DO 293
-#define UNTIL 294
-#define LOOP 295
-#define FOR 296
-#define GOTO 297
-#define SWITCH 298
-#define CASE 299
-#define ENUM 300
-#define RETURN 301
-#define BREAK 302
-#define CONTINUE 303
-#define PLUSPLUS 304
-#define MINUSMINUS 305
-#define NEW 306
-#define SPORK 307
-#define FORK 308
-#define CLASS 309
-#define STATIC 310
-#define GLOBAL 311
-#define PRIVATE 312
-#define PROTECT 313
-#define EXTENDS 314
-#define DOT 315
-#define COLONCOLON 316
-#define AND 317
-#define EQ 318
-#define GE 319
-#define GT 320
-#define LE 321
-#define LT 322
-#define MINUS 323
-#define PLUS 324
-#define NEQ 325
-#define SHIFT_LEFT 326
-#define SHIFT_RIGHT 327
-#define S_AND 328
-#define S_OR 329
-#define S_XOR 330
-#define OR 331
-#define AST_DTOR 332
-#define OPERATOR 333
-#define TYPEDEF 334
-#define RSL 335
-#define RSR 336
-#define RSAND 337
-#define RSOR 338
-#define RSXOR 339
-#define LTMPL 340
-#define RTMPL 341
-#define NOELSE 342
-#define UNION 343
-#define ATPAREN 344
-#define TYPEOF 345
-#define CONSTT 346
-#define AUTO 347
-#define PASTE 348
-#define ELLIPSE 349
-#define RARROW 350
-#define BACKSLASH 351
-#define BACKTICK 352
-#define NUM 353
-#define FLOATT 354
-#define ID 355
-#define STRING_LIT 356
-#define CHAR_LIT 357
+#define COMMA 259
+#define LPAREN 260
+#define RPAREN 261
+#define LBRACK 262
+#define RBRACK 263
+#define LBRACE 264
+#define RBRACE 265
+#define PERCENTPAREN 266
+#define SHARPPAREN 267
+#define ATPAREN 268
+#define FUNCTION 269
+#define IF 270
+#define ELSE 271
+#define WHILE 272
+#define DO 273
+#define UNTIL 274
+#define LOOP 275
+#define FOR 276
+#define GOTO 277
+#define SWITCH 278
+#define CASE 279
+#define ENUM 280
+#define RETURN 281
+#define BREAK 282
+#define CONTINUE 283
+#define CLASS 284
+#define STATIC 285
+#define GLOBAL 286
+#define PRIVATE 287
+#define PROTECT 288
+#define EXTENDS 289
+#define DOT 290
+#define AST_DTOR 291
+#define OPERATOR 292
+#define TYPEDEF 293
+#define NOELSE 294
+#define UNION 295
+#define CONSTT 296
+#define AUTO 297
+#define PASTE 298
+#define ELLIPSE 299
+#define RARROW 300
+#define BACKSLASH 301
+#define BACKTICK 302
+#define NUM 303
+#define FLOATT 304
+#define ID 305
+#define STRING_LIT 306
+#define CHAR_LIT 307
+#define PLUS 308
+#define PLUSPLUS 309
+#define MINUS 310
+#define MINUSMINUS 311
+#define TIMES 312
+#define DIVIDE 313
+#define PERCENT 314
+#define DOLLAR 315
+#define QUESTION 316
+#define COLON 317
+#define ATSYM 318
+#define NEW 319
+#define SPORK 320
+#define FORK 321
+#define TYPEOF 322
+#define L_HACK 323
+#define R_HACK 324
+#define CHUCK 325
+#define PLUSCHUCK 326
+#define MINUSCHUCK 327
+#define TIMESCHUCK 328
+#define DIVIDECHUCK 329
+#define MODULOCHUCK 330
+#define ATCHUCK 331
+#define UNCHUCK 332
+#define TRIG 333
+#define UNTRIG 334
+#define COLONCOLON 335
+#define AND 336
+#define EQ 337
+#define GE 338
+#define GT 339
+#define LE 340
+#define LT 341
+#define NEQ 342
+#define SHIFT_LEFT 343
+#define SHIFT_RIGHT 344
+#define S_AND 345
+#define S_OR 346
+#define S_XOR 347
+#define OR 348
+#define RSL 349
+#define RSR 350
+#define RSAND 351
+#define RSOR 352
+#define RSXOR 353
+#define LTMPL 354
+#define RTMPL 355
+#define TILDA 356
+#define EXCLAMATION 357
 #define PP_COMMENT 358
 #define PP_INCLUDE 359
 #define PP_DEFINE 360
@@ -276,7 +276,7 @@ extern int gwion_debug;
 
 union YYSTYPE
 {
-#line 28 "ly/gwion.y" /* yacc.c:1921  */
+#line 27 "ly/gwion.y" /* yacc.c:1921  */
 
   char* sval;
   int ival;

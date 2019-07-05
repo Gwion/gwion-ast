@@ -161,11 +161,11 @@ typedef struct {
 } Exp_Cast;
 typedef struct {
   Exp lhs, rhs;
-  Operator op;
+  Symbol op;
   struct Nspc_*nspc;
 } Exp_Binary;
 typedef struct {
-  Operator op;
+  Symbol op;
   struct Nspc_*nspc;
   Exp exp;
 } Exp_Postfix;
@@ -175,7 +175,7 @@ typedef struct {
   Exp else_exp;
 } Exp_If;
 typedef struct {
-  Operator op;
+  Symbol op;
   struct Nspc_*nspc;
   Exp exp;
   Type_Decl* td;
@@ -226,15 +226,15 @@ ANEW ANN Exp new_exp_prim_vec(MemPool p, const ae_prim_t t, Exp);
 ANEW ANN Exp new_exp_prim_char(MemPool p, const m_str, const loc_t);
 ANEW Exp new_exp_prim_nil(MemPool p, const loc_t);
 ANEW ANN Exp new_exp_decl(MemPool p, Type_Decl*, const Var_Decl_List);
-ANEW ANN Exp new_exp_binary(MemPool p, const Exp, const Operator, const Exp);
-ANEW ANN Exp new_exp_post(MemPool p, const Exp, const Operator);
+ANEW ANN Exp new_exp_binary(MemPool p, const Exp, const Symbol, const Exp);
+ANEW ANN Exp new_exp_post(MemPool p, const Exp, const Symbol);
 ANN2(1,2) ANEW Exp new_exp_call(MemPool p, const Exp, const Exp args);
 ANEW ANN Exp new_exp_cast(MemPool p, Type_Decl*, const Exp);
 ANN2(1,2,3) ANEW Exp new_exp_if(MemPool p, const Exp, const Exp, const Exp);
 ANEW ANN Exp new_exp_dot(MemPool p, const Exp, struct Symbol_*);
-ANEW ANN Exp new_exp_unary(MemPool p, const Operator, const Exp);
-ANEW ANN Exp new_exp_unary2(MemPool p, const Operator, Type_Decl*);
-ANEW ANN Exp new_exp_unary3(MemPool p, const Operator, const Stmt);
+ANEW ANN Exp new_exp_unary(MemPool p, const Symbol, const Exp);
+ANEW ANN Exp new_exp_unary2(MemPool p, const Symbol, Type_Decl*);
+ANEW ANN Exp new_exp_unary3(MemPool p, const Symbol, const Stmt);
 ANEW ANN Exp new_exp_typeof(MemPool p, Exp exp);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
 ANN void free_exp(MemPool p, Exp exp);

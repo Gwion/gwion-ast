@@ -27,6 +27,7 @@ SPACE [ \r\t]
 ANN void yynoreturn gwlex_error(yyscan_t yyscanner, const char*);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
+ANN static Symbol alloc_sym(void *, const char* str);
 ANN static unsigned long htol(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
@@ -162,70 +163,70 @@ ANN static m_str macro_data(void* data, const m_bool);
 {SPACE}                             { adjust(yyscanner); continue; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 ","                                 { adjust(yyscanner); return COMMA;}
-"@"                                 { adjust(yyscanner); return ATSYM;}
-"$"                                 { adjust(yyscanner); return DOLLAR;}
-"=>"                                { adjust(yyscanner); return CHUCK;}
-"=<"                                { adjust(yyscanner); return UNCHUCK;}
-"+=>"                               { adjust(yyscanner); return PLUSCHUCK;}
-"-=>"                               { adjust(yyscanner); return MINUSCHUCK;}
-"*=>"                               { adjust(yyscanner); return TIMESCHUCK;}
-"/=>"                               { adjust(yyscanner); return DIVIDECHUCK;}
-"%=>"                               { adjust(yyscanner); return MODULOCHUCK;}
-"@=>"                               { adjust(yyscanner); return ATCHUCK;}
-"<<=>"                              { adjust(yyscanner); return RSL;}
-">>=>"                              { adjust(yyscanner); return RSR;}
-"&=>"                               { adjust(yyscanner); return RSAND;}
-"|=>"                               { adjust(yyscanner); return RSOR;}
-"^=>"                               { adjust(yyscanner); return RSXOR;}
-"++"                                { adjust(yyscanner); return PLUSPLUS;}
-"--"                                { adjust(yyscanner); return MINUSMINUS;}
-"->"                                { adjust(yyscanner); return RARROW;}
+"@"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return ATSYM;}
+"$"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DOLLAR;}
+"=>"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return CHUCK;}
+"=<"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return UNCHUCK;}
+"+=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return PLUSCHUCK;}
+"-=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return MINUSCHUCK;}
+"*=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return TIMESCHUCK;}
+"/=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DIVIDECHUCK;}
+"%=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return MODULOCHUCK;}
+"@=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return ATCHUCK;}
+"<<=>"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RSL;}
+">>=>"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RSR;}
+"&=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RSAND;}
+"|=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RSOR;}
+"^=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RSXOR;}
+"++"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return PLUSPLUS;}
+"--"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return MINUSMINUS;}
+"->"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RARROW;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
-"<<<"                               { adjust(yyscanner); return L_HACK;}
-">>>"                               { adjust(yyscanner); return R_HACK;}
+"<<<"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return L_HACK;}
+">>>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return R_HACK;}
 "#("                                { adjust(yyscanner); return SHARPPAREN;}
 "%("                                { adjust(yyscanner); return PERCENTPAREN;}
 "@("                                { adjust(yyscanner); return ATPAREN;}
-"+"                                 { adjust(yyscanner); return PLUS; }
-"-"                                 { adjust(yyscanner); return MINUS; }
-"/"                                 { adjust(yyscanner); return DIVIDE; }
-"%"                                 { adjust(yyscanner); return PERCENT; }
-"~"                                 { adjust(yyscanner); return TILDA; }
-"!"                                 { adjust(yyscanner); return EXCLAMATION; }
-"*"                                 { adjust(yyscanner); return TIMES; }
-"new"                               { adjust(yyscanner); return NEW; }
-"spork"                             { adjust(yyscanner); return SPORK; }
-"fork"                              { adjust(yyscanner); return FORK; }
+"+"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return PLUS; }
+"-"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return MINUS; }
+"/"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DIVIDE; }
+"%"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return PERCENT; }
+"~"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return TILDA; }
+"!"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return EXCLAMATION; }
+"*"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return TIMES; }
+"new"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
+"spork"                             { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
+"fork"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }
 "union"                             { adjust(yyscanner); return UNION; }
 
-"<~"                                { adjust(yyscanner); return LTMPL; }
-"~>"                                { adjust(yyscanner); return RTMPL; }
-"=="                                { adjust(yyscanner); return EQ; }
-"!="                                { adjust(yyscanner); return NEQ; }
-"<"                                 { adjust(yyscanner); return LT; }
-">"                                 { adjust(yyscanner); return GT; }
-"<="                                { adjust(yyscanner); return LE; }
-">="                                { adjust(yyscanner); return GE; }
-"&&"                                { adjust(yyscanner); return AND; }
-"||"                                { adjust(yyscanner); return OR; }
-"&"                                 { adjust(yyscanner); return S_AND; }
-"|"                                 { adjust(yyscanner); return S_OR; }
-"^"                                 { adjust(yyscanner); return S_XOR; }
+"<~"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return LTMPL; }
+"~>"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return RTMPL; }
+"=="                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return EQ; }
+"!="                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEQ; }
+"<"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return LT; }
+">"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return GT; }
+"<="                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return LE; }
+">="                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return GE; }
+"&&"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return AND; }
+"||"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return OR; }
+"&"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return S_AND; }
+"|"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return S_OR; }
+"^"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return S_XOR; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
-">>"                                { adjust(yyscanner); return SHIFT_RIGHT; }
-"<<"                                { adjust(yyscanner); return SHIFT_LEFT; }
+">>"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SHIFT_RIGHT; }
+"<<"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SHIFT_LEFT; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
 "]"                                 { adjust(yyscanner); return RBRACK; }
 "{"                                 { adjust(yyscanner); return LBRACE; }
 "}"                                 { adjust(yyscanner); return RBRACE; }
-"?"                                 { adjust(yyscanner); return QUESTION; }
-":"                                 { adjust(yyscanner); return COLON; }
-"::"                                { adjust(yyscanner); return COLONCOLON; }
-"]=>"                               { adjust(yyscanner); return TRIG; }
-"]=<"                               { adjust(yyscanner); return UNTRIG; }
+"?"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return QUESTION; }
+":"                                 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return COLON; }
+"::"                                { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return COLONCOLON; }
+"]=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return TRIG; }
+"]=<"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return UNTRIG; }
 
 
 "class"                             { adjust(yyscanner); return CLASS;}
@@ -326,11 +327,16 @@ char* strip_lit(char* str){
   return str+1;
 }
 
-char* alloc_str(void *data, const char* str) {
+Symbol alloc_sym(void *data, const char* str) {
   const Scanner* scan = yyget_extra(data);
-  const Symbol sym = insert_symbol(scan->st, (m_str)str);
+  return insert_symbol(scan->st, (m_str)str);
+}
+
+char* alloc_str(void *data, const char* str) {
+  const Symbol sym = alloc_sym(data, str);
   return s_name(sym);
 }
+
 
 unsigned long htol(const char* str) {
   unsigned char * c = (unsigned char*)str;

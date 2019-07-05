@@ -18,11 +18,10 @@
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
-#define OP_SYM(a) insert_symbol(op2str(a))
+#define OP_SYM(a) (a) // TODO: remove
 #define GET_LOC(a) loc_cpy(mpool(arg), a)
 ANN void gwion_error(YYLTYPE*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
-m_str op2str(const Operator op);
 %}
 
 %union {
@@ -55,31 +54,39 @@ m_str op2str(const Operator op);
 
 
 
-%token SEMICOLON ";" CHUCK "=>" COMMA "," DIVIDE "/" TIMES "*" PERCENT "%"
-  L_HACK "<<<" R_HACK ">>>" LPAREN "(" RPAREN ")"
-  LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}" PLUSCHUCK "+=>" MINUSCHUCK "-=>"
-  TIMESCHUCK "*=>" DIVIDECHUCK "/=>" MODULOCHUCK "%=>" ATCHUCK "@=>" UNCHUCK "@=<" TRIG "]=>" UNTRIG "[=<" 
-  PERCENTPAREN "%(" SHARPPAREN "#("
-  ATSYM "@" FUNCTION "fun" DOLLAR "$" TILDA "~" QUESTION "?" COLON ":" EXCLAMATION "!"
+%token SEMICOLON ";" COMMA ","
+  LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
+  PERCENTPAREN "%(" SHARPPAREN "#(" ATPAREN "@("
+  FUNCTION "fun"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" GOTO "goto" SWITCH "switch" CASE "case" ENUM "enum"
   RETURN "return" BREAK "break" CONTINUE "continue"
-  PLUSPLUS "++" MINUSMINUS "--" NEW "new"
-  SPORK "spork" FORK "fork" CLASS "class" STATIC "static" GLOBAL "global" PRIVATE "private"
-  PROTECT "protect" EXTENDS "extends" DOT "." COLONCOLON "::" AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
-  MINUS "-" PLUS "+" NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
+  CLASS "class"
+  STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
+  EXTENDS "extends" DOT "."
   AST_DTOR "dtor" OPERATOR "operator"
-  TYPEDEF "typedef" RSL "<<=>" RSR ">>=>" RSAND "&=>" RSOR "|=>" RSXOR "^=>"
-  LTMPL "<~" RTMPL "~>"
-  NOELSE UNION "union" ATPAREN "@(" TYPEOF "typeof" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
+  TYPEDEF "typedef"
+  NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
   RARROW "->" BACKSLASH "\\" BACKTICK "`"
 
 
 %token<lval> NUM "<integer>"
-%type<ival>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %type<ival> atsym vec_type flow breaks
 %token<fval> FLOATT
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
+%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
+%token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
+  DOLLAR "$" QUESTION "?" COLON ":" ATSYM "@"
+  NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof" 
+  L_HACK "<<<" R_HACK ">>>" 
+  CHUCK "=>"
+  PLUSCHUCK "+=>" MINUSCHUCK "-=>"
+  TIMESCHUCK "*=>" DIVIDECHUCK "/=>" MODULOCHUCK "%=>" ATCHUCK "@=>" UNCHUCK "@=<" TRIG "]=>" UNTRIG "[=<" 
+  COLONCOLON "::" AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
+  NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
+  RSL "<<=>" RSR ">>=>" RSAND "&=>" RSOR "|=>" RSXOR "^=>"
+  LTMPL "<~" RTMPL "~>"
+  TILDA "~" EXCLAMATION "!"
 
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define>" PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<flag> flag opt_flag
@@ -282,13 +289,13 @@ binary_exp: decl_exp2 | binary_exp op decl_exp2     { $$ = new_exp_binary(mpool(
 
 call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
-op: CHUCK { $$ = op_chuck; } | UNCHUCK { $$ = op_unchuck; } | EQ { $$ = op_eq; }
-  | ATCHUCK     { $$ = op_ref; } | PLUSCHUCK   { $$ = op_radd; }
-  | MINUSCHUCK  { $$ = op_rsub; } | TIMESCHUCK  { $$ = op_rmul; }
-  | DIVIDECHUCK { $$ = op_rdiv; } | MODULOCHUCK { $$ = op_rmod; }
-  | TRIG { $$ = op_trig; } | UNTRIG { $$ = op_untrig; }
-  | RSL { $$ = op_rsl; } | RSR { $$ = op_rsr; } | RSAND { $$ = op_rsand; }
-  | RSOR { $$ = op_rsor; } | RSXOR { $$ = op_rsxor; } | COLONCOLON { $$ = op_coloncolon; }
+op: CHUCK | UNCHUCK | EQ | NEQ
+  | ATCHUCK     | PLUSCHUCK
+  | MINUSCHUCK  | TIMESCHUCK
+  | DIVIDECHUCK | MODULOCHUCK
+  | TRIG | UNTRIG
+  | RSL | RSR RSAND
+  | RSOR | RSXOR | COLONCOLON
   ;
 
 array_exp
@@ -412,19 +419,19 @@ fptr_arg_decl: opt_id { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
   | opt_id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); }
   | opt_id array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
 
-eq_op : EQ { $$ = op_eq; } | NEQ { $$ = op_ne; };
-rel_op: LT { $$ = op_lt; } | GT { $$ = op_gt; } | LE { $$ = op_le; } | GE { $$ = op_ge; };
-shift_op: SHIFT_LEFT  { $$ = op_shl; } | SHIFT_RIGHT { $$ = op_shr; };
-add_op: PLUS { $$ = op_add; } | MINUS { $$ = op_sub; };
-mul_op: TIMES { $$ = op_mul; } | DIVIDE { $$ = op_div; } | PERCENT { $$ = op_mod; };
+eq_op : EQ | NEQ;
+rel_op: LT | GT | LE | GE;
+shift_op: SHIFT_LEFT | SHIFT_RIGHT;
+add_op: PLUS | MINUS;
+mul_op: TIMES | DIVIDE | PERCENT;
 con_exp: log_or_exp | log_or_exp QUESTION exp COLON con_exp
       { $$ = new_exp_if(mpool(arg), $1, $3, $5); };
 
-log_or_exp: log_and_exp | log_or_exp OR log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, op_or, $3); };
-log_and_exp: inc_or_exp | log_and_exp AND inc_or_exp { $$ = new_exp_binary(mpool(arg), $1, op_and, $3); };
-inc_or_exp: exc_or_exp | inc_or_exp S_OR exc_or_exp  { $$ = new_exp_binary(mpool(arg), $1, op_sor, $3); };
-exc_or_exp: and_exp | exc_or_exp S_XOR and_exp       { $$ = new_exp_binary(mpool(arg), $1, op_sxor, $3); };
-and_exp: eq_exp | and_exp S_AND eq_exp               { $$ = new_exp_binary(mpool(arg), $1, op_sand, $3); };
+log_or_exp: log_and_exp | log_or_exp OR log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+log_and_exp: inc_or_exp | log_and_exp AND inc_or_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+inc_or_exp: exc_or_exp | inc_or_exp S_OR exc_or_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+exc_or_exp: and_exp | exc_or_exp S_XOR and_exp       { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+and_exp: eq_exp | and_exp S_AND eq_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
@@ -436,15 +443,14 @@ typeof_exp: cast_exp | TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg)
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };
 
-unary_op : MINUS { $$ = op_sub; } | TIMES { $$ = op_mul; }
-  | post_op
-  | EXCLAMATION { $$ = op_not; } | SPORK { $$ = op_spork; } | FORK { $$ = op_fork; } | TILDA { $$ = op_cmp; }
+unary_op : MINUS | TIMES | post_op
+  | EXCLAMATION | SPORK | FORK | TILDA
   ;
 
 unary_exp : post_exp | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
-  | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), op_new, $2); }
-  | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), op_spork, $2); };
-  | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), op_fork, $2); };
+  | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2); }
+  | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
+  | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
 
 lambda_list:
  id { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), NULL); }
@@ -458,7 +464,7 @@ type_list
 
 call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
 
-post_op : PLUSPLUS { $$ = op_inc; } | MINUSMINUS { $$ = op_dec; };
+post_op : PLUSPLUS | MINUSMINUS;
 
 dot_exp: post_exp DOT id { $$ = new_exp_dot(mpool(arg), $1, $3); };
 post_exp: primary_exp | post_exp array_exp
