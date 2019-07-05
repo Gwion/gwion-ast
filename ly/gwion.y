@@ -18,7 +18,6 @@
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
-#define OP_SYM(a) (a) // TODO: remove
 #define GET_LOC(a) loc_cpy(mpool(arg), a)
 ANN void gwion_error(YYLTYPE*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
@@ -77,14 +76,12 @@ ANN Symbol lambda_name(const Scanner*);
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" COLON ":" ATSYM "@"
-  NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof" 
-  L_HACK "<<<" R_HACK ">>>" 
-  CHUCK "=>"
+  NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
+  L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   LTMPL "<~" RTMPL "~>"
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-  TRIG "]=>" UNTRIG "]=<"
 
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define>" PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<flag> flag opt_flag
@@ -287,7 +284,7 @@ binary_exp: decl_exp2 | binary_exp op decl_exp2     { $$ = new_exp_binary(mpool(
 
 call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
-op: EQ | NEQ | TRIG | UNTRIG | DYNOP;
+op: EQ | NEQ | DYNOP;
 
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
@@ -338,11 +335,11 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $9, ae_flag_op, GET_LOC(&@$)); $5->next = $7;}
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $9, ae_flag_op, GET_LOC(&@$)); $5->next = $7;}
   |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($2), $5), $7, ae_flag_op, GET_LOC(&@$)); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, OP_SYM($1), $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
   | AST_DTOR code_stmt
     {
 ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&@$));

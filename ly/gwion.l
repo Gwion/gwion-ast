@@ -186,9 +186,6 @@ ANN static m_str macro_data(void* data, const m_bool);
 "]"                                 { adjust(yyscanner); return RBRACK; }
 "{"                                 { adjust(yyscanner); return LBRACE; }
 "}"                                 { adjust(yyscanner); return RBRACE; }
-"]=>"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return TRIG; }
-"]=<"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return UNTRIG; }
-
 
 "class"                             { adjust(yyscanner); return CLASS;}
 "dtor"                              { adjust(yyscanner); return AST_DTOR;}

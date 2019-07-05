@@ -116,36 +116,33 @@ extern int gwion_debug;
     TYPEOF = 322,
     L_HACK = 323,
     R_HACK = 324,
-    CHUCK = 325,
-    AND = 326,
-    EQ = 327,
-    GE = 328,
-    GT = 329,
-    LE = 330,
-    LT = 331,
-    NEQ = 332,
-    SHIFT_LEFT = 333,
-    SHIFT_RIGHT = 334,
-    S_AND = 335,
-    S_OR = 336,
-    S_XOR = 337,
-    OR = 338,
-    LTMPL = 339,
-    RTMPL = 340,
-    TILDA = 341,
-    EXCLAMATION = 342,
-    DYNOP = 343,
-    TRIG = 344,
-    UNTRIG = 345,
-    PP_COMMENT = 346,
-    PP_INCLUDE = 347,
-    PP_DEFINE = 348,
-    PP_UNDEF = 349,
-    PP_IFDEF = 350,
-    PP_IFNDEF = 351,
-    PP_ELSE = 352,
-    PP_ENDIF = 353,
-    PP_NL = 354
+    AND = 325,
+    EQ = 326,
+    GE = 327,
+    GT = 328,
+    LE = 329,
+    LT = 330,
+    NEQ = 331,
+    SHIFT_LEFT = 332,
+    SHIFT_RIGHT = 333,
+    S_AND = 334,
+    S_OR = 335,
+    S_XOR = 336,
+    OR = 337,
+    LTMPL = 338,
+    RTMPL = 339,
+    TILDA = 340,
+    EXCLAMATION = 341,
+    DYNOP = 342,
+    PP_COMMENT = 343,
+    PP_INCLUDE = 344,
+    PP_DEFINE = 345,
+    PP_UNDEF = 346,
+    PP_IFDEF = 347,
+    PP_IFNDEF = 348,
+    PP_ELSE = 349,
+    PP_ENDIF = 350,
+    PP_NL = 351
   };
 #endif
 /* Tokens.  */
@@ -216,43 +213,40 @@ extern int gwion_debug;
 #define TYPEOF 322
 #define L_HACK 323
 #define R_HACK 324
-#define CHUCK 325
-#define AND 326
-#define EQ 327
-#define GE 328
-#define GT 329
-#define LE 330
-#define LT 331
-#define NEQ 332
-#define SHIFT_LEFT 333
-#define SHIFT_RIGHT 334
-#define S_AND 335
-#define S_OR 336
-#define S_XOR 337
-#define OR 338
-#define LTMPL 339
-#define RTMPL 340
-#define TILDA 341
-#define EXCLAMATION 342
-#define DYNOP 343
-#define TRIG 344
-#define UNTRIG 345
-#define PP_COMMENT 346
-#define PP_INCLUDE 347
-#define PP_DEFINE 348
-#define PP_UNDEF 349
-#define PP_IFDEF 350
-#define PP_IFNDEF 351
-#define PP_ELSE 352
-#define PP_ENDIF 353
-#define PP_NL 354
+#define AND 325
+#define EQ 326
+#define GE 327
+#define GT 328
+#define LE 329
+#define LT 330
+#define NEQ 331
+#define SHIFT_LEFT 332
+#define SHIFT_RIGHT 333
+#define S_AND 334
+#define S_OR 335
+#define S_XOR 336
+#define OR 337
+#define LTMPL 338
+#define RTMPL 339
+#define TILDA 340
+#define EXCLAMATION 341
+#define DYNOP 342
+#define PP_COMMENT 343
+#define PP_INCLUDE 344
+#define PP_DEFINE 345
+#define PP_UNDEF 346
+#define PP_IFDEF 347
+#define PP_IFNDEF 348
+#define PP_ELSE 349
+#define PP_ENDIF 350
+#define PP_NL 351
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 27 "ly/gwion.y" /* yacc.c:1921  */
+#line 26 "ly/gwion.y" /* yacc.c:1921  */
 
   char* sval;
   int ival;
@@ -280,7 +274,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 284 "include/parser.h" /* yacc.c:1921  */
+#line 278 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;
