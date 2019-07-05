@@ -36,7 +36,7 @@ libgwion_ast.a: ${obj}
 
 parser: ly/gwion.y
 	$(info generating parser)
-	@${YACC} --report all -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
+	@${YACC} -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
 
 lexer: ly/gwion.l
 	$(info generating lexer)

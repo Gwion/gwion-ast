@@ -1,4 +1,6 @@
+
 IS          (u|U|l|L)*
+SPACE [ \r\t]
 %{
 #include <stdio.h>
 #include <ctype.h>
@@ -101,30 +103,30 @@ ANN static m_str macro_data(void* data, const m_bool);
 %x define define_arg_start define_arg skip get_arg 
 %%
 
-<get_arg>[ \r\t]*","[ \r\t]* { adjust(yyscanner); handle_comma(yyscanner); }
+<get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); handle_comma(yyscanner); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
 <get_arg>")" { adjust(yyscanner); if(handle_rpar(yyscanner)) { BEGIN(INITIAL); GWYY_CALL }}
 <get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
-^#define[ \r\t]+[A-Za-z_][A-Za-z0-9_]* {
+^#define{SPACE}+[A-Za-z_][A-Za-z0-9_]* {
   add_macro(yyscanner, yytext);
   BEGIN(define_arg_start);
 }
 <define_arg>[A-Za-z_][A-Za-z0-9_]* { adjust(yyscanner); macro_arg(yyscanner, yytext); }
-<define_arg>[ \r\t]*","[ \r\t]*    { adjust(yyscanner); }
-<define_arg>"..."[ \r\t]*")"[ \r\t]* { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
+<define_arg>{SPACE}*","{SPACE}*    { adjust(yyscanner); }
+<define_arg>"..."{SPACE}*")"{SPACE}* { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
 <define_arg>" "   { gwlex_error(yyscanner, "Invalid"); }
-<define_arg>")"[ \r\t]* { adjust(yyscanner); BEGIN(define); }
+<define_arg>")"{SPACE}* { adjust(yyscanner); BEGIN(define); }
 <define_arg>. { gw_err(_("invalid char in macro")); return 1; }
 
 <define_arg_start>"("      { adjust(yyscanner); BEGIN(define_arg); };
-<define_arg_start>[ \r\t]* { adjust(yyscanner); BEGIN(define); };
+<define_arg_start>{SPACE}* { adjust(yyscanner); BEGIN(define); };
 <define_arg_start>\n       { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE };
 
 <define>\\n           { adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
 <define>.*\n          { adjust(yyscanner); macro_append(yyscanner, yytext); BEGIN(INITIAL); GWYY_DEFINE };
 
-^#ifn?def[ \r\t]+[A-Za-z_][A-Za-z0-9_]*[ \r\t]* {
+^#ifn?def{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* {
   adjust(yyscanner);
   const m_bool def = yytext[3] == 'n';
   m_str s = yytext + 6 + def;
@@ -137,19 +139,19 @@ ANN static m_str macro_data(void* data, const m_bool);
   if(!has_macro(yyscanner, c))
     BEGIN(skip);
 }
-^#else[ \r\t]*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
-^#endif[ \r\t]*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
+^#else{SPACE}*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
+^#endif{SPACE}*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
 <skip>\n      { newline(yyscanner); YY_USER_ACTION; }
-<skip>^#else[ \r\t]*\n { BEGIN(macro_toggle(yyscanner)); }
-<skip>^#endif[ \r\t]*\n { macro_end(yyscanner); BEGIN(INITIAL); }
+<skip>^#else{SPACE}*\n { BEGIN(macro_toggle(yyscanner)); }
+<skip>^#endif{SPACE}*\n { macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.         { continue;}
 
-^#include[ \r\t]*<[A-Za-z0-9_./]*>[ \r\t]* { GWYY_INCLUDE }
+^#include{SPACE}+<[A-Za-z0-9_./]*>{SPACE}* { GWYY_INCLUDE }
 
-^#undef[ \r\t]+[A-Za-z_][A-Za-z0-9_]*[ \r\t]* { GWYY_UNDEF }
+^#undef{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* { GWYY_UNDEF }
 
-^[ \r\t]*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
+^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 
 "//"              { YY_USER_ACTION;BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
@@ -157,7 +159,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <comment>.       { GWYY_COMMENT;  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
-[ \r\t]                             { adjust(yyscanner); continue; }
+{SPACE}                             { adjust(yyscanner); continue; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 ","                                 { adjust(yyscanner); return COMMA;}
 "@"                                 { adjust(yyscanner); return ATSYM;}
@@ -230,7 +232,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "dtor"                              { adjust(yyscanner); return AST_DTOR;}
 "operator"                          { adjust(yyscanner); return OPERATOR;}
 "extends"                           { adjust(yyscanner); return EXTENDS;}
-"..."|,[ \r\t]*"..."                { adjust(yyscanner); return ELLIPSE;}
+"..."|,{SPACE}*"..."                { adjust(yyscanner); return ELLIPSE;}
 "."                                 { adjust(yyscanner); return DOT;}
 
 %{ /* storage modifiers */ %}
