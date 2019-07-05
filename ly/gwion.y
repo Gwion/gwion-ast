@@ -66,7 +66,7 @@ ANN Symbol lambda_name(const Scanner*);
   AST_DTOR "dtor" OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
-  RARROW "->" BACKSLASH "\\" BACKTICK "`"
+  BACKSLASH "\\" BACKTICK "`"
 
 
 %token<lval> NUM "<integer>"
@@ -149,7 +149,7 @@ class_body2
   ;
 
 id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
-dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } | id RARROW dot_decl     { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
+dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } | id COLON dot_decl     { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
 

@@ -91,58 +91,57 @@ extern int gwion_debug;
     AUTO = 297,
     PASTE = 298,
     ELLIPSE = 299,
-    RARROW = 300,
-    BACKSLASH = 301,
-    BACKTICK = 302,
-    NUM = 303,
-    FLOATT = 304,
-    ID = 305,
-    STRING_LIT = 306,
-    CHAR_LIT = 307,
-    PLUS = 308,
-    PLUSPLUS = 309,
-    MINUS = 310,
-    MINUSMINUS = 311,
-    TIMES = 312,
-    DIVIDE = 313,
-    PERCENT = 314,
-    DOLLAR = 315,
-    QUESTION = 316,
-    COLON = 317,
-    ATSYM = 318,
-    NEW = 319,
-    SPORK = 320,
-    FORK = 321,
-    TYPEOF = 322,
-    L_HACK = 323,
-    R_HACK = 324,
-    AND = 325,
-    EQ = 326,
-    GE = 327,
-    GT = 328,
-    LE = 329,
-    LT = 330,
-    NEQ = 331,
-    SHIFT_LEFT = 332,
-    SHIFT_RIGHT = 333,
-    S_AND = 334,
-    S_OR = 335,
-    S_XOR = 336,
-    OR = 337,
-    LTMPL = 338,
-    RTMPL = 339,
-    TILDA = 340,
-    EXCLAMATION = 341,
-    DYNOP = 342,
-    PP_COMMENT = 343,
-    PP_INCLUDE = 344,
-    PP_DEFINE = 345,
-    PP_UNDEF = 346,
-    PP_IFDEF = 347,
-    PP_IFNDEF = 348,
-    PP_ELSE = 349,
-    PP_ENDIF = 350,
-    PP_NL = 351
+    BACKSLASH = 300,
+    BACKTICK = 301,
+    NUM = 302,
+    FLOATT = 303,
+    ID = 304,
+    STRING_LIT = 305,
+    CHAR_LIT = 306,
+    PLUS = 307,
+    PLUSPLUS = 308,
+    MINUS = 309,
+    MINUSMINUS = 310,
+    TIMES = 311,
+    DIVIDE = 312,
+    PERCENT = 313,
+    DOLLAR = 314,
+    QUESTION = 315,
+    COLON = 316,
+    ATSYM = 317,
+    NEW = 318,
+    SPORK = 319,
+    FORK = 320,
+    TYPEOF = 321,
+    L_HACK = 322,
+    R_HACK = 323,
+    AND = 324,
+    EQ = 325,
+    GE = 326,
+    GT = 327,
+    LE = 328,
+    LT = 329,
+    NEQ = 330,
+    SHIFT_LEFT = 331,
+    SHIFT_RIGHT = 332,
+    S_AND = 333,
+    S_OR = 334,
+    S_XOR = 335,
+    OR = 336,
+    LTMPL = 337,
+    RTMPL = 338,
+    TILDA = 339,
+    EXCLAMATION = 340,
+    DYNOP = 341,
+    PP_COMMENT = 342,
+    PP_INCLUDE = 343,
+    PP_DEFINE = 344,
+    PP_UNDEF = 345,
+    PP_IFDEF = 346,
+    PP_IFNDEF = 347,
+    PP_ELSE = 348,
+    PP_ENDIF = 349,
+    PP_NL = 350
   };
 #endif
 /* Tokens.  */
@@ -188,58 +187,57 @@ extern int gwion_debug;
 #define AUTO 297
 #define PASTE 298
 #define ELLIPSE 299
-#define RARROW 300
-#define BACKSLASH 301
-#define BACKTICK 302
-#define NUM 303
-#define FLOATT 304
-#define ID 305
-#define STRING_LIT 306
-#define CHAR_LIT 307
-#define PLUS 308
-#define PLUSPLUS 309
-#define MINUS 310
-#define MINUSMINUS 311
-#define TIMES 312
-#define DIVIDE 313
-#define PERCENT 314
-#define DOLLAR 315
-#define QUESTION 316
-#define COLON 317
-#define ATSYM 318
-#define NEW 319
-#define SPORK 320
-#define FORK 321
-#define TYPEOF 322
-#define L_HACK 323
-#define R_HACK 324
-#define AND 325
-#define EQ 326
-#define GE 327
-#define GT 328
-#define LE 329
-#define LT 330
-#define NEQ 331
-#define SHIFT_LEFT 332
-#define SHIFT_RIGHT 333
-#define S_AND 334
-#define S_OR 335
-#define S_XOR 336
-#define OR 337
-#define LTMPL 338
-#define RTMPL 339
-#define TILDA 340
-#define EXCLAMATION 341
-#define DYNOP 342
-#define PP_COMMENT 343
-#define PP_INCLUDE 344
-#define PP_DEFINE 345
-#define PP_UNDEF 346
-#define PP_IFDEF 347
-#define PP_IFNDEF 348
-#define PP_ELSE 349
-#define PP_ENDIF 350
-#define PP_NL 351
+#define BACKSLASH 300
+#define BACKTICK 301
+#define NUM 302
+#define FLOATT 303
+#define ID 304
+#define STRING_LIT 305
+#define CHAR_LIT 306
+#define PLUS 307
+#define PLUSPLUS 308
+#define MINUS 309
+#define MINUSMINUS 310
+#define TIMES 311
+#define DIVIDE 312
+#define PERCENT 313
+#define DOLLAR 314
+#define QUESTION 315
+#define COLON 316
+#define ATSYM 317
+#define NEW 318
+#define SPORK 319
+#define FORK 320
+#define TYPEOF 321
+#define L_HACK 322
+#define R_HACK 323
+#define AND 324
+#define EQ 325
+#define GE 326
+#define GT 327
+#define LE 328
+#define LT 329
+#define NEQ 330
+#define SHIFT_LEFT 331
+#define SHIFT_RIGHT 332
+#define S_AND 333
+#define S_OR 334
+#define S_XOR 335
+#define OR 336
+#define LTMPL 337
+#define RTMPL 338
+#define TILDA 339
+#define EXCLAMATION 340
+#define DYNOP 341
+#define PP_COMMENT 342
+#define PP_INCLUDE 343
+#define PP_DEFINE 344
+#define PP_UNDEF 345
+#define PP_IFDEF 346
+#define PP_IFNDEF 347
+#define PP_ELSE 348
+#define PP_ENDIF 349
+#define PP_NL 350
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -274,7 +272,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 278 "include/parser.h" /* yacc.c:1921  */
+#line 276 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;
