@@ -1,5 +1,5 @@
 PACKAGE=gwion_ast
-CFLAGS += -DPACKAGE='"{PACKAGE}"'
+CFLAGS += -DPACKAGE='"${PACKAGE}"'
 
 ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
@@ -26,7 +26,6 @@ ifeq ($(shell uname), Linux)
 endif
 
 all: options-show libgwion_ast.a
-	@$(info ${CFLAGS})
 
 options-show:
 	@$(call _options)
@@ -37,13 +36,13 @@ libgwion_ast.a: ${obj}
 
 parser: ly/gwion.y
 	$(info generating parser)
-	@${YACC} -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
+	@${YACC} --report all -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
 
 lexer: ly/gwion.l
 	$(info generating lexer)
 	@${LEX} -o src/lexer.c ly/gwion.l
 
-ly/gwion.y: m4/gwion.lm4
+ly/gwion.y: m4/gwion.ym4
 	$(info meta-generating parser)
 	m4 m4/gwion.ym4 > ly/gwion.y;
 

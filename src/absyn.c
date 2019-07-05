@@ -36,16 +36,14 @@ ANN static void free_var_decl_list(MemPool p, Var_Decl_List a) {
   mp_free(p, Var_Decl_List, a);
 }
 
-Type_Decl* new_type_decl(MemPool p, const ID_List xid, const ae_flag flag) {
+Type_Decl* new_type_decl(MemPool p, const ID_List xid) {
   Type_Decl* a = mp_calloc(p, Type_Decl);
-  a->flag = flag;
   a->xid = xid;
   return a;
 }
 
-Type_Decl* new_type_decl2(MemPool p, const Exp exp, const ae_flag flag) {
+Type_Decl* new_type_decl2(MemPool p, const Exp exp) {
   Type_Decl* a = mp_calloc(p, Type_Decl);
-  a->flag = flag;
   a->exp = exp;
   return a;
 }

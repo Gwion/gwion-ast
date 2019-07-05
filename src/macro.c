@@ -7,6 +7,7 @@
 Args new_args(MemPool p, const char* name) {
   const Args a = mp_calloc(p, Args);
   a->name = strdup(name);
+  a->text.mp = p;
   return a;
 }
 
@@ -39,6 +40,7 @@ static inline Macro mkentry(MemPool p, const char* name, const Macro next) {
   const Macro s = mp_calloc(p, Macro);
   s->name = strdup(name);
   s->next = next;
+  s->text.mp = p;
   return s;
 }
 

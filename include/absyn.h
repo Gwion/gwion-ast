@@ -67,8 +67,8 @@ typedef struct Type_Decl_ {
   ae_flag flag;
 } Type_Decl;
 
-ANEW ANN Type_Decl* new_type_decl(MemPool p, const ID_List, const ae_flag);
-ANEW ANN Type_Decl* new_type_decl2(MemPool p, const Exp, const ae_flag);
+ANEW ANN Type_Decl* new_type_decl(MemPool p, const ID_List);
+ANEW ANN Type_Decl* new_type_decl2(MemPool p, const Exp);
 ANN void free_type_decl(MemPool p, Type_Decl* a);
 ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 
