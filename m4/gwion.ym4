@@ -80,13 +80,11 @@ changequote([[[`]]], [[[']]])
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof" 
   L_HACK "<<<" R_HACK ">>>" 
   CHUCK "=>"
-  PLUSCHUCK "+=>" MINUSCHUCK "-=>"
-  TIMESCHUCK "*=>" DIVIDECHUCK "/=>" MODULOCHUCK "%=>" ATCHUCK "@=>" UNCHUCK "@=<" TRIG "]=>" UNTRIG "[=<" 
-  COLONCOLON "::" AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
+  AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
-  RSL "<<=>" RSR ">>=>" RSAND "&=>" RSOR "|=>" RSXOR "^=>"
   LTMPL "<~" RTMPL "~>"
-  TILDA "~" EXCLAMATION "!"
+  TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
+  TRIG "]=>" UNTRIG "]=<"
 ifdef(`TINY_MODE', `', `
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define>" PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"')
 %type<flag> flag opt_flag
@@ -304,14 +302,7 @@ binary_exp: decl_exp2 | binary_exp op decl_exp2     { $$ = new_exp_binary(mpool(
 
 call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
-op: CHUCK | UNCHUCK | EQ | NEQ
-  | ATCHUCK     | PLUSCHUCK
-  | MINUSCHUCK  | TIMESCHUCK
-  | DIVIDECHUCK | MODULOCHUCK
-  | TRIG | UNTRIG
-  | RSL | RSR RSAND
-  | RSOR | RSXOR | COLONCOLON
-  ;
+op: EQ | NEQ | TRIG | UNTRIG | DYNOP;
 
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
