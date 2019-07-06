@@ -158,9 +158,10 @@ ifdef([[[TINY_MODE]]], [[[]]],
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 ]]])
-"//"              { YY_USER_ACTION;BEGIN(comment); }
+"#!"             { YY_USER_ACTION; BEGIN(comment); }
+<comment>!\#     { BEGIN(INITIAL); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT2]]]) }
-<comment>\n      { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT_END;]]]) }
+<comment>\n      { ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT_END;]]]) }
 <comment>.       { ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT;]]])  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
