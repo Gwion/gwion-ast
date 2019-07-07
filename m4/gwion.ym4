@@ -447,7 +447,7 @@ cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };
 
 unary_op : MINUS | TIMES | post_op
-  | EXCLAMATION | SPORK | FORK | DYNOP
+  | EXCLAMATION | SPORK | FORK
   ;
 
 unary_exp : post_exp | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
@@ -467,7 +467,7 @@ type_list
 
 call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
 
-post_op : PLUSPLUS | MINUSMINUS;
+post_op : PLUSPLUS | MINUSMINUS | DYNOP;
 
 dot_exp: post_exp DOT id { $$ = new_exp_dot(mpool(arg), $1, $3); };
 post_exp: primary_exp | post_exp array_exp
