@@ -76,7 +76,6 @@ struct ID_List_    {
   struct Symbol_* xid;
   ID_List next;
   loc_t pos;
-  m_bool ref;
 };
 
 ANEW ANN ID_List new_id_list(MemPool p, struct Symbol_*, const loc_t);
