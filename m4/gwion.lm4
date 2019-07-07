@@ -183,6 +183,7 @@ ifdef([[[TINY_MODE]]], [[[]]],
 "union"                             { adjust(yyscanner); return UNION; }
 
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
+"`"                                { adjust(yyscanner); return BACKTICK; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
