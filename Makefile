@@ -52,7 +52,7 @@ ly/gwion.l: m4/gwion.lm4
 
 clean:
 	$(info cleaning)
-	@rm -f src/*.o *.a
+	@rm -f src/*.o *.a src/*.gcno src/*.gcda
 
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/intl.mk
