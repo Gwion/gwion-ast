@@ -1000,7 +1000,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #endif
 #define GWYY_COMMENT     GWYY_DOLINT(yymore()); continue;
 #define GWYY_COMMENT2    GWYY_DOLINT(yymore()); newline(yyscanner); YY_USER_ACTION; continue;
-#define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) continue;
+#define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) BEGIN(INITIAL);
 
 #define GWYY_INCLUDE GWYY_LINT(strip_include(yyscanner, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
 #define GWYY_UNDEF   GWYY_LINT(strdup(yytext), PP_UNDEF) rem_macro(yyscanner, yytext);
@@ -1518,7 +1518,7 @@ case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
 #line 162 "ly/gwion.l"
-{ GWYY_COMMENT_END; }
+{ newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP

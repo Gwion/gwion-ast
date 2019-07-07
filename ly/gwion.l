@@ -73,7 +73,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #endif
 #define GWYY_COMMENT     GWYY_DOLINT(yymore()); continue;
 #define GWYY_COMMENT2    GWYY_DOLINT(yymore()); newline(yyscanner); YY_USER_ACTION; continue;
-#define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) continue;
+#define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) BEGIN(INITIAL);
 
 #define GWYY_INCLUDE GWYY_LINT(strip_include(yyscanner, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
 #define GWYY_UNDEF   GWYY_LINT(strdup(yytext), PP_UNDEF) rem_macro(yyscanner, yytext);
@@ -159,7 +159,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "#!"             { YY_USER_ACTION; BEGIN(comment); }
 <comment>!\#     { BEGIN(INITIAL); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
-<comment>\n      { GWYY_COMMENT_END; }
+<comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END; }
 <comment>.       { GWYY_COMMENT;  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
