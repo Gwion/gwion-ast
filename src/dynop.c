@@ -13,10 +13,11 @@ ANN enum yytokentype op1(const m_str str) {
     case '*': return TIMES;    break;
     case '/': return DIVIDE;   break;
     case '%': return PERCENT;  break;
+    case '~': return TILDA;    break;
     case '<': return LT;       break;
     case '>': return GT;       break;
-    case '^': return S_XOR;      break;
-    case '|': return OR;      break;
+    case '^': return S_XOR;    break;
+    case '|': return OR;       break;
     case '&': return AND;      break;
     case '!': return EXCLAMATION; break;
   }

@@ -432,7 +432,7 @@ cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };
 
 unary_op : MINUS | TIMES | post_op
-  | EXCLAMATION | SPORK | FORK | DYNOP
+  | EXCLAMATION | SPORK | FORK | TILDA
   ;
 
 unary_exp : post_exp | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
