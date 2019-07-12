@@ -70,7 +70,7 @@ ANN Symbol lambda_name(const Scanner*);
 
 
 %token<lval> NUM "<integer>"
-%type<ival> atsym vec_type flow breaks
+%type<ival> atsym decl_flag vec_type flow breaks
 %token<fval> FLOATT
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
@@ -300,7 +300,7 @@ array_empty
 
 array: array_exp | array_empty;
 decl_exp2: con_exp | decl_exp3
-  | AUTO atsym var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
+  | AUTO decl_flag var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
      new_id_list(mpool(arg), insert_symbol("auto"), GET_LOC(&@$))), $3); }
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
 union_exp: type_decl arg_decl { $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
@@ -347,6 +347,7 @@ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg)
        insert_symbol("dtor"), NULL), $2, ae_flag_dtor, GET_LOC(&@$)); }  ;
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
+decl_flag: EXCLAMATION atsym { $$ = ae_flag_nonnull | $2; } | atsym;
 
 type_decl000
   : dot_decl { $$ = new_type_decl(mpool(arg), $1); }
@@ -359,7 +360,7 @@ type_decl00
   ;
 
 type_decl0
-  : type_decl00 atsym { $1->flag |= $2; $$ = $1; }
+  : type_decl00 decl_flag { $1->flag |= $2; $$ = $1; }
   ;
 
 type_decl: type_decl0 { $$ = $1; }
