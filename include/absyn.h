@@ -229,7 +229,7 @@ ANEW ANN Exp new_exp_binary(MemPool p, const Exp, const Symbol, const Exp);
 ANEW ANN Exp new_exp_post(MemPool p, const Exp, const Symbol);
 ANN2(1,2) ANEW Exp new_exp_call(MemPool p, const Exp, const Exp args);
 ANEW ANN Exp new_exp_cast(MemPool p, Type_Decl*, const Exp);
-ANN2(1,2,3) ANEW Exp new_exp_if(MemPool p, const Exp, const Exp, const Exp);
+ANN2(1,2,4) ANEW Exp new_exp_if(MemPool p, const Exp, const Exp, const Exp);
 ANEW ANN Exp new_exp_dot(MemPool p, const Exp, struct Symbol_*);
 ANEW ANN Exp new_exp_unary(MemPool p, const Symbol, const Exp);
 ANEW ANN Exp new_exp_unary2(MemPool p, const Symbol, Type_Decl*);

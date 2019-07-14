@@ -75,7 +75,7 @@ changequote([[[`]]], [[[']]])
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
-  DOLLAR "$" QUESTION "?" COLON ":" ATSYM "@"
+  DOLLAR "$" QUESTION "?" COLON ":" QUESTIONCOLON "?:" ATSYM "@"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
@@ -91,7 +91,7 @@ ifdef(`TINY_MODE', `', `
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl000 type_decl00  type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
-%type<exp> con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
+%type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp
 %type<array_sub> array_exp array_empty array
@@ -112,6 +112,22 @@ ifdef(`TOOL_MODE', `stmt_pp', `'))
 %type<ast> ast prg
 
 %start prg
+
+%left "."
+%right "!" "~"
+%left "*" "/" "%"
+%left "+" "-"
+%right UMINUS UTIMES
+%left "<<" ">>"
+%left "&"
+%left "^"
+%left "|"
+%left "<" "<=" ">" ">="
+%left "=="  "!="
+%left "&&"
+%left "||"
+%right "?:"
+%right "="
 
 %nonassoc NOELSE
 %nonassoc ELSE
@@ -304,7 +320,7 @@ op: EQ | NEQ | DYNOP;
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
   | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
-  | LBRACK exp RBRACK LBRACK RBRACK { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
+  | LBRACK exp RBRACK array_empty { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
@@ -428,8 +444,13 @@ rel_op: LT | GT | LE | GE;
 shift_op: SHIFT_LEFT | SHIFT_RIGHT;
 add_op: PLUS | MINUS;
 mul_op: TIMES | DIVIDE | PERCENT;
-con_exp: log_or_exp | log_or_exp QUESTION exp COLON con_exp
+
+opt_exp: exp | { $$ = NULL; }
+con_exp: log_or_exp
+  | log_or_exp QUESTION opt_exp COLON con_exp
       { $$ = new_exp_if(mpool(arg), $1, $3, $5); };
+  | log_or_exp QUESTIONCOLON con_exp
+      { $$ = new_exp_if(mpool(arg), $1, NULL, $3); };
 
 log_or_exp: log_and_exp | log_or_exp OR log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 log_and_exp: inc_or_exp | log_and_exp AND inc_or_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
@@ -447,7 +468,7 @@ typeof_exp: cast_exp | TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg)
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };
 
-unary_op : MINUS | TIMES | post_op
+unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
   | EXCLAMATION | SPORK | FORK | TILDA
   ;
 
