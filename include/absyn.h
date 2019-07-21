@@ -141,10 +141,15 @@ typedef struct Tmpl_ {
   Type_List call;
 } Tmpl;
 
-ANEW ANN Tmpl* new_tmpl(MemPool p, const ID_List, const m_int);
-ANEW ANN Tmpl* new_tmpl_call(MemPool p, Type_List);
+ANN ANEW Tmpl* new_tmpl(MemPool p, const ID_List, const m_int);
+ANN ANEW Tmpl* new_tmpl_call(MemPool p, Type_List);
 ANN void free_tmpl(MemPool p, Tmpl*);
-m_bool tmpl_base(const Tmpl*);
+
+static inline m_bool tmpl_base(const Tmpl* a) {
+  if(a && a->base == -1)
+    return GW_OK;
+  return 0;
+}
 
 typedef struct {
   Exp func;
@@ -345,7 +350,7 @@ struct Func_Base_ {
   struct Type_*       ret_type;
   Tmpl *tmpl;
 };
-struct Func_Base_* new_func_base(MemPool p, Type_Decl*, const Symbol, const Arg_List);
+ANN2(1) struct Func_Base_* new_func_base(MemPool p, Type_Decl*, const Symbol, const Arg_List);
 struct Stmt_Fptr_ {
   struct Func_Base_ *base;
   struct Type_*       type;

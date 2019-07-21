@@ -548,7 +548,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
           }
         } else {
           if(!strcmp(arg->name, "__VA_ARGS__"))exit(16);// not enough args ?
-          return 0;
+            return 0;
         }
       }
       return 1;
@@ -625,18 +625,9 @@ static m_str get_arg_text(void* data, const m_str id) {
   return NULL;
 }
 
-
-static void gwlex_textadd(GwText* text, const m_str str) {
-  const size_t sz = strlen(str);
-  char c[sz + 1];
-  strcpy(c, str);
-  c[sz-1] = '\0';
-  text_add(text, c);
-}
-
 static void macro_append(void* data, const m_str text) {
   Scanner* scan = yyget_extra(data);
-  gwlex_textadd(&scan->pp->entry->text, text);
+  text_add(&scan->pp->entry->text, text);
 }
 
 uint clear_buffer(Vector v, void* data) {
@@ -714,6 +705,6 @@ static int handle_rpar(void* data) {
 static void handle_char(void* data, m_str str) {
   const Scanner *scan = yyget_extra(data);
   while(isspace(*str))++str;
-  gwlex_textadd(&scan->pp->entry->args->text, str);
+    text_add(&scan->pp->entry->args->text, str);
 }
 

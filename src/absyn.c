@@ -334,12 +334,6 @@ void free_tmpl(MemPool p, Tmpl* a) {
   mp_free(p, Tmpl, a);
 }
 
-m_bool tmpl_base(const Tmpl* a) {
-  if(a && a->base == -1)
-    return GW_OK;
-  return 0;
-}
-
 Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code,
     const ae_flag flag, const loc_t pos) {
   Func_Def a = mp_calloc(p, Func_Def);
