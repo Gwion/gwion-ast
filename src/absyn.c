@@ -619,16 +619,16 @@ ANN static inline void free_stmt_switch(MemPool p, Stmt_Switch a) {
   free_stmt(p, a->stmt);
 }
 
-Stmt new_stmt_enum(MemPool p, const ID_List list, struct Symbol_* xid) {
-  Stmt a = new_stmt(p, ae_stmt_enum, loc_cpy(p, list->pos));
-  a->d.stmt_enum.xid = xid;
-  a->d.stmt_enum.list = list;
-  a->d.stmt_enum.flag = 0;
-  vector_init(&a->d.stmt_enum.values);
+Enum_Def new_enum_def(MemPool p, const ID_List list, struct Symbol_* xid, const loc_t pos) {
+  Enum_Def a = mp_calloc(p, Enum_Def);
+  a->xid = xid;
+  a->list = list;
+  a->pos = pos;
+  vector_init(&a->values);
   return a;
 }
 
-ANN static void free_stmt_enum(MemPool p, Stmt_Enum a) {
+ANN void free_enum_def(MemPool p, Enum_Def a) {
   free_id_list(p, a->list);
   vector_release(&a->values);
 }
@@ -688,7 +688,7 @@ static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_for,  (_stmt_func)free_stmt_auto, (_stmt_func)free_stmt_loop,
   (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_switch,
   (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,
-  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_jump,  (_stmt_func)free_stmt_enum,
+  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_jump,
   (_stmt_func)free_stmt_fptr, (_stmt_func)free_stmt_type, (_stmt_func)free_stmt_union,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
@@ -738,6 +738,13 @@ Section* new_section_class_def(MemPool p, const Class_Def class_def) {
   return a;
 }
 
+Section* new_section_enum_def(MemPool p, const Enum_Def enum_def) {
+  Section* a = mp_calloc(p, Section);
+  a->section_type = ae_section_enum;
+  a->d.enum_def = enum_def;
+  return a;
+}
+
 void free_class_def(MemPool p, Class_Def a) {
   if(a->base.type && GET_FLAG(a, template))
     return;
@@ -759,6 +766,8 @@ ANN static void free_section(MemPool p, Section* section) {
     free_stmt_list(p, section->d.stmt_list);
   else if(t == ae_section_func)
     free_func_def(p, section->d.func_def);
+  else if(t == ae_section_enum)
+    free_enum_def(p, section->d.enum_def);
   mp_free(p, Section, section);
 }
 

@@ -272,6 +272,7 @@ union YYSTYPE
   Arg_List arg_list;
   Decl_List decl_list;
   Func_Def func_def;
+  Enum_Def enum_def;
   Section* section;
   ID_List id_list;
   Type_List type_list;
@@ -280,7 +281,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 284 "include/parser.h" /* yacc.c:1921  */
+#line 285 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

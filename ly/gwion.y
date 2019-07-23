@@ -42,6 +42,7 @@ ANN Symbol lambda_name(const Scanner*);
   Arg_List arg_list;
   Decl_List decl_list;
   Func_Def func_def;
+  Enum_Def enum_def;
   Section* section;
   ID_List id_list;
   Type_List type_list;
@@ -97,12 +98,13 @@ ANN Symbol lambda_name(const Scanner*);
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
-%type<stmt> enum_stmt func_type stmt_type union_stmt 
+%type<stmt> func_type stmt_type union_stmt 
 %type<stmt_list> stmt_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<func_base> fdef_base fptr_base
+%type<enum_def> enum_def
 %type<section> section
 %type<class_def> class_def
 %type<class_body> class_body class_body2
@@ -143,9 +145,10 @@ ast
   ;
 
 section
-  : stmt_list  { $$ = new_section_stmt_list(mpool(arg), $1); }
-  | func_def   { $$ = new_section_func_def (mpool(arg), $1); }
-  | class_def  { $$ = new_section_class_def(mpool(arg), $1); }
+  : stmt_list { $$ = new_section_stmt_list(mpool(arg), $1); }
+  | func_def  { $$ = new_section_func_def (mpool(arg), $1); }
+  | class_def { $$ = new_section_class_def(mpool(arg), $1); }
+  | enum_def  { $$ = new_section_enum_def(mpool(arg), $1); }
   ;
 
 class_def
@@ -219,7 +222,6 @@ stmt
   | goto_stmt
   | switch_stmt
   | case_stmt
-  | enum_stmt
   | jump_stmt
   | func_type
   | stmt_type
@@ -237,9 +239,9 @@ id
 
 opt_id: id | { $$ = NULL; };
 
-enum_stmt
-  : ENUM opt_flag LBRACE id_list RBRACE opt_id SEMICOLON    { $$ = new_stmt_enum(mpool(arg), $4, $6);
-    $$->d.stmt_enum.flag = $2; };
+enum_def
+  : ENUM opt_flag LBRACE id_list RBRACE opt_id SEMICOLON    { $$ = new_enum_def(mpool(arg), $4, $6, GET_LOC(&@$));
+    $$->flag = $2; };
 
 label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
 
