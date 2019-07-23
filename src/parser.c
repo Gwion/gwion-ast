@@ -346,7 +346,7 @@ union YYSTYPE
   Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
   Exp   exp;
-  struct Func_Base_ *func_base;
+  Func_Base *func_base;
   Stmt_Fptr func_type;
   Stmt stmt;
   Stmt_List stmt_list;

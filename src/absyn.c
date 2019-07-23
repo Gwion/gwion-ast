@@ -334,7 +334,7 @@ void free_tmpl(MemPool p, Tmpl* a) {
   mp_free(p, Tmpl, a);
 }
 
-Func_Def new_func_def(MemPool p, struct Func_Base_ *base,const Stmt code,
+Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code,
     const ae_flag flag, const loc_t pos) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base = base;
@@ -359,7 +359,7 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
   return GW_OK;
 }
 
-ANN /* static */void free_func_base(MemPool p, struct Func_Base_ * a) {
+ANN /* static */void free_func_base(MemPool p, Func_Base * a) {
   if(!a->func) {
     if(a->args)
       free_arg_list(p, a->args);
@@ -376,15 +376,15 @@ void free_func_def(MemPool p, Func_Def a) {
   }
 }
 
-struct Func_Base_* new_func_base(MemPool p, Type_Decl* td, const Symbol xid, const Arg_List args) {
-  struct Func_Base_ *a = (struct Func_Base_*)mp_calloc(p, Func_Base);
+Func_Base* new_func_base(MemPool p, Type_Decl* td, const Symbol xid, const Arg_List args) {
+  Func_Base *a = (Func_Base*)mp_calloc(p, Func_Base);
   a->td = td;
   a->xid = xid;
   a->args = args;
   return a;
 }
 
-Stmt new_stmt_fptr(MemPool p, struct Func_Base_ *base, const ae_flag flag) {
+Stmt new_stmt_fptr(MemPool p, Func_Base *base, const ae_flag flag) {
   Stmt a              = new_stmt(p, ae_stmt_fptr, loc_cpy(p, td_pos(base->td)));
   a->d.stmt_fptr.base = base;
   base->td->flag |= flag;

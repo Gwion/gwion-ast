@@ -342,17 +342,18 @@ struct Stmt_Enum_ {
   ae_flag flag;
 };
 
-struct Func_Base_ {
+typedef struct Func_Base_ {
   Type_Decl* td;
   struct Symbol_*     xid;
   Arg_List   args;
   struct Func_       *func;
   struct Type_*       ret_type;
   Tmpl *tmpl;
-};
-ANN2(1) struct Func_Base_* new_func_base(MemPool p, Type_Decl*, const Symbol, const Arg_List);
+} Func_Base;
+
+ANN2(1) Func_Base* new_func_base(MemPool p, Type_Decl*, const Symbol, const Arg_List);
 struct Stmt_Fptr_ {
-  struct Func_Base_ *base;
+  Func_Base *base;
   struct Type_*       type;
   struct Value_      *value;
 };
@@ -434,7 +435,7 @@ ANEW ANN Stmt new_stmt_jump(MemPool p, struct Symbol_*, const m_bool, const loc_
 ANN2(1, 2) ANEW Stmt new_stmt_enum(MemPool p, const ID_List, struct Symbol_*);
 ANEW ANN Stmt new_stmt_switch(MemPool p, Exp, Stmt);
 ANEW ANN Stmt new_stmt_union(MemPool p, const Decl_List, const loc_t);
-ANEW ANN Stmt new_stmt_fptr(MemPool p, struct Func_Base_*, const ae_flag);
+ANEW ANN Stmt new_stmt_fptr(MemPool p, Func_Base*, const ae_flag);
 ANEW ANN Stmt new_stmt_type(MemPool p, Type_Decl*, struct Symbol_*);
 #ifndef TINY_MODE
 ANEW     Stmt new_stmt_pp(MemPool p, const enum ae_pp_type, const m_str);
@@ -450,7 +451,7 @@ ANN void free_stmt_list(MemPool p, Stmt_List);
 typedef struct Class_Body_ * Class_Body;
 
 struct Func_Def_ {
-  struct Func_Base_* base;
+  Func_Base* base;
   m_uint stack_depth;
   union func_def_data {
     Stmt code;
@@ -460,9 +461,9 @@ struct Func_Def_ {
   ae_flag flag;
 };
 
-ANEW Func_Def new_func_def(MemPool p, struct Func_Base_*, const Stmt, const ae_flag, const loc_t);
+ANEW Func_Def new_func_def(MemPool p, Func_Base*, const Stmt, const ae_flag, const loc_t);
 ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs);
-ANN void free_func_base(MemPool p, struct Func_Base_*);
+ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def def);
 
 typedef enum { ae_section_stmt, ae_section_func, ae_section_class } ae_section_t;
