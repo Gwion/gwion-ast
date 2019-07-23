@@ -359,6 +359,8 @@ struct Fptr_Def_ {
   struct Type_*       type;
   struct Value_      *value;
 };
+ANEW ANN Fptr_Def new_fptr_def(MemPool p, Func_Base*, const ae_flag);
+ANN void free_fptr_def(MemPool p, Fptr_Def);
 
 typedef struct Type_Def_* Type_Def;
 struct Type_Def_ {
@@ -367,6 +369,8 @@ struct Type_Def_ {
   struct Symbol_*     xid;
   Tmpl*  tmpl;
 };
+ANEW ANN Type_Def new_type_def(MemPool p, Type_Decl*, struct Symbol_*);
+ANN void free_type_def(MemPool p, Type_Def);
 
 typedef struct Union_Def_* Union_Def;
 struct Union_Def_ {
@@ -384,6 +388,7 @@ struct Union_Def_ {
   loc_t pos;
 };
 ANEW ANN Union_Def new_union_def(MemPool p, const Decl_List, const loc_t);
+ANN void free_union_def(MemPool p, Union_Def);
 
 #ifndef TINY_MODE
 enum ae_pp_type {
@@ -435,8 +440,6 @@ ANEW ANN Stmt new_stmt_auto(MemPool p, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_loop(MemPool p, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_jump(MemPool p, struct Symbol_*, const m_bool, const loc_t);
 ANEW ANN Stmt new_stmt_switch(MemPool p, Exp, Stmt);
-ANEW ANN Fptr_Def new_fptr_def(MemPool p, Func_Base*, const ae_flag);
-ANEW ANN Type_Def new_type_def(MemPool p, Type_Decl*, struct Symbol_*);
 #ifndef TINY_MODE
 ANEW     Stmt new_stmt_pp(MemPool p, const enum ae_pp_type, const m_str);
 #endif
