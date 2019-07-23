@@ -43,6 +43,7 @@ ANN Symbol lambda_name(const Scanner*);
   Decl_List decl_list;
   Func_Def func_def;
   Enum_Def enum_def;
+  Union_Def union_def;
   Section* section;
   ID_List id_list;
   Type_List type_list;
@@ -98,13 +99,14 @@ ANN Symbol lambda_name(const Scanner*);
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
 %type<stmt> case_stmt label_stmt goto_stmt switch_stmt
-%type<stmt> func_type stmt_type union_stmt 
+%type<stmt> func_type stmt_type 
 %type<stmt_list> stmt_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<func_base> fdef_base fptr_base
 %type<enum_def> enum_def
+%type<union_def> union_def
 %type<section> section
 %type<class_def> class_def
 %type<class_body> class_body class_body2
@@ -149,6 +151,7 @@ section
   | func_def  { $$ = new_section_func_def (mpool(arg), $1); }
   | class_def { $$ = new_section_class_def(mpool(arg), $1); }
   | enum_def  { $$ = new_section_enum_def(mpool(arg), $1); }
+  | union_def { $$ = new_section_union_def(mpool(arg), $1); }
   ;
 
 class_def
@@ -225,7 +228,6 @@ stmt
   | jump_stmt
   | func_type
   | stmt_type
-  | union_stmt
 ;
 
 id
@@ -387,12 +389,12 @@ type_decl: type_decl0 { $$ = $1; }
 decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
-union_stmt
+union_def
   : UNION opt_flag decl_template opt_id LBRACE decl_list RBRACE opt_id SEMICOLON {
-      $$ = new_stmt_union(mpool(arg), $6, GET_LOC(&@$));
-      $$->d.stmt_union.type_xid = $4;
-      $$->d.stmt_union.xid = $8;
-      $$->d.stmt_union.flag = $2;
+      $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
+      $$->type_xid = $4;
+      $$->xid = $8;
+      $$->flag = $2;
       if($3) {
         if(!$4) {
           gw_err(_("Template unions requires type name\n"));
@@ -402,7 +404,7 @@ union_stmt
           gw_err(_("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
-        $$->d.stmt_union.tmpl = new_tmpl(mpool(arg), $3, -1);
+        $$->tmpl = new_tmpl(mpool(arg), $3, -1);
       }
     }
   | UNION opt_flag decl_template opt_id LBRACE error RBRACE opt_id SEMICOLON {

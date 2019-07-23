@@ -255,7 +255,7 @@ ANN void free_decl_list(MemPool p, Decl_List a);
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_switch, ae_stmt_break,
                ae_stmt_continue, ae_stmt_return, ae_stmt_case, ae_stmt_jump,
-               ae_stmt_fptr, ae_stmt_type, ae_stmt_union,
+               ae_stmt_fptr, ae_stmt_type,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
 ae_stmt_pp
@@ -274,7 +274,6 @@ typedef struct Stmt_Switch_  * Stmt_Switch;
 typedef struct Stmt_Jump_    * Stmt_Jump;
 typedef struct Stmt_Fptr_    * Stmt_Fptr;
 typedef struct Stmt_Type_    * Stmt_Type;
-typedef struct Stmt_Union_   * Stmt_Union;
 #ifndef TINY_MODE
 typedef struct Stmt_PP_      * Stmt_PP;
 #endif
@@ -369,7 +368,8 @@ struct Stmt_Type_ {
   Tmpl*  tmpl;
 };
 
-struct Stmt_Union_ {
+typedef struct Union_Def_* Union_Def;
+struct Union_Def_ {
   Decl_List l;
   struct Symbol_* xid;
   struct Symbol_* type_xid;
@@ -381,7 +381,9 @@ struct Stmt_Union_ {
   uint s;
   uint o;
   ae_flag flag;
+  loc_t pos;
 };
+ANEW ANN Union_Def new_union_def(MemPool p, const Decl_List, const loc_t);
 
 #ifndef TINY_MODE
 enum ae_pp_type {
@@ -413,7 +415,6 @@ struct Stmt_ {
     struct Stmt_Switch_     stmt_switch;
     struct Stmt_Fptr_       stmt_fptr;
     struct Stmt_Type_       stmt_type;
-    struct Stmt_Union_      stmt_union;
 #ifndef TINY_MODE
     struct Stmt_PP_    stmt_pp;
 #endif
@@ -436,7 +437,6 @@ ANEW ANN Stmt new_stmt_auto(MemPool p, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_loop(MemPool p, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_jump(MemPool p, struct Symbol_*, const m_bool, const loc_t);
 ANEW ANN Stmt new_stmt_switch(MemPool p, Exp, Stmt);
-ANEW ANN Stmt new_stmt_union(MemPool p, const Decl_List, const loc_t);
 ANEW ANN Stmt new_stmt_fptr(MemPool p, Func_Base*, const ae_flag);
 ANEW ANN Stmt new_stmt_type(MemPool p, Type_Decl*, struct Symbol_*);
 #ifndef TINY_MODE
@@ -468,13 +468,15 @@ ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs)
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def def);
 
-typedef enum { ae_section_stmt, ae_section_func, ae_section_class, ae_section_enum } ae_section_t;
+typedef enum { ae_section_stmt, ae_section_func, ae_section_class,
+  ae_section_enum, ae_section_union } ae_section_t;
 typedef struct Section_ {
   union section_data {
     Stmt_List stmt_list;
     Class_Def class_def;
-    Func_Def func_def;
-    Enum_Def enum_def;
+    Func_Def  func_def;
+    Enum_Def  enum_def;
+    Union_Def union_def;
   } d;
   ae_section_t section_type;
 } Section;
@@ -482,6 +484,7 @@ ANEW ANN Section* new_section_stmt_list(MemPool p, const Stmt_List);
 ANEW ANN Section* new_section_func_def(MemPool p, const Func_Def);
 ANEW ANN Section* new_section_class_def(MemPool p, const Class_Def);
 ANEW ANN Section* new_section_enum_def(MemPool p, const Enum_Def);
+ANEW ANN Section* new_section_union_def(MemPool p, const Union_Def);
 
 struct Class_Body_ {
   Section* section;
@@ -493,7 +496,7 @@ struct Class_Def_ {
   union {
     Class_Body body;
     Decl_List list; // parent template union
-    Stmt stmt;// child template union
+    Union_Def union_def;// child template union
   };
   loc_t pos;
   ae_flag flag;

@@ -633,9 +633,10 @@ ANN void free_enum_def(MemPool p, Enum_Def a) {
   vector_release(&a->values);
 }
 
-Stmt new_stmt_union(MemPool p, const Decl_List l, const loc_t pos) {
-  Stmt a = new_stmt(p, ae_stmt_union, pos);
-  a->d.stmt_union.l = l;
+Union_Def new_union_def(MemPool p, const Decl_List l, const loc_t pos) {
+  Union_Def a = mp_calloc(p, Union_Def);
+  a->l = l;
+  a->pos = pos;
   return a;
 }
 
@@ -671,9 +672,10 @@ ANN void free_decl_list(MemPool p, Decl_List a) {
   mp_free(p, Decl_List, a);
 }
 
-ANN static inline void free_stmt_union(MemPool p, Stmt_Union a) {
+ANN void free_union_def(MemPool p, Union_Def a) {
   if(!GET_FLAG(a, template) && !GET_FLAG(a, global))
     free_decl_list(p, a->l);
+  free_loc(p, a->pos);
 }
 
 ANN static inline void free_stmt_jump(MemPool p NUSED, Stmt_Jump a) {
@@ -689,7 +691,7 @@ static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_switch,
   (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,
   (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_jump,
-  (_stmt_func)free_stmt_fptr, (_stmt_func)free_stmt_type, (_stmt_func)free_stmt_union,
+  (_stmt_func)free_stmt_fptr, (_stmt_func)free_stmt_type,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
   (_stmt_func)free_stmt_pp
@@ -742,6 +744,13 @@ Section* new_section_enum_def(MemPool p, const Enum_Def enum_def) {
   Section* a = mp_calloc(p, Section);
   a->section_type = ae_section_enum;
   a->d.enum_def = enum_def;
+  return a;
+}
+
+Section* new_section_union_def(MemPool p, const Union_Def union_def) {
+  Section* a = mp_calloc(p, Section);
+  a->section_type = ae_section_union;
+  a->d.union_def = union_def;
   return a;
 }
 
