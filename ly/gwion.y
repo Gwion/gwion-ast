@@ -36,7 +36,6 @@ ANN Symbol lambda_name(const Scanner*);
   Type_Decl* type_decl;
   Exp   exp;
   struct Func_Base_ *func_base;
-  Stmt_Fptr func_type;
   Stmt stmt;
   Stmt_List stmt_list;
   Arg_List arg_list;
@@ -44,6 +43,8 @@ ANN Symbol lambda_name(const Scanner*);
   Func_Def func_def;
   Enum_Def enum_def;
   Union_Def union_def;
+  Fptr_Def fptr_def;
+  Type_Def type_def;
   Section* section;
   ID_List id_list;
   Type_List type_list;
@@ -98,8 +99,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
-%type<stmt> case_stmt label_stmt goto_stmt switch_stmt
-%type<stmt> func_type stmt_type 
+%type<stmt> case_stmt label_stmt goto_stmt switch_stmt 
 %type<stmt_list> stmt_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
@@ -107,6 +107,8 @@ ANN Symbol lambda_name(const Scanner*);
 %type<func_base> fdef_base fptr_base
 %type<enum_def> enum_def
 %type<union_def> union_def
+%type<fptr_def> fptr_def
+%type<type_def> type_def
 %type<section> section
 %type<class_def> class_def
 %type<class_body> class_body class_body2
@@ -152,6 +154,8 @@ section
   | class_def { $$ = new_section_class_def(mpool(arg), $1); }
   | enum_def  { $$ = new_section_enum_def(mpool(arg), $1); }
   | union_def { $$ = new_section_union_def(mpool(arg), $1); }
+  | fptr_def  { $$ = new_section_fptr_def(mpool(arg), $1); }
+  | type_def  { $$ = new_section_type_def(mpool(arg), $1); }
   ;
 
 class_def
@@ -180,18 +184,18 @@ fptr_base: type_decl_array id decl_template fptr_arg { $$ = new_func_base(mpool(
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
 
-func_type: TYPEDEF opt_flag fptr_base arg_type {
+fptr_def: TYPEDEF opt_flag fptr_base arg_type {
   if($3->td->array && !$3->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
   }
-  $$ = new_stmt_fptr(mpool(arg), $3, $2 | $4);
+  $$ = new_fptr_def(mpool(arg), $3, $2 | $4);
 };
-stmt_type: TYPEDEF opt_flag type_decl_array id decl_template SEMICOLON {
-  $$ = new_stmt_type(mpool(arg), $3, $4);
+type_def: TYPEDEF opt_flag type_decl_array id decl_template SEMICOLON {
+  $$ = new_type_def(mpool(arg), $3, $4);
   $3->flag |= $2;
   if($5)
-    $$->d.stmt_type.tmpl = new_tmpl(mpool(arg), $5, -1);
+    $$->tmpl = new_tmpl(mpool(arg), $5, -1);
 };
 
 type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
@@ -226,8 +230,6 @@ stmt
   | switch_stmt
   | case_stmt
   | jump_stmt
-  | func_type
-  | stmt_type
 ;
 
 id

@@ -384,27 +384,29 @@ Func_Base* new_func_base(MemPool p, Type_Decl* td, const Symbol xid, const Arg_L
   return a;
 }
 
-Stmt new_stmt_fptr(MemPool p, Func_Base *base, const ae_flag flag) {
-  Stmt a              = new_stmt(p, ae_stmt_fptr, loc_cpy(p, td_pos(base->td)));
-  a->d.stmt_fptr.base = base;
+Fptr_Def new_fptr_def(MemPool p, Func_Base *base, const ae_flag flag) {
+  Fptr_Def a = mp_calloc(p, Fptr_Def);
+  a->base = base;
   base->td->flag |= flag;
   return a;
 }
 
-Stmt new_stmt_type(MemPool p, Type_Decl* ext, struct Symbol_ *xid) {
-  Stmt a             = new_stmt(p, ae_stmt_type, loc_cpy(p, td_pos(ext)));
-  a->d.stmt_type.ext = ext;
-  a->d.stmt_type.xid = xid;
+Type_Def new_type_def(MemPool p, Type_Decl* ext, struct Symbol_ *xid) {
+  Type_Def a = mp_calloc(p, Type_Def);
+  a->ext = ext;
+  a->xid = xid;
   return a;
 }
 
-ANN static void free_stmt_type(MemPool p, Stmt_Type a){
+ANN void free_type_def(MemPool p, Type_Def a){
   if(!a->type)
     free_type_decl(p, a->ext);
+  mp_free(p, Type_Def, a);
 }
 
-ANN static void free_stmt_fptr(MemPool p, Stmt_Fptr a) {
+ANN void free_fptr_def(MemPool p, Fptr_Def a) {
   free_func_base(p, a->base);
+  mp_free(p, Fptr_Def, a);
 }
 
 Tmpl* new_tmpl_call(MemPool p, const Type_List tl) {
@@ -691,7 +693,6 @@ static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_switch,
   (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,
   (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_jump,
-  (_stmt_func)free_stmt_fptr, (_stmt_func)free_stmt_type,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
   (_stmt_func)free_stmt_pp
@@ -754,6 +755,20 @@ Section* new_section_union_def(MemPool p, const Union_Def union_def) {
   return a;
 }
 
+Section* new_section_fptr_def(MemPool p, const Fptr_Def fptr_def) {
+  Section* a = mp_calloc(p, Section);
+  a->section_type = ae_section_fptr;
+  a->d.fptr_def = fptr_def;
+  return a;
+}
+
+Section* new_section_type_def(MemPool p, const Type_Def type_def) {
+  Section* a = mp_calloc(p, Section);
+  a->section_type = ae_section_type;
+  a->d.type_def = type_def;
+  return a;
+}
+
 void free_class_def(MemPool p, Class_Def a) {
   if(a->base.type && GET_FLAG(a, template))
     return;
@@ -777,6 +792,10 @@ ANN static void free_section(MemPool p, Section* section) {
     free_func_def(p, section->d.func_def);
   else if(t == ae_section_enum)
     free_enum_def(p, section->d.enum_def);
+  else if(t == ae_section_fptr)
+    free_fptr_def(p, section->d.fptr_def);
+  else if(t == ae_section_type)
+    free_type_def(p, section->d.type_def);
   mp_free(p, Section, section);
 }
 
