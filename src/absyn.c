@@ -633,6 +633,8 @@ Enum_Def new_enum_def(MemPool p, const ID_List list, struct Symbol_* xid, const 
 ANN void free_enum_def(MemPool p, Enum_Def a) {
   free_id_list(p, a->list);
   vector_release(&a->values);
+  free_loc(p, a->pos); // ??
+  mp_free(p, Enum_Def, a);
 }
 
 Union_Def new_union_def(MemPool p, const Decl_List l, const loc_t pos) {
@@ -677,7 +679,8 @@ ANN void free_decl_list(MemPool p, Decl_List a) {
 ANN void free_union_def(MemPool p, Union_Def a) {
   if(!GET_FLAG(a, template) && !GET_FLAG(a, global))
     free_decl_list(p, a->l);
-  free_loc(p, a->pos);
+  free_loc(p, a->pos); // ??
+  mp_free(p, Union_Def, a);
 }
 
 ANN static inline void free_stmt_jump(MemPool p NUSED, Stmt_Jump a) {
@@ -720,54 +723,20 @@ void free_stmt_list(MemPool p, Stmt_List list) {
   mp_free(p, Stmt_List, list);
 }
 
-Section* new_section_stmt_list(MemPool p, const Stmt_List list) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_stmt;
-  a->d.stmt_list = list;
-  return a;
+#define mk_section(Type, name, sec_type)                  \
+Section* new_section_##name(MemPool p, const Type name) { \
+  Section* a = mp_calloc(p, Section);                     \
+  a->section_type = ae_section_##sec_type;                \
+  a->d.name = name;                                       \
+  return a;                                               \
 }
-
-Section* new_section_func_def(MemPool p, const Func_Def func_def) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_func;
-  a->d.func_def = func_def;
-  return a;
-}
-
-Section* new_section_class_def(MemPool p, const Class_Def class_def) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_class;
-  a->d.class_def = class_def;
-  return a;
-}
-
-Section* new_section_enum_def(MemPool p, const Enum_Def enum_def) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_enum;
-  a->d.enum_def = enum_def;
-  return a;
-}
-
-Section* new_section_union_def(MemPool p, const Union_Def union_def) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_union;
-  a->d.union_def = union_def;
-  return a;
-}
-
-Section* new_section_fptr_def(MemPool p, const Fptr_Def fptr_def) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_fptr;
-  a->d.fptr_def = fptr_def;
-  return a;
-}
-
-Section* new_section_type_def(MemPool p, const Type_Def type_def) {
-  Section* a = mp_calloc(p, Section);
-  a->section_type = ae_section_type;
-  a->d.type_def = type_def;
-  return a;
-}
+mk_section(Stmt_List, stmt_list, stmt)
+mk_section(Func_Def,  func_def,  func)
+mk_section(Class_Def, class_def, class)
+mk_section(Enum_Def,  enum_def,  enum)
+mk_section(Union_Def, union_def, union)
+mk_section(Fptr_Def,  fptr_def,  fptr)
+mk_section(Type_Def,  type_def,  type)
 
 void free_class_def(MemPool p, Class_Def a) {
   if(a->base.type && GET_FLAG(a, template))
