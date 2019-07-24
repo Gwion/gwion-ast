@@ -30,7 +30,8 @@ void free_entry(MemPool p, void *data) {
   if(s->next)
     free_entry(p, s->next);
   xfree(s->name);
-  text_release(&s->text);
+  text_release(s->text);
+  mp_free(p, GwText, s->text);
   if(s->base)
     free_args(p, s->base);
   mp_free(p, Macro, s);
@@ -40,7 +41,8 @@ static inline Macro mkentry(MemPool p, const char* name, const Macro next) {
   const Macro s = mp_calloc(p, Macro);
   s->name = strdup(name);
   s->next = next;
-  s->text.mp = p;
+  s->text = mp_calloc(p, GwText);
+  s->text->mp = p;
   return s;
 }
 

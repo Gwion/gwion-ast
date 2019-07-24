@@ -559,7 +559,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   if(e) {
   m_str str;
   scan->pp->entry = e;
-  if(e->text.str) {
+  if(e->text->str) {
     if(e->base) {
       e->args = e->base;
       SCAN_NOLINT {
@@ -589,7 +589,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         gwpp_stack(scan, handle, e->base, str);
         scan->pos  = e->pos;
         scan->line = e->line;
-        yy_scan_string(e->text.str, data);
+        yy_scan_string(e->text->str, data);
         return 1;
       }
     }
@@ -627,7 +627,7 @@ static m_str get_arg_text(void* data, const m_str id) {
 
 static void macro_append(void* data, const m_str text) {
   Scanner* scan = yyget_extra(data);
-  text_add(&scan->pp->entry->text, text);
+  text_add(scan->pp->entry->text, text);
 }
 
 uint clear_buffer(Vector v, void* data) {
@@ -698,7 +698,7 @@ static int handle_rpar(void* data) {
     gwlex_error(data, "not enough arguments");
   scan->pp->entry->args = NULL;
   SCAN_NOLINT
-    yy_scan_string(scan->pp->entry->text.str, data);
+    yy_scan_string(scan->pp->entry->text->str, data);
   return 1;
 }
 
