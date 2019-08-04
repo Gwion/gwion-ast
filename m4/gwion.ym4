@@ -78,7 +78,7 @@ changequote([[[`]]], [[[']]])
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
-  DOLLAR "$" QUESTION "?" COLON ":" QUESTIONCOLON "?:" ATSYM "@"
+  DOLLAR "$" QUESTION "?" COLON ":" QUESTIONCOLON "?:" ATSYM "@" GTPAREN ">(" LTPAREN "<("
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
@@ -519,6 +519,8 @@ primary_exp
   | CHAR_LIT            { $$ = new_exp_prim_char(   mpool(arg), $1, GET_LOC(&@$)); }
   | array               { $$ = new_exp_prim_array(  mpool(arg), $1, GET_LOC(&@$)); }
   | vec_type exp RPAREN { $$ = new_exp_prim_vec(    mpool(arg), $1 ,$2); }
+  | GTPAREN id_list RPAREN  { $$ = new_exp_prim_unpack( mpool(arg), insert_symbol("auto"), $2, GET_LOC(&@$)); }
+  | LTPAREN exp RPAREN  { $$ = new_exp_prim_tuple(mpool(arg), $2, GET_LOC(&@$)); }
   | L_HACK exp R_HACK   { $$ = new_exp_prim_hack(   mpool(arg), $2); }
   | LPAREN exp RPAREN   { $$ = $2;                }
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };

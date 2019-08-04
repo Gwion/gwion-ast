@@ -112,6 +112,7 @@ typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_primary_id, ae_primary_num, ae_primary_float,
                ae_primary_str, ae_primary_array,
                ae_primary_hack, ae_primary_complex, ae_primary_polar, ae_primary_vec,
+               ae_primary_tuple, ae_primary_unpack,
                ae_primary_char, ae_primary_nil
              } ae_prim_t;
 typedef struct {
@@ -120,6 +121,13 @@ typedef struct {
   Var_Decl_List list;
   Class_Def base;
 } Exp_Decl;
+
+typedef struct Tuple_ {
+  Exp exp;
+  struct Vector_ type;
+} Tuple;
+ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos);
+
 typedef struct {
   struct Value_ * value;
   union exp_primary_data {
@@ -131,6 +139,7 @@ typedef struct {
     Array_Sub array;
     Exp exp;
     Vec vec;
+    Tuple tuple;
   } d;
   ae_prim_t primary_type;
 } Exp_Primary;
@@ -229,6 +238,8 @@ ANEW Exp new_exp_prim_hack(MemPool p, const Exp);
 ANEW ANN Exp new_exp_prim_vec(MemPool p, const ae_prim_t t, Exp);
 ANEW ANN Exp new_exp_prim_char(MemPool p, const m_str, const loc_t);
 ANEW Exp new_exp_prim_nil(MemPool p, const loc_t);
+ANEW Exp new_exp_prim_tuple(MemPool, const Exp, const loc_t);
+ANEW Exp new_exp_prim_unpack(MemPool, const Symbol, const ID_List, const loc_t);
 ANEW ANN Exp new_exp_decl(MemPool p, Type_Decl*, const Var_Decl_List);
 ANEW ANN Exp new_exp_binary(MemPool p, const Exp, const Symbol, const Exp);
 ANEW ANN Exp new_exp_post(MemPool p, const Exp, const Symbol);

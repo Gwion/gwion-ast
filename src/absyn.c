@@ -268,6 +268,44 @@ Exp new_exp_prim_vec(MemPool p, const ae_prim_t t, Exp e) {
   return a;
 }
 
+Exp new_exp_prim_tuple(MemPool p, const Exp e, const loc_t pos) {
+  Exp a = new_exp_prim(p, loc_cpy(p, pos));
+  a->d.exp_primary.primary_type = ae_primary_tuple;
+  a->d.exp_primary.d.tuple.exp = e;
+  return a;
+}
+
+ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
+  const ID_List ilist = new_id_list(p, type, loc_cpy(p, pos));
+  Type_Decl *td = new_type_decl(p, ilist);
+  const Var_Decl var = new_var_decl(p, name, NULL, loc_cpy(p, pos));
+  const Var_Decl_List vlist = new_var_decl_list(p, var, NULL);
+  return new_exp_decl(p, td, vlist);
+}
+
+Exp new_exp_prim_unpack(MemPool p, const Symbol type, const ID_List l, const loc_t pos) {
+  Exp a = new_exp_prim(p, loc_cpy(p, pos));
+  a->d.exp_primary.primary_type = ae_primary_unpack;
+  const Exp base = strcmp(s_name(l->xid), "_") ?
+    decl_from_id(p, type, l->xid, loc_cpy(p, pos)) :new_exp_prim_nil(p, loc_cpy(p, pos));
+  Exp e = base;
+  ID_List list = l->next;
+  while(list) {
+puts("list");
+    if(strcmp(s_name(list->xid), "_")) {
+puts("new decl");
+      e = (e->next = decl_from_id(p, type, list->xid, loc_cpy(p, pos)));
+ }
+    else {
+puts("a skip");
+      e = (e->next = new_exp_prim_nil(p, loc_cpy(p, pos)));
+}
+    list = list->next;
+  }
+  a->d.exp_primary.d.tuple.exp = base;
+  return a;
+}
+
 static inline Exp new_exp_unary_base(MemPool p, const Symbol oper, const loc_t pos)  {
   Exp a = new_exp(p, ae_exp_unary, pos);
   a->d.exp_unary.op = oper;
@@ -464,6 +502,10 @@ ANN static void free_exp_primary(MemPool p, Exp_Primary* a) {
           t == ae_primary_polar  ||
           t == ae_primary_vec)
     free_exp(p, a->d.vec.exp);
+  else if(t == ae_primary_tuple)
+    free_exp(p, a->d.tuple.exp);
+//  else if(t == ae_primary_unpack)
+//    free_exp(p, a->d.tuple.exp);
 }
 
 ANN static void free_exp_typeof(MemPool p, Exp_Typeof* a) {

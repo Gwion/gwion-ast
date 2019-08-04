@@ -709,7 +709,7 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 260 "ly/gwion.l"
+#line 262 "ly/gwion.l"
 
 
 #line 715 "include/lexer.h"

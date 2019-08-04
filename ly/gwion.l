@@ -175,6 +175,8 @@ ANN static m_str macro_data(void* data, const m_bool);
 "#("                                { adjust(yyscanner); return SHARPPAREN;}
 "%("                                { adjust(yyscanner); return PERCENTPAREN;}
 "@("                                { adjust(yyscanner); return ATPAREN;}
+">("                                { adjust(yyscanner); return GTPAREN;}
+"<("                                { adjust(yyscanner); return LTPAREN;}
 "new"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
 "spork"                             { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
 "fork"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }

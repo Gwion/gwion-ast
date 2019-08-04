@@ -111,41 +111,43 @@ extern int gwion_debug;
     COLON = 317,
     QUESTIONCOLON = 318,
     ATSYM = 319,
-    NEW = 320,
-    SPORK = 321,
-    FORK = 322,
-    TYPEOF = 323,
-    L_HACK = 324,
-    R_HACK = 325,
-    AND = 326,
-    EQ = 327,
-    GE = 328,
-    GT = 329,
-    LE = 330,
-    LT = 331,
-    NEQ = 332,
-    SHIFT_LEFT = 333,
-    SHIFT_RIGHT = 334,
-    S_AND = 335,
-    S_OR = 336,
-    S_XOR = 337,
-    OR = 338,
-    LTMPL = 339,
-    RTMPL = 340,
-    TILDA = 341,
-    EXCLAMATION = 342,
-    DYNOP = 343,
-    PP_COMMENT = 344,
-    PP_INCLUDE = 345,
-    PP_DEFINE = 346,
-    PP_UNDEF = 347,
-    PP_IFDEF = 348,
-    PP_IFNDEF = 349,
-    PP_ELSE = 350,
-    PP_ENDIF = 351,
-    PP_NL = 352,
-    UMINUS = 353,
-    UTIMES = 354
+    GTPAREN = 320,
+    LTPAREN = 321,
+    NEW = 322,
+    SPORK = 323,
+    FORK = 324,
+    TYPEOF = 325,
+    L_HACK = 326,
+    R_HACK = 327,
+    AND = 328,
+    EQ = 329,
+    GE = 330,
+    GT = 331,
+    LE = 332,
+    LT = 333,
+    NEQ = 334,
+    SHIFT_LEFT = 335,
+    SHIFT_RIGHT = 336,
+    S_AND = 337,
+    S_OR = 338,
+    S_XOR = 339,
+    OR = 340,
+    LTMPL = 341,
+    RTMPL = 342,
+    TILDA = 343,
+    EXCLAMATION = 344,
+    DYNOP = 345,
+    PP_COMMENT = 346,
+    PP_INCLUDE = 347,
+    PP_DEFINE = 348,
+    PP_UNDEF = 349,
+    PP_IFDEF = 350,
+    PP_IFNDEF = 351,
+    PP_ELSE = 352,
+    PP_ENDIF = 353,
+    PP_NL = 354,
+    UMINUS = 355,
+    UTIMES = 356
   };
 #endif
 /* Tokens.  */
@@ -211,41 +213,43 @@ extern int gwion_debug;
 #define COLON 317
 #define QUESTIONCOLON 318
 #define ATSYM 319
-#define NEW 320
-#define SPORK 321
-#define FORK 322
-#define TYPEOF 323
-#define L_HACK 324
-#define R_HACK 325
-#define AND 326
-#define EQ 327
-#define GE 328
-#define GT 329
-#define LE 330
-#define LT 331
-#define NEQ 332
-#define SHIFT_LEFT 333
-#define SHIFT_RIGHT 334
-#define S_AND 335
-#define S_OR 336
-#define S_XOR 337
-#define OR 338
-#define LTMPL 339
-#define RTMPL 340
-#define TILDA 341
-#define EXCLAMATION 342
-#define DYNOP 343
-#define PP_COMMENT 344
-#define PP_INCLUDE 345
-#define PP_DEFINE 346
-#define PP_UNDEF 347
-#define PP_IFDEF 348
-#define PP_IFNDEF 349
-#define PP_ELSE 350
-#define PP_ENDIF 351
-#define PP_NL 352
-#define UMINUS 353
-#define UTIMES 354
+#define GTPAREN 320
+#define LTPAREN 321
+#define NEW 322
+#define SPORK 323
+#define FORK 324
+#define TYPEOF 325
+#define L_HACK 326
+#define R_HACK 327
+#define AND 328
+#define EQ 329
+#define GE 330
+#define GT 331
+#define LE 332
+#define LT 333
+#define NEQ 334
+#define SHIFT_LEFT 335
+#define SHIFT_RIGHT 336
+#define S_AND 337
+#define S_OR 338
+#define S_XOR 339
+#define OR 340
+#define LTMPL 341
+#define RTMPL 342
+#define TILDA 343
+#define EXCLAMATION 344
+#define DYNOP 345
+#define PP_COMMENT 346
+#define PP_INCLUDE 347
+#define PP_DEFINE 348
+#define PP_UNDEF 349
+#define PP_IFDEF 350
+#define PP_IFNDEF 351
+#define PP_ELSE 352
+#define PP_ENDIF 353
+#define PP_NL 354
+#define UMINUS 355
+#define UTIMES 356
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -283,7 +287,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 287 "include/parser.h" /* yacc.c:1921  */
+#line 291 "include/parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;
