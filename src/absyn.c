@@ -782,7 +782,7 @@ void free_class_def(MemPool p, Class_Def a) {
     free_type_decl(p, a->base.ext);
   if(a->base.tmpl)
     free_tmpl(p, a->base.tmpl);
-  if(a->body && (!a->base.type || !GET_FLAG(a, ref)))
+  if(a->body/* && (!a->base.type || !GET_FLAG(a, ref))*/)
     free_class_body(p, a->body);
   free_loc(p, a->pos);
   mp_free(p, Class_Def, a);

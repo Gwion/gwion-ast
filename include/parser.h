@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.3.2.  */
+/* A Bison parser, made by GNU Bison 3.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -109,45 +109,46 @@ extern int gwion_debug;
     DOLLAR = 315,
     QUESTION = 316,
     COLON = 317,
-    QUESTIONCOLON = 318,
-    ATSYM = 319,
-    GTPAREN = 320,
-    LTPAREN = 321,
-    NEW = 322,
-    SPORK = 323,
-    FORK = 324,
-    TYPEOF = 325,
-    L_HACK = 326,
-    R_HACK = 327,
-    AND = 328,
-    EQ = 329,
-    GE = 330,
-    GT = 331,
-    LE = 332,
-    LT = 333,
-    NEQ = 334,
-    SHIFT_LEFT = 335,
-    SHIFT_RIGHT = 336,
-    S_AND = 337,
-    S_OR = 338,
-    S_XOR = 339,
-    OR = 340,
-    LTMPL = 341,
-    RTMPL = 342,
-    TILDA = 343,
-    EXCLAMATION = 344,
-    DYNOP = 345,
-    PP_COMMENT = 346,
-    PP_INCLUDE = 347,
-    PP_DEFINE = 348,
-    PP_UNDEF = 349,
-    PP_IFDEF = 350,
-    PP_IFNDEF = 351,
-    PP_ELSE = 352,
-    PP_ENDIF = 353,
-    PP_NL = 354,
-    UMINUS = 355,
-    UTIMES = 356
+    COLONCOLON = 318,
+    QUESTIONCOLON = 319,
+    ATSYM = 320,
+    GTPAREN = 321,
+    LTPAREN = 322,
+    NEW = 323,
+    SPORK = 324,
+    FORK = 325,
+    TYPEOF = 326,
+    L_HACK = 327,
+    R_HACK = 328,
+    AND = 329,
+    EQ = 330,
+    GE = 331,
+    GT = 332,
+    LE = 333,
+    LT = 334,
+    NEQ = 335,
+    SHIFT_LEFT = 336,
+    SHIFT_RIGHT = 337,
+    S_AND = 338,
+    S_OR = 339,
+    S_XOR = 340,
+    OR = 341,
+    LTMPL = 342,
+    RTMPL = 343,
+    TILDA = 344,
+    EXCLAMATION = 345,
+    DYNOP = 346,
+    PP_COMMENT = 347,
+    PP_INCLUDE = 348,
+    PP_DEFINE = 349,
+    PP_UNDEF = 350,
+    PP_IFDEF = 351,
+    PP_IFNDEF = 352,
+    PP_ELSE = 353,
+    PP_ENDIF = 354,
+    PP_NL = 355,
+    UMINUS = 356,
+    UTIMES = 357
   };
 #endif
 /* Tokens.  */
@@ -211,52 +212,52 @@ extern int gwion_debug;
 #define DOLLAR 315
 #define QUESTION 316
 #define COLON 317
-#define QUESTIONCOLON 318
-#define ATSYM 319
-#define GTPAREN 320
-#define LTPAREN 321
-#define NEW 322
-#define SPORK 323
-#define FORK 324
-#define TYPEOF 325
-#define L_HACK 326
-#define R_HACK 327
-#define AND 328
-#define EQ 329
-#define GE 330
-#define GT 331
-#define LE 332
-#define LT 333
-#define NEQ 334
-#define SHIFT_LEFT 335
-#define SHIFT_RIGHT 336
-#define S_AND 337
-#define S_OR 338
-#define S_XOR 339
-#define OR 340
-#define LTMPL 341
-#define RTMPL 342
-#define TILDA 343
-#define EXCLAMATION 344
-#define DYNOP 345
-#define PP_COMMENT 346
-#define PP_INCLUDE 347
-#define PP_DEFINE 348
-#define PP_UNDEF 349
-#define PP_IFDEF 350
-#define PP_IFNDEF 351
-#define PP_ELSE 352
-#define PP_ENDIF 353
-#define PP_NL 354
-#define UMINUS 355
-#define UTIMES 356
+#define COLONCOLON 318
+#define QUESTIONCOLON 319
+#define ATSYM 320
+#define GTPAREN 321
+#define LTPAREN 322
+#define NEW 323
+#define SPORK 324
+#define FORK 325
+#define TYPEOF 326
+#define L_HACK 327
+#define R_HACK 328
+#define AND 329
+#define EQ 330
+#define GE 331
+#define GT 332
+#define LE 333
+#define LT 334
+#define NEQ 335
+#define SHIFT_LEFT 336
+#define SHIFT_RIGHT 337
+#define S_AND 338
+#define S_OR 339
+#define S_XOR 340
+#define OR 341
+#define LTMPL 342
+#define RTMPL 343
+#define TILDA 344
+#define EXCLAMATION 345
+#define DYNOP 346
+#define PP_COMMENT 347
+#define PP_INCLUDE 348
+#define PP_DEFINE 349
+#define PP_UNDEF 350
+#define PP_IFDEF 351
+#define PP_IFNDEF 352
+#define PP_ELSE 353
+#define PP_ENDIF 354
+#define PP_NL 355
+#define UMINUS 356
+#define UTIMES 357
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 26 "ly/gwion.y" /* yacc.c:1921  */
+#line 26 "ly/gwion.y"
 
   char* sval;
   int ival;
@@ -287,9 +288,9 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 291 "include/parser.h" /* yacc.c:1921  */
-};
+#line 292 "include/parser.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

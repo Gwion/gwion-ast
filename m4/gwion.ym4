@@ -78,7 +78,7 @@ changequote([[[`]]], [[[']]])
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
-  DOLLAR "$" QUESTION "?" COLON ":" QUESTIONCOLON "?:" ATSYM "@" GTPAREN ">(" LTPAREN "<("
+  DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:" ATSYM "@" GTPAREN ">(" LTPAREN "<("
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
@@ -95,7 +95,7 @@ ifdef(`TINY_MODE', `', `
 %type<type_decl> type_decl000 type_decl00  type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp unary_exp typeof_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
@@ -132,7 +132,7 @@ ifdef(`TOOL_MODE', `stmt_pp', `'))
 %left "=="  "!="
 %left "&&"
 %left "||"
-%right "?:"
+%right "?:" "::"
 %right "="
 
 %nonassoc NOELSE
@@ -467,7 +467,8 @@ eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool
 rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-mul_exp: typeof_exp | mul_exp mul_op cast_exp          { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+mul_exp: dur_exp | mul_exp mul_op dur_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+dur_exp: typeof_exp | dur_exp "::" cast_exp         { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
 typeof_exp: cast_exp | TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg), $3); }
 

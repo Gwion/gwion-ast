@@ -67,6 +67,8 @@ ANN enum yytokentype op2(const m_str str) {
       return NEQ;
   if(str[0] == '?' && str[1] == ':')
       return QUESTIONCOLON;
+  if(str[0] == ':' && str[1] == ':')
+      return COLONCOLON;
   return DYNOP;
 }
 
