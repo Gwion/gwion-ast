@@ -252,6 +252,14 @@ ANEW ANN Exp new_exp_unary2(MemPool p, const Symbol, Type_Decl*);
 ANEW ANN Exp new_exp_unary3(MemPool p, const Symbol, const Stmt);
 ANEW ANN Exp new_exp_typeof(MemPool p, Exp exp);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
+
+static inline Exp take_exp(const Exp exp, const m_uint n) {
+  Exp e = exp;
+  for(m_uint i = 1; i < n; ++i)
+    CHECK_OO((e = e->next))
+  return e;
+}
+
 ANN void free_exp(MemPool p, Exp exp);
 
 typedef struct Decl_List_* Decl_List;
