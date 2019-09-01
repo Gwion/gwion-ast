@@ -521,6 +521,13 @@ static void macro_end(void* data) {
   --scan->pp->def->idx;
 }
 
+static m_str concat(const m_str a, const m_str b) {
+  const size_t len = strlen(a) + strlen(b) + 4;
+  const m_str c = (m_str)xmalloc(len);
+  sprintf(c, "%s '%s'", a, b);
+  return c;
+}
+
 static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
   const m_bool is_str = s[0] == '#';
@@ -540,9 +547,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
       if(arg->text.str) {
         if(!is_str) {
           SCAN_NOLINT {
-            m_str str;
-            if(asprintf(&str, "@argument '%s'", arg->name) < 0)
-              return 0;
+            const m_str str = concat("@argument", arg->name);
             gwpp_stack(scan, handle, NULL, str);
             scan->line     = arg->line;
             scan->pos      = arg->pos;
@@ -564,10 +569,8 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   if(e->text->str) {
     if(e->base) {
       e->args = e->base;
-      SCAN_NOLINT {
-        if(asprintf(&str, "@macro '%s'", e->name) < 0)
-          return 0;
-      }
+      SCAN_NOLINT
+        str = concat("@macro", e->name);
       char c = '@';
       while(isspace(c = (char)input(data)))++scan->pos;
         if(c != '(') {
@@ -585,9 +588,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         return 2;
       } else {
         SCAN_LINT(return 0);
-        m_str str;
-        if(asprintf(&str, "@macro '%s'", e->name) < 0)
-          return 0;
+        const m_str str = concat("@macro", e->name);
         gwpp_stack(scan, handle, e->base, str);
         scan->pos  = e->pos;
         scan->line = e->line;
@@ -600,9 +601,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     Macro e = macro_has(scan->pp->macros, name);
     if(!e)
       return 0;
-    m_str str;
-    if(asprintf(&str, "@argument '__VA_ARGS__'") < 0)
-      return 0;
+    const m_str str = concat("@argument", "__VA_ARGS__");
     gwpp_stack(scan, handle, NULL, str);
     scan->pos  = e->pos;
     scan->line = e->line;
