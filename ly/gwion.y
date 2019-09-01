@@ -369,7 +369,7 @@ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg)
        insert_symbol("dtor"), NULL), $2, ae_flag_dtor, GET_LOC(&@$)); }  ;
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
-decl_flag: EXCLAMATION atsym { $$ = ae_flag_nonnull | $2; } | atsym;
+decl_flag: EXCLAMATION { $$ = ae_flag_nonnull; } | atsym;
 
 type_decl000
   : dot_decl { $$ = new_type_decl(mpool(arg), $1); }
