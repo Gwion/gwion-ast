@@ -257,7 +257,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 \"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return STRING_LIT; }
 '(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
-.                                   { gw_err(_("error: stray in program\n")); return 1; }
+.                                   { gwlex_error(yyscanner, "stray in program"); }
 
 %% // LCOV_EXCL_LINE
 // LCOV_EXCL_LINE

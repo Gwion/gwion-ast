@@ -48,7 +48,7 @@ void loc_err(const YYLTYPE* loc, const m_str filename) {
       }
       if(n == loc->last_line) {
         do gw_err("%c", line[pos]);
-        while(++pos < loc->last_column - 1);
+        while(++pos < (MIN(loc->last_column,sz) - 1));
         gw_err("\033[0m");
       }
       do gw_err("%c", line[pos]);

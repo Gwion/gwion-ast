@@ -1882,7 +1882,7 @@ YY_RULE_SETUP
 case 97:
 YY_RULE_SETUP
 #line 260 "ly/gwion.l"
-{ gw_err(_("error: stray in program\n")); return 1; }
+{ gwlex_error(yyscanner, "stray in program"); }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
