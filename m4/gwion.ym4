@@ -273,7 +273,7 @@ when_exp: WHEN exp { $$ = $2; } | { $$ = NULL; }
 
 match_case_stmt
   : CASE exp when_exp COLON stmt_list {
-    $$ = new_stmt(mpool(arg), ae_stmt_match_case, GET_LOC(&@$));
+    $$ = new_stmt(mpool(arg), 0, GET_LOC(&@$));
     $$->d.stmt_match.cond = $2;
     $$->d.stmt_match.list = $5;
     $$->d.stmt_match.when = $3;

@@ -734,9 +734,8 @@ typedef void (*_stmt_func)(MemPool, const union stmt_data *);
 static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_exp,  (_stmt_func)free_stmt_flow, (_stmt_func)free_stmt_flow,
   (_stmt_func)free_stmt_for,  (_stmt_func)free_stmt_auto, (_stmt_func)free_stmt_loop,
-  (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code,
-  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,
-  (_stmt_func)free_stmt_match, (_stmt_func)free_stmt_match,
+  (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_xxx,
+  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx, (_stmt_func)free_stmt_match,
   (_stmt_func)free_stmt_jump,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE

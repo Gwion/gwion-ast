@@ -274,7 +274,7 @@ ANN void free_decl_list(MemPool p, Decl_List a);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_break,
-               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_match_case, ae_stmt_jump,
+               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
 ae_stmt_pp
@@ -462,7 +462,6 @@ ANEW ANN Stmt new_stmt_flow(MemPool p, const ae_stmt_t, const Exp, const Stmt, c
 ANN2(1,2,3,5) ANEW Stmt new_stmt_for(MemPool p, const Stmt, const Stmt, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_auto(MemPool p, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_loop(MemPool p, const Exp, const Stmt);
-ANEW ANN Stmt new_stmt_match_case(MemPool p, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_jump(MemPool p, struct Symbol_*, const m_bool, const loc_t);
 #ifndef TINY_MODE
 ANEW     Stmt new_stmt_pp(MemPool p, const enum ae_pp_type, const m_str);

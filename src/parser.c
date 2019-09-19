@@ -2439,7 +2439,7 @@ yyreduce:
   case 59:
 #line 260 "ly/gwion.y"
     {
-    (yyval.stmt) = new_stmt(mpool(arg), ae_stmt_match_case, GET_LOC(&(yyloc)));
+    (yyval.stmt) = new_stmt(mpool(arg), 0, GET_LOC(&(yyloc)));
     (yyval.stmt)->d.stmt_match.cond = (yyvsp[-3].exp);
     (yyval.stmt)->d.stmt_match.list = (yyvsp[0].stmt_list);
     (yyval.stmt)->d.stmt_match.when = (yyvsp[-2].exp);
