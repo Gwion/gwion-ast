@@ -218,7 +218,9 @@ ANN static m_str macro_data(void* data, const m_bool);
 "repeat"                            { adjust(yyscanner); return LOOP;}
 "for"                               { adjust(yyscanner); return FOR;}
 "goto"                              { adjust(yyscanner); return GOTO;}
-"switch"                            { adjust(yyscanner); return SWITCH;}
+"match"                             { adjust(yyscanner); return MATCH;}
+"where"                             { adjust(yyscanner); return WHERE;}
+"when"                              { adjust(yyscanner); return WHEN;}
 "case"                              { adjust(yyscanner); return CASE;}
 "enum"                              { adjust(yyscanner); return ENUM;}
 "typeof"                            { adjust(yyscanner); return TYPEOF;}

@@ -273,8 +273,8 @@ ANN2(1, 2) ANEW Decl_List new_decl_list(MemPool p, Exp d, Decl_List l);
 ANN void free_decl_list(MemPool p, Decl_List a);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
-               ae_stmt_if, ae_stmt_code, ae_stmt_switch, ae_stmt_break,
-               ae_stmt_continue, ae_stmt_return, ae_stmt_case, ae_stmt_jump,
+               ae_stmt_if, ae_stmt_code, ae_stmt_break,
+               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_match_case, ae_stmt_jump,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
 ae_stmt_pp
@@ -289,7 +289,7 @@ typedef struct Stmt_Flow_    * Stmt_Flow;
 typedef struct Stmt_Auto_    * Stmt_Auto;
 typedef struct Stmt_Loop_    * Stmt_Loop;
 typedef struct Stmt_If_      * Stmt_If;
-typedef struct Stmt_Switch_  * Stmt_Switch;
+typedef struct Stmt_Match_  * Stmt_Match;
 typedef struct Stmt_Jump_    * Stmt_Jump;
 #ifndef TINY_MODE
 typedef struct Stmt_PP_      * Stmt_PP;
@@ -303,6 +303,15 @@ struct Stmt_Flow_ {
   Exp cond;
   Stmt body;
   uint is_do;
+};
+
+struct Stmt_Match_ {
+  Exp cond;
+  Stmt_List list;
+  union {
+    Stmt where;
+    Exp  when;
+  };
 };
 
 struct Stmt_Code_ {
@@ -342,11 +351,6 @@ struct Stmt_Jump_ {
     struct Instr_* instr;
   } data;
   m_bool is_label;
-};
-
-struct Stmt_Switch_ {
-  Exp val;
-  Stmt stmt;
 };
 
 typedef struct Enum_Def_* Enum_Def;
@@ -437,7 +441,7 @@ struct Stmt_ {
     struct Stmt_Auto_       stmt_auto;
     struct Stmt_If_         stmt_if;
     struct Stmt_Jump_       stmt_jump;
-    struct Stmt_Switch_     stmt_switch;
+    struct Stmt_Match_     stmt_match;
 #ifndef TINY_MODE
     struct Stmt_PP_    stmt_pp;
 #endif
@@ -458,8 +462,8 @@ ANEW ANN Stmt new_stmt_flow(MemPool p, const ae_stmt_t, const Exp, const Stmt, c
 ANN2(1,2,3,5) ANEW Stmt new_stmt_for(MemPool p, const Stmt, const Stmt, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_auto(MemPool p, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_loop(MemPool p, const Exp, const Stmt);
+ANEW ANN Stmt new_stmt_match_case(MemPool p, const Exp, const Stmt);
 ANEW ANN Stmt new_stmt_jump(MemPool p, struct Symbol_*, const m_bool, const loc_t);
-ANEW ANN Stmt new_stmt_switch(MemPool p, Exp, Stmt);
 #ifndef TINY_MODE
 ANEW     Stmt new_stmt_pp(MemPool p, const enum ae_pp_type, const m_str);
 #endif
