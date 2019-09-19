@@ -583,6 +583,22 @@ ANN static void free_stmt_flow(MemPool p, struct Stmt_Flow_* a) {
   free_stmt(p, a->body);
 }
 
+ANN static void free_stmt_case(MemPool p, struct Stmt_Match_* a) {
+  free_exp(p, a->cond);
+  free_stmt_list(p, a->list);
+  if(a->when)
+    free_exp(p, a->when);
+}
+
+ANN static void free_stmt_match(MemPool p, struct Stmt_Match_* a) {
+  free_exp(p, a->cond);
+  Stmt_List list = a->list;
+  do free_stmt_case(p, &list->stmt->d.stmt_match);
+  while((list = list->next));
+  if(a->where)
+    free_stmt(p, a->where);
+}
+
 Stmt new_stmt_for(MemPool p, const restrict Stmt c1, const restrict Stmt c2, const restrict Exp c3, const Stmt body) {
   Stmt a = new_stmt(p, ae_stmt_for, loc_cpy(p, c1->pos));
   a->d.stmt_for.c1 = c1;
@@ -644,18 +660,6 @@ ANN static void free_stmt_if(MemPool p, Stmt_If a) {
   free_stmt(p, a->if_body);
   if(a->else_body)
     free_stmt(p, a->else_body);
-}
-
-Stmt new_stmt_switch(MemPool p, const Exp val, Stmt stmt) {
-  Stmt a = new_stmt(p, ae_stmt_switch, loc_cpy(p, val->pos));
-  a->d.stmt_switch.val = val;
-  a->d.stmt_switch.stmt = stmt;
-  return a;
-}
-
-ANN static inline void free_stmt_switch(MemPool p, Stmt_Switch a) {
-  free_exp(p, a->val);
-  free_stmt(p, a->stmt);
 }
 
 Enum_Def new_enum_def(MemPool p, const ID_List list, struct Symbol_* xid, const loc_t pos) {
@@ -730,9 +734,9 @@ typedef void (*_stmt_func)(MemPool, const union stmt_data *);
 static const _stmt_func stmt_func[] = {
   (_stmt_func)free_stmt_exp,  (_stmt_func)free_stmt_flow, (_stmt_func)free_stmt_flow,
   (_stmt_func)free_stmt_for,  (_stmt_func)free_stmt_auto, (_stmt_func)free_stmt_loop,
-  (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_switch,
-  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx,
-  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_jump,
+  (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_xxx,
+  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx, (_stmt_func)free_stmt_match,
+  (_stmt_func)free_stmt_jump,
 #ifndef TINY_MODE
 #ifdef TOOL_MODE
   (_stmt_func)free_stmt_pp

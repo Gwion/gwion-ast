@@ -61,7 +61,7 @@ changequote(`[[[', `]]]')
   PERCENTPAREN "%(" SHARPPAREN "#(" ATPAREN "@("
   FUNCTION "fun"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
-  LOOP "repeat" FOR "for" GOTO "goto" SWITCH "switch" CASE "case" ENUM "enum"
+  LOOP "repeat" FOR "for" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   RETURN "return" BREAK "break" CONTINUE "continue"
   CLASS "class"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
@@ -96,12 +96,12 @@ ifdef(`TINY_MODE', `', `
 %type<exp> primary_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
-%type<exp> post_exp dot_exp cast_exp exp
+%type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt
-%type<stmt> case_stmt label_stmt goto_stmt switch_stmt ifdef(`TINY_MODE', `',
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt
+%type<stmt> match_case_stmt label_stmt goto_stmt match_stmt ifdef(`TINY_MODE', `',
 ifdef(`TOOL_MODE', `stmt_pp', `'))
-%type<stmt_list> stmt_list
+%type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
@@ -244,8 +244,7 @@ stmt
   | code_stmt
   | label_stmt
   | goto_stmt
-  | switch_stmt
-  | case_stmt
+  | match_stmt
   | jump_stmt
 ifdef(`TINY_MODE', `',
 ifdef(`TOOL_MODE'`  | stmt_pp
@@ -270,13 +269,28 @@ label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
 
 goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, GET_LOC(&@$)); };
 
-case_stmt
-  : CASE primary_exp COLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_case, $2); }
-  | CASE dot_exp COLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_case, $2); }
-  | CASE error COLON { gw_err(_("unhandled expression type in case statement.\n")); YYERROR; }
-  ;
+when_exp: WHEN exp { $$ = $2; } | { $$ = NULL; }
 
-switch_stmt: SWITCH exp code_stmt { $$ = new_stmt_switch(mpool(arg), $2, $3);};
+match_case_stmt
+  : CASE exp when_exp COLON stmt_list {
+    $$ = new_stmt(mpool(arg), 0, GET_LOC(&@$));
+    $$->d.stmt_match.cond = $2;
+    $$->d.stmt_match.list = $5;
+    $$->d.stmt_match.when = $3;
+};
+
+match_list
+  : match_case_stmt { $$ = new_stmt_list(mpool(arg), $1, NULL); }
+  | match_case_stmt match_list { $$ = new_stmt_list(mpool(arg), $1, $2); }
+
+where_stmt: WHERE stmt { $$ = $2; } | { $$ = NULL; }
+
+match_stmt: MATCH exp LBRACE match_list RBRACE where_stmt {
+  $$ = new_stmt(mpool(arg), ae_stmt_match, GET_LOC(&@$));
+  $$->d.stmt_match.cond  = $2;
+  $$->d.stmt_match.list  = $4;
+  $$->d.stmt_match.where = $6;
+};
 
 flow
   : WHILE { $$ = ae_stmt_while; }
