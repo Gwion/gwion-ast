@@ -437,11 +437,11 @@ union_def
       $$->flag = $2;
       if($3) {
         if(!$4) {
-          gw_err(_("Template unions requires type name\n"));
+          gwion_error(&@$, arg, _("Template unions requires type name\n"));
           YYERROR;
         }
         if($8) {
-          gw_err(_("Can't instantiate template union types at declaration site.\n"));
+          gwion_error(&@$, arg, _("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
         $$->tmpl = new_tmpl(mpool(arg), $3, -1);

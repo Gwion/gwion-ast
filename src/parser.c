@@ -2906,11 +2906,11 @@ ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&(yyloc)));
       (yyval.union_def)->flag = (yyvsp[-7].flag);
       if((yyvsp[-6].id_list)) {
         if(!(yyvsp[-5].sym)) {
-          gw_err(_("Template unions requires type name\n"));
+          gwion_error(&(yyloc), arg, _("Template unions requires type name\n"));
           YYERROR;
         }
         if((yyvsp[-1].sym)) {
-          gw_err(_("Can't instantiate template union types at declaration site.\n"));
+          gwion_error(&(yyloc), arg, _("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
         (yyval.union_def)->tmpl = new_tmpl(mpool(arg), (yyvsp[-6].id_list), -1);
