@@ -54,5 +54,11 @@ clean:
 	$(info cleaning)
 	@rm -f src/*.o *.a src/*.gcno src/*.gcda
 
+install:
+	install libgwion_ast.a ${DESTDIR}/${PREFIX}/bin
+
+uninstall:
+	rm ${DESTDIR}/${PREFIX}/bin/libgwion_ast.a
+
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/intl.mk

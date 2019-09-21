@@ -4,14 +4,11 @@
 %name-prefix "gwion_"
 %locations
 %{
-#include <stdio.h> // strlen in paste operation
-#include <string.h> // strlen in paste operation
 #include <math.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "parser.h"
 #include "lexer.h"
-
 
 #define YYERROR_VERBOSE
 #define YYMALLOC xmalloc
@@ -49,7 +46,6 @@ ANN Symbol lambda_name(const Scanner*);
   ID_List id_list;
   Type_List type_list;
   Class_Body class_body;
-//  ID_List class_ext;
   Class_Def class_def;
   Ast ast;
 };
@@ -343,7 +339,7 @@ decl_exp2: con_exp | decl_exp3
   | AUTO decl_flag var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
      new_id_list(mpool(arg), insert_symbol("auto"), GET_LOC(&@$))), $3); }
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
-union_exp: type_decl arg_decl { $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
+union_exp: type_decl00 arg_decl { $1->flag |= ae_flag_ref | ae_flag_nonnull; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -380,6 +376,15 @@ func_def
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
+  | OPERATOR ATSYM id type_decl_empty LPAREN arg_list RPAREN code_stmt
+{
+  const m_str str = s_name($3);
+  char c[strlen(str) + 2];
+  c[0] = '@';
+  strcpy(c + 1, str);
+  const Symbol sym = insert_symbol(c);
+ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $6), $8, ae_flag_op, GET_LOC(&@$));
+}
   | AST_DTOR code_stmt
     {
 ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&@$));
@@ -417,19 +422,15 @@ union_def
       $$->flag = $2;
       if($3) {
         if(!$4) {
-          gw_err(_("Template unions requires type name\n"));
+          gwion_error(&@$, arg, _("Template unions requires type name\n"));
           YYERROR;
         }
         if($8) {
-          gw_err(_("Can't instantiate template union types at declaration site.\n"));
+          gwion_error(&@$, arg, _("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
         $$->tmpl = new_tmpl(mpool(arg), $3, -1);
       }
-    }
-  | UNION opt_flag decl_template opt_id LBRACE error RBRACE opt_id SEMICOLON {
-    gw_err(_("Unions should only contain declarations.\n"));
-    YYERROR;
     }
   ;
 

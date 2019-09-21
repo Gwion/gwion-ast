@@ -170,17 +170,14 @@ typedef struct {
 typedef struct {
   Type_Decl* td;
   Exp exp;
-  struct Nspc_*nspc;
   struct Func_* func;
 } Exp_Cast;
 typedef struct {
   Exp lhs, rhs;
   Symbol op;
-  struct Nspc_*nspc;
 } Exp_Binary;
 typedef struct {
   Symbol op;
-  struct Nspc_*nspc;
   Exp exp;
 } Exp_Postfix;
 typedef struct {
@@ -190,7 +187,6 @@ typedef struct {
 } Exp_If;
 typedef struct {
   Symbol op;
-  struct Nspc_*nspc;
   Exp exp;
   Type_Decl* td;
   Stmt code;
@@ -203,6 +199,7 @@ typedef struct {
 struct Exp_ {
   struct Type_* type;
   struct Type_* cast_to;
+  struct Nspc_* nspc;
   Exp next;
   union exp_data {
     Exp_Postfix   exp_post;

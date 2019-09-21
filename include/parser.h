@@ -261,7 +261,7 @@ extern int gwion_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 26 "ly/gwion.y"
+#line 23 "ly/gwion.y"
 
   char* sval;
   int ival;
@@ -288,11 +288,10 @@ union YYSTYPE
   ID_List id_list;
   Type_List type_list;
   Class_Body class_body;
-//  ID_List class_ext;
   Class_Def class_def;
   Ast ast;
 
-#line 296 "include/parser.h"
+#line 295 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
