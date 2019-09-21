@@ -339,8 +339,8 @@ ANN static void free_exp_unary(MemPool p, Exp_Unary* a) {
 
 Exp new_exp_if(MemPool p, const restrict Exp cond, const restrict Exp if_exp, const restrict Exp else_exp) {
   Exp a = new_exp(p, ae_exp_if, loc_cpy(p, cond->pos));
-  a->meta = ((!(if_exp ?: cond)->meta == ae_meta_var &&
-              else_exp->meta == ae_meta_var) ? ae_meta_var : ae_meta_value);
+  a->meta = (!((if_exp ?: cond)->meta == ae_meta_var) &&
+              else_exp->meta == ae_meta_var) ? ae_meta_var : ae_meta_value;
   a->d.exp_if.cond = cond;
   a->d.exp_if.if_exp = if_exp;
   a->d.exp_if.else_exp = else_exp;
