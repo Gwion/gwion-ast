@@ -2374,7 +2374,7 @@ yyreduce:
     {
   if(!(yyvsp[-2].arg_list))
     { gwion_error(&(yyloc), arg, "invalid function pointer argument"); YYERROR;}
-  printf("here %p\n", (yyvsp[-2].arg_list)); (yyvsp[-2].arg_list)->next = (yyvsp[0].arg_list); (yyval.arg_list) = (yyvsp[-2].arg_list);
+    (yyvsp[-2].arg_list)->next = (yyvsp[0].arg_list); (yyval.arg_list) = (yyvsp[-2].arg_list);
 }
 #line 2380 "src/parser.c"
     break;

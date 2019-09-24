@@ -211,7 +211,7 @@ fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL);
 fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list {
   if(!$1)
     { gwion_error(&@$, arg, "invalid function pointer argument"); YYERROR;}
-  printf("here %p\n", $1); $1->next = $3; $$ = $1;
+    $1->next = $3; $$ = $1;
 };
 
 code_stmt
