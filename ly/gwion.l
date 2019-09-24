@@ -211,7 +211,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "else"                              { adjust(yyscanner); return ELSE;}
 "break"                             { adjust(yyscanner); return BREAK;}
 "continue"                          { adjust(yyscanner); return CONTINUE;}
-"return"                            { adjust(yyscanner); return RETURN;}
+"return"                            { adjust(yyscanner); return TRETURN;}
 "while"                             { adjust(yyscanner); return WHILE;}
 "do"                                { adjust(yyscanner); return DO;}
 "until"                             { adjust(yyscanner); return UNTIL;}

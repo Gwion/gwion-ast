@@ -153,7 +153,7 @@ extern int gwion_debug;
     WHEN = 280,
     WHERE = 281,
     ENUM = 282,
-    RETURN = 283,
+    TRETURN = 283,
     BREAK = 284,
     CONTINUE = 285,
     CLASS = 286,
@@ -258,7 +258,7 @@ extern int gwion_debug;
 #define WHEN 280
 #define WHERE 281
 #define ENUM 282
-#define RETURN 283
+#define TRETURN 283
 #define BREAK 284
 #define CONTINUE 285
 #define CLASS 286

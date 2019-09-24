@@ -58,7 +58,7 @@ changequote(`[[[', `]]]')
   FUNCTION "fun"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
-  RETURN "return" BREAK "break" CONTINUE "continue"
+  TRETURN "return" BREAK "break" CONTINUE "continue"
   CLASS "class"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
   EXTENDS "extends" DOT "."
@@ -315,12 +315,12 @@ selection_stmt
   ;
 
 breaks
-  : RETURN   { $$ = ae_stmt_return; }
-  | BREAK    { $$ = ae_stmt_break; }
-  | CONTINUE { $$ = ae_stmt_continue; }
+  : TRETURN   { $$ = ae_stmt_return; }
+  | BREAK     { $$ = ae_stmt_break; }
+  | CONTINUE  { $$ = ae_stmt_continue; }
   ;
 jump_stmt
-  : RETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2); }
+  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2); }
   | breaks SEMICOLON    { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
