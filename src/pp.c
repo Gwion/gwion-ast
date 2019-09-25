@@ -5,6 +5,12 @@
 #include "pp.h"
 #include "scanner.h"
 
+ANN struct PPState_* new_ppstate(MemPool p, const m_str filename) {
+  struct PPState_ * ppstate = mp_calloc(p, PPState);
+  ppstate->filename = filename;
+  return ppstate;
+};
+
 ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
   PP* pp = (PP*)mp_calloc(p, PP);
   pp->def = (struct pp_info*)mp_calloc2(p, sizeof(struct pp_info));// watchme
@@ -12,15 +18,14 @@ ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
   hini(pp->macros, size);
   pp->macros->p = p; // in ctor ?
   vector_init(&pp->filename);
-  vector_add(&pp->filename, (vtype)NULL);
-  vector_add(&pp->filename, (vtype)name);
+  vector_add(&pp->filename, (vtype)new_ppstate(p, name));
   return pp;
 }
 
 static void pp_post(PP* pp, void* data) {
-  m_uint size = vector_size(&pp->filename);
-  while(size > 2)
-    size = clear_buffer(&pp->filename, data);
+  for(m_uint i = 1; i < vector_size(&pp->filename); ++i)
+    clear_buffer(&pp->filename, data);
+  mp_free(pp->macros->p, PPState, vector_front(&pp->filename));
   pp->entry = NULL;
   vector_clear(&pp->filename);
   macro_del(pp->macros);

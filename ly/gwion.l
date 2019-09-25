@@ -275,7 +275,8 @@ ANN Symbol lambda_name(const Scanner *scan) {
 }
 
 static inline void header(const Scanner *scan, const char *msg, const m_uint i) {
-  gw_err("\033[1m%s:%u:%u:\033[0m\n  %s\n", (m_str)vector_at(&scan->pp->filename, i),
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  gw_err("\033[1m%s:%u:%u:\033[0m\n  %s\n", ppstate->filename,
     scan->line, scan->pos, msg);
 }
 
@@ -344,7 +345,10 @@ static uint get_currpos(void* data) {
 
 static char* get_currfile(void* data) {
   const Scanner* scan = yyget_extra(data);
-  return alloc_str(data, (m_str)vector_back(&scan->pp->filename));
+  
+    const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+    return alloc_str(data, ppstate->filename);
+  
 }
 
 static void adjust(void* data) {
@@ -353,19 +357,25 @@ static void adjust(void* data) {
 }
 
 ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
-  const m_str name = (m_str)vector_back(&scan->pp->filename);
+
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  const m_str name = ppstate->filename;
   m_str filename = name;
   if(!scan->pp->npar) {
     m_uint i = vector_size(&scan->pp->filename) - 1;
     if(*filename == '@') {
       while(*filename == '@') {
         gw_err(_("in expansion of %s.\n"), filename + 1);
-        i -= 5;
-        filename = (m_str)vector_at(&scan->pp->filename, i);
+        --i;
+        const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i);
+        filename = ppstate->filename;
       }
     }
   } else
-    filename = (m_str)vector_at(&scan->pp->filename, 1);
+{
+  const struct PPState_ *ppstate = (struct PPState_*)vector_front(&scan->pp->filename);
+        filename = ppstate->filename;
+}
   
   loc_header(loc, filename);
   gw_err("%s\n", s);
@@ -427,12 +437,12 @@ static int has_macro(void* data, const m_str id) {
 }
 
 static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt, const m_str str) {
-  const Vector v = &scan->pp->filename;
-  vector_add(v, scan->pos);
-  vector_add(v, scan->line);
-  vector_add(v, (vtype)state);
-  vector_add(v, (vtype)opt);
-  vector_add(v, (vtype)str);
+  struct PPState_ *ppstate = new_ppstate(scan->st->p, str);
+  ppstate->pos = scan->pos;
+  ppstate->line = scan->line;
+  ppstate->state = state;
+  ppstate->data = opt;
+  vector_add(&scan->pp->filename, (vtype)ppstate);
 }
 
 static void handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
@@ -535,16 +545,15 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
   const m_bool is_str = s[0] == '#';
   m_str id = is_str ? s+1 : s;
-  const m_str name = (m_str)vector_back(&scan->pp->filename);
-  for(m_uint i = vector_size(&scan->pp->filename) + 1; --i; i-= i > 4 ? 4 : 0) {
-    const m_str name = (m_str)vector_at(&scan->pp->filename, i - 1);
-    if(name && name[0] == '@' && !strncmp(s, name + 8, strlen(name + 8) - 1)) {
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  for(m_uint i = 0; i < vector_size(&scan->pp->filename); ++i) {
+    const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i);
+    if(ppstate->filename && ppstate->filename[0] == '@' && !strncmp(s, ppstate->filename + 8, strlen(ppstate->filename + 8) - 1)) {
       yywrap(data);
       gwlex_error(data, "recursive macro use detected");
     }
   }
-  Args arg = (vector_size(&scan->pp->filename) >= 2) ? (Args)vector_at(&scan->pp->filename,
-    vector_size(&scan->pp->filename) - 2) : NULL;
+  Args arg = ppstate->arg;
   while(arg) {
     if(!strcmp(id, arg->name)) {
       if(arg->text.str) {
@@ -601,7 +610,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     }
     return 1;
   } else if(!strcmp(id, "__VA_ARGS__")) { // vararg macro with no args
-    Macro e = macro_has(scan->pp->macros, name);
+    Macro e = macro_has(scan->pp->macros, ppstate->filename);
     if(!e)
       return 0;
     const m_str str = concat("@argument", "__VA_ARGS__");
@@ -618,9 +627,10 @@ static m_str get_arg_text(void* data, const m_str id) {
   const Scanner* scan = yyget_extra(data);
   if(!scan->pp->entry)
     return NULL;
-  if(vector_size(&scan->pp->filename) < 2)
+  if(vector_size(&scan->pp->filename) == 1)
     return NULL;
-  Args arg = (Args)vector_at(&scan->pp->filename, vector_size(&scan->pp->filename) - 2);
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  Args arg = ppstate->arg;
   while(arg) {
     if(!strcmp(id, arg->name))
       return arg->text.str ?: "";
@@ -635,19 +645,16 @@ static void macro_append(void* data, const m_str text) {
 }
 
 uint clear_buffer(Vector v, void* data) {
-  const m_str name = (m_str)vector_pop(v);
-  const void* info = (void*)vector_pop(v);
-  const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(v);
+  const struct PPState_ *ppstate = (struct PPState_*)vector_pop(v);
+  const YY_BUFFER_STATE state = (YY_BUFFER_STATE)ppstate->state;
   struct yyguts_t * yyg = (struct yyguts_t*)data;
   YY_BUFFER_STATE curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   YY_BUFFER_STATE base = yyg->yy_buffer_stack[0];
-  if(name[0] != '@')
-    fclose((FILE*)info);
-  vector_pop(v);
-  vector_pop(v);
+  if(ppstate->filename[0] != '@')
+    fclose(ppstate->file);
   if(state != base && state != curr)
     yy_delete_buffer(state, data);
-  xfree(name);
+  xfree(ppstate->filename);
   return (uint)vector_size(v);
 }
 
@@ -655,22 +662,20 @@ int yywrap(void* data) {
   struct yyguts_t *yyg = (struct yyguts_t*)data;
   YY_BUFFER_STATE handle = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   Scanner *scan = yyget_extra(data);
-  if(vector_size(&scan->pp->filename) > 2) {
-    const m_str name = (m_str)vector_pop(&scan->pp->filename);
-    const void* info = (void*)vector_pop(&scan->pp->filename);
-    const YY_BUFFER_STATE state = (YY_BUFFER_STATE)vector_pop(&scan->pp->filename);
-    if(handle != state) {
-      yy_switch_to_buffer(state, data);
+  if(vector_size(&scan->pp->filename) > 1) {
+    const struct PPState_ *ppstate = (struct PPState_*)vector_pop(&scan->pp->filename);
+    if(handle != ppstate->state) {
+      yy_switch_to_buffer(ppstate->state, data);
       yy_delete_buffer(handle, data);
     }
-    if(name[0] != '@' && info)
-      fclose((FILE*)info);
-    else if(info)
-      clean_args((Args)info);
-    if(strlen(name))
-      xfree(name);
-    scan->pos  = (uint)vector_pop(&scan->pp->filename);
-    scan->line = (uint)vector_pop(&scan->pp->filename);
+    if(ppstate->filename[0] != '@' && ppstate->file)
+      fclose(ppstate->file);
+    else if(ppstate->arg)
+      clean_args(ppstate->arg);
+    if(strlen(ppstate->filename))
+      xfree(ppstate->filename);
+    scan->pos  = ppstate->pos;
+    scan->line  = ppstate->line;
     void* yyscanner = data;
     YY_USER_ACTION
     return 0;
