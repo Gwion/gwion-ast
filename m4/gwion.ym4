@@ -62,7 +62,7 @@ changequote(`[[[', `]]]')
   CLASS "class"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
   EXTENDS "extends" DOT "."
-  AST_DTOR "dtor" OPERATOR "operator"
+  AST_DTOR "dtor" AST_GACK "@gack" OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
   RARROW "->" BACKSLASH "\\" BACKTICK "`"
@@ -404,7 +404,12 @@ func_def
     {
 ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&@$));
 $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l),
-       insert_symbol("dtor"), NULL), $2, ae_flag_dtor, GET_LOC(&@$)); }  ;
+       insert_symbol("dtor"), NULL), $2, ae_flag_dtor, GET_LOC(&@$)); }
+  | AST_GACK code_stmt
+    {
+ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&@$));
+$$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l),
+       insert_symbol("@gack"), NULL), $2, ae_flag_none, GET_LOC(&@$)); }  ;
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
 decl_flag: EXCLAMATION { $$ = ae_flag_nonnull; } | atsym;

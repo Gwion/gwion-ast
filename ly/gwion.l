@@ -193,6 +193,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 "class"                             { adjust(yyscanner); return CLASS;}
 "dtor"                              { adjust(yyscanner); return AST_DTOR;}
+"gack"                              { adjust(yyscanner); return AST_GACK;}
 "operator"                          { adjust(yyscanner); return OPERATOR;}
 "extends"                           { adjust(yyscanner); return EXTENDS;}
 "..."|,{SPACE}*"..."                { adjust(yyscanner); return ELLIPSE;}
