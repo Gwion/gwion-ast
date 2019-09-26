@@ -25,7 +25,7 @@ ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
 static void pp_post(PP* pp, void* data) {
   for(m_uint i = 1; i < vector_size(&pp->filename); ++i)
     clear_buffer(&pp->filename, data);
-  mp_free(pp->macros->p, PPState, vector_front(&pp->filename));
+  mp_free(pp->macros->p, PPState, (struct PPState_*)vector_front(&pp->filename));
   pp->entry = NULL;
   vector_clear(&pp->filename);
   macro_del(pp->macros);

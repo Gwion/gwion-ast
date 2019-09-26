@@ -277,7 +277,7 @@ ANN Symbol lambda_name(const Scanner *scan) {
   return insert_symbol(scan->st, c);
 }
 
-static inline void header(const Scanner *scan, const char *msg, const m_uint i) {
+static inline void header(const Scanner *scan, const char *msg) {
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   gw_err("\033[1m%s:%u:%u:\033[0m\n  %s\n", ppstate->filename,
     scan->line, scan->pos, msg);
@@ -287,7 +287,7 @@ ANN void yynoreturn gwlex_error (yyscan_t yyscanner, const char *msg) {
   struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   ifdef([[[TINY_MODE]]],[[[]]],[[[/*scanner_post(scan);*/]]])
-  header(scan, msg, 1);
+  header(scan, msg);
   longjmp(*scan->jmp, 1);
 }
 
