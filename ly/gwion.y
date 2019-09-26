@@ -62,7 +62,7 @@ ANN Symbol lambda_name(const Scanner*);
   CLASS "class"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
   EXTENDS "extends" DOT "."
-  AST_DTOR "dtor" AST_GACK "@gack" OPERATOR "operator"
+  OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
   RARROW "->" BACKSLASH "\\" BACKTICK "`"
@@ -97,7 +97,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt
 %type<stmt> match_case_stmt label_stmt goto_stmt match_stmt 
 %type<stmt_list> stmt_list match_list
-%type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
+%type<arg_list> arg maybe_arg_list arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<func_base> fdef_base fptr_base
@@ -368,6 +368,8 @@ func_def_base
     { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, GET_LOC(&@$)); };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
+
+maybe_arg_list: arg_list { $$ = $1; } | { $$ = NULL; }
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
@@ -376,7 +378,7 @@ func_def
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
-  | OPERATOR ATSYM id type_decl_empty LPAREN arg_list RPAREN code_stmt
+  | OPERATOR ATSYM id type_decl_empty LPAREN maybe_arg_list RPAREN code_stmt
 {
   const m_str str = s_name($3);
   char c[strlen(str) + 2];
@@ -384,17 +386,7 @@ func_def
   strcpy(c + 1, str);
   const Symbol sym = insert_symbol(c);
  $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $6), $8, ae_flag_op, GET_LOC(&@$));
-}
-  | AST_DTOR code_stmt
-    {
-ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&@$));
-$$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l),
-       insert_symbol("dtor"), NULL), $2, ae_flag_dtor, GET_LOC(&@$)); }
-  | AST_GACK code_stmt
-    {
-ID_List l = new_id_list(mpool(arg), insert_symbol("void"), GET_LOC(&@$));
-$$ = new_func_def(mpool(arg), new_func_base(mpool(arg), new_type_decl(mpool(arg), l),
-       insert_symbol("@gack"), NULL), $2, ae_flag_none, GET_LOC(&@$)); }  ;
+};
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
 decl_flag: EXCLAMATION { $$ = ae_flag_nonnull; } | atsym;

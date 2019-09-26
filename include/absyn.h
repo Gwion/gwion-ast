@@ -125,7 +125,6 @@ typedef struct {
 typedef struct Tuple_ {
   Exp exp;
   struct Vector_ type;
-  m_bool ok;
 } Tuple;
 ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos);
 
