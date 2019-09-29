@@ -97,7 +97,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt
 %type<stmt> match_case_stmt label_stmt goto_stmt match_stmt 
 %type<stmt_list> stmt_list match_list
-%type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg
+%type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
 %type<func_base> fdef_base fptr_base
@@ -175,7 +175,7 @@ dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } |
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
 
-fptr_base: type_decl_array id decl_template fptr_arg { $$ = new_func_base(mpool(arg), $1, $2, $4);
+fptr_base: type_decl_array id decl_template fptr_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
@@ -343,7 +343,7 @@ union_exp: type_decl00 arg_decl { $1->flag |= ae_flag_ref | ae_flag_nonnull; $$=
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
-fptr_arg: LPAREN  fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
+fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: LTMPL id_list RTMPL { $$ = $2; } | { $$ = NULL; };
@@ -377,14 +377,14 @@ func_def
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
-  | OPERATOR ATSYM id type_decl_empty LPAREN func_args RPAREN code_stmt
+  | OPERATOR ATSYM id type_decl_empty func_args RPAREN code_stmt
 {
   const m_str str = s_name($3);
   char c[strlen(str) + 2];
   c[0] = '@';
   strcpy(c + 1, str);
   const Symbol sym = insert_symbol(c);
- $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $6), $8, ae_flag_op, GET_LOC(&@$));
+ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $5), $7, ae_flag_op, GET_LOC(&@$));
 };
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
