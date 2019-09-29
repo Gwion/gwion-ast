@@ -175,17 +175,23 @@ dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } |
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
 
-fptr_base: type_decl_array id decl_template fptr_arg { $$ = new_func_base(mpool(arg), $1, $2, $4);
-  if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
+fptr_base: type_decl_array id decl_template LPAREN fptr_arg arg_type { $$ = new_func_base(mpool(arg), $1, $2, $5);
+  if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1);
+  $1->flag |= $6;
+}
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl(mpool(arg), $3, -1); }
 
-fptr_def: TYPEDEF opt_flag fptr_base arg_type {
+fptr_def: TYPEDEF opt_flag fptr_base {
   if($3->td->array && !$3->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
   }
-  $$ = new_fptr_def(mpool(arg), $3, $2 | $4);
+  $$ = new_fptr_def(mpool(arg), $3, $2);
+  if(GET_FLAG($3->td, variadic)) {
+    SET_FLAG($3->td, variadic);
+    UNSET_FLAG($3->td, variadic);
+  }
 };
 type_def: TYPEDEF opt_flag type_decl_array id decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);
@@ -343,7 +349,7 @@ union_exp: type_decl00 arg_decl { $1->flag |= ae_flag_ref | ae_flag_nonnull; $$=
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
-fptr_arg: LPAREN  fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
+fptr_arg: fptr_list { $$ = $1; } | { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: LTMPL id_list RTMPL { $$ = $2; } | { $$ = NULL; };
