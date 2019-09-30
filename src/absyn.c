@@ -780,7 +780,7 @@ mk_section(Fptr_Def,  fptr_def,  fptr)
 mk_section(Type_Def,  type_def,  type)
 
 void free_class_def(MemPool p, Class_Def a) {
-  if(a->base.type && GET_FLAG(a, template))
+  if(GET_FLAG(a, global) || (a->base.type && GET_FLAG(a, template)))
     return;
   if(a->base.ext)
     free_type_decl(p, a->base.ext);
