@@ -399,7 +399,7 @@ func_def
   c[0] = '@';
   strcpy(c + 1, str);
   const Symbol sym = insert_symbol(c);
- $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $5), $7, ae_flag_op, GET_LOC(&@$));
+ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $5), $7, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
 };
 
 atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
