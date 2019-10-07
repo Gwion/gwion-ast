@@ -1,4 +1,4 @@
-#include "gwion_util.h"
+ #include "gwion_util.h"
 #include "gwion_ast.h"
 
 Var_Decl new_var_decl(MemPool p, struct Symbol_* xid, const Array_Sub array, const loc_t pos) {
@@ -403,7 +403,8 @@ ANN /* static */void free_func_base(MemPool p, Func_Base * a) {
 void free_func_def(MemPool p, Func_Def a) {
   if(!a->base->tmpl && !GET_FLAG(a, global)) {
     free_func_base(p, a->base);
-    free_stmt(p, a->d.code);
+    if(a->d.code)
+      free_stmt(p, a->d.code);
     free_loc(p, a->pos);
     mp_free(p, Func_Def, a);
   }
