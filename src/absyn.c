@@ -287,7 +287,7 @@ Exp new_exp_prim_unpack(MemPool p, const Symbol type, const ID_List l, const loc
   Exp a = new_exp_prim(p, loc_cpy(p, pos));
   a->d.exp_primary.primary_type = ae_primary_unpack;
   const Exp base = strcmp(s_name(l->xid), "_") ?
-    decl_from_id(p, type, l->xid, loc_cpy(p, pos)) : new_exp_prim_nil(p, loc_cpy(p, pos));
+    decl_from_id(p, type, l->xid, pos) : new_exp_prim_nil(p, loc_cpy(p, pos));
   Exp e = base;
   ID_List list = l->next;
   while(list) {
