@@ -55,7 +55,7 @@ clean:
 	@rm -f src/*.o *.a src/*.gcno src/*.gcda
 
 install: translation-install libgwion_ast.a
-	$(info installing gwion_ast in ${PREFIX})
+	$(info installing ${PACKAGE} in ${PREFIX})
 	install libgwion_ast.a ${DESTDIR}/${PREFIX}/bin
 	@mkdir -p ${DESTDIR}/${PREFIX}/include/gwion/ast
 	@cp include/*.h ${DESTDIR}/${PREFIX}/include/gwion/ast
