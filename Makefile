@@ -54,11 +54,16 @@ clean:
 	$(info cleaning)
 	@rm -f src/*.o *.a src/*.gcno src/*.gcda
 
-install:
+install: translation-install libgwion_ast.a
+	$(info installing gwion_ast in ${PREFIX})
 	install libgwion_ast.a ${DESTDIR}/${PREFIX}/bin
+	@mkdir -p ${DESTDIR}/${PREFIX}/include/gwion/ast
+	@cp include/*.h ${DESTDIR}/${PREFIX}/include/gwion/ast
 
-uninstall:
-	rm ${DESTDIR}/${PREFIX}/bin/libgwion_ast.a
+uninstall: translation-uninstall
+	$(info uninstalling ${PACKAGE} from ${PREFIX})
+	rm ${DESTDIR}/${PREFIX}/bin/lib${PACKAGE}.a
+	@rm -rf ${PREFIX}/${PREFIX}/include/gwion/util
 
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/intl.mk
