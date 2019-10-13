@@ -195,7 +195,7 @@ type_def: TYPEDEF opt_flag type_decl_array id decl_template SEMICOLON {
     $$->tmpl = new_tmpl(mpool(arg), $5, -1);
 };
 
-type_decl_array: type_decl | type_decl array { $$ = add_type_decl_array($1, $2); };
+type_decl_array: type_decl | type_decl array { $1->array = $2; };
 
 type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
     { gwion_error(&@$, arg, "can't instantiate with empty '[]'"); YYERROR;}

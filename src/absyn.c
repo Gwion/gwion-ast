@@ -64,11 +64,6 @@ Array_Sub prepend_array_sub(const Array_Sub a, const Exp exp) {
   return a;
 }
 
-Type_Decl* add_type_decl_array(Type_Decl* a, const Array_Sub array) {
-  a->array = array;
-  return a;
-}
-
 ANN static Exp new_exp(MemPool p, const ae_exp_t type, const loc_t pos) {
   Exp a = mp_calloc(p, Exp);
   a->exp_type = type;

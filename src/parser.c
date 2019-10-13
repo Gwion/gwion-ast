@@ -2300,7 +2300,7 @@ yyreduce:
 
   case 31:
 #line 197 "ly/gwion.y"
-    { (yyval.type_decl) = add_type_decl_array((yyvsp[-1].type_decl), (yyvsp[0].array_sub)); }
+    { (yyvsp[-1].type_decl)->array = (yyvsp[0].array_sub); }
 #line 2305 "src/parser.c"
     break;
 
