@@ -288,7 +288,7 @@ Exp new_exp_prim_unpack(MemPool p, const Symbol type, const ID_List l, const loc
   ID_List list = l->next;
   while(list) {
     if(strcmp(s_name(list->xid), "_"))
-      e = (e->next = decl_from_id(p, type, list->xid, loc_cpy(p, pos)));
+      e = (e->next = decl_from_id(p, type, list->xid, pos));
     else
       e = (e->next = new_exp_prim_nil(p, loc_cpy(p, pos)));
     list = list->next;
