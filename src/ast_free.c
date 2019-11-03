@@ -97,31 +97,6 @@ AST_FREE(Tmpl*, tmpl) {
   mp_free(p, Tmpl, a);
 }
 
-Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code,
-    const ae_flag flag, const loc_t pos) {
-  Func_Def a = mp_calloc(p, Func_Def);
-  a->base = base;
-  a->d.code = code;
-  a->flag = flag;
-  a->pos = pos;
-  return a;
-}
-
-ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs) {
-  Arg_List e1 = lhs->base->args;
-  Arg_List e2 = rhs->base->args;
-
-  while(e1 && e2) {
-    if(e1->type != e2->type)
-      return GW_ERROR;
-    e1 = e1->next;
-    e2 = e2->next;
-  }
-  if(e1 || e2)
-    return GW_ERROR;
-  return GW_OK;
-}
-
 ANN AST_FREE(Func_Base*, func_base) {
   if(!a->func) {
     if(a->args)
@@ -133,7 +108,7 @@ ANN AST_FREE(Func_Base*, func_base) {
 AST_FREE(Func_Def, func_def) {
   if(!a->base->tmpl && !GET_FLAG(a, global)) {
     free_func_base(p, a->base);
-    if(a->d.code)
+    if(!GET_FLAG(a, builtin) && a->d.code)
       free_stmt(p, a->d.code);
     free_loc(p, a->pos);
     mp_free(p, Func_Def, a);
@@ -167,11 +142,6 @@ ANN static AST_FREE(Exp_Call*, exp_call) {
 ANN static AST_FREE(Exp_Dot*, exp_dot) {
   if(a->base)
     free_exp(p, a->base);
-}
-
-Exp prepend_exp(const restrict Exp exp, const restrict Exp next) {
-  exp->next = next;
-  return exp;
 }
 
 ANN static AST_FREE(Exp_Primary*, exp_primary) {
@@ -374,17 +344,6 @@ AST_FREE(Class_Body, class_body) {
   if(a->section)
     free_section(p, a->section);
   mp_free(p, Class_Body, a);
-}
-
-Class_Def new_class_def(MemPool p, const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
-    const Class_Body body, const loc_t pos) {
-  Class_Def a = mp_calloc(p, Class_Def);
-  a->flag = class_decl;
-  a->base.xid = xid;
-  a->base.ext  = ext;
-  a->body = body;
-  a->pos = pos;
-  return a;
 }
 
 AST_FREE(Type_List, type_list) {
