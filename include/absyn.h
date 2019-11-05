@@ -157,6 +157,7 @@ typedef struct Tmpl_ {
 } Tmpl;
 
 ANN ANEW AST_NEW(Tmpl*, tmpl, const ID_List, const m_int);
+ANN ANEW AST_NEW(Tmpl*, tmpl_base, const ID_List);
 ANN ANEW AST_NEW(Tmpl*, tmpl_call, Type_List);
 ANN void free_tmpl(MemPool p, Tmpl*);
 

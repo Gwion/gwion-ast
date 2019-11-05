@@ -267,6 +267,10 @@ AST_NEW(Tmpl*, tmpl, const ID_List list, const m_int base) {
   return a;
 }
 
+AST_NEW(Tmpl*, tmpl_base, const ID_List list) {
+  return new_tmpl(p, list, -1);
+}
+
 Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code,
     const ae_flag flag, const loc_t pos) {
   Func_Def a = mp_calloc(p, Func_Def);
