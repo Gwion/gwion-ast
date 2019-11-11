@@ -476,8 +476,6 @@ struct Stmt_List_ {
 ANEW AST_NEW(Stmt_List, stmt_list, Stmt stmt, Stmt_List next);
 ANN void free_stmt_list(MemPool p, Stmt_List);
 
-typedef struct Class_Body_ * Class_Body;
-
 struct Func_Def_ {
   Func_Base* base;
   m_uint stack_depth;
@@ -516,15 +514,10 @@ ANEW ANN AST_NEW(Section*, section_union_def, const Union_Def);
 ANEW ANN AST_NEW(Section*, section_fptr_def, const Fptr_Def);
 ANEW ANN AST_NEW(Section*, section_type_def, const Type_Def);
 
-struct Class_Body_ {
-  Section* section;
-  Class_Body next;
-};
-
 struct Class_Def_ {
   struct Type_Def_ base;
   union {
-    Class_Body body;
+    Ast body;
     Decl_List list; // parent template union
     Union_Def union_def;// child template union
   };
@@ -532,10 +525,8 @@ struct Class_Def_ {
   ae_flag flag;
 };
 ANN2(1, 3) ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,
-                        Type_Decl*, const Class_Body, const loc_t);
+                        Type_Decl*, const Ast, const loc_t);
 ANN void free_class_def(MemPool p, Class_Def);
-ANN2(1, 2) ANEW AST_NEW(Class_Body, class_body, Section*, const Class_Body);
-ANN void free_class_body(MemPool p, Class_Body);
 
 struct Ast_ {
   Section* section;

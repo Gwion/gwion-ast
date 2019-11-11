@@ -1,6 +1,7 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
+ANN static Ast cpy_ast(MemPool p, const Ast);
 ANN static Stmt cpy_stmt(MemPool p, const Stmt src);
 ANN static Exp cpy_exp(MemPool p, const Exp src);
 ANN Type_List cpy_type_list(MemPool p, const Type_List src);
@@ -481,20 +482,12 @@ ANN static Section* cpy_section(MemPool p, const Section *src) {
   return a;
 }
 
-ANN static Class_Body cpy_class_body(MemPool p, const Class_Body src) {
-  Class_Body a = mp_calloc(p, Class_Body);
-  a->section = cpy_section(p, src->section);
-  if(src->next)
-    a->next = cpy_class_body(p, src->next);
-  return a;
-}
-
 ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   Class_Def a = mp_calloc(p, Class_Def);
   cpy_type_def2(p, &a->base, &src->base);
   if(src->body) {
     if(!GET_FLAG(src, union))
-      a->body = cpy_class_body(p, src->body);
+      a->body = cpy_ast(p, src->body);
     else
       a->list = cpy_decl_list(p, src->list);
   }
@@ -502,7 +495,7 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   a->pos = loc_cpy(p, src->pos);
   return a;
 }
-/*
+
 ANN static Ast cpy_ast(MemPool p, const Ast src) {
   Ast a = mp_calloc(p, Ast);
   a->section = cpy_section(p, src->section);
@@ -510,4 +503,3 @@ ANN static Ast cpy_ast(MemPool p, const Ast src) {
     a->next = cpy_ast(p, src->next);
   return a;
 }
-*/

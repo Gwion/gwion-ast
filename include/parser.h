@@ -285,11 +285,10 @@ union YYSTYPE
   Section* section;
   ID_List id_list;
   Type_List type_list;
-  Class_Body class_body;
   Class_Def class_def;
   Ast ast;
 
-#line 293 "include/parser.h"
+#line 292 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

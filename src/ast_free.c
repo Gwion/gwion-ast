@@ -316,7 +316,7 @@ AST_FREE(Class_Def, class_def) {
   if(a->base.tmpl)
     free_tmpl(p, a->base.tmpl);
   if(a->body)
-    free_class_body(p, a->body);
+    free_ast(p, a->body);
   free_loc(p, a->pos);
   mp_free(p, Class_Def, a);
 }
@@ -336,14 +336,6 @@ ANN static AST_FREE(Section*, section) {
   else if(t == ae_section_type)
     free_type_def(p, a->d.type_def);
   mp_free(p, Section, a);
-}
-
-AST_FREE(Class_Body, class_body) {
-  if(a->next)
-    free_class_body(p, a->next);
-  if(a->section)
-    free_section(p, a->section);
-  mp_free(p, Class_Body, a);
 }
 
 AST_FREE(Type_List, type_list) {

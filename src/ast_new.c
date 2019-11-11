@@ -477,20 +477,13 @@ mk_section(Fptr_Def,  fptr_def,  fptr)
 mk_section(Type_Def,  type_def,  type)
 
 AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
-    const Class_Body body, const loc_t pos) {
+    const Ast body, const loc_t pos) {
   Class_Def a = mp_calloc(p, Class_Def);
   a->flag = class_decl;
   a->base.xid = xid;
   a->base.ext  = ext;
   a->body = body;
   a->pos = pos;
-  return a;
-}
-
-AST_NEW(Class_Body, class_body, Section* section, const Class_Body body) {
-  Class_Body a = mp_calloc(p, Class_Body);
-  a->section = section;
-  a->next = body;
   return a;
 }
 
