@@ -122,7 +122,6 @@ typedef struct {
   Type_Decl* td;
   struct Type_* type;
   Var_Decl_List list;
-  Class_Def base;
 } Exp_Decl;
 
 typedef struct Tuple_ {
