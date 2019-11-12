@@ -162,13 +162,7 @@ ANN static AST_FREE(Exp_Typeof*, exp_typeof) {
   free_exp(p, a->exp);
 }
 
-typedef void (*_exp_func)(MemPool, const union exp_data *);
-static const _exp_func exp_func[] = {
-  (_exp_func)free_exp_decl,    (_exp_func)free_exp_binary, (_exp_func)free_exp_unary,
-  (_exp_func)free_exp_primary, (_exp_func)free_exp_cast,   (_exp_func)free_exp_post,
-  (_exp_func)free_exp_call,    (_exp_func)free_exp_array,  (_exp_func)free_exp_if,
-  (_exp_func)free_exp_dot,     (_exp_func)free_exp_lambda, (_exp_func)free_exp_typeof
-};
+DECL_EXP_FUNC(free, void, MemPool)
 
 AST_FREE(Exp, exp) {
   if(a->next)
@@ -280,21 +274,13 @@ ANN static inline AST_FREE(Stmt_Jump, stmt_jump) {
     vector_release(&a->data.v);
 }
 
-ANN static AST_FREE(const union stmt_data*, stmt_xxx) { return; }
-typedef void (*_stmt_func)(MemPool, const union stmt_data *);
-static const _stmt_func stmt_func[] = {
-  (_stmt_func)free_stmt_exp,  (_stmt_func)free_stmt_flow, (_stmt_func)free_stmt_flow,
-  (_stmt_func)free_stmt_for,  (_stmt_func)free_stmt_auto, (_stmt_func)free_stmt_loop,
-  (_stmt_func)free_stmt_if,   (_stmt_func)free_stmt_code, (_stmt_func)free_stmt_xxx,
-  (_stmt_func)free_stmt_xxx,  (_stmt_func)free_stmt_xxx, (_stmt_func)free_stmt_match,
-  (_stmt_func)free_stmt_jump,
-#ifndef TINY_MODE
-#ifdef TOOL_MODE
-  (_stmt_func)free_stmt_pp
-#endif
-#endif
-};
+#define free_stmt_break    (void*)dummy_func
+#define free_stmt_continue (void*)dummy_func
+#define free_stmt_return free_stmt_exp
+#define free_stmt_while free_stmt_flow
+#define free_stmt_until free_stmt_flow
 
+DECL_STMT_FUNC(free, void, MemPool);
 AST_FREE(Stmt, stmt) {
   stmt_func[a->stmt_type](p, &a->d);
   free_loc(p, a->pos);

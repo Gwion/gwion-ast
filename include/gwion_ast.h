@@ -6,4 +6,5 @@
 #include "macro.h"
 #include "pp.h"
 #include "loc.h"
+#include "ast_pass.h"
 #endif
