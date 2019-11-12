@@ -15,10 +15,7 @@ ANN static void cpy_exp_dot(MemPool p, Exp_Dot *a, const Exp_Dot *src) {
 }
 
 ANN static void cpy_exp_lambda(MemPool p, Exp_Lambda *a, const Exp_Lambda *src) {
-  if(src->args)
-    a->args = cpy_arg_list(p, src->args);
-  a->code = cpy_stmt(p, src->code);
-  a->name = src->name;
+  a->def = cpy_func_def(p, src->def);
 }
 
 ANN Array_Sub cpy_array_sub(MemPool p, const Array_Sub src) {

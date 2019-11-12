@@ -22,13 +22,7 @@ ANN AST_FREE(Var_Decl_List, var_decl_list) {
 }
 
 ANN AST_FREE(Exp_Lambda*, exp_lambda) {
-  if(a->args)
-    free_arg_list(p, a->args);
-  free_stmt(p, a->code);
-  if(a->def) {
-    free_loc(p, a->def->pos);
-    mp_free(p, Func_Def, a->def);
-  }
+  free_func_def(p, a->def);
 }
 
 ANN AST_FREE(Exp_Array*, exp_array) {
@@ -101,7 +95,8 @@ ANN AST_FREE(Func_Base*, func_base) {
   if(!a->func) {
     if(a->args)
       free_arg_list(p, a->args);
-    free_type_decl(p, a->td);
+    if(a->td)
+      free_type_decl(p, a->td);
   }
 }
 

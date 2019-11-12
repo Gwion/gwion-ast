@@ -27,11 +27,8 @@ typedef struct {
   struct Symbol_ *xid;
 } Exp_Dot;
 typedef struct {
-  Arg_List args;
-  Stmt code;
   Func_Def def;
   struct Type_*owner;
-  Symbol name;
 } Exp_Lambda;
 ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List,const Stmt);
 struct Array_Sub_ {
