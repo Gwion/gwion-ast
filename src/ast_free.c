@@ -139,17 +139,17 @@ ANN static AST_FREE(Exp_Dot*, exp_dot) {
     free_exp(p, a->base);
 }
 
-ANN static AST_FREE(Exp_Primary*, exp_primary) {
-  const ae_prim_t t = a->primary_type;
-  if(t == ae_primary_hack)
+ANN static AST_FREE(Exp_Primary*, prim) {
+  const ae_prim_t t = a->prim_type;
+  if(t == ae_prim_hack)
     free_exp(p, a->d.exp);
-  else if(t == ae_primary_array)
+  else if(t == ae_prim_array)
     free_array_sub(p, a->d.array);
-  else if(t== ae_primary_complex ||
-          t == ae_primary_polar  ||
-          t == ae_primary_vec)
+  else if(t== ae_prim_complex ||
+          t == ae_prim_polar  ||
+          t == ae_prim_vec)
     free_exp(p, a->d.vec.exp);
-  else if(t == ae_primary_tuple)
+  else if(t == ae_prim_tuple)
     free_exp(p, a->d.tuple.exp);
 }
 

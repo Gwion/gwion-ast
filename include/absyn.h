@@ -112,11 +112,11 @@ typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
                ae_exp_if, ae_exp_dot, ae_exp_lambda, ae_exp_typeof
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
-typedef enum { ae_primary_id, ae_primary_num, ae_primary_float,
-               ae_primary_str, ae_primary_array,
-               ae_primary_hack, ae_primary_complex, ae_primary_polar, ae_primary_vec,
-               ae_primary_tuple, ae_primary_unpack,
-               ae_primary_char, ae_primary_nil
+typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
+               ae_prim_str, ae_prim_array,
+               ae_prim_hack, ae_prim_complex, ae_prim_polar, ae_prim_vec,
+               ae_prim_tuple, ae_prim_unpack,
+               ae_prim_char, ae_prim_nil
              } ae_prim_t;
 typedef struct {
   Type_Decl* td;
@@ -132,7 +132,7 @@ ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos);
 
 typedef struct {
   struct Value_ * value;
-  union exp_primary_data {
+  union prim_data {
     struct Symbol_* var;
     unsigned long num;
     m_float fnum;
@@ -143,7 +143,7 @@ typedef struct {
     Vec vec;
     Tuple tuple;
   } d;
-  ae_prim_t primary_type;
+  ae_prim_t prim_type;
 } Exp_Primary;
 
 typedef struct Tmpl_ {
@@ -204,7 +204,7 @@ struct Exp_ {
   Exp next;
   union exp_data {
     Exp_Postfix   exp_post;
-    Exp_Primary   exp_primary;
+    Exp_Primary   prim;
     Exp_Decl      exp_decl;
     Exp_Unary     exp_unary;
     Exp_Binary    exp_binary;
@@ -227,18 +227,30 @@ static inline loc_t td_pos(const Type_Decl *td) { return td->xid ? td->xid->pos 
 static inline Exp exp_self(const void *data) {
   return container_of((char*)data, struct Exp_, d);
 }
+static inline Exp_Primary* prim_self(const void *data) {
+  return container_of((char*)data, Exp_Primary, d);
+}
+static inline Exp prim_exp(const void *data) {
+  const Exp_Primary *p = prim_self(data);
+  return exp_self(p);
+}
+static inline loc_t prim_pos(const void *data) {
+  const Exp e = prim_exp(data);
+  return e->pos;
+}
 
-ANEW ANN AST_NEW(Exp, exp_prim_id, struct Symbol_*, const loc_t);
-ANEW AST_NEW(Exp, exp_prim_int, const unsigned long, const loc_t);
-ANEW AST_NEW(Exp, exp_prim_float, const m_float, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_prim_string, const m_str, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_prim_array, const Array_Sub, const loc_t);
-ANEW AST_NEW(Exp, exp_prim_hack, const Exp);
-ANEW ANN AST_NEW(Exp, exp_prim_vec, const ae_prim_t t, Exp);
-ANEW ANN AST_NEW(Exp, exp_prim_char, const m_str, const loc_t);
-ANEW AST_NEW(Exp, exp_prim_nil, const loc_t);
-ANEW Exp new_exp_prim_tuple(MemPool, const Exp, const loc_t);
-ANEW Exp new_exp_prim_unpack(MemPool, const Symbol, const ID_List, const loc_t);
+
+ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_*, const loc_t);
+ANEW AST_NEW(Exp, prim_int, const unsigned long, const loc_t);
+ANEW AST_NEW(Exp, prim_float, const m_float, const loc_t);
+ANEW ANN AST_NEW(Exp, prim_string, const m_str, const loc_t);
+ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);
+ANEW AST_NEW(Exp, prim_hack, const Exp);
+ANEW ANN AST_NEW(Exp, prim_vec, const ae_prim_t t, Exp);
+ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);
+ANEW AST_NEW(Exp, prim_nil, const loc_t);
+ANEW Exp new_prim_tuple(MemPool, const Exp, const loc_t);
+ANEW Exp new_prim_unpack(MemPool, const Symbol, const ID_List, const loc_t);
 ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List);
 ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp);
 ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol);

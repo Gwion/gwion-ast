@@ -102,27 +102,27 @@ ANN static void cpy_exp_decl(MemPool p, Exp_Decl *a, const Exp_Decl *src) {
   a->list = cpy_var_decl_list(p, src->list);
 }
 
-ANN static void cpy_exp_primary(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
-  switch(src->primary_type) {
-    case ae_primary_id:
+ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
+  switch(src->prim_type) {
+    case ae_prim_id:
       a->d.var = src->d.var;
       break;
-    case ae_primary_num:
+    case ae_prim_num:
       a->d.num = src->d.num;
       break;
-    case ae_primary_float:
+    case ae_prim_float:
       a->d.fnum = src->d.fnum;
       break;
-    case ae_primary_char:
+    case ae_prim_char:
       a->d.chr = src->d.chr;
       break;
-    case ae_primary_str:
+    case ae_prim_str:
       a->d.str = src->d.str;
       break;
-    case ae_primary_array:
+    case ae_prim_array:
       a->d.array = cpy_array_sub(p, src->d.array);
       break;
-    case ae_primary_vec:
+    case ae_prim_vec:
       cpy_vec(p, &a->d.vec, &src->d.vec);
       break;
     default:
@@ -130,7 +130,7 @@ ANN static void cpy_exp_primary(MemPool p, Exp_Primary *a, const Exp_Primary *sr
         a->d.exp = cpy_exp(p, src->d.exp);
       break;
   }
-  a->primary_type = src->primary_type;
+  a->prim_type = src->prim_type;
 }
 
 ANN Tmpl* cpy_tmpl(MemPool p, const Tmpl *src) {
@@ -200,7 +200,7 @@ ANN static Exp cpy_exp(MemPool p, const Exp src) {
       cpy_exp_postfix(p, &a->d.exp_post, &src->d.exp_post);
       break;
     case ae_exp_primary:
-      cpy_exp_primary(p, &a->d.exp_primary, &src->d.exp_primary);
+      cpy_prim(p, &a->d.prim, &src->d.prim);
       break;
     case ae_exp_decl:
       cpy_exp_decl(p, &a->d.exp_decl, &src->d.exp_decl);

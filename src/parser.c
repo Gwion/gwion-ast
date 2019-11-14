@@ -766,7 +766,7 @@ static const char *const yytname[] =
   "eq_exp", "rel_exp", "shift_exp", "add_exp", "mul_exp", "dur_exp",
   "typeof_exp", "cast_exp", "unary_op", "unary_exp", "lambda_list",
   "lambda_arg", "type_list", "call_paren", "post_op", "dot_exp",
-  "post_exp", "vec_type", "primary_exp", YY_NULLPTR
+  "post_exp", "vec_type", "prim_exp", YY_NULLPTR
 };
 #endif
 
@@ -3153,79 +3153,79 @@ yyreduce:
 
   case 230:
 #line 510 "ly/gwion.y"
-    { (yyval.ival) = ae_primary_complex; }
+    { (yyval.ival) = ae_prim_complex; }
 #line 3158 "src/parser.c"
     break;
 
   case 231:
 #line 511 "ly/gwion.y"
-    { (yyval.ival) = ae_primary_polar;   }
+    { (yyval.ival) = ae_prim_polar;   }
 #line 3164 "src/parser.c"
     break;
 
   case 232:
 #line 512 "ly/gwion.y"
-    { (yyval.ival) = ae_primary_vec;     }
+    { (yyval.ival) = ae_prim_vec;     }
 #line 3170 "src/parser.c"
     break;
 
   case 233:
 #line 515 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_id(     mpool(arg), (yyvsp[0].sym), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_id(     mpool(arg), (yyvsp[0].sym), GET_LOC(&(yyloc))); }
 #line 3176 "src/parser.c"
     break;
 
   case 234:
 #line 516 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_int(    mpool(arg), (yyvsp[0].lval), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_int(    mpool(arg), (yyvsp[0].lval), GET_LOC(&(yyloc))); }
 #line 3182 "src/parser.c"
     break;
 
   case 235:
 #line 517 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_float(  mpool(arg), (yyvsp[0].fval), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_float(  mpool(arg), (yyvsp[0].fval), GET_LOC(&(yyloc))); }
 #line 3188 "src/parser.c"
     break;
 
   case 236:
 #line 518 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_string( mpool(arg), (yyvsp[0].sval), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_string( mpool(arg), (yyvsp[0].sval), GET_LOC(&(yyloc))); }
 #line 3194 "src/parser.c"
     break;
 
   case 237:
 #line 519 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_char(   mpool(arg), (yyvsp[0].sval), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_char(   mpool(arg), (yyvsp[0].sval), GET_LOC(&(yyloc))); }
 #line 3200 "src/parser.c"
     break;
 
   case 238:
 #line 520 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_array(  mpool(arg), (yyvsp[0].array_sub), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_array(  mpool(arg), (yyvsp[0].array_sub), GET_LOC(&(yyloc))); }
 #line 3206 "src/parser.c"
     break;
 
   case 239:
 #line 521 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_vec(    mpool(arg), (yyvsp[-2].ival) ,(yyvsp[-1].exp)); }
+    { (yyval.exp) = new_prim_vec(    mpool(arg), (yyvsp[-2].ival) ,(yyvsp[-1].exp)); }
 #line 3212 "src/parser.c"
     break;
 
   case 240:
 #line 522 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_unpack( mpool(arg), insert_symbol("auto"), (yyvsp[-1].id_list), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_unpack( mpool(arg), insert_symbol("auto"), (yyvsp[-1].id_list), GET_LOC(&(yyloc))); }
 #line 3218 "src/parser.c"
     break;
 
   case 241:
 #line 523 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_tuple(mpool(arg), (yyvsp[-1].exp), GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_tuple(mpool(arg), (yyvsp[-1].exp), GET_LOC(&(yyloc))); }
 #line 3224 "src/parser.c"
     break;
 
   case 242:
 #line 524 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_hack(   mpool(arg), (yyvsp[-1].exp)); }
+    { (yyval.exp) = new_prim_hack(   mpool(arg), (yyvsp[-1].exp)); }
 #line 3230 "src/parser.c"
     break;
 
@@ -3243,7 +3243,7 @@ yyreduce:
 
   case 245:
 #line 527 "ly/gwion.y"
-    { (yyval.exp) = new_exp_prim_nil(    mpool(arg),     GET_LOC(&(yyloc))); }
+    { (yyval.exp) = new_prim_nil(    mpool(arg),     GET_LOC(&(yyloc))); }
 #line 3248 "src/parser.c"
     break;
 

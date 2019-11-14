@@ -4,8 +4,8 @@
 static inline m_bool dummy_func(const void*a NUSED,
   const void*b NUSED) { return 1; }
 
-#define DECL_PRIM_FUNC(prefix, type, arg)                                                  \
-typedef type (*_##prefix##_prim_func)(arg, Exp_Primary*);                                   \
+#define DECL_PRIM_FUNC(prefix, type, arg)                                                   \
+typedef type (*_##prefix##_prim_func)(arg, union prim_data*);                        \
 static const _##prefix##_prim_func prim_func[] = {                                          \
   (_##prefix##_prim_func)prefix##_prim_id,      (_##prefix##_prim_func)prefix##_prim_num,   \
   (_##prefix##_prim_func)prefix##_prim_float,   (_##prefix##_prim_func)prefix##_prim_str,   \
@@ -20,7 +20,7 @@ static const _##prefix##_prim_func prim_func[] = {                              
 typedef type (*_##prefix##_exp_func)(const arg, union exp_data*);                               \
 static const _##prefix##_exp_func exp_func[] = {                                                \
   (_##prefix##_exp_func)prefix##_exp_decl,    (_##prefix##_exp_func)prefix##_exp_binary,        \
-  (_##prefix##_exp_func)prefix##_exp_unary,  (_##prefix##_exp_func)prefix##_exp_primary,        \
+  (_##prefix##_exp_func)prefix##_exp_unary,  (_##prefix##_exp_func)prefix##_prim,        \
   (_##prefix##_exp_func)prefix##_exp_cast,   (_##prefix##_exp_func)prefix##_exp_post,           \
   (_##prefix##_exp_func)prefix##_exp_call,    (_##prefix##_exp_func)prefix##_exp_array,         \
   (_##prefix##_exp_func)prefix##_exp_if,    (_##prefix##_exp_func)prefix##_exp_dot,             \
