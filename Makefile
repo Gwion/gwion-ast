@@ -39,7 +39,7 @@ libgwion_ast.a: ${base_obj}
 	${AR} ${AR_OPT}
 
 grammarlib: grammar libgwion_grammar.a
-	@(grep "\-Igrammar" <<< "${CFLAGS}") || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_grammar.a
+	@echo ${CFLAGS} | grep "\-Igrammar" || CFLAGS="-Igrammar" make -s libgwion_grammar.a
 
 grammar:
 	@mkdir $@
@@ -49,7 +49,7 @@ libgwion_grammar.a: ${grammar_obj}
 	@${AR} ${AR_OPT}
 
 toollib: tool
-	@(grep "\-Itool" <<< "${CFLAGS}") || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_tool.a
+	@$echo ${CFLAGS} | grep "\-Itool" || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_tool.a
 
 tool:
 	@mkdir $@
