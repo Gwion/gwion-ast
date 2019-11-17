@@ -64,7 +64,7 @@ ${TARGET}/lexer.c: ${TARGET}/gwion.l
 
 ${TARGET}/parser.c: ${TARGET}/gwion.y
 	$(info generating parser)
-	@${YACC} --defines=${TARGET}/parser.h -Wno-yacc -o $@ $<
+	@${YACC} --defines=${TARGET}/parser.h -o $@ $<
 
 ${TARGET}/gwion.l: m4/gwion.lm4
 	@m4 -s ${M4FLAGS} $< > $@
