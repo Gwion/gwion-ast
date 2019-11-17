@@ -1,4 +1,5 @@
-changequote(`[[[',`]]]')
+#line 1 "m4/gwion.lm4"
+
 IS    (u|U|l|L)*
 SPACE [ \r\t]
 OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
@@ -235,8 +236,8 @@ ANN static m_str macro_data(void* data, const m_bool);
     return 1;
   }
 }
-[[["__line__"]]]                          { adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
-[[["__file__"]]]                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
+"__line__"                          { adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
+"__file__"                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 
 0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                 return NUM;        }
 0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }

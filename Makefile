@@ -84,7 +84,7 @@ ${TARGET}/scanner.c:
 clean:
 	$(info cleaning)
 	@rm -f src/*.o *.a src/*.gcno src/*.gcda
-	@rm -rf grammar tool
+	@rm -f grammar/*.o tool/*.o
 
 install: translation-install libgwion_ast.a
 	$(info installing ${GWION_PACKAGE} in ${PREFIX})
