@@ -72,8 +72,7 @@ grammar/gwion.y: m4/gwion.ym4
 
 grammar/gwion.l: m4/gwion.lm4
 	$(info meta-generating lexer)
-#	m4 -s $< > $@
-	m4 $< > $@
+	m4 -s $< > $@
 
 grammar/dynop.c:
 	cp m4/dynop.c grammar
