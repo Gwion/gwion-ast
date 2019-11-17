@@ -1,5 +1,9 @@
+TARGET?=
 GWION_PACKAGE=gwion_ast
+
+ifneq (,$(findstring -DGWION_PACKAGE,$(MAKEFLAGS)))
 CFLAGS += -DGWION_PACKAGE='"${GWION_PACKAGE}"'
+endif
 
 ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
@@ -35,76 +39,47 @@ options-show:
 	@$(call _options)
 
 libgwion_ast.a: ${base_obj}
-	@$(info linkig $@)
-	${AR} ${AR_OPT}
-
-grammarlib: grammar libgwion_grammar.a
-	@echo ${CFLAGS} | grep "\-Igrammar" || CFLAGS="-Igrammar" make -s libgwion_grammar.a
-
-grammar:
-	@mkdir $@
-
-libgwion_grammar.a: ${grammar_obj}
 	@$(info linking $@)
-	@${AR} ${AR_OPT}
-
-toollib: tool
-	@echo ${CFLAGS} | grep "\-Itool" || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_tool.a
-
-tool:
-	@mkdir $@
-
-libgwion_tool.a: ${tool_obj}
-	@$(info linkig $@)
 	${AR} ${AR_OPT}
 
-grammar/parser.c: grammar/gwion.y
-	$(info generating parser)
-	@${YACC} -o grammar/parser.c --defines=grammar/parser.h grammar/gwion.y -Wno-yacc
+grammarlib:
+	@make -s TARGET=grammar _$@
 
-grammar/lexer.c: grammar/gwion.l
+toollib:
+	@M4FLAGS="-DTOOL_MODE" CFLAGS='-DTOOL_MODE ' make -s TARGET=tool _$@
+
+_${TARGET}lib: ${TARGET}
+	@CFLAGS="${CFLAGS} -I${TARGET}" make -s libgwion_${TARGET}.a
+
+${TARGET}:
+	@mkdir $@
+
+libgwion_${TARGET}.a: ${${TARGET}_obj}
+	@$(info linking $@)
+	${AR} ${AR_OPT}
+
+${TARGET}/lexer.c: ${TARGET}/gwion.l
 	$(info generating lexer)
-	@${LEX} --header-file=grammar/lexer.h -o grammar/lexer.c grammar/gwion.l
+	@${LEX} --header-file=${TARGET}/lexer.h -o $@ $<
 
-grammar/gwion.y: m4/gwion.ym4
-	$(info meta-generating parser)
-	m4 -s $< > $@
-
-grammar/gwion.l: m4/gwion.lm4
-	$(info meta-generating lexer)
-	m4 -s $< > $@
-
-grammar/dynop.c:
-	@cp m4/dynop.c grammar
-
-grammar/pparg.c:
-	@cp m4/pparg.c grammar
-
-grammar/scanner.c:
-	@cp m4/scanner.c grammar
-
-tool/lexer.c: tool/gwion.l
-	$(info generating lexer)
-	@${LEX} --header-file=tool/lexer.h -o $@ $<
-
-tool/parser.c: tool/gwion.y
+${TARGET}/parser.c: ${TARGET}/gwion.y
 	$(info generating parser)
-	@${YACC} --defines=tool/parser.h -Wno-yacc -o $@ $<
+	@${YACC} --defines=${TARGET}/parser.h -Wno-yacc -o $@ $<
 
-tool/gwion.l: m4/gwion.lm4
-	@m4 -s -DTOOL_MODE $< > $@
+${TARGET}/gwion.l: m4/gwion.lm4
+	@m4 -s ${M4FLAGS} $< > $@
 
-tool/gwion.y: m4/gwion.ym4
-	@m4 -s -DTOOL_MODE $< > $@
+${TARGET}/gwion.y: m4/gwion.ym4
+	@m4 -s ${M4FLAGS} $< > $@
 
-tool/dynop.c:
-	@cp m4/dynop.c tool
+${TARGET}/dynop.c:
+	@cp m4/dynop.c ${TARGET}
 
-tool/pparg.c:
-	@cp m4/pparg.c tool
+${TARGET}/pparg.c:
+	@cp m4/pparg.c ${TARGET}
 
-tool/scanner.c:
-	@cp m4/scanner.c tool
+${TARGET}/scanner.c:
+	@cp m4/scanner.c ${TARGET}
 
 clean:
 	$(info cleaning)
