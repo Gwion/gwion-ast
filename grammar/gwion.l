@@ -27,7 +27,8 @@ OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
 #define gwion_free(a,b)  xfree(a)
 #define YY_FATAL_ERROR(msg) gwlex_error(yyscanner, msg)
 
-ANN void yynoreturn gwlex_error(yyscan_t yyscanner, const char*);
+// there was yynoreturn
+ANN void gwlex_error(yyscan_t yyscanner, const char*);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
@@ -275,7 +276,7 @@ static inline void header(const Scanner *scan, const char *msg) {
     scan->line, scan->pos, msg);
 }
 
-ANN void yynoreturn gwlex_error(yyscan_t yyscanner, const char *msg) {
+ANN void gwlex_error(yyscan_t yyscanner, const char *msg) {
   struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   header(scan, msg);
