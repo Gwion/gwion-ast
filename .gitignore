@@ -1,5 +1,7 @@
 *.o
+*.a
 config.mk
 .d
 .po
-libgwion_ast.a
+grammar
+tool
