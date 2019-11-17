@@ -275,8 +275,8 @@ static inline void header(const Scanner *scan, const char *msg) {
     scan->line, scan->pos, msg);
 }
 
-ANN void yynoreturn gwlex_error (yyscan_t yyscanner, const char *msg) {
-  struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+ANN void gwlex_error(yyscan_t yyscanner, const char *msg) {
+  struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   header(scan, msg);
   longjmp(*scan->jmp, 1);
@@ -608,7 +608,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         gwpp_stack(scan, handle, e->base, str);
         scan->pos      = e->pos;
         scan->line     = e->line;
-        struct yyguts_t * yyg = (struct yyguts_t*)data;
+        struct yyguts_t *yyg = (struct yyguts_t*)data;
         yyg->yy_start = 1 + 2 * get_arg;
         void *yyscanner = data;
         YY_USER_ACTION
@@ -663,7 +663,7 @@ assert(scan->pp->entry);
 uint clear_buffer(Vector v, void* data) {
   const struct PPState_ *ppstate = (struct PPState_*)vector_pop(v);
   const YY_BUFFER_STATE state = (YY_BUFFER_STATE)ppstate->state;
-  struct yyguts_t * yyg = (struct yyguts_t*)data;
+  struct yyguts_t *yyg = (struct yyguts_t*)data;
   YY_BUFFER_STATE curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   YY_BUFFER_STATE base = yyg->yy_buffer_stack[0];
   if(ppstate->filename[0] != '@')
