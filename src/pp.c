@@ -18,6 +18,7 @@ ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
   hini(pp->macros, size);
   pp->macros->p = p; // in ctor ?
   vector_init(&pp->filename);
+  vector_init(&pp->global_undef);
   vector_add(&pp->filename, (vtype)new_ppstate(p, name));
   return pp;
 }
@@ -28,12 +29,14 @@ static void pp_post(PP* pp, void* data) {
   mp_free(pp->macros->p, PPState, (struct PPState_*)vector_front(&pp->filename));
   pp->entry = NULL;
   vector_clear(&pp->filename);
+  vector_clear(&pp->global_undef);
   macro_del(pp->macros);
 }
 
 ANN void free_pp(MemPool p, PP* pp, void* data) {
   pp_post(pp, data);
   vector_release(&pp->filename);
+  vector_release(&pp->global_undef);
   hend(pp->macros);
   mp_free(p, Hash, pp->macros);
   mp_free2(p, sizeof(struct pp_info), pp->def); // watch me

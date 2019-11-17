@@ -118,6 +118,7 @@ typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
                ae_prim_tuple, ae_prim_unpack,
                ae_prim_char, ae_prim_nil
              } ae_prim_t;
+
 typedef struct {
   Type_Decl* td;
   struct Type_* type;
@@ -285,10 +286,8 @@ ANN void free_decl_list(MemPool p, Decl_List);
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_break,
                ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump,
-#ifndef TINY_MODE
 #ifdef TOOL_MODE
 ae_stmt_pp
-#endif
 #endif
              } ae_stmt_t;
 
@@ -301,7 +300,7 @@ typedef struct Stmt_Loop_    * Stmt_Loop;
 typedef struct Stmt_If_      * Stmt_If;
 typedef struct Stmt_Match_  * Stmt_Match;
 typedef struct Stmt_Jump_    * Stmt_Jump;
-#ifndef TINY_MODE
+#ifdef TOOL_MODE
 typedef struct Stmt_PP_      * Stmt_PP;
 #endif
 
@@ -370,8 +369,8 @@ struct Enum_Def_ {
   struct Symbol_* xid;
   struct Type_* t;
   struct Vector_ values;
-  ae_flag flag;
   loc_t pos;
+  ae_flag flag;
 };
 ANN2(1,2,4) ANEW AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_*, const loc_t);
 ANN void free_enum_def(MemPool p, Enum_Def);
@@ -416,15 +415,15 @@ struct Union_Def_ {
     struct Type_* type;
   };
   Tmpl *tmpl;
+  loc_t pos;
   uint s;
   uint o;
   ae_flag flag;
-  loc_t pos;
 };
 ANEW ANN AST_NEW(Union_Def, union_def, const Decl_List, const loc_t);
 ANN void free_union_def(MemPool p, Union_Def);
 
-#ifndef TINY_MODE
+#ifdef TOOL_MODE
 enum ae_pp_type {
   ae_pp_comment,
   ae_pp_include,
@@ -441,6 +440,7 @@ struct Stmt_PP_ {
   enum ae_pp_type type;
 };
 #endif
+
 struct Stmt_ {
   union stmt_data {
     struct Stmt_Exp_        stmt_exp;
@@ -452,7 +452,7 @@ struct Stmt_ {
     struct Stmt_If_         stmt_if;
     struct Stmt_Jump_       stmt_jump;
     struct Stmt_Match_     stmt_match;
-#ifndef TINY_MODE
+#ifdef TOOL_MODE
     struct Stmt_PP_    stmt_pp;
 #endif
   } d;
@@ -473,9 +473,7 @@ ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, co
 ANEW ANN AST_NEW(Stmt, stmt_auto, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_jump, struct Symbol_*, const m_bool, const loc_t);
-#ifndef TINY_MODE
-ANEW     AST_NEW(Stmt, stmt_pp, const enum ae_pp_type, const m_str);
-#endif
+
 ANN void free_stmt(MemPool p, Stmt);
 struct Stmt_List_ {
   Stmt stmt;

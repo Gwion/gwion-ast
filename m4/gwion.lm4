@@ -37,8 +37,7 @@ ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
 ANN int gwion_error(YYLTYPE*, Scanner*, const char *);
-ifdef([[[TINY_MODE]]], [[[]]],
-[[[ANN static Macro add_macro(void* data, const m_str id);
+ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
 ANN2(1,2) static void handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static void rem_macro(void* data, const m_str id);
@@ -59,62 +58,60 @@ ANN static void handle_char(void* data, m_str str);
 
 ANN static m_str strip_comment(Scanner* scan, const m_str str);
 ANN static m_str get_arg_text(void* data, const m_str id);
-#ifdef LINT_MODE
+#ifdef TOOL_MODE
 ANN static m_str macro_data(void* data, const m_bool);
-#define SCAN_LINT(a)        if(scan->lint)a;
-#define SCAN_NOLINT      if(!scan->lint)
-#define GWYY_ISLINT      ((Scanner*)yyextra)->lint
+#define SCAN_LINT(a)     if(scan->ppa->lint)a;
+#define SCAN_NOLINT      if(!scan->ppa->lint)
+#define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->lint
 #define GWYY_DOLINT(a)   if(GWYY_ISLINT) { a; }
 #define GWYY_LINT(a,b)   if(GWYY_ISLINT) { yylval->sval = a; return b; }
+#define GWYY_NL          yylval->sval = "\n"; return PP_NL;
 #else
 #define SCAN_LINT(a)
 #define SCAN_NOLINT
 #define GWYY_DOLINT
 #define GWYY_LINT(a,b)
+#define GWYY_NL
 #endif
 #define GWYY_COMMENT     GWYY_DOLINT(yymore()); continue;
 #define GWYY_COMMENT2    GWYY_DOLINT(yymore()); newline(yyscanner); YY_USER_ACTION; continue;
 #define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) BEGIN(INITIAL);
 
-#define GWYY_INCLUDE GWYY_LINT(strip_include(yyscanner, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
+#define GWYY_INCLUDE GWYY_LINT(strip_include(yyextra, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
 #define GWYY_UNDEF   GWYY_LINT(strdup(yytext), PP_UNDEF) rem_macro(yyscanner, yytext);
-#define GWYY_DEFINE  GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION;
+#define GWYY_DEFINE  BEGIN(INITIAL); GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL);
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
-#define GWYY_NL      GWYY_LINT(NULL, PP_NL)
 #define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) if(has_macro(yyscanner, a)) BEGIN(skip); xfree(a);
 #define GWYY_ELSE    GWYY_LINT(NULL, PP_ELSE) BEGIN(macro_toggle(yyscanner));
 #define GWYY_ENDIF   GWYY_LINT(NULL, PP_ENDIF) macro_end(yyscanner);
-]]])
 %}
 %option noyyalloc noyyrealloc noyyfree nounput
 %option noyylineno
 %option noyyget_text
 %option noyyget_lineno noyyset_lineno
-%option noyyget_in ifdef([[[TINY_MODE]]], [[[noyyset_out]]], [[[]]])
+%option noyyget_in
 %option noyyget_out noyyset_out
 %option noyyget_lval noyyset_lval
 %option noyyget_lloc noyyset_lloc
 %option noyyget_debug noyyset_debug
 %option bison-bridge reentrant bison-locations
-%option header-file="include/lexer.h"
 %option prefix="gwion_"
-%option ifdef([[[TINY_MODE]]], [[[noyywrap]]], [[[yywrap]]])
-%option ifdef([[[TINY_MODE]]], [[[noyymore]]], [[[yymore]]])
-%option ifdef([[[TINY_MODE]]], [[[noinput]]], [[[]]])
+%option yywrap
+%option yymore
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-ifdef([[[TINY_MODE]]], [[[]]], [[[%x define define_arg_start define_arg skip get_arg ]]])
+%x define define_arg_start define_arg skip get_arg
 %%
 
-ifdef([[[TINY_MODE]]], [[[]]],
-[[[<get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); handle_comma(yyscanner); }
+<get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); handle_comma(yyscanner); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
 <get_arg>")" { adjust(yyscanner); if(handle_rpar(yyscanner)) { BEGIN(INITIAL); GWYY_CALL }}
 <get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
 ^#define{SPACE}+[A-Za-z_][A-Za-z0-9_]* {
-  add_macro(yyscanner, yytext);
+  if(!add_macro(yyscanner, yytext))
+    return 1;
   BEGIN(define_arg_start);
 }
 <define_arg>[A-Za-z_][A-Za-z0-9_]* { adjust(yyscanner); macro_arg(yyscanner, yytext); }
@@ -126,10 +123,10 @@ ifdef([[[TINY_MODE]]], [[[]]],
 
 <define_arg_start>"("      { adjust(yyscanner); BEGIN(define_arg); };
 <define_arg_start>{SPACE}* { adjust(yyscanner); BEGIN(define); };
-<define_arg_start>\n       { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE };
+<define_arg_start>\n       { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE; };
 
 <define>\\n           { adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
-<define>.*\n          { adjust(yyscanner); macro_append(yyscanner, yytext); BEGIN(INITIAL); GWYY_DEFINE };
+<define>.*\n          { adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
 
 ^#ifn?def{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* {
   adjust(yyscanner);
@@ -152,17 +149,17 @@ ifdef([[[TINY_MODE]]], [[[]]],
 <skip>^#endif{SPACE}*\n { macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.         { continue;}
 
-^#include{SPACE}+<[A-Za-z0-9_./]*>{SPACE}* { GWYY_INCLUDE }
+^#include{SPACE}+<[A-Za-z0-9_./]*>{SPACE}* { GWYY_INCLUDE; }
 
 ^#undef{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* { GWYY_UNDEF }
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
-]]])
+
 "#!"             { YY_USER_ACTION; BEGIN(comment); }
 <comment>!\#     { BEGIN(INITIAL); }
-<comment>\\\n    { newline(yyscanner); YY_USER_ACTION; ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT2]]]) }
-<comment>\n      { newline(yyscanner); YY_USER_ACTION; ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT_END;]]]) }
-<comment>.       { ifdef([[[TINY_MODE]]], [[[]]], [[[GWYY_COMMENT;]]])  }
+<comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
+<comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
+<comment>.       { GWYY_COMMENT;  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 {SPACE}                             { adjust(yyscanner); continue; }
@@ -226,7 +223,6 @@ ifdef([[[TINY_MODE]]], [[[]]],
 "enum"                              { adjust(yyscanner); return ENUM;}
 "typeof"                            { adjust(yyscanner); return TYPEOF;}
 "auto"                              { adjust(yyscanner); return AUTO;}
-ifdef([[[TINY_MODE]]], [[[]]],[[[
 "##" { adjust(yyscanner); return PASTE; }
 "#"[A-Za-z_][A-Za-z0-9_]*           {
   adjust(yyscanner);
@@ -238,7 +234,7 @@ ifdef([[[TINY_MODE]]], [[[]]],[[[
     gw_err(_("can't stringify non argument token '%s'\n"), yytext + 1);
     return 1;
   }
-}]]])
+}
 [[["__line__"]]]                          { adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
 [[["__file__"]]]                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 
@@ -248,15 +244,12 @@ ifdef([[[TINY_MODE]]], [[[]]],[[[
 ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
 [A-Za-z_][A-Za-z0-9_]*              {
   adjust(yyscanner);
-ifdef([[[TINY_MODE]]], [[[yylval->sval = alloc_str(yyscanner, yytext); return ID;]]],
-[[[
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
   if(!ret) {
     yylval->sval = alloc_str(yyscanner, yytext);
     return ID;
   } else
     continue;
-]]])
 }
 
 \"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return STRING_LIT; }
@@ -284,7 +277,6 @@ static inline void header(const Scanner *scan, const char *msg) {
 ANN void yynoreturn gwlex_error (yyscan_t yyscanner, const char *msg) {
   struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
-  ifdef([[[TINY_MODE]]],[[[]]],[[[/*scanner_post(scan);*/]]])
   header(scan, msg);
   longjmp(*scan->jmp, 1);
 }
@@ -346,12 +338,8 @@ static uint get_currpos(void* data) {
 
 static char* get_currfile(void* data) {
   const Scanner* scan = yyget_extra(data);
-  ifdef([[[TINY_MODE]]], [[[
-    return scan->filename;
-  ]]], [[[
-    const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
-    return alloc_str(data, ppstate->filename);
-  ]]])
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  return alloc_str(data, ppstate->filename);
 }
 
 static void adjust(void* data) {
@@ -360,8 +348,6 @@ static void adjust(void* data) {
 }
 
 ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
-ifdef([[[TINY_MODE]]], [[[const m_str filename = scan->filename;]]],
-[[[
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   const m_str name = ppstate->filename;
   m_str filename = name;
@@ -375,20 +361,17 @@ ifdef([[[TINY_MODE]]], [[[const m_str filename = scan->filename;]]],
         filename = ppstate->filename;
       }
     }
-  } else
-{
-  const struct PPState_ *ppstate = (struct PPState_*)vector_front(&scan->pp->filename);
-        filename = ppstate->filename;
-}
-  ]]])
+  } else {
+    const struct PPState_ *ppstate = (struct PPState_*)vector_front(&scan->pp->filename);
+    filename = ppstate->filename;
+  }
   loc_header(loc, filename);
   gw_err("%s\n", s);
   loc_err(loc, filename);
   return 0;
 }
 
-ifdef([[[TINY_MODE]]], [[[]]],
-[[[static Macro add_macro(void* data, const m_str line) {
+static Macro add_macro(void* data, const m_str line) {
   Scanner* scan = yyget_extra(data);
   int i = 7;
   while(isspace(line[i]))++i;
@@ -398,10 +381,12 @@ ifdef([[[TINY_MODE]]], [[[]]],
   xfree(id);
   if(!scan->pp->entry)
     gwlex_error(data, "macro already defined");
-  else {
-    scan->pp->entry->line = scan->line;
-    scan->pp->entry->pos = scan->pos;
-  }
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  scan->pp->entry->file = ppstate->filename;
+  scan->pp->entry->line = scan->line;
+  scan->pp->entry->pos =  scan->pos;
+  scan->pp->entry->text = mp_calloc(scan->ppa->hash.p, GwText);
+  scan->pp->entry->text->mp = scan->ppa->hash.p;
   return scan->pp->entry;
 }
 
@@ -411,7 +396,7 @@ static m_str strip_include(Scanner* scan, const m_str line, const m_bool sign) {
   if(!sign)
     ++str;
   m_str end = strstr(str, ">");
-  scan->pos += (uint)(str - line);
+  scan->pos += 2;
   return strndup(str, strlen(str) - strlen(end) + (uint)sign);
 }
 
@@ -424,21 +409,31 @@ static m_str strip_comment(Scanner* scan, const m_str s) {
   return strndup(str, end + 1);
 }
 
+static inline m_bool scan_rem_macro(Scanner *scan, const m_str id) {
+  if(macro_rem(scan->pp->macros, id))
+    return ppa_rem_macro(scan->ppa, insert_symbol(scan->st, id));
+  return 0;
+}
+
 static void rem_macro(void* data, const m_str str) {
   Scanner* scan = yyget_extra(data);
   scan->pos += 6;
   const m_str id = strip_comment(scan, str+6);
-  const m_bool ret = macro_rem(scan->pp->macros, id);
+  const m_bool ret = scan_rem_macro(scan, id);
   xfree(id);
   if(ret)
     gwlex_error(data, "undefined macro");
+}
+
+static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
+  return macro_has(scan->pp->macros, id) ?: ppa_has_macro(scan->ppa, insert_symbol(scan->st, id));
 }
 
 static int has_macro(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
   if(scan->pp->def->idx == 59) // beware magic number
     gwlex_error(data, "macros too nested");
-  return scan->pp->def->data[++scan->pp->def->idx] = !!macro_has(scan->pp->macros, id);
+  return scan->pp->def->data[++scan->pp->def->idx] = !!scan_has_macro(scan, id);
 }
 
 static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt, const m_str str) {
@@ -450,10 +445,24 @@ static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt, const m_
   vector_add(&scan->pp->filename, (vtype)ppstate);
 }
 
+static FILE* get_include(const m_str str, const Vector v) {
+  const size_t sz = strlen(str);
+  for(m_uint i = 0; i < vector_size(v); ++i) {
+    const m_str dir = (m_str)vector_at(v, i);
+    char c[strlen(dir) + sz + 2];
+    sprintf(c, "%s/%s", dir, str);
+    FILE* f = fopen(str, "r");
+    if(f) {
+      return f;
+    }
+  }
+  return NULL;
+}
+
 static void handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_include(scan, filename, 0);
-  FILE* f = fopen(str, "r");
+  FILE* f = fopen(str, "r") ?: get_include(str, &scan->ppa->path);
   if(!f) {
     xfree(str);
     gwlex_error(data, "file not found");
@@ -464,24 +473,24 @@ static void handle_include(void* data, const m_str filename, YY_BUFFER_STATE han
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
 }
 
-#ifdef LINT_MODE
+#ifdef TOOL_MODE
 static m_str macro_data(void* data, const m_bool call) {
   Scanner* scan = yyget_extra(data);
   const Macro e = scan->pp->entry;
   size_t elen = strlen(e->name);
   size_t len = elen + 2;
-  Args args = e->base;
+  MacroArg args = e->base;
   if(args) {
     do {
-      const m_str str = call ? args->text : args->name;
+      const m_str str = call ? args->text.str : args->name;
       len += strlen(str);
       if(args->next)
         len += 2;
     } while((args = args->next));
     len += 2;
   }
-  if(!call && e->text)
-    len += strlen(e->text) + 1;
+  if(!call && e->text->str)
+    len += strlen(e->text->str) + 1;
   char c[len];
   size_t offset = elen;
   strcpy(c, e->name);
@@ -489,7 +498,7 @@ static m_str macro_data(void* data, const m_bool call) {
   if(args) {
     c[offset++] = '(';
     do {
-      const m_str str = call ? args->text : args->name;
+      const m_str str = call ? args->text.str : args->name;
       strcpy(c + offset, str);
       offset += strlen(str);
       if(call)
@@ -501,10 +510,10 @@ static m_str macro_data(void* data, const m_bool call) {
     } while((args = args->next));
     c[offset++] = ')';
   }
-  if(!call && e->text) {
+  if(!call && e->text->str) {
     c[offset++] = ' ';
-    strcpy(c + offset, e->text);
-    offset += strlen(e->text);
+    strcpy(c + offset, e->text->str);
+    offset += strlen(e->text->str);
   }
   c[offset] = '\0';
   scan->pp->entry = NULL;
@@ -521,12 +530,12 @@ static int macro_toggle(void* data) {
 static void macro_arg(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_comment(scan, id);
-  const Args arg = new_args(scan->st->p, str);
+  const MacroArg arg = new_args(scan->st->p, str);
   arg->line = scan->line;
   arg->pos = scan->pos;
   xfree(str);
   if(scan->pp->entry->base) {
-    Args a = scan->pp->entry->base;
+    MacroArg a = scan->pp->entry->base;
     while(a->next)
       a = a->next;
     a->next = arg;
@@ -558,7 +567,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
       gwlex_error(data, "recursive macro use detected");
     }
   }
-  Args arg = ppstate->arg;
+  MacroArg arg = ppstate->arg;
   while(arg) {
     if(!strcmp(id, arg->name)) {
       if(arg->text.str) {
@@ -579,14 +588,14 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     }
     arg = arg->next;
   }
-  Macro e = macro_has(scan->pp->macros, id);
+  Macro e = scan_has_macro(scan, id);
   if(e) {
-  m_str str;
+  m_str str = NULL;
   scan->pp->entry = e;
   if(e->text->str) {
     if(e->base) {
       e->args = e->base;
-      SCAN_NOLINT
+//      SCAN_NOLINT
         str = concat("@macro", e->name);
       char c = '@';
       while(isspace(c = (char)input(data)))++scan->pos;
@@ -615,7 +624,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     }
     return 1;
   } else if(!strcmp(id, "__VA_ARGS__")) { // vararg macro with no args
-    Macro e = macro_has(scan->pp->macros, ppstate->filename);
+    Macro e = scan_has_macro(scan, ppstate->filename);
     if(!e)
       return 0;
     const m_str str = concat("@argument", "__VA_ARGS__");
@@ -635,7 +644,7 @@ static m_str get_arg_text(void* data, const m_str id) {
   if(vector_size(&scan->pp->filename) == 1)
     return NULL;
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
-  Args arg = ppstate->arg;
+  MacroArg arg = ppstate->arg;
   while(arg) {
     if(!strcmp(id, arg->name))
       return arg->text.str ?: "";
@@ -646,6 +655,7 @@ static m_str get_arg_text(void* data, const m_str id) {
 
 static void macro_append(void* data, const m_str text) {
   Scanner* scan = yyget_extra(data);
+assert(scan->pp->entry);
   text_add(scan->pp->entry->text, text);
 }
 
@@ -690,7 +700,7 @@ int yywrap(void* data) {
 
 static void handle_comma(void* data) {
   const Scanner *scan = yyget_extra(data);
-  const Args a = scan->pp->entry->args;
+  const MacroArg a = scan->pp->entry->args;
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next))
       gwlex_error(data, "too many arguments");
@@ -719,6 +729,5 @@ static int handle_rpar(void* data) {
 static void handle_char(void* data, m_str str) {
   const Scanner *scan = yyget_extra(data);
   while(isspace(*str))++str;
-    text_add(&scan->pp->entry->args->text, str);
+  text_add(&scan->pp->entry->args->text, str);
 }
-]]])

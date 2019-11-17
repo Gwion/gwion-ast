@@ -1,6 +1,8 @@
 #ifndef __MACRO
 #define __MACRO
-typedef struct Args_* Args;
+
+#define MACRO_DEFINED _("macro already defined")
+typedef struct MacroArg_* MacroArg;
 typedef struct Macro_* Macro;
 
 struct pp_info {
@@ -8,22 +10,23 @@ struct pp_info {
   int idx;
 };
 
-struct Args_ {
+struct MacroArg_ {
   char* name;
   GwText text;
   uint line;
   uint pos;
-  Args next;
+  MacroArg next;
 };
 
-Args new_args(MemPool p, const char*);
-void clean_args(const Args);
+MacroArg new_args(MemPool p, const char*);
+void clean_args(const MacroArg);
 struct Macro_ {
   char* name;
   GwText* text;
-  Args  base;
-  Args  args;
+  MacroArg  base;
+  MacroArg  args;
   Macro next;
+  m_str file;
   uint line;
   uint pos;
 };

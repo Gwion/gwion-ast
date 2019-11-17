@@ -205,7 +205,7 @@ ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
 }
 
 AST_NEW(Exp, prim_unpack, const Symbol type, const ID_List l, const loc_t pos) {
-  Exp a = new_prim(p, loc_cpy(p, pos));
+  Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_unpack;
   const Exp base = strcmp(s_name(l->xid), "_") ?
     decl_from_id(p, type, l->xid, pos) : new_prim_nil(p, loc_cpy(p, pos));

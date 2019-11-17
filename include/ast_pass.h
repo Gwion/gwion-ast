@@ -27,10 +27,10 @@ static const _##prefix##_exp_func exp_func[] = {                                
   (_##prefix##_exp_func)prefix##_exp_lambda, (_##prefix##_exp_func)prefix##_exp_typeof          \
 };
 
-#if defined TINY_MODE && defined TOOL_MODE
-#define  (_stmt_func)free_stmt_pp FREE_STMT_PP
+#ifdef TOOL_MODE
+#define  TOOL_STMT_PP(prefix) (_##prefix##_stmt_func)prefix##_stmt_pp
 #else
-#define __FREE_STMT_PP
+#define TOOL_STMT_PP(prefix)
 #endif
 
 #define DECL_STMT_FUNC(prefix, type, arg)                                                       \
@@ -42,7 +42,7 @@ static const _##prefix##_stmt_func stmt_func[] = {                              
   (_##prefix##_stmt_func)prefix##_stmt_if,     (_##prefix##_stmt_func)prefix##_stmt_code,       \
   (_##prefix##_stmt_func)prefix##_stmt_break,  (_##prefix##_stmt_func)prefix##_stmt_continue,   \
   (_##prefix##_stmt_func)prefix##_stmt_return, (_##prefix##_stmt_func)prefix##_stmt_match,      \
-  (_##prefix##_stmt_func)prefix##_stmt_jump,                        __FREE_STMT_PP              \
+  (_##prefix##_stmt_func)prefix##_stmt_jump,   TOOL_STMT_PP(prefix)                             \
 };
 
 #define DECL_SECTION_FUNC(prefix, type, arg)                                                    \

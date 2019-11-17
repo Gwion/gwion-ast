@@ -4,25 +4,25 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-Args new_args(MemPool p, const char* name) {
-  const Args a = mp_calloc(p, Args);
+MacroArg new_args(MemPool p, const char* name) {
+  const MacroArg a = mp_calloc(p, MacroArg);
   a->name = strdup(name);
   a->text.mp = p;
   return a;
 }
 
-void clean_args(const Args a) {
+void clean_args(const MacroArg a) {
   if(a->next)
     clean_args(a->next);
   text_release(&a->text);
 }
 
-static void free_args(MemPool p, const Args a) {
+static void free_args(MemPool p, const MacroArg a) {
   if(a->next)
     free_args(p, a->next);
   text_release(&a->text);
   xfree(a->name);
-  mp_free(p, Args, a);
+  mp_free(p, MacroArg, a);
 }
 
 void free_entry(MemPool p, void *data) {
@@ -47,7 +47,8 @@ static inline Macro mkentry(MemPool p, const char* name, const Macro next) {
 }
 
 hstraction(Macro, Macro, has,, return sym;, ,return 0)
-hstraction(Macro, Macro, add,, return NULL;,, return h->table[idx] = mkentry(h->p, arg, sym);)
+hstraction(Macro, Macro, add,, return NULL;,,
+  return h->table[idx] = mkentry(h->p, arg, sym);)
 hstraction(Macro, int, rem, Macro prev = NULL;,
       if(prev)
         prev->next = s->next;

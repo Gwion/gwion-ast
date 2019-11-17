@@ -7,7 +7,9 @@ endif
 include config.mk
 include ${UTIL_DIR}/config.mk
 
-src := $(wildcard src/*.c)
+base_src    := $(wildcard src/*.c)
+grammar_src := grammar/lexer.c grammar/parser.c grammar/dynop.c grammar/pparg.c grammar/scanner.c
+tool_src    := tool/lexer.c    tool/parser.c    tool/dynop.c    tool/pparg.c    tool/scanner.c
 
 ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
@@ -16,7 +18,9 @@ endif
 CFLAGS+=-DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700
 endif
 
-obj := $(src:.c=.o)
+base_obj    := $(base_src:.c=.o)
+grammar_obj := $(grammar_src:.c=.o)
+tool_obj    := $(tool_src:.c=.o)
 
 CFLAGS += -Iinclude -D_GNU_SOURCE
 
@@ -25,34 +29,87 @@ ifeq ($(shell uname), Linux)
 -DYYENABLE_NLS=1 -DENABLE_NLS
 endif
 
-all: options-show libgwion_ast.a
+all: options-show grammarlib toollib libgwion_ast.a
 
 options-show:
 	@$(call _options)
 
-libgwion_ast.a: ${obj}
+libgwion_ast.a: ${base_obj}
+	@$(info linkig $@)
+	${AR} ${AR_OPT}
+
+grammarlib: grammar libgwion_grammar.a
+	@grep "\-Igrammar" <<< "${CFLAGS}" || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_grammar.a
+
+grammar:
+	@mkdir $@
+
+libgwion_grammar.a: ${grammar_obj}
 	@$(info linking $@)
 	@${AR} ${AR_OPT}
 
-parser: ly/gwion.y
+toollib: tool
+	@grep "\-Itool" <<< "${CFLAGS}" || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_tool.a
+
+tool:
+	@mkdir $@
+
+libgwion_tool.a: ${tool_obj}
+	@$(info linkig $@)
+	${AR} ${AR_OPT}
+
+grammar/parser.c: grammar/gwion.y
 	$(info generating parser)
-	@${YACC} -o src/parser.c --defines=include/parser.h ly/gwion.y -Wno-yacc
+	@${YACC} -o grammar/parser.c --defines=grammar/parser.h grammar/gwion.y -Wno-yacc
 
-lexer: ly/gwion.l
+grammar/lexer.c: grammar/gwion.l
 	$(info generating lexer)
-	@${LEX} -o src/lexer.c ly/gwion.l
+	@${LEX} --header-file=grammar/lexer.h -o grammar/lexer.c grammar/gwion.l
 
-ly/gwion.y: m4/gwion.ym4
+grammar/gwion.y: m4/gwion.ym4
 	$(info meta-generating parser)
-	m4 m4/gwion.ym4 > ly/gwion.y;
+	m4 -s $< > $@
 
-ly/gwion.l: m4/gwion.lm4
+grammar/gwion.l: m4/gwion.lm4
 	$(info meta-generating lexer)
-	m4 m4/gwion.lm4 > ly/gwion.l;
+	m4 -s $< > $@
+
+grammar/dynop.c:
+	cp m4/dynop.c grammar
+
+grammar/pparg.c:
+	cp m4/pparg.c grammar
+
+grammar/scanner.c:
+	cp m4/scanner.c grammar
+
+tool/lexer.c: tool/gwion.l
+	$(info generating lexer)
+	@${LEX} --header-file=tool/lexer.h -o $@ $<
+
+tool/parser.c: tool/gwion.y
+	$(info generating parser)
+	@${YACC} --defines=tool/parser.h -Wno-yacc -o $@ $<
+
+tool/gwion.l: m4/gwion.lm4
+	m4 -s -DTOOL_MODE $< > $@
+
+tool/gwion.y: m4/gwion.ym4
+	m4 -s -DTOOL_MODE $< > $@
+
+tool/dynop.c:
+	cp m4/dynop.c tool
+
+tool/pparg.c:
+	cp m4/pparg.c tool
+
+tool/scanner.c:
+	cp m4/scanner.c tool
 
 clean:
 	$(info cleaning)
 	@rm -f src/*.o *.a src/*.gcno src/*.gcda
+	@rm -rf grammar tool
 
 install: translation-install libgwion_ast.a
 	$(info installing ${GWION_PACKAGE} in ${PREFIX})

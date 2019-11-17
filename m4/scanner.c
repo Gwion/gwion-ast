@@ -15,6 +15,7 @@ ANEW static Scanner* new_scanner(const struct ScannerArg_ *arg) {
   scan->pp = new_pp(arg->st->p, PP_SIZE, arg->name);
   gwion_set_in(arg->f, scan->scanner);
   scan->st = arg->st;
+  scan->ppa = arg->ppa;
   return scan;
 }
 

@@ -7,7 +7,7 @@ struct PPState_ {
   void *state;
   union {
     FILE* file;
-    Args arg;
+    MacroArg arg;
     void *data;
   };
   m_str filename;
@@ -16,10 +16,11 @@ struct PPState_ {
 typedef struct PP_ {
   struct Vector_ filename;
   struct Hash_* macros;
+  struct Vector_ global_undef;
   struct Macro_* entry;
   struct pp_info* def;
   int npar;
-  uint lint;
+//  uint lint;
 } PP;
 
 
