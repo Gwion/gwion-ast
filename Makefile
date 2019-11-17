@@ -49,7 +49,7 @@ libgwion_grammar.a: ${grammar_obj}
 	@${AR} ${AR_OPT}
 
 toollib: tool
-	@$echo ${CFLAGS} | grep "\-Itool" || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_tool.a
+	@echo ${CFLAGS} | grep "\-Itool" || CFLAGS="-DTOOL_MODE -Itool" make -s libgwion_tool.a
 
 tool:
 	@mkdir $@
@@ -75,13 +75,13 @@ grammar/gwion.l: m4/gwion.lm4
 	m4 -s $< > $@
 
 grammar/dynop.c:
-	cp m4/dynop.c grammar
+	@cp m4/dynop.c grammar
 
 grammar/pparg.c:
-	cp m4/pparg.c grammar
+	@cp m4/pparg.c grammar
 
 grammar/scanner.c:
-	cp m4/scanner.c grammar
+	@cp m4/scanner.c grammar
 
 tool/lexer.c: tool/gwion.l
 	$(info generating lexer)
@@ -92,19 +92,19 @@ tool/parser.c: tool/gwion.y
 	@${YACC} --defines=tool/parser.h -Wno-yacc -o $@ $<
 
 tool/gwion.l: m4/gwion.lm4
-	m4 -s -DTOOL_MODE $< > $@
+	@m4 -s -DTOOL_MODE $< > $@
 
 tool/gwion.y: m4/gwion.ym4
-	m4 -s -DTOOL_MODE $< > $@
+	@m4 -s -DTOOL_MODE $< > $@
 
 tool/dynop.c:
-	cp m4/dynop.c tool
+	@cp m4/dynop.c tool
 
 tool/pparg.c:
-	cp m4/pparg.c tool
+	@cp m4/pparg.c tool
 
 tool/scanner.c:
-	cp m4/scanner.c tool
+	@cp m4/scanner.c tool
 
 clean:
 	$(info cleaning)
