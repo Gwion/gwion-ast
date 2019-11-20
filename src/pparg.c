@@ -2,7 +2,7 @@
 #include "gwion_ast.h"
 
 static const char usage[] =
-"usage: gwion-lint <options> FILES\n"
+"usage: gwion-lint <options>\n"
 "  -D    <macro>   : add a macro\n"
 "  -U     <xid>    : remove a macro\n"
 "  -I     <path>   : add to include path\n"
@@ -75,6 +75,11 @@ ANN2(1) static m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   return GW_OK;
 }
 
+ANN static inline m_bool pparg_err(void) {
+  gw_err(_("invalid arguments"));
+  return GW_ERROR;
+}
+
 ANN static m_bool _pparg_run(struct PPArg_ *ppa, const Vector v) {
   for(m_uint i = 0; i < vector_size(v); ++i) {
     const m_str base = (m_str)vector_at(v, i);
@@ -97,11 +102,10 @@ ANN static m_bool _pparg_run(struct PPArg_ *ppa, const Vector v) {
           puts(usage);
           break;
         default:
-          gw_err(_("invalid arguments"));
-          return GW_ERROR;
+          pparg_err();
       }
     } else
-      vector_add(&ppa->file, (vtype)base);
+      pparg_err();
   }
   return GW_OK;
 }
@@ -115,12 +119,10 @@ ANN2(1) m_bool pparg_run(struct PPArg_ *ppa, const Vector v) {
 ANN void pparg_ini(MemPool mp, struct PPArg_* a) {
   a->hash.p = mp;
   vector_init(&a->path);
-  vector_init(&a->file);
   vector_init(&a->global_undef);
 }
 
 ANN void pparg_end(struct PPArg_* a) {
-  vector_release(&a->file);
   vector_release(&a->path);
   vector_release(&a->global_undef);
   if(a->hash.table) {

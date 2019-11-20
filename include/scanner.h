@@ -3,7 +3,6 @@
 #include <setjmp.h>
 
 struct PPArg_ {
-  struct Vector_ file;
   struct Vector_ path;
   struct Hash_   hash;
   struct Vector_ global_undef;
