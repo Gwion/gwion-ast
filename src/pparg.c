@@ -75,7 +75,7 @@ ANN2(1) static m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   return GW_OK;
 }
 
-ANN m_bool pparg_run(struct PPArg_ *ppa, const Vector v) {
+ANN static m_bool _pparg_run(struct PPArg_ *ppa, const Vector v) {
   for(m_uint i = 0; i < vector_size(v); ++i) {
     const m_str base = (m_str)vector_at(v, i);
     if(base[0] == '-') {
@@ -104,6 +104,12 @@ ANN m_bool pparg_run(struct PPArg_ *ppa, const Vector v) {
       vector_add(&ppa->file, (vtype)base);
   }
   return GW_OK;
+}
+
+ANN2(1) m_bool pparg_run(struct PPArg_ *ppa, const Vector v) {
+  if(!v)
+    return GW_OK;
+  return _pparg_run(ppa, v);
 }
 
 ANN void pparg_ini(MemPool mp, struct PPArg_* a) {

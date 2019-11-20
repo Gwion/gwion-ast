@@ -11,9 +11,7 @@ endif
 include config.mk
 include ${UTIL_DIR}/config.mk
 
-base_src    := $(wildcard src/*.c)
-grammar_src := grammar/lexer.c grammar/parser.c grammar/dynop.c grammar/pparg.c grammar/scanner.c
-tool_src    := tool/lexer.c    tool/parser.c    tool/dynop.c    tool/pparg.c    tool/scanner.c
+src    := include/parser.h include/lexer.h $(wildcard src/*.c) src/parser.c src/lexer.c
 
 ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
@@ -22,9 +20,7 @@ endif
 CFLAGS+=-DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700
 endif
 
-base_obj    := $(base_src:.c=.o)
-grammar_obj := $(grammar_src:.c=.o)
-tool_obj    := $(tool_src:.c=.o)
+obj    := $(src:.c=.o)
 
 CFLAGS += -Iinclude -D_GNU_SOURCE
 
@@ -33,53 +29,27 @@ ifeq ($(shell uname), Linux)
 -DYYENABLE_NLS=1 -DENABLE_NLS
 endif
 
-all: options-show grammarlib toollib libgwion_ast.a
+all: options-show libgwion_ast.a
 
 options-show:
 	@$(call _options)
 
-libgwion_ast.a: ${base_obj}
+libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
-
-grammarlib:
-	@make -s TARGET=grammar _$@
-
-toollib:
-	@M4FLAGS="-DTOOL_MODE" CFLAGS='-DTOOL_MODE ' make -s TARGET=tool _$@
 
 _${TARGET}lib: ${TARGET}
 	@CFLAGS="${CFLAGS} -I${TARGET}" make -s libgwion_${TARGET}.a
 
-${TARGET}:
-	@mkdir $@
-
-libgwion_${TARGET}.a: ${${TARGET}_obj}
-	@$(info linking $@)
-	${AR} ${AR_OPT}
-
-${TARGET}/lexer.c: ${TARGET}/gwion.l
+include/lexer.h: src/lexer.c
+src/lexer.c: src/gwion.l
 	$(info generating lexer)
-	@${LEX} --header-file=${TARGET}/lexer.h -o $@ $<
+	@${LEX} --header-file=include/lexer.h -o $@ $<
 
-${TARGET}/parser.c: ${TARGET}/gwion.y
+include/parser.h: src/parser.c
+src/parser.c: src/gwion.y
 	$(info generating parser)
-	@${YACC} --defines=${TARGET}/parser.h -o $@ $<
-
-${TARGET}/gwion.l: m4/gwion.lm4
-	@m4 -s ${M4FLAGS} $< > $@
-
-${TARGET}/gwion.y: m4/gwion.ym4
-	@m4 -s ${M4FLAGS} $< > $@
-
-${TARGET}/dynop.c:
-	@cp m4/dynop.c ${TARGET}
-
-${TARGET}/pparg.c:
-	@cp m4/pparg.c ${TARGET}
-
-${TARGET}/scanner.c:
-	@cp m4/scanner.c ${TARGET}
+	@${YACC} --defines=src/parser.h -Wno-yacc -o $@ $<
 
 clean:
 	$(info cleaning)
@@ -95,7 +65,6 @@ install: translation-install libgwion_ast.a
 uninstall: translation-uninstall
 	$(info uninstalling ${GWION_PACKAGE} from ${PREFIX})
 	rm ${DESTDIR}/${PREFIX}/bin/lib${PACKAGE}.a
-	@rm -rf ${PREFIX}/${PREFIX}/include/gwion/util
 
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/intl.mk

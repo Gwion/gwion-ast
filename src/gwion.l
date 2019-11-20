@@ -1,5 +1,3 @@
-#line 1 "m4/gwion.lm4"
-
 IS    (u|U|l|L)*
 SPACE [ \r\t]
 OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
@@ -60,26 +58,19 @@ ANN static void handle_char(void* data, m_str str);
 
 ANN static m_str strip_comment(Scanner* scan, const m_str str);
 ANN static m_str get_arg_text(void* data, const m_str id);
-#ifdef TOOL_MODE
 ANN static m_str macro_data(void* data, const m_bool);
 #define SCAN_LINT(a)     if(scan->ppa->lint)a;
 #define SCAN_NOLINT      if(!scan->ppa->lint)
 #define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->lint
 #define GWYY_DOLINT(a)   if(GWYY_ISLINT) { a; }
 #define GWYY_LINT(a,b)   if(GWYY_ISLINT) { yylval->sval = a; return b; }
-#define GWYY_NL          yylval->sval = "\n"; return PP_NL;
-#else
-#define SCAN_LINT(a)
-#define SCAN_NOLINT
-#define GWYY_DOLINT
-#define GWYY_LINT(a,b)
-#define GWYY_NL
-#endif
-#define GWYY_COMMENT     GWYY_DOLINT(yymore()); continue;
-#define GWYY_COMMENT2    GWYY_DOLINT(yymore()); newline(yyscanner); YY_USER_ACTION; continue;
-#define GWYY_COMMENT_END GWYY_LINT(strip_comment(yyscanner, yytext), PP_COMMENT) BEGIN(INITIAL);
+#define GWYY_NL          if(GWYY_ISLINT) { yylval->sval = NULL; return PP_NL; }
 
-#define GWYY_INCLUDE GWYY_LINT(strip_include(yyextra, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
+#define GWYY_COMMENT     if(GWYY_ISLINT) { yymore(); continue; }
+#define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); newline(yyscanner); YY_USER_ACTION; continue; }
+#define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strdup(yytext); return PP_COMMENT; }
+
+#define GWYY_INCLUDE  GWYY_LINT(strip_include(yyextra, yytext, 1), PP_INCLUDE) handle_include(yyscanner, yytext, YY_CURRENT_BUFFER);
 #define GWYY_UNDEF   GWYY_LINT(strdup(yytext), PP_UNDEF) rem_macro(yyscanner, yytext);
 #define GWYY_DEFINE  BEGIN(INITIAL); GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL);
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
@@ -475,7 +466,6 @@ static void handle_include(void* data, const m_str filename, YY_BUFFER_STATE han
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
 }
 
-#ifdef TOOL_MODE
 static m_str macro_data(void* data, const m_bool call) {
   Scanner* scan = yyget_extra(data);
   const Macro e = scan->pp->entry;
@@ -519,9 +509,8 @@ static m_str macro_data(void* data, const m_bool call) {
   }
   c[offset] = '\0';
   scan->pp->entry = NULL;
-  return !call ? strdup(c) : s_name(insert_symbol(scan->st, c));
+  return s_name(insert_symbol(scan->st, c));
 }
-#endif
 
 static int macro_toggle(void* data) {
   const Scanner* scan = yyget_extra(data);
@@ -571,6 +560,7 @@ static int is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   }
   MacroArg arg = ppstate->arg;
   while(arg) {
+printf("%p %s %p\n", arg, id, arg->name);
     if(!strcmp(id, arg->name)) {
       if(arg->text.str) {
         if(!is_str) {

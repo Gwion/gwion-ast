@@ -240,14 +240,10 @@ ANN AST_FREE(Enum_Def, enum_def) {
   mp_free(p, Enum_Def, a);
 }
 
-#ifndef TINY_MODE
-#ifdef TOOL_MODE
 ANN static AST_FREE(Stmt_PP, stmt_pp) {
   if(a->data)
     xfree(a->data);
 }
-#endif
-#endif
 
 ANN AST_FREE(Decl_List, decl_list) {
   if(a->next)

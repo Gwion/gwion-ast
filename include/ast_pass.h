@@ -27,7 +27,7 @@ static const _##prefix##_exp_func exp_func[] = {                                
   (_##prefix##_exp_func)prefix##_exp_lambda, (_##prefix##_exp_func)prefix##_exp_typeof          \
 };
 
-#ifdef TOOL_MODE
+#ifndef GWION_NOLINT
 #define  TOOL_STMT_PP(prefix) (_##prefix##_stmt_func)prefix##_stmt_pp
 #else
 #define TOOL_STMT_PP(prefix)
@@ -46,7 +46,7 @@ static const _##prefix##_stmt_func stmt_func[] = {                              
 };
 
 #define DECL_SECTION_FUNC(prefix, type, arg)                                                    \
-typedef type (*_##prefix##_section_func)(const arg, union stmt_data*);                          \
+typedef type (*_##prefix##_section_func)(const arg, union section_data*);                       \
 static const _##prefix##_section_func section_func[] = {                                        \
   (_##prefix##_section_func)prefix##_stmt_list, (_##prefix##_section_func)prefix##_func_def,    \
   (_##prefix##_section_func)prefix##_class_def, (_##prefix##_section_func)prefix##_enum_def,    \

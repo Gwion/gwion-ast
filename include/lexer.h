@@ -2,9 +2,9 @@
 #define gwion_HEADER_H 1
 #define gwion_IN_HEADER 1
 
-#line 5 "grammar/lexer.h"
+#line 5 "include/lexer.h"
 
-#line 7 "grammar/lexer.h"
+#line 7 "include/lexer.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -709,9 +709,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 260 "m4/gwion.lm4"
+#line 252 "src/gwion.l"
 
 
-#line 715 "grammar/lexer.h"
+#line 715 "include/lexer.h"
 #undef gwion_IN_HEADER
 #endif /* gwion_HEADER_H */

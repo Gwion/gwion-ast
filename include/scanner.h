@@ -8,7 +8,7 @@ struct PPArg_ {
   struct Hash_   hash;
   struct Vector_ global_undef;
   MemPool mp;
-  uint lint; // only TOOL_MODE
+  uint lint;
 };
 
 typedef struct Scanner_ {
@@ -23,7 +23,7 @@ typedef struct Scanner_ {
 } Scanner;
 
 ANN void pparg_ini(MemPool, struct PPArg_*);
-ANN m_bool pparg_run(struct PPArg_ *ppa, const Vector v);
+ANN2(1) m_bool pparg_run(struct PPArg_ *ppa, const Vector v);
 ANN void pparg_end(struct PPArg_*);
 
 struct ScannerArg_ {

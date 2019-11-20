@@ -1,4 +1,3 @@
-#line 1 "m4/gwion.ym4"
 %define api.pure full
 %parse-param { Scanner* arg }
 %lex-param  { void* scan }
@@ -19,8 +18,6 @@
 #define GET_LOC(a) loc_cpy(mpool(arg), a)
 ANN void gwion_error(YYLTYPE*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
-#line 27
-
 %}
 
 %union {
@@ -53,7 +50,6 @@ ANN Symbol lambda_name(const Scanner*);
 };
 
 
-
 %token SEMICOLON ";" COMMA ","
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
   PERCENTPAREN "%(" SHARPPAREN "#(" ATPAREN "@("
@@ -69,12 +65,11 @@ ANN Symbol lambda_name(const Scanner*);
   NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
   RARROW "->" BACKSLASH "\\" BACKTICK "`"
 
-
 %token<lval> NUM "<integer>"
 %type<ival> atsym decl_flag vec_type flow breaks
 %token<fval> FLOATT
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
-
+  PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define>" PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:" ATSYM "@" GTPAREN ">(" LTPAREN "<("
@@ -96,7 +91,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt
-%type<stmt> match_case_stmt label_stmt goto_stmt match_stmt 
+%type<stmt> match_case_stmt label_stmt goto_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<decl_list> decl_list
@@ -134,7 +129,6 @@ ANN Symbol lambda_name(const Scanner*);
 %nonassoc NOELSE
 %nonassoc ELSE
 //%expect 51
-
 %%
 
 prg: ast { arg->ast = $1; }
@@ -174,7 +168,7 @@ class_body2
 id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
 dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } | id RARROW dot_decl     { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
 
-stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2);};
+stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
 
 fptr_base: type_decl_array id decl_template fptr_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
@@ -219,8 +213,17 @@ code_stmt
   | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2); }
   ;
 
-#line 237
-
+stmt_pp
+  : PP_COMMENT { $$ = new_stmt_pp(mpool(arg), ae_pp_comment, $1, GET_LOC(&@$)); }
+  | PP_INCLUDE { $$ = new_stmt_pp(mpool(arg), ae_pp_include, $1, GET_LOC(&@$)); }
+  | PP_DEFINE  { $$ = new_stmt_pp(mpool(arg), ae_pp_define,  $1, GET_LOC(&@$)); }
+  | PP_UNDEF   { $$ = new_stmt_pp(mpool(arg), ae_pp_undef,   $1, GET_LOC(&@$)); }
+  | PP_IFDEF   { $$ = new_stmt_pp(mpool(arg), ae_pp_ifdef,   $1, GET_LOC(&@$)); }
+  | PP_IFNDEF  { $$ = new_stmt_pp(mpool(arg), ae_pp_ifndef,  $1, GET_LOC(&@$)); }
+  | PP_ELSE    { $$ = new_stmt_pp(mpool(arg), ae_pp_else,    $1, GET_LOC(&@$)); }
+  | PP_ENDIF   { $$ = new_stmt_pp(mpool(arg), ae_pp_endif,   $1, GET_LOC(&@$)); }
+  | PP_NL      { $$ = new_stmt_pp(mpool(arg), ae_pp_nl,      $1, GET_LOC(&@$)); }
+  ;
 
 stmt
   : exp_stmt
@@ -231,7 +234,7 @@ stmt
   | goto_stmt
   | match_stmt
   | jump_stmt
-
+  | stmt_pp
   ;
 
 id

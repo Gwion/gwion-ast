@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_GWION_GRAMMAR_PARSER_H_INCLUDED
-# define YY_GWION_GRAMMAR_PARSER_H_INCLUDED
+#ifndef YY_GWION_SRC_PARSER_H_INCLUDED
+# define YY_GWION_SRC_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -100,47 +100,56 @@ extern int gwion_debug;
     ID = 306,
     STRING_LIT = 307,
     CHAR_LIT = 308,
-    PLUS = 309,
-    PLUSPLUS = 310,
-    MINUS = 311,
-    MINUSMINUS = 312,
-    TIMES = 313,
-    DIVIDE = 314,
-    PERCENT = 315,
-    DOLLAR = 316,
-    QUESTION = 317,
-    COLON = 318,
-    COLONCOLON = 319,
-    QUESTIONCOLON = 320,
-    ATSYM = 321,
-    GTPAREN = 322,
-    LTPAREN = 323,
-    NEW = 324,
-    SPORK = 325,
-    FORK = 326,
-    TYPEOF = 327,
-    L_HACK = 328,
-    R_HACK = 329,
-    AND = 330,
-    EQ = 331,
-    GE = 332,
-    GT = 333,
-    LE = 334,
-    LT = 335,
-    NEQ = 336,
-    SHIFT_LEFT = 337,
-    SHIFT_RIGHT = 338,
-    S_AND = 339,
-    S_OR = 340,
-    S_XOR = 341,
-    OR = 342,
-    LTMPL = 343,
-    RTMPL = 344,
-    TILDA = 345,
-    EXCLAMATION = 346,
-    DYNOP = 347,
-    UMINUS = 348,
-    UTIMES = 349
+    PP_COMMENT = 309,
+    PP_INCLUDE = 310,
+    PP_DEFINE = 311,
+    PP_UNDEF = 312,
+    PP_IFDEF = 313,
+    PP_IFNDEF = 314,
+    PP_ELSE = 315,
+    PP_ENDIF = 316,
+    PP_NL = 317,
+    PLUS = 318,
+    PLUSPLUS = 319,
+    MINUS = 320,
+    MINUSMINUS = 321,
+    TIMES = 322,
+    DIVIDE = 323,
+    PERCENT = 324,
+    DOLLAR = 325,
+    QUESTION = 326,
+    COLON = 327,
+    COLONCOLON = 328,
+    QUESTIONCOLON = 329,
+    ATSYM = 330,
+    GTPAREN = 331,
+    LTPAREN = 332,
+    NEW = 333,
+    SPORK = 334,
+    FORK = 335,
+    TYPEOF = 336,
+    L_HACK = 337,
+    R_HACK = 338,
+    AND = 339,
+    EQ = 340,
+    GE = 341,
+    GT = 342,
+    LE = 343,
+    LT = 344,
+    NEQ = 345,
+    SHIFT_LEFT = 346,
+    SHIFT_RIGHT = 347,
+    S_AND = 348,
+    S_OR = 349,
+    S_XOR = 350,
+    OR = 351,
+    LTMPL = 352,
+    RTMPL = 353,
+    TILDA = 354,
+    EXCLAMATION = 355,
+    DYNOP = 356,
+    UMINUS = 357,
+    UTIMES = 358
   };
 #endif
 /* Tokens.  */
@@ -195,53 +204,62 @@ extern int gwion_debug;
 #define ID 306
 #define STRING_LIT 307
 #define CHAR_LIT 308
-#define PLUS 309
-#define PLUSPLUS 310
-#define MINUS 311
-#define MINUSMINUS 312
-#define TIMES 313
-#define DIVIDE 314
-#define PERCENT 315
-#define DOLLAR 316
-#define QUESTION 317
-#define COLON 318
-#define COLONCOLON 319
-#define QUESTIONCOLON 320
-#define ATSYM 321
-#define GTPAREN 322
-#define LTPAREN 323
-#define NEW 324
-#define SPORK 325
-#define FORK 326
-#define TYPEOF 327
-#define L_HACK 328
-#define R_HACK 329
-#define AND 330
-#define EQ 331
-#define GE 332
-#define GT 333
-#define LE 334
-#define LT 335
-#define NEQ 336
-#define SHIFT_LEFT 337
-#define SHIFT_RIGHT 338
-#define S_AND 339
-#define S_OR 340
-#define S_XOR 341
-#define OR 342
-#define LTMPL 343
-#define RTMPL 344
-#define TILDA 345
-#define EXCLAMATION 346
-#define DYNOP 347
-#define UMINUS 348
-#define UTIMES 349
+#define PP_COMMENT 309
+#define PP_INCLUDE 310
+#define PP_DEFINE 311
+#define PP_UNDEF 312
+#define PP_IFDEF 313
+#define PP_IFNDEF 314
+#define PP_ELSE 315
+#define PP_ENDIF 316
+#define PP_NL 317
+#define PLUS 318
+#define PLUSPLUS 319
+#define MINUS 320
+#define MINUSMINUS 321
+#define TIMES 322
+#define DIVIDE 323
+#define PERCENT 324
+#define DOLLAR 325
+#define QUESTION 326
+#define COLON 327
+#define COLONCOLON 328
+#define QUESTIONCOLON 329
+#define ATSYM 330
+#define GTPAREN 331
+#define LTPAREN 332
+#define NEW 333
+#define SPORK 334
+#define FORK 335
+#define TYPEOF 336
+#define L_HACK 337
+#define R_HACK 338
+#define AND 339
+#define EQ 340
+#define GE 341
+#define GT 342
+#define LE 343
+#define LT 344
+#define NEQ 345
+#define SHIFT_LEFT 346
+#define SHIFT_RIGHT 347
+#define S_AND 348
+#define S_OR 349
+#define S_XOR 350
+#define OR 351
+#define LTMPL 352
+#define RTMPL 353
+#define TILDA 354
+#define EXCLAMATION 355
+#define DYNOP 356
+#define UMINUS 357
+#define UTIMES 358
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 25 "m4/gwion.ym4"
+#line 23 "src/gwion.y"
 
   char* sval;
   int ival;
@@ -270,7 +288,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 274 "grammar/parser.h"
+#line 292 "src/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -296,4 +314,4 @@ struct YYLTYPE
 
 int gwion_parse (Scanner* arg);
 
-#endif /* !YY_GWION_GRAMMAR_PARSER_H_INCLUDED  */
+#endif /* !YY_GWION_SRC_PARSER_H_INCLUDED  */

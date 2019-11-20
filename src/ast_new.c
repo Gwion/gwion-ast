@@ -433,18 +433,13 @@ AST_NEW(Union_Def, union_def, const Decl_List l, const loc_t pos) {
   return a;
 }
 
-#ifndef TINY_MODE
-#ifdef TOOL_MODE
-// TODO: fix me
-AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str data) {
+AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str data, const loc_t pos) {
   Stmt a = new_stmt(p, ae_stmt_pp, 0);
-  a->d.stmt_pp.type = type;
+  a->d.stmt_pp.pp_type = type;
   a->d.stmt_pp.data = data;
+  a->pos = pos;
   return a;
 }
-
-#endif
-#endif
 
 AST_NEW(Decl_List, decl_list, const Exp d, const Decl_List l) {
   Decl_List a = mp_calloc(p, Decl_List);

@@ -286,9 +286,7 @@ ANN void free_decl_list(MemPool p, Decl_List);
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_break,
                ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump,
-#ifdef TOOL_MODE
 ae_stmt_pp
-#endif
              } ae_stmt_t;
 
 typedef struct Stmt_Exp_     * Stmt_Exp;
@@ -300,9 +298,7 @@ typedef struct Stmt_Loop_    * Stmt_Loop;
 typedef struct Stmt_If_      * Stmt_If;
 typedef struct Stmt_Match_  * Stmt_Match;
 typedef struct Stmt_Jump_    * Stmt_Jump;
-#ifdef TOOL_MODE
 typedef struct Stmt_PP_      * Stmt_PP;
-#endif
 
 struct Stmt_Exp_ {
   Exp val;
@@ -423,7 +419,6 @@ struct Union_Def_ {
 ANEW ANN AST_NEW(Union_Def, union_def, const Decl_List, const loc_t);
 ANN void free_union_def(MemPool p, Union_Def);
 
-#ifdef TOOL_MODE
 enum ae_pp_type {
   ae_pp_comment,
   ae_pp_include,
@@ -437,9 +432,8 @@ enum ae_pp_type {
 };
 struct Stmt_PP_ {
   m_str data;
-  enum ae_pp_type type;
+  enum ae_pp_type pp_type;
 };
-#endif
 
 struct Stmt_ {
   union stmt_data {
@@ -452,9 +446,7 @@ struct Stmt_ {
     struct Stmt_If_         stmt_if;
     struct Stmt_Jump_       stmt_jump;
     struct Stmt_Match_     stmt_match;
-#ifdef TOOL_MODE
     struct Stmt_PP_    stmt_pp;
-#endif
   } d;
   loc_t pos;
   ae_stmt_t stmt_type;
@@ -473,6 +465,7 @@ ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, co
 ANEW ANN AST_NEW(Stmt, stmt_auto, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_jump, struct Symbol_*, const m_bool, const loc_t);
+ANEW ANN2(1,3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str, const loc_t);
 
 ANN void free_stmt(MemPool p, Stmt);
 struct Stmt_List_ {

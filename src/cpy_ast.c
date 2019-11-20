@@ -316,6 +316,11 @@ ANN static Stmt cpy_stmt_case(MemPool p, const Stmt_Match src) {
   return a;
 }
 
+ANN static void cpy_stmt_pp(MemPool p NUSED, Stmt_PP a, const Stmt_PP src) {
+  if(src->data)
+    a->data = strdup(src->data);
+}
+
 ANN static Stmt_List cpy_stmt_cases(MemPool p, const Stmt_List src) {
   Stmt_List a = mp_calloc(p, Stmt_List);
   if(src->next)
@@ -419,6 +424,9 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
       break;
     case ae_stmt_match:
       cpy_stmt_match(p, &a->d.stmt_match, &src->d.stmt_match);
+      break;
+    case ae_stmt_pp:
+      cpy_stmt_pp(p, &a->d.stmt_pp, &src->d.stmt_pp);
       break;
       case ae_stmt_break:
       case ae_stmt_continue:
