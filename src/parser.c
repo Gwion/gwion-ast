@@ -113,8 +113,8 @@ ANN Symbol lambda_name(const Scanner*);
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_GWION_SRC_PARSER_H_INCLUDED
-# define YY_GWION_SRC_PARSER_H_INCLUDED
+#ifndef YY_GWION_INCLUDE_PARSER_H_INCLUDED
+# define YY_GWION_INCLUDE_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -393,7 +393,7 @@ struct YYLTYPE
 
 int gwion_parse (Scanner* arg);
 
-#endif /* !YY_GWION_SRC_PARSER_H_INCLUDED  */
+#endif /* !YY_GWION_INCLUDE_PARSER_H_INCLUDED  */
 
 
 

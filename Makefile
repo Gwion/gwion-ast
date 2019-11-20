@@ -11,7 +11,14 @@ endif
 include config.mk
 include ${UTIL_DIR}/config.mk
 
-src    := include/parser.h include/lexer.h $(wildcard src/*.c) src/parser.c src/lexer.c
+src := $(wildcard src/*.c)
+
+ifeq (0, $(findstring lexer,${src}))
+src += src/parser.c src/lexer.c
+endif
+ifeq (0, $(findstring parser,${src}))
+src += src/parser.c src/parser.c
+endif
 
 ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
@@ -49,7 +56,7 @@ src/lexer.c: src/gwion.l
 include/parser.h: src/parser.c
 src/parser.c: src/gwion.y
 	$(info generating parser)
-	@${YACC} --defines=src/parser.h -Wno-yacc -o $@ $<
+	@${YACC} --defines=include/parser.h -Wno-yacc -o $@ $<
 
 clean:
 	$(info cleaning)
