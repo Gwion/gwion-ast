@@ -498,6 +498,8 @@ void yyset_column ( int _column_no , yyscan_t yyscanner );
 
 void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
+       YYLTYPE *yyget_lloc ( yyscan_t yyscanner );
+    
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
  */
@@ -709,9 +711,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 252 "src/gwion.l"
+#line 268 "src/gwion.l"
 
 
-#line 715 "include/lexer.h"
+#line 717 "include/lexer.h"
 #undef gwion_IN_HEADER
 #endif /* gwion_HEADER_H */

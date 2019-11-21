@@ -1,6 +1,5 @@
 #ifndef __SCANNER
 #define __SCANNER
-#include <setjmp.h>
 
 struct PPArg_ {
   struct Vector_ path;
@@ -17,7 +16,6 @@ typedef struct Scanner_ {
   uint line;
   uint pos;
   struct PP_* pp;
-  jmp_buf* jmp;
   struct PPArg_ *ppa;
 } Scanner;
 
