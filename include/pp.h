@@ -20,11 +20,11 @@ typedef struct PP_ {
   struct Macro_* entry;
   struct pp_info* def;
   int npar;
-//  uint lint;
 } PP;
 
 
 ANN struct PPState_* new_ppstate(MemPool, const m_str);
 ANEW PP* new_pp(MemPool p, const uint size, const m_str);
 ANN void free_pp(MemPool p, PP* pp, void* data);
+uint clear_buffer(Vector, void*);
 #endif

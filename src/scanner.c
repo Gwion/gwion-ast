@@ -6,7 +6,7 @@
 
 #define PP_SIZE 127
 
-ANEW static Scanner* new_scanner(const struct ScannerArg_ *arg) {
+ANEW static Scanner* new_scanner(const struct AstGetter_ *arg) {
   Scanner* scan = (Scanner*)mp_calloc(arg->st->p, Scanner);
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
@@ -24,11 +24,17 @@ ANN static void free_scanner(Scanner* scan) {
   mp_free(scan->st->p, Scanner, scan);
 }
 
-Ast parse(const struct ScannerArg_ *arg) {
+ANN static Ast get_ast(MemPool mp, Scanner *s) {
+  if(!gwion_parse(s))
+    return s->ast;
+  if(s->ast)
+    free_ast(mp, s->ast);
+  return NULL;
+}
+
+Ast parse(const struct AstGetter_ *arg) {
   Scanner* s = new_scanner(arg);
-  if(gwion_parse(s))
-    s->ast = NULL;
-  const Ast ast = s->ast;
+  const Ast ast = get_ast(arg->ppa->hash.p, s);
   free_scanner(s);
   return ast;
 }

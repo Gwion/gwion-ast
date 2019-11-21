@@ -13,13 +13,6 @@ include ${UTIL_DIR}/config.mk
 
 src := $(wildcard src/*.c)
 
-ifeq (0, $(findstring lexer,${src}))
-src += src/parser.c src/lexer.c
-endif
-ifeq (0, $(findstring parser,${src}))
-src += src/parser.c src/parser.c
-endif
-
 ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
 CFLAGS += -DYY_NO_UNISTD_H
@@ -36,7 +29,7 @@ ifeq ($(shell uname), Linux)
 -DYYENABLE_NLS=1 -DENABLE_NLS
 endif
 
-all: options-show libgwion_ast.a
+all: options-show generated libgwion_ast.a
 
 options-show:
 	@$(call _options)
@@ -45,16 +38,17 @@ libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
 
+generated: src/lexer.c src/parser.c
+	@export obj="$obj src/lexer.c src/parser.c"
+
 _${TARGET}lib: ${TARGET}
 	@CFLAGS="${CFLAGS} -I${TARGET}" make -s libgwion_${TARGET}.a
 
-include/lexer.h: src/lexer.c
-src/lexer.c: src/gwion.l
+include/lexer.h src/lexer.c: src/gwion.l
 	$(info generating lexer)
 	@${LEX} --header-file=include/lexer.h -o $@ $<
 
-include/parser.h: src/parser.c
-src/parser.c: src/gwion.y
+include/parser.h src/parser.c: src/gwion.y
 	$(info generating parser)
 	@${YACC} --defines=include/parser.h -Wno-yacc -o $@ $<
 

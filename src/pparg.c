@@ -119,12 +119,10 @@ ANN2(1) m_bool pparg_run(struct PPArg_ *ppa, const Vector v) {
 ANN void pparg_ini(MemPool mp, struct PPArg_* a) {
   a->hash.p = mp;
   vector_init(&a->path);
-  vector_init(&a->global_undef);
 }
 
 ANN void pparg_end(struct PPArg_* a) {
   vector_release(&a->path);
-  vector_release(&a->global_undef);
   if(a->hash.table) {
     macro_del(&a->hash);
     hend(&a->hash);

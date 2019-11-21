@@ -1108,8 +1108,6 @@ void yyset_column ( int _column_no , yyscan_t yyscanner );
 
 void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
-       YYLTYPE *yyget_lloc ( yyscan_t yyscanner );
-    
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
  */
@@ -1291,7 +1289,7 @@ YY_DECL
 #line 101 "src/gwion.l"
 
 
-#line 1294 "src/lexer.c"
+#line 1292 "src/lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1908,7 +1906,7 @@ YY_RULE_SETUP
 #line 268 "src/gwion.l"
 ECHO;
 	YY_BREAK
-#line 1911 "src/lexer.c"
+#line 1909 "src/lexer.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 case YY_STATE_EOF(define):
@@ -2798,12 +2796,6 @@ void yyset_in (FILE *  _in_str , yyscan_t yyscanner)
 
 /* Accessor methods for yylval and yylloc */
 
-YYLTYPE *yyget_lloc  (yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    return yylloc;
-}
-    
 /* User-visible API */
 
 /* yylex_init is special because it creates the scanner itself, so it is
@@ -2964,8 +2956,7 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 #include <stdlib.h>
 
 ANN Symbol lambda_name(const Scanner *scan) {
-  YYLTYPE *loc = yyget_lloc (scan->scanner);
-  char c[6 + 1 + num_digit(scan->pos) + 1 + 16 + 1];
+  char c[6 + 1 + num_digit(scan->line) + num_digit(scan->pos) + 1];
   sprintf(c, "lambda:%u:%u", scan->line, scan->pos);
   return insert_symbol(scan->st, c);
 }
@@ -3113,9 +3104,14 @@ static m_str strip_comment(Scanner* scan, const m_str s) {
 }
 
 static inline m_bool scan_rem_macro(Scanner *scan, const m_str id) {
-  if(macro_rem(scan->pp->macros, id))
-    return ppa_rem_macro(scan->ppa, insert_symbol(scan->st, id));
-  return 0;
+  const Symbol sym = insert_symbol(scan->st, id);
+  if(macro_rem(scan->pp->macros, id)) {
+    const m_bool ret = ppa_rem_macro(scan->ppa, sym);
+    if(!ret)
+      vector_add(&scan->pp->global_undef, (vtype)sym);
+    return ret;
+  }
+  return GW_ERROR;
 }
 
 static m_bool rem_macro(void* data, const m_str str) {
@@ -3124,14 +3120,21 @@ static m_bool rem_macro(void* data, const m_str str) {
   const m_str id = strip_comment(scan, str+6);
   const m_bool ret = scan_rem_macro(scan, id);
   xfree(id);
-  if(ret)
+  if(ret > 0)
     return GW_OK;
   gwlex_error(data, "undefined macro");
   return GW_ERROR;
 }
 
 static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
-  return macro_has(scan->pp->macros, id) ?: ppa_has_macro(scan->ppa, insert_symbol(scan->st, id));
+  const Symbol sym = insert_symbol(scan->st, id);
+  const m_int ret = vector_size(&scan->pp->global_undef) ? vector_find(&scan->pp->global_undef, (vtype)sym) : GW_ERROR;
+  if(ret != GW_ERROR)
+    return NULL;
+  const Macro global = ppa_has_macro(scan->ppa, insert_symbol(scan->st, id));
+  if(global)
+    return global;
+  return macro_has(scan->pp->macros, id);
 }
 
 static m_bool has_macro(void* data, const m_str id) {

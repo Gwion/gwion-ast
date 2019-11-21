@@ -128,10 +128,9 @@ ANN Symbol lambda_name(const Scanner*);
 
 %nonassoc NOELSE
 %nonassoc ELSE
-//%expect 51
 %%
 
-prg: ast { arg->ast = $1; }
+prg: ast { arg->ast = $$ = $1; }
   | /* empty */ { gwion_error(&@$, arg, "file is empty.\n"); YYERROR; }
 
 ast

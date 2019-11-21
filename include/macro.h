@@ -20,6 +20,7 @@ struct MacroArg_ {
 
 MacroArg new_args(MemPool p, const char*);
 void clean_args(const MacroArg);
+
 struct Macro_ {
   char* name;
   GwText* text;

@@ -296,7 +296,7 @@ typedef struct Stmt_Flow_    * Stmt_Flow;
 typedef struct Stmt_Auto_    * Stmt_Auto;
 typedef struct Stmt_Loop_    * Stmt_Loop;
 typedef struct Stmt_If_      * Stmt_If;
-typedef struct Stmt_Match_  * Stmt_Match;
+typedef struct Stmt_Match_   * Stmt_Match;
 typedef struct Stmt_Jump_    * Stmt_Jump;
 typedef struct Stmt_PP_      * Stmt_PP;
 
