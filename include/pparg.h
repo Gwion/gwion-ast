@@ -20,8 +20,8 @@ ANN static inline struct Macro_* ppa_has_macro(struct PPArg_* ppa, const Symbol 
 
 ANN static inline int ppa_rem_macro(struct PPArg_* ppa, const Symbol sym) {
   if(!ppa->hash.table)
-    return 1;
-  return !macro_has(&ppa->hash, s_name(sym));
+    return GW_ERROR;
+  return macro_has(&ppa->hash, s_name(sym)) ? 0 : GW_ERROR;
 }
 
 #endif

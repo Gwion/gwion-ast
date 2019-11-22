@@ -1,5 +1,6 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
+#include "bison_compat.h"
 
 ANN struct PPState_* new_ppstate(MemPool p, const m_str filename) {
   struct PPState_ * ppstate = mp_calloc(p, PPState);
@@ -20,8 +21,10 @@ ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
 }
 
 static void pp_post(PP* pp, void* data) {
-  for(m_uint i = 1; i < vector_size(&pp->filename); ++i)
-    clear_buffer(&pp->filename, data);
+  for(m_uint i = 1; i < vector_size(&pp->filename); ++i) {
+    void *ppstate = (void*)vector_at(&pp->filename, i);
+    clear_buffer(ppstate, data);
+  }
   mp_free(pp->macros->p, PPState, (struct PPState_*)vector_front(&pp->filename));
   pp->entry = NULL;
   vector_clear(&pp->filename);

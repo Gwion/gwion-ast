@@ -31,4 +31,7 @@
             YYRHSLOC (Rhs, 0).last.column;                              \
         }                                                               \
     while (0)
+
+ANN void clear_buffer(void* state, void* scan);
+
 #endif

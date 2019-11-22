@@ -4,16 +4,16 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-MacroArg new_args(MemPool p, const char* name) {
+MacroArg new_macroarg(MemPool p, const char* name) {
   const MacroArg a = mp_calloc(p, MacroArg);
   a->name = strdup(name);
   a->text.mp = p;
   return a;
 }
 
-void clean_args(const MacroArg a) {
+void clean_macroarg(const MacroArg a) {
   if(a->next)
-    clean_args(a->next);
+    clean_macroarg(a->next);
   text_release(&a->text);
 }
 

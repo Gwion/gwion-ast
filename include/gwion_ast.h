@@ -5,8 +5,8 @@
 #include "cpy_ast.h"
 #include "macro.h"
 #include "pparg.h"
+#include "pp.h"
 #include "scanner.h"
 #include "ast_getter.h"
-#include "pp.h"
 #include "ast_pass.h"
 #endif

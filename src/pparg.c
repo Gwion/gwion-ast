@@ -37,11 +37,11 @@ ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
   do {
     if(*src == ')') {
       c[i] = '\0';
-      return new_args(ppa->hash.p, c);
+      return new_macroarg(ppa->hash.p, c);
     }
     if(*src == ',') {
       c[i] = '\0';
-      MacroArg arg = new_args(ppa->hash.p, c);
+      MacroArg arg = new_macroarg(ppa->hash.p, c);
       arg->next = pparg_arg(ppa, src + 1);
       return arg;
     }

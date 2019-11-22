@@ -5,11 +5,6 @@
 typedef struct MacroArg_* MacroArg;
 typedef struct Macro_* Macro;
 
-struct pp_info {
-  m_bit data[60];
-  int idx;
-};
-
 struct MacroArg_ {
   char* name;
   GwText text;
@@ -18,8 +13,8 @@ struct MacroArg_ {
   MacroArg next;
 };
 
-MacroArg new_args(MemPool p, const char*);
-void clean_args(const MacroArg);
+MacroArg new_macroarg(MemPool p, const char*);
+void clean_macroarg(const MacroArg);
 
 struct Macro_ {
   char* name;

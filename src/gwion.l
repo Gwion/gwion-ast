@@ -2,7 +2,6 @@ IS    (u|U|l|L)*
 SPACE [ \r\t]
 OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
 %{
-#include <stdio.h>
 #include <ctype.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
@@ -51,6 +50,7 @@ ANN static void handle_char(void* data, m_str str);
 ANN static m_str strip_comment(Scanner* scan, const m_str str);
 ANN static m_str get_arg_text(void* data, const m_str id);
 ANN static m_str macro_data(void* data, const m_bool);
+
 #define SCAN_LINT(a)     if(scan->ppa->lint)a;
 #define SCAN_NOLINT      if(!scan->ppa->lint)
 #define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->lint
@@ -545,7 +545,7 @@ static int macro_toggle(void* data) {
 static void macro_arg(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_comment(scan, id);
-  const MacroArg arg = new_args(scan->st->p, str);
+  const MacroArg arg = new_macroarg(scan->st->p, str);
   arg->line = scan->line;
   arg->pos = scan->pos;
   xfree(str);
@@ -676,18 +676,17 @@ assert(scan->pp->entry);
   text_add(scan->pp->entry->text, text);
 }
 
-uint clear_buffer(Vector v, void* data) {
-  const struct PPState_ *ppstate = (struct PPState_*)vector_pop(v);
-  const YY_BUFFER_STATE state = (YY_BUFFER_STATE)ppstate->state;
-  struct yyguts_t *yyg = (struct yyguts_t*)data;
+ANN void clear_buffer(void *state, void* scan) {
+  struct PPState_ *ppstate = (struct PPState_*)state;
+  const YY_BUFFER_STATE fini = (YY_BUFFER_STATE)ppstate->state;
+  struct yyguts_t *yyg = (struct yyguts_t*)scan;
   YY_BUFFER_STATE curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   YY_BUFFER_STATE base = yyg->yy_buffer_stack[0];
   if(ppstate->filename[0] != '@')
     fclose(ppstate->file);
-  if(state != base && state != curr)
-    yy_delete_buffer(state, data);
+  if(fini != base && fini != curr)
+    yy_delete_buffer(fini, scan);
   xfree(ppstate->filename);
-  return (uint)vector_size(v);
 }
 
 int yywrap(void* data) {
@@ -703,7 +702,7 @@ int yywrap(void* data) {
     if(ppstate->filename[0] != '@' && ppstate->file)
       fclose(ppstate->file);
     else if(ppstate->arg)
-      clean_args(ppstate->arg);
+      clean_macroarg(ppstate->arg);
     if(strlen(ppstate->filename))
       xfree(ppstate->filename);
     scan->pos  = ppstate->pos;
