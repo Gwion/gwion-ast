@@ -3,10 +3,12 @@
 %lex-param  { void* scan }
 %name-prefix "gwion_"
 %locations
+
 %{
 #include <math.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
+#include "bison_compat.h"
 #include "parser.h"
 #include "lexer.h"
 
@@ -16,7 +18,7 @@
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
 #define GET_LOC(a) loc_cpy(mpool(arg), a)
-ANN void gwion_error(YYLTYPE*, const Scanner*, const char *);
+ANN void gwion_error(loc_t, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
 %}
 

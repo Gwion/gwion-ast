@@ -1,9 +1,5 @@
-#include <stdio.h>
 #include "gwion_util.h"
-#include "absyn.h"
-#include "macro.h"
-#include "pp.h"
-#include "scanner.h"
+#include "gwion_ast.h"
 
 ANN struct PPState_* new_ppstate(MemPool p, const m_str filename) {
   struct PPState_ * ppstate = mp_calloc(p, PPState);

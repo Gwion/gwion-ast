@@ -6,19 +6,9 @@ OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
 #include <ctype.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
-#include "parser.h"
 #include "dynop.h"
-
-  #define YY_USER_ACTION                                     \
-    yylloc->first_line = yylloc->last_line;                  \
-    yylloc->first_column = get_currpos(yyscanner) ;          \
-    if (yylloc->last_line == (int)get_currline(yyscanner))   \
-      yylloc->last_column = get_currpos(yyscanner) + yyleng; \
-    else {                                                   \
-      yylloc->last_line = (int)get_currline(yyscanner);      \
-      yylloc->last_column = get_currpos(yyscanner);          \
-    }
-
+#include "bison_compat.h"
+#include "parser.h"
 
 #define gwion_alloc(a,b) xmalloc(a)
 #define gwion_realloc(a,b,c) xrealloc(a,b)
@@ -38,7 +28,7 @@ ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
-ANN int gwion_error(YYLTYPE*, Scanner*, const char *);
+ANN int gwion_error(loc_t, Scanner*, const char *);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
 ANN2(1,2) static m_bool handle_include(void*, const m_str, YY_BUFFER_STATE);
@@ -355,7 +345,7 @@ static void adjust(void* data) {
   scan->pos += (uint)gwion_get_leng((void*)data);
 }
 
-ANN int gwion_error(YYLTYPE* loc, Scanner* scan, const char* s) {
+ANN int gwion_error(loc_t loc, Scanner* scan, const char* s) {
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   const m_str name = ppstate->filename;
   m_str filename = name;

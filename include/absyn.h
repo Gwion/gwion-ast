@@ -7,7 +7,6 @@
 #define AST_FREE(type, name) \
   void free_##name(MemPool p NUSED, type a NUSED)
 
-typedef struct YYLTYPE* loc_t;
 typedef struct Ast_           * Ast;
 typedef struct Class_Def_     * Class_Def;
 typedef struct Func_Def_      * Func_Def;
