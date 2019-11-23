@@ -162,7 +162,7 @@ DECL_EXP_FUNC(free, void, MemPool)
 AST_FREE(Exp, exp) {
   if(a->next)
     free_exp(p, a->next);
-  exp_func[a->exp_type](p, &a->d);
+  free_exp_func[a->exp_type](p, &a->d);
   free_loc(p, a->pos);
   mp_free(p, Exp, a);
 }
@@ -273,7 +273,7 @@ ANN static inline AST_FREE(Stmt_Jump, stmt_jump) {
 
 DECL_STMT_FUNC(free, void, MemPool);
 AST_FREE(Stmt, stmt) {
-  stmt_func[a->stmt_type](p, &a->d);
+  free_stmt_func[a->stmt_type](p, &a->d);
   free_loc(p, a->pos);
   mp_free(p, Stmt, a);
 }
