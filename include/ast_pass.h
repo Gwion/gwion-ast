@@ -27,12 +27,6 @@ const _##prefix##_exp_func prefix##_exp_func[] = {                              
   (_##prefix##_exp_func)prefix##_exp_lambda, (_##prefix##_exp_func)prefix##_exp_typeof          \
 };
 
-#ifndef GWION_NOLINT
-#define  TOOL_STMT_PP(prefix) (_##prefix##_stmt_func)prefix##_stmt_pp
-#else
-#define TOOL_STMT_PP(prefix)
-#endif
-
 #define DECL_STMT_FUNC(prefix, type, arg)                                                       \
 typedef type (*_##prefix##_stmt_func)(const arg, union stmt_data*);                             \
 const _##prefix##_stmt_func prefix##_stmt_func[] = {                                            \
@@ -42,7 +36,7 @@ const _##prefix##_stmt_func prefix##_stmt_func[] = {                            
   (_##prefix##_stmt_func)prefix##_stmt_if,     (_##prefix##_stmt_func)prefix##_stmt_code,       \
   (_##prefix##_stmt_func)prefix##_stmt_break,  (_##prefix##_stmt_func)prefix##_stmt_continue,   \
   (_##prefix##_stmt_func)prefix##_stmt_return, (_##prefix##_stmt_func)prefix##_stmt_match,      \
-  (_##prefix##_stmt_func)prefix##_stmt_jump,   TOOL_STMT_PP(prefix)                             \
+  (_##prefix##_stmt_func)prefix##_stmt_jump,   (_##prefix##_stmt_func)prefix##_stmt_pp          \
 };
 
 #define DECL_SECTION_FUNC(prefix, type, arg)                                                    \

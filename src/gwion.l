@@ -87,7 +87,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-%x define define_arg_start define_arg skip get_arg
+%x define define_arg_start define_arg skip get_arg pragma
 %%
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
@@ -121,6 +121,9 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 <define>\\n           { adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
 <define>.*\n          { adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
+
+^"#pragma"{SPACE}+ { BEGIN(pragma); }
+<pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strdup(yytext); BEGIN(INITIAL); return PP_PRAGMA; }
 
 ^#ifn?def{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* {
   adjust(yyscanner);

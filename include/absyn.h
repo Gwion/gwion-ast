@@ -284,8 +284,7 @@ ANN void free_decl_list(MemPool p, Decl_List);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_break,
-               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump,
-ae_stmt_pp
+               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump, ae_stmt_pp
              } ae_stmt_t;
 
 typedef struct Stmt_Exp_     * Stmt_Exp;
@@ -422,6 +421,7 @@ enum ae_pp_type {
   ae_pp_comment,
   ae_pp_include,
   ae_pp_define,
+  ae_pp_pragma,
   ae_pp_undef,
   ae_pp_ifdef,
   ae_pp_ifndef,
