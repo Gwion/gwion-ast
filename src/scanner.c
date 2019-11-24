@@ -10,11 +10,11 @@ ANEW static Scanner* new_scanner(const struct AstGetter_ *arg) {
   Scanner* scan = (Scanner*)mp_calloc(arg->st->p, Scanner);
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
-  scan->line = scan->pos  = 1;
   scan->pp = new_pp(arg->st->p, PP_SIZE, arg->name);
   gwion_set_in(arg->f, scan->scanner);
   scan->st = arg->st;
   scan->ppa = arg->ppa;
+  pos_ini(&scan->pos);
   return scan;
 }
 

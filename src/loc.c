@@ -2,13 +2,6 @@
 #include "gwion_ast.h"
 #include "parser.h"
 
-loc_t new_loc(MemPool mp, const uint line) {
-  loc_t loc = mp_calloc2(mp, sizeof(*loc));
-  loc->first.line = line;
-  loc->last.line = line;
-  return loc;
-}
-
 loc_t loc_cpy(MemPool mp, const loc_t src) {
   loc_t loc = mp_calloc2(mp, sizeof(struct loc_t));
   loc->first.line = src->first.line;

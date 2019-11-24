@@ -2970,15 +2970,15 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 #include <stdlib.h>
 
 ANN Symbol lambda_name(const Scanner *scan) {
-  char c[6 + 1 + num_digit(scan->line) + num_digit(scan->pos) + 1];
-  sprintf(c, "lambda:%u:%u", scan->line, scan->pos);
+  char c[6 + 1 + num_digit(scan->pos.line) + num_digit(scan->pos.column) + 1];
+  sprintf(c, "lambda:%u:%u", scan->pos.line, scan->pos.column);
   return insert_symbol(scan->st, c);
 }
 
 static inline void header(const Scanner *scan, const char *msg) {
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   gw_err("\033[1m%s:%u:%u:\033[0m\n  %s\n", ppstate->filename,
-    scan->line, scan->pos, msg);
+    scan->pos.line, scan->pos.column, msg);
 }
 
 ANN void gwlex_error(yyscan_t yyscanner, const char *msg) {
@@ -3028,18 +3028,18 @@ unsigned long htol(const char* str) {
 
 static void newline(void* data) {
   Scanner* scan = yyget_extra(data);
-  ++scan->line;
-  scan->pos = 1;
+  ++scan->pos.line;
+  scan->pos.column = 1;
 }
 
 static uint get_currline(void* data) {
   const Scanner* scan = yyget_extra(data);
-  return scan->line;
+  return scan->pos.line;
 }
 
 static uint get_currpos(void* data) {
   const Scanner* scan = yyget_extra(data);
-  return scan->pos;
+  return scan->pos.column;
 }
 
 static char* get_currfile(void* data) {
@@ -3050,7 +3050,7 @@ static char* get_currfile(void* data) {
 
 static void adjust(void* data) {
   Scanner *scan = yyget_extra(data);
-  scan->pos += (uint)gwion_get_leng((void*)data);
+  scan->pos.column += (uint)gwion_get_leng((void*)data);
 }
 
 ANN int gwion_error(loc_t loc, Scanner* scan, const char* s) {
@@ -3081,7 +3081,7 @@ static Macro add_macro(void* data, const m_str line) {
   Scanner* scan = yyget_extra(data);
   int i = 7;
   while(isspace(line[i]))++i;
-  scan->pos += i;
+  scan->pos.column += i;
   m_str id = strip_comment(data, line + i);
   scan->pp->entry = macro_add(scan->pp->macros, id);
   xfree(id);
@@ -3091,8 +3091,7 @@ static Macro add_macro(void* data, const m_str line) {
   }
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   scan->pp->entry->file = ppstate->filename;
-  scan->pp->entry->line = scan->line;
-  scan->pp->entry->pos =  scan->pos;
+  scan->pp->entry->pos = scan->pos;
   scan->pp->entry->text = mp_calloc(scan->ppa->hash.p, GwText);
   scan->pp->entry->text->mp = scan->ppa->hash.p;
   return scan->pp->entry;
@@ -3104,7 +3103,7 @@ static m_str strip_include(Scanner* scan, const m_str line, const m_bool sign) {
   if(!sign)
     ++str;
   m_str end = strstr(str, ">");
-  scan->pos += 2;
+  scan->pos.column += 2;
   return strndup(str, strlen(str) - strlen(end) + (uint)sign);
 }
 
@@ -3113,7 +3112,7 @@ static m_str strip_comment(Scanner* scan, const m_str s) {
   while(isspace(*str)) ++str;
   size_t end = strlen(str);
   while(isspace(str[--end]));
-  scan->pos += (uint)(str - s);
+  scan->pos.column += (uint)(str - s);
   return strndup(str, end + 1);
 }
 
@@ -3130,7 +3129,7 @@ static inline m_bool scan_rem_macro(Scanner *scan, const m_str id) {
 
 static m_bool rem_macro(void* data, const m_str str) {
   Scanner* scan = yyget_extra(data);
-  scan->pos += 6;
+  scan->pos.column += 6;
   const m_str id = strip_comment(scan, str+6);
   const m_bool ret = scan_rem_macro(scan, id);
   xfree(id);
@@ -3161,10 +3160,9 @@ static m_bool has_macro(void* data, const m_str id) {
 
 static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt, const m_str str) {
   struct PPState_ *ppstate = new_ppstate(scan->st->p, str);
-  ppstate->pos = scan->pos;
-  ppstate->line = scan->line;
   ppstate->state = state;
   ppstate->data = opt;
+  ppstate->pos = scan->pos;
   vector_add(&scan->pp->filename, (vtype)ppstate);
 }
 
@@ -3192,8 +3190,7 @@ static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE h
     return GW_ERROR;
   }
   gwpp_stack(scan, handle, f, str);
-  scan->pos = 1;
-  scan->line = 1;
+  pos_ini(&scan->pos);
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
   return GW_OK;
 }
@@ -3254,7 +3251,7 @@ static void macro_arg(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_comment(scan, id);
   const MacroArg arg = new_macroarg(scan->st->p, str);
-  arg->line = scan->line;
+  arg->pos.column = scan->pos.column;
   arg->pos = scan->pos;
   xfree(str);
   if(scan->pp->entry->base) {
@@ -3299,8 +3296,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
           SCAN_NOLINT {
             const m_str str = concat("@argument", arg->name);
             gwpp_stack(scan, handle, NULL, str);
-            scan->line     = arg->line;
-            scan->pos      = arg->pos;
+            scan->pos = arg->pos;
             yy_scan_string(arg->text.str, data);
           }
         } else {
@@ -3322,7 +3318,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
 //      SCAN_NOLINT
         str = concat("@macro", e->name);
       char c = '@';
-      while(isspace(c = (char)input(data)))++scan->pos;
+      while(isspace(c = (char)input(data)))++scan->pos.column;
         if(c != '(') {
           xfree(str);
           gwlex_error(data, "macro needs arguments");
@@ -3330,8 +3326,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         }
         ++scan->pp->npar;
         gwpp_stack(scan, handle, e->base, str);
-        scan->pos      = e->pos;
-        scan->line     = e->line;
+        scan->pos = e->pos;
         struct yyguts_t *yyg = (struct yyguts_t*)data;
         yyg->yy_start = 1 + 2 * get_arg;
         void *yyscanner = data;
@@ -3341,8 +3336,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         SCAN_LINT(return 0);
         const m_str str = concat("@macro", e->name);
         gwpp_stack(scan, handle, e->base, str);
-        scan->pos  = e->pos;
-        scan->line = e->line;
+        scan->pos = e->pos;
         yy_scan_string(e->text->str, data);
         return 1;
       }
@@ -3354,8 +3348,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
       return 0;
     const m_str str = concat("@argument", "__VA_ARGS__");
     gwpp_stack(scan, handle, NULL, str);
-    scan->pos  = e->pos;
-    scan->line = e->line;
+    scan->pos = e->pos;
     yy_scan_string(e->base->text.str, data);
     return 1;
   }
@@ -3413,8 +3406,7 @@ int yywrap(void* data) {
       clean_macroarg(ppstate->arg);
     if(strlen(ppstate->filename))
       xfree(ppstate->filename);
-    scan->pos  = ppstate->pos;
-    scan->line  = ppstate->line;
+    scan->pos   = ppstate->pos;
     void* yyscanner = data;
     YY_USER_ACTION
     return 0;

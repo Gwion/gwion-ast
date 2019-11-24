@@ -2,8 +2,6 @@
 #define __PP
 
 struct PPState_ {
-  uint pos;
-  uint line;
   void *state;
   union {
     FILE* file;
@@ -11,6 +9,7 @@ struct PPState_ {
     void *data;
   };
   m_str filename;
+  struct pos_t pos;
 };
 
 struct pp_info {

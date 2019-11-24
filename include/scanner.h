@@ -7,8 +7,7 @@ typedef struct Scanner_ {
   SymTable *st;
   struct PP_* pp;
   struct PPArg_ *ppa;
-  uint line;
-  uint pos;
+  struct pos_t pos;
 } Scanner;
 
 #endif

@@ -8,9 +8,8 @@ typedef struct Macro_* Macro;
 struct MacroArg_ {
   char* name;
   GwText text;
-  uint line;
-  uint pos;
   MacroArg next;
+  struct pos_t pos;
 };
 
 MacroArg new_macroarg(MemPool p, const char*);
@@ -23,8 +22,7 @@ struct Macro_ {
   MacroArg  args;
   Macro next;
   m_str file;
-  uint line;
-  uint pos;
+  struct pos_t pos;
 };
 
 void  macro_del(const Hash);
