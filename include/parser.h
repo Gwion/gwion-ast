@@ -270,6 +270,7 @@ union YYSTYPE
   m_float fval;
   Symbol sym;
   Array_Sub array_sub;
+  Range* range;
   Var_Decl var_decl;
   Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
@@ -290,7 +291,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 294 "include/parser.h"
+#line 295 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

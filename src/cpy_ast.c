@@ -26,9 +26,23 @@ ANN Array_Sub cpy_array_sub(MemPool p, const Array_Sub src) {
   return a;
 }
 
+ANN Range* cpy_range(MemPool p, const Range *src) {
+  Range *a = mp_calloc(p, Array_Sub);
+  if(src->start)
+    a->start = cpy_exp(p, src->start);
+  if(src->end)
+    a->end = cpy_exp(p, src->end);
+  return a;
+}
+
 ANN static void cpy_exp_array(MemPool p, Exp_Array *a, const Exp_Array *src) {
   a->base = cpy_exp(p, src->base);
   a->array = cpy_array_sub(p, src->array);
+}
+
+ANN static void cpy_exp_slice(MemPool p, Exp_Slice *a, const Exp_Slice *src) {
+  a->base = cpy_exp(p, src->base);
+  a->range = cpy_range(p, src->range);
 }
 
 ANN static Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
@@ -121,6 +135,9 @@ ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
       break;
     case ae_prim_array:
       a->d.array = cpy_array_sub(p, src->d.array);
+      break;
+    case ae_prim_range:
+      a->d.range = cpy_range(p, src->d.range);
       break;
     case ae_prim_vec:
       cpy_vec(p, &a->d.vec, &src->d.vec);
@@ -225,6 +242,9 @@ ANN static Exp cpy_exp(MemPool p, const Exp src) {
       break;
     case ae_exp_array:
       cpy_exp_array(p, &a->d.exp_array, &src->d.exp_array);
+      break;
+    case ae_exp_slice:
+      cpy_exp_slice(p, &a->d.exp_slice, &src->d.exp_slice);
       break;
     case ae_exp_lambda:
       cpy_exp_lambda(p, &a->d.exp_lambda, &src->d.exp_lambda);

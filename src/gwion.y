@@ -30,6 +30,7 @@ ANN Symbol lambda_name(const Scanner*);
   m_float fval;
   Symbol sym;
   Array_Sub array_sub;
+  Range* range;
   Var_Decl var_decl;
   Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
@@ -93,6 +94,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
+%type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt
 %type<stmt> match_case_stmt label_stmt goto_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
@@ -343,6 +345,12 @@ array_empty
   | array_empty array_exp     { gwion_error(&@$, arg, "partially empty array init [][...]"); YYERROR; }
   ;
 
+range
+  : LBRACK exp COLON exp RBRACK { $$ = new_range(mpool(arg), $2, $4); }
+  | LBRACK exp COLON RBRACK     { $$ = new_range(mpool(arg), $2, NULL); }
+  | LBRACK COLON exp RBRACK     { $$ = new_range(mpool(arg), NULL, $3); }
+  ;
+
 array: array_exp | array_empty;
 decl_exp2: con_exp | decl_exp3
   | AUTO decl_flag var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
@@ -508,8 +516,11 @@ call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
 post_op : PLUSPLUS | MINUSMINUS;
 
 dot_exp: post_exp DOT id { $$ = new_exp_dot(mpool(arg), $1, $3); };
-post_exp: prim_exp | post_exp array_exp
+post_exp: prim_exp
+  | post_exp array_exp
     { $$ = new_exp_array(mpool(arg), $1, $2); }
+  | post_exp range
+    { $$ = new_exp_range(mpool(arg), $1, $2); }
   | post_exp call_template call_paren
     { $$ = new_exp_call(mpool(arg), $1, $3);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
@@ -528,6 +539,7 @@ prim_exp
   | STRING_LIT          { $$ = new_prim_string( mpool(arg), $1, GET_LOC(&@$)); }
   | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, GET_LOC(&@$)); }
   | array               { $$ = new_prim_array(  mpool(arg), $1, GET_LOC(&@$)); }
+  | range               { $$ = new_prim_range(  mpool(arg), $1, GET_LOC(&@$)); }
   | vec_type exp RPAREN { $$ = new_prim_vec(    mpool(arg), $1 ,$2); }
   | GTPAREN id_list RPAREN  { $$ = new_prim_unpack( mpool(arg), insert_symbol("auto"), $2, GET_LOC(&@$)); }
   | LTPAREN exp RPAREN  { $$ = new_prim_tuple(mpool(arg), $2, GET_LOC(&@$)); }

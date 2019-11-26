@@ -43,8 +43,20 @@ typedef struct {
   Exp       base;
   Array_Sub array;
 } Exp_Array;
-
 ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub);
+
+typedef struct Range_ {
+// one is optionnal
+  Exp start;
+  Exp end;
+} Range;
+AST_NEW(Range*, range, const Exp, const Exp);
+
+typedef struct {
+  Exp       base;
+  Range *range;
+} Exp_Slice;
+ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range*);
 
 struct Var_Decl_ {
   struct Symbol_* xid;
@@ -107,12 +119,12 @@ ANN2(1, 3) ANEW AST_NEW(Arg_List, arg_list, Type_Decl*, const Var_Decl, const Ar
 ANN void free_arg_list(MemPool p, Arg_List);
 
 typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
-               ae_exp_cast, ae_exp_post, ae_exp_call, ae_exp_array,
+               ae_exp_cast, ae_exp_post, ae_exp_call, ae_exp_array, ae_exp_slice,
                ae_exp_if, ae_exp_dot, ae_exp_lambda, ae_exp_typeof
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
-               ae_prim_str, ae_prim_array,
+               ae_prim_str, ae_prim_array, ae_prim_range,
                ae_prim_hack, ae_prim_complex, ae_prim_polar, ae_prim_vec,
                ae_prim_tuple, ae_prim_unpack,
                ae_prim_char, ae_prim_nil
@@ -128,6 +140,7 @@ typedef struct Tuple_ {
   Exp exp;
   struct Vector_ type;
 } Tuple;
+
 ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos);
 
 typedef struct {
@@ -139,6 +152,7 @@ typedef struct {
     m_str chr;
     m_str str;
     Array_Sub array;
+    Range* range;
     Exp exp;
     Vec vec;
     Tuple tuple;
@@ -213,6 +227,7 @@ struct Exp_ {
     Exp_If        exp_if;
     Exp_Dot       exp_dot;
     Exp_Array     exp_array;
+    Exp_Slice     exp_slice;
     Exp_Lambda    exp_lambda;
     Exp_Typeof    exp_typeof;
   } d;
@@ -245,6 +260,7 @@ ANEW AST_NEW(Exp, prim_int, const unsigned long, const loc_t);
 ANEW AST_NEW(Exp, prim_float, const m_float, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_string, const m_str, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);
+ANEW ANN AST_NEW(Exp, prim_range, Range*, const loc_t);
 ANEW AST_NEW(Exp, prim_hack, const Exp);
 ANEW ANN AST_NEW(Exp, prim_vec, const ae_prim_t t, Exp);
 ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);

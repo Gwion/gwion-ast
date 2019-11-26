@@ -35,6 +35,13 @@ AST_NEW(Array_Sub, array_sub, const Exp exp) {
   return a;
 }
 
+AST_NEW(Range*, range, const Exp start, const Exp end) {
+  Range* a = mp_calloc(p, Array_Sub);
+  a->start = start;
+  a->end = end;
+  return a;
+}
+
 Array_Sub prepend_array_sub(const Array_Sub a, const Exp exp) {
   if(exp) {
     exp->next = a->exp;
@@ -64,6 +71,14 @@ AST_NEW(Exp, exp_array, const Exp base, const Array_Sub array) {
   a->meta = ae_meta_var;
   a->d.exp_array.base = base;
   a->d.exp_array.array = array;
+  return a;
+}
+
+AST_NEW(Exp, exp_slice, const Exp base, Range *range) {
+  Exp a = new_exp(p, ae_exp_slice, loc_cpy(p, base->pos));
+  a->meta = ae_meta_var;
+  a->d.exp_slice.base = base;
+  a->d.exp_slice.range = range;
   return a;
 }
 
@@ -177,6 +192,13 @@ AST_NEW(Exp, prim_array, const Array_Sub exp, const loc_t pos) {
   Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_array;
   a->d.prim.d.array = exp;
+  return a;
+}
+
+AST_NEW(Exp, prim_range, Range *range, const loc_t pos) {
+  Exp a = new_prim(p, pos);
+  a->d.prim.prim_type = ae_prim_range;
+  a->d.prim.d.range = range;
   return a;
 }
 

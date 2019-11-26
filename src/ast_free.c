@@ -14,6 +14,14 @@ AST_FREE(Array_Sub, array_sub) {
   mp_free(p, Array_Sub, a);
 }
 
+AST_FREE(Range*, range) {
+  if(a->start)
+    free_exp(p, a->start);
+  if(a->end)
+    free_exp(p, a->end);
+  mp_free(p, Range, a);
+}
+
 ANN AST_FREE(Var_Decl_List, var_decl_list) {
   if(a->next)
     free_var_decl_list(p, a->next);
@@ -27,6 +35,11 @@ ANN AST_FREE(Exp_Lambda*, exp_lambda) {
 
 ANN AST_FREE(Exp_Array*, exp_array) {
   free_array_sub(p, a->array);
+  free_exp(p, a->base);
+}
+
+ANN AST_FREE(Exp_Slice*, exp_slice) {
+  free_range(p, a->range);
   free_exp(p, a->base);
 }
 
@@ -145,6 +158,8 @@ ANN static AST_FREE(Exp_Primary*, prim) {
     free_exp(p, a->d.exp);
   else if(t == ae_prim_array)
     free_array_sub(p, a->d.array);
+  else if(t == ae_prim_range)
+    free_range(p, a->d.range);
   else if(t== ae_prim_complex ||
           t == ae_prim_polar  ||
           t == ae_prim_vec)
