@@ -32,21 +32,22 @@ ANN static Macro pparg_def(struct PPArg_ *ppa, const m_str str) {
 }
 
 ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
-  uint i = 0;
-  char c[strlen(src) + 1];
-  do {
-    if(*src == ')') {
-      c[i] = '\0';
-      return new_macroarg(ppa->hash.p, c);
+  const size_t sz = strlen(src);
+  char buf[sz + 1];
+  for(m_uint i = 0; i < sz; ++i) {
+    const char c= src[i];
+    if(c == ')') {
+      buf[i] = '\0';
+      return new_macroarg(ppa->hash.p, buf);
     }
-    if(*src == ',') {
-      c[i] = '\0';
-      MacroArg arg = new_macroarg(ppa->hash.p, c);
-      arg->next = pparg_arg(ppa, src + 1);
+    if(c == ',') {
+      buf[i] = '\0';
+      MacroArg arg = new_macroarg(ppa->hash.p, buf);
+      arg->next = pparg_arg(ppa, src + i + 1);
       return arg;
     }
-    c[i] = *src;
-  } while(++src && ++i);
+    buf[i] = c;
+  }
   return NULL;
 }
 
