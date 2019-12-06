@@ -133,6 +133,8 @@ ANN Symbol lambda_name(const Scanner*);
 
 %nonassoc NOELSE
 %nonassoc ELSE
+
+%destructor  { free_ast(mpool(arg), $$); } ast
 %%
 
 prg: ast { arg->ast = $$ = $1; }
@@ -520,7 +522,7 @@ post_exp: prim_exp
   | post_exp array_exp
     { $$ = new_exp_array(mpool(arg), $1, $2); }
   | post_exp range
-    { $$ = new_exp_range(mpool(arg), $1, $2); }
+    { $$ = new_exp_slice(mpool(arg), $1, $2); }
   | post_exp call_template call_paren
     { $$ = new_exp_call(mpool(arg), $1, $3);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }

@@ -265,7 +265,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #include <stdlib.h>
 
 ANN Symbol lambda_name(const Scanner *scan) {
-  char c[6 + 1 + num_digit(scan->pos.line) + num_digit(scan->pos.column) + 1];
+  char c[6 + 1 + num_digit(scan->pos.line) + num_digit(scan->pos.column) + 2];
   sprintf(c, "lambda:%u:%u", scan->pos.line, scan->pos.column);
   return insert_symbol(scan->st, c);
 }
