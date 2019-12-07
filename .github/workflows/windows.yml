@@ -14,7 +14,7 @@ jobs:
       run: |
         git clone https://github.com/fennecdjay/gwion-util util
         cd util
-        make USE_DOUBLE=${{ matrix.double }}
+        make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
     - name: clone
       run: git clone https://github.com/fennecdjay/gwion-ast ast
     - uses: actions/checkout@v1
