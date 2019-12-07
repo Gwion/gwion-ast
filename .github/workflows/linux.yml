@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: submodules
       run: |
-        git clone https://fennecdjay/gwion-util util
+        git clone https://github.com/fennecdjay/gwion-util util
         cd util
         make
     - uses: actions/checkout@v1
