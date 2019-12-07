@@ -18,10 +18,12 @@ jobs:
         git clone https://github.com/fennecdjay/gwion-util util
         cd util
         make
-    - uses: actions/checkout@v1
+#    - uses: actions/checkout@v1
+        git clone https://github.com/fennecdjay/gwion-ast ast
+    - name: clone
     - name: make
       env:
          USE_DOUBLE: ${{ matrix.double }}
          CFLAGS: -fsanitize=address -fno-omit-frame-pointer
          LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
-      run: make CC=${{ matrix.cc }}
+      run: cd ast; make CC=${{ matrix.cc }}
