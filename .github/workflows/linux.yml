@@ -19,8 +19,8 @@ jobs:
         cd util
         make
 #    - uses: actions/checkout@v1
-        git clone https://github.com/fennecdjay/gwion-ast ast
     - name: clone
+      run: git clone https://github.com/fennecdjay/gwion-ast ast
     - name: make
       env:
          USE_DOUBLE: ${{ matrix.double }}
