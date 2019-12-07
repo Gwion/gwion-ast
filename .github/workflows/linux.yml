@@ -13,9 +13,12 @@ jobs:
         double: [0, 1]
 
     steps:
-    - uses: actions/checkout@v1
     - name: submodules
-      run: git submodule update --init util
+      run: |
+        git clone https://fennecdjay/gwion-util util
+        cd util
+        make
+    - uses: actions/checkout@v1
     - name: make
       env:
          USE_DOUBLE: ${{ matrix.double }}
