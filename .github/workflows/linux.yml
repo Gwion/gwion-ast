@@ -1,0 +1,24 @@
+
+name: Linux
+
+on: [push]
+
+jobs:
+  build:
+    name: ${{ matrix.cc }} ${{ matrix.double && 'double' || ''}}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+        double: [0, 1]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: submodules
+      run: git submodule update --init util
+    - name: make
+      env:
+         USE_DOUBLE: ${{ matrix.double }}
+         CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+         LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
+      run: make CC=${{ matrix.cc }}
