@@ -17,7 +17,6 @@ jobs:
         make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
     - name: clone
       run: git clone https://github.com/fennecdjay/gwion-ast ast
-    - uses: actions/checkout@v1
     - name: build
       env:
          CFLAGS: -DBUILD_ON_WINDOWS  
