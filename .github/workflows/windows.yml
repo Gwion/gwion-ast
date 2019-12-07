@@ -24,4 +24,5 @@ jobs:
          CFLAGS: -DBUILD_ON_WINDOWS  
          USE_DOUBLE: ${{ matrix.double }}
       run: | 
-        cd ast && make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
+        cd ast;
+        make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
