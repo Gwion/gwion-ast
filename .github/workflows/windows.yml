@@ -11,6 +11,8 @@ jobs:
         double: [0, 1]
     steps:
     - name: deps
+      env:
+         CFLAGS: -DBUILD_ON_WINDOWS  
       run: |
         git clone https://github.com/fennecdjay/gwion-util util
         cd util
