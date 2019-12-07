@@ -20,8 +20,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: build
       env:
+         CFLAGS: -DBUILD_ON_WINDOWS  
          USE_DOUBLE: ${{ matrix.double }}
-         CFLAGS: -fsanitize=address -fno-omit-frame-pointer
-         LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
       run: | 
         cd ast && make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
