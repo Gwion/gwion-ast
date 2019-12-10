@@ -35,7 +35,7 @@ ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
   const size_t sz = strlen(src);
   char buf[sz + 1];
   for(m_uint i = 0; i < sz; ++i) {
-    const char c= src[i];
+    const char c = src[i];
     if(c == ')') {
       buf[i] = '\0';
       return new_macroarg(ppa->hash.p, buf);
@@ -52,15 +52,9 @@ ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
 }
 
 ANN static GwText* pparg_body(struct PPArg_ *ppa, const m_str str) {
-  const ssize_t sz = strlen(str);
-  char body[sz + 1];
-  m_str c = strchr(str, ')');
-  const ssize_t idx = c ? (c - str + 1) : sz;
-  strncpy(body, str, idx);
-  body[idx] = '\0';
   GwText* text = mp_calloc(ppa->hash.p, GwText);
   text->mp = ppa->hash.p;
-  text_add(text, body);
+  text_add(text, str);
   return text;
 }
 
@@ -68,7 +62,7 @@ ANN2(1) static m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   DECL_OB(const Macro, m, = pparg_def(ppa, str))
   const m_str arg = strchr(str, '(');
   if(arg)
-    m->args = pparg_arg(ppa, arg + 1);
+    m->base = pparg_arg(ppa, arg + 1);
   const m_str body = strchr(str, '=');
   if(body)
     m->text = pparg_body(ppa, body + 1);
