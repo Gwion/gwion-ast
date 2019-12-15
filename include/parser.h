@@ -94,63 +94,62 @@ extern int gwion_debug;
     ELLIPSE = 300,
     RARROW = 301,
     BACKSLASH = 302,
-    BACKTICK = 303,
-    NUM = 304,
-    FLOATT = 305,
-    ID = 306,
-    STRING_LIT = 307,
-    CHAR_LIT = 308,
-    PP_COMMENT = 309,
-    PP_INCLUDE = 310,
-    PP_DEFINE = 311,
-    PP_PRAGMA = 312,
-    PP_UNDEF = 313,
-    PP_IFDEF = 314,
-    PP_IFNDEF = 315,
-    PP_ELSE = 316,
-    PP_ENDIF = 317,
-    PP_NL = 318,
-    PLUS = 319,
-    PLUSPLUS = 320,
-    MINUS = 321,
-    MINUSMINUS = 322,
-    TIMES = 323,
-    DIVIDE = 324,
-    PERCENT = 325,
-    DOLLAR = 326,
-    QUESTION = 327,
-    COLON = 328,
-    COLONCOLON = 329,
-    QUESTIONCOLON = 330,
-    ATSYM = 331,
-    GTPAREN = 332,
-    LTPAREN = 333,
-    NEW = 334,
-    SPORK = 335,
-    FORK = 336,
-    TYPEOF = 337,
-    L_HACK = 338,
-    R_HACK = 339,
-    AND = 340,
-    EQ = 341,
-    GE = 342,
-    GT = 343,
-    LE = 344,
-    LT = 345,
-    NEQ = 346,
-    SHIFT_LEFT = 347,
-    SHIFT_RIGHT = 348,
-    S_AND = 349,
-    S_OR = 350,
-    S_XOR = 351,
-    OR = 352,
-    LTMPL = 353,
-    RTMPL = 354,
-    TILDA = 355,
-    EXCLAMATION = 356,
-    DYNOP = 357,
-    UMINUS = 358,
-    UTIMES = 359
+    NUM = 303,
+    FLOATT = 304,
+    ID = 305,
+    STRING_LIT = 306,
+    CHAR_LIT = 307,
+    PP_COMMENT = 308,
+    PP_INCLUDE = 309,
+    PP_DEFINE = 310,
+    PP_PRAGMA = 311,
+    PP_UNDEF = 312,
+    PP_IFDEF = 313,
+    PP_IFNDEF = 314,
+    PP_ELSE = 315,
+    PP_ENDIF = 316,
+    PP_NL = 317,
+    PLUS = 318,
+    PLUSPLUS = 319,
+    MINUS = 320,
+    MINUSMINUS = 321,
+    TIMES = 322,
+    DIVIDE = 323,
+    PERCENT = 324,
+    DOLLAR = 325,
+    QUESTION = 326,
+    COLON = 327,
+    COLONCOLON = 328,
+    QUESTIONCOLON = 329,
+    ATSYM = 330,
+    GTPAREN = 331,
+    LTPAREN = 332,
+    NEW = 333,
+    SPORK = 334,
+    FORK = 335,
+    TYPEOF = 336,
+    L_HACK = 337,
+    R_HACK = 338,
+    AND = 339,
+    EQ = 340,
+    GE = 341,
+    GT = 342,
+    LE = 343,
+    LT = 344,
+    NEQ = 345,
+    SHIFT_LEFT = 346,
+    SHIFT_RIGHT = 347,
+    S_AND = 348,
+    S_OR = 349,
+    S_XOR = 350,
+    OR = 351,
+    LTMPL = 352,
+    RTMPL = 353,
+    TILDA = 354,
+    EXCLAMATION = 355,
+    DYNOP = 356,
+    UMINUS = 357,
+    UTIMES = 358
   };
 #endif
 /* Tokens.  */
@@ -199,63 +198,62 @@ extern int gwion_debug;
 #define ELLIPSE 300
 #define RARROW 301
 #define BACKSLASH 302
-#define BACKTICK 303
-#define NUM 304
-#define FLOATT 305
-#define ID 306
-#define STRING_LIT 307
-#define CHAR_LIT 308
-#define PP_COMMENT 309
-#define PP_INCLUDE 310
-#define PP_DEFINE 311
-#define PP_PRAGMA 312
-#define PP_UNDEF 313
-#define PP_IFDEF 314
-#define PP_IFNDEF 315
-#define PP_ELSE 316
-#define PP_ENDIF 317
-#define PP_NL 318
-#define PLUS 319
-#define PLUSPLUS 320
-#define MINUS 321
-#define MINUSMINUS 322
-#define TIMES 323
-#define DIVIDE 324
-#define PERCENT 325
-#define DOLLAR 326
-#define QUESTION 327
-#define COLON 328
-#define COLONCOLON 329
-#define QUESTIONCOLON 330
-#define ATSYM 331
-#define GTPAREN 332
-#define LTPAREN 333
-#define NEW 334
-#define SPORK 335
-#define FORK 336
-#define TYPEOF 337
-#define L_HACK 338
-#define R_HACK 339
-#define AND 340
-#define EQ 341
-#define GE 342
-#define GT 343
-#define LE 344
-#define LT 345
-#define NEQ 346
-#define SHIFT_LEFT 347
-#define SHIFT_RIGHT 348
-#define S_AND 349
-#define S_OR 350
-#define S_XOR 351
-#define OR 352
-#define LTMPL 353
-#define RTMPL 354
-#define TILDA 355
-#define EXCLAMATION 356
-#define DYNOP 357
-#define UMINUS 358
-#define UTIMES 359
+#define NUM 303
+#define FLOATT 304
+#define ID 305
+#define STRING_LIT 306
+#define CHAR_LIT 307
+#define PP_COMMENT 308
+#define PP_INCLUDE 309
+#define PP_DEFINE 310
+#define PP_PRAGMA 311
+#define PP_UNDEF 312
+#define PP_IFDEF 313
+#define PP_IFNDEF 314
+#define PP_ELSE 315
+#define PP_ENDIF 316
+#define PP_NL 317
+#define PLUS 318
+#define PLUSPLUS 319
+#define MINUS 320
+#define MINUSMINUS 321
+#define TIMES 322
+#define DIVIDE 323
+#define PERCENT 324
+#define DOLLAR 325
+#define QUESTION 326
+#define COLON 327
+#define COLONCOLON 328
+#define QUESTIONCOLON 329
+#define ATSYM 330
+#define GTPAREN 331
+#define LTPAREN 332
+#define NEW 333
+#define SPORK 334
+#define FORK 335
+#define TYPEOF 336
+#define L_HACK 337
+#define R_HACK 338
+#define AND 339
+#define EQ 340
+#define GE 341
+#define GT 342
+#define LE 343
+#define LT 344
+#define NEQ 345
+#define SHIFT_LEFT 346
+#define SHIFT_RIGHT 347
+#define S_AND 348
+#define S_OR 349
+#define S_XOR 350
+#define OR 351
+#define LTMPL 352
+#define RTMPL 353
+#define TILDA 354
+#define EXCLAMATION 355
+#define DYNOP 356
+#define UMINUS 357
+#define UTIMES 358
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -291,7 +289,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 295 "include/parser.h"
+#line 293 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

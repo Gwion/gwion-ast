@@ -66,7 +66,7 @@ ANN Symbol lambda_name(const Scanner*);
   OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
-  RARROW "->" BACKSLASH "\\" BACKTICK "`"
+  RARROW "->" BACKSLASH "\\"
 
 %token<lval> NUM "<integer>"
 %type<ival> atsym decl_flag vec_type flow breaks
@@ -91,7 +91,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<type_decl> type_decl000 type_decl00  type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp _typeof_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
@@ -411,7 +411,7 @@ decl_flag: EXCLAMATION { $$ = ae_flag_nonnull; } | atsym;
 
 type_decl000
   : dot_decl { $$ = new_type_decl(mpool(arg), $1); }
-  | BACKTICK exp BACKTICK { $$ = new_type_decl2(mpool(arg), $2); }
+  | _typeof_exp { $$ = new_type_decl2(mpool(arg), $1); }
   ;
 
 type_decl00
@@ -489,7 +489,8 @@ add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool
 mul_exp: dur_exp | mul_exp mul_op dur_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 dur_exp: typeof_exp | dur_exp "::" cast_exp         { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
-typeof_exp: cast_exp | TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg), $3); }
+_typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg), $3); };
+typeof_exp: cast_exp | _typeof_exp
 
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };

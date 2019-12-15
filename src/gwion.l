@@ -182,7 +182,6 @@ ANN static m_str macro_data(void* data, const m_bool);
 "union"                             { adjust(yyscanner); return UNION; }
 
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
-"`"                                { adjust(yyscanner); return BACKTICK; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
