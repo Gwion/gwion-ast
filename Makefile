@@ -17,7 +17,6 @@ ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
 CFLAGS += -DYY_NO_UNISTD_H
 endif
-CFLAGS+=-DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700
 endif
 
 obj    := $(src:.c=.o)
