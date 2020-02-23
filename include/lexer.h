@@ -461,6 +461,7 @@ void yyfree ( void * , yyscan_t yyscanner );
 #define skip 5
 #define get_arg 6
 #define pragma 7
+#define interp 8
 
 #endif
 
@@ -710,9 +711,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 260 "src/gwion.l"
+#line 289 "src/gwion.l"
 
 
-#line 716 "include/lexer.h"
+#line 717 "include/lexer.h"
 #undef gwion_IN_HEADER
 #endif /* gwion_HEADER_H */

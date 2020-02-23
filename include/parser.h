@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.4.2.  */
+/* A Bison parser, made by GNU Bison 3.5.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -94,62 +94,65 @@ extern int gwion_debug;
     ELLIPSE = 300,
     RARROW = 301,
     BACKSLASH = 302,
-    NUM = 303,
-    FLOATT = 304,
-    ID = 305,
-    STRING_LIT = 306,
-    CHAR_LIT = 307,
-    PP_COMMENT = 308,
-    PP_INCLUDE = 309,
-    PP_DEFINE = 310,
-    PP_PRAGMA = 311,
-    PP_UNDEF = 312,
-    PP_IFDEF = 313,
-    PP_IFNDEF = 314,
-    PP_ELSE = 315,
-    PP_ENDIF = 316,
-    PP_NL = 317,
-    PLUS = 318,
-    PLUSPLUS = 319,
-    MINUS = 320,
-    MINUSMINUS = 321,
-    TIMES = 322,
-    DIVIDE = 323,
-    PERCENT = 324,
-    DOLLAR = 325,
-    QUESTION = 326,
-    COLON = 327,
-    COLONCOLON = 328,
-    QUESTIONCOLON = 329,
-    ATSYM = 330,
-    GTPAREN = 331,
-    LTPAREN = 332,
-    NEW = 333,
-    SPORK = 334,
-    FORK = 335,
-    TYPEOF = 336,
-    L_HACK = 337,
-    R_HACK = 338,
-    AND = 339,
-    EQ = 340,
-    GE = 341,
-    GT = 342,
-    LE = 343,
-    LT = 344,
-    NEQ = 345,
-    SHIFT_LEFT = 346,
-    SHIFT_RIGHT = 347,
-    S_AND = 348,
-    S_OR = 349,
-    S_XOR = 350,
-    OR = 351,
-    LTMPL = 352,
-    RTMPL = 353,
-    TILDA = 354,
-    EXCLAMATION = 355,
-    DYNOP = 356,
-    UMINUS = 357,
-    UTIMES = 358
+    BACKTICK = 303,
+    NUM = 304,
+    FLOATT = 305,
+    ID = 306,
+    STRING_LIT = 307,
+    CHAR_LIT = 308,
+    INTERP_LIT = 309,
+    INTERP_EXP = 310,
+    PP_COMMENT = 311,
+    PP_INCLUDE = 312,
+    PP_DEFINE = 313,
+    PP_PRAGMA = 314,
+    PP_UNDEF = 315,
+    PP_IFDEF = 316,
+    PP_IFNDEF = 317,
+    PP_ELSE = 318,
+    PP_ENDIF = 319,
+    PP_NL = 320,
+    PLUS = 321,
+    PLUSPLUS = 322,
+    MINUS = 323,
+    MINUSMINUS = 324,
+    TIMES = 325,
+    DIVIDE = 326,
+    PERCENT = 327,
+    DOLLAR = 328,
+    QUESTION = 329,
+    COLON = 330,
+    COLONCOLON = 331,
+    QUESTIONCOLON = 332,
+    ATSYM = 333,
+    GTPAREN = 334,
+    LTPAREN = 335,
+    NEW = 336,
+    SPORK = 337,
+    FORK = 338,
+    TYPEOF = 339,
+    L_HACK = 340,
+    R_HACK = 341,
+    AND = 342,
+    EQ = 343,
+    GE = 344,
+    GT = 345,
+    LE = 346,
+    LT = 347,
+    NEQ = 348,
+    SHIFT_LEFT = 349,
+    SHIFT_RIGHT = 350,
+    S_AND = 351,
+    S_OR = 352,
+    S_XOR = 353,
+    OR = 354,
+    LTMPL = 355,
+    RTMPL = 356,
+    TILDA = 357,
+    EXCLAMATION = 358,
+    DYNOP = 359,
+    UMINUS = 360,
+    UTIMES = 361
   };
 #endif
 /* Tokens.  */
@@ -198,62 +201,65 @@ extern int gwion_debug;
 #define ELLIPSE 300
 #define RARROW 301
 #define BACKSLASH 302
-#define NUM 303
-#define FLOATT 304
-#define ID 305
-#define STRING_LIT 306
-#define CHAR_LIT 307
-#define PP_COMMENT 308
-#define PP_INCLUDE 309
-#define PP_DEFINE 310
-#define PP_PRAGMA 311
-#define PP_UNDEF 312
-#define PP_IFDEF 313
-#define PP_IFNDEF 314
-#define PP_ELSE 315
-#define PP_ENDIF 316
-#define PP_NL 317
-#define PLUS 318
-#define PLUSPLUS 319
-#define MINUS 320
-#define MINUSMINUS 321
-#define TIMES 322
-#define DIVIDE 323
-#define PERCENT 324
-#define DOLLAR 325
-#define QUESTION 326
-#define COLON 327
-#define COLONCOLON 328
-#define QUESTIONCOLON 329
-#define ATSYM 330
-#define GTPAREN 331
-#define LTPAREN 332
-#define NEW 333
-#define SPORK 334
-#define FORK 335
-#define TYPEOF 336
-#define L_HACK 337
-#define R_HACK 338
-#define AND 339
-#define EQ 340
-#define GE 341
-#define GT 342
-#define LE 343
-#define LT 344
-#define NEQ 345
-#define SHIFT_LEFT 346
-#define SHIFT_RIGHT 347
-#define S_AND 348
-#define S_OR 349
-#define S_XOR 350
-#define OR 351
-#define LTMPL 352
-#define RTMPL 353
-#define TILDA 354
-#define EXCLAMATION 355
-#define DYNOP 356
-#define UMINUS 357
-#define UTIMES 358
+#define BACKTICK 303
+#define NUM 304
+#define FLOATT 305
+#define ID 306
+#define STRING_LIT 307
+#define CHAR_LIT 308
+#define INTERP_LIT 309
+#define INTERP_EXP 310
+#define PP_COMMENT 311
+#define PP_INCLUDE 312
+#define PP_DEFINE 313
+#define PP_PRAGMA 314
+#define PP_UNDEF 315
+#define PP_IFDEF 316
+#define PP_IFNDEF 317
+#define PP_ELSE 318
+#define PP_ENDIF 319
+#define PP_NL 320
+#define PLUS 321
+#define PLUSPLUS 322
+#define MINUS 323
+#define MINUSMINUS 324
+#define TIMES 325
+#define DIVIDE 326
+#define PERCENT 327
+#define DOLLAR 328
+#define QUESTION 329
+#define COLON 330
+#define COLONCOLON 331
+#define QUESTIONCOLON 332
+#define ATSYM 333
+#define GTPAREN 334
+#define LTPAREN 335
+#define NEW 336
+#define SPORK 337
+#define FORK 338
+#define TYPEOF 339
+#define L_HACK 340
+#define R_HACK 341
+#define AND 342
+#define EQ 343
+#define GE 344
+#define GT 345
+#define LE 346
+#define LT 347
+#define NEQ 348
+#define SHIFT_LEFT 349
+#define SHIFT_RIGHT 350
+#define S_AND 351
+#define S_OR 352
+#define S_XOR 353
+#define OR 354
+#define LTMPL 355
+#define RTMPL 356
+#define TILDA 357
+#define EXCLAMATION 358
+#define DYNOP 359
+#define UMINUS 360
+#define UTIMES 361
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -289,7 +295,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 293 "include/parser.h"
+#line 299 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

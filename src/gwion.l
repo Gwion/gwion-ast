@@ -87,7 +87,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-%x define define_arg_start define_arg skip get_arg pragma
+%x define define_arg_start define_arg skip get_arg pragma interp
 %%
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
@@ -161,6 +161,31 @@ ANN static m_str macro_data(void* data, const m_bool);
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
 <comment>.       { GWYY_COMMENT;  }
 
+<interp>"`" {
+  adjust(yyscanner);
+  Scanner *scan = yyget_extra(yyscanner);
+  --scan->interp_state;
+  yytext[yyleng - 1] = '\0';
+  yylval->sval = alloc_str(yyscanner, yytext);
+  BEGIN(INITIAL);
+  return INTERP_LIT;
+}
+"`" {
+if(strlen(yytext) > 1)
+  adjust(yyscanner);
+  Scanner *scan = yyget_extra(yyscanner);
+  ++scan->interp_state;
+  BEGIN(interp);
+  return BACKTICK;
+}
+<interp>"${" {
+  adjust(yyscanner); BEGIN(INITIAL);
+  yytext[yyleng - 2] = '\0';
+  yylval->sval = alloc_str(yyscanner, yytext);
+  return INTERP_LIT;
+}
+<interp>. { yymore(); adjust(yyscanner); continue; }
+
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 {SPACE}                             { adjust(yyscanner); continue; }
 {OP}{1} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
@@ -187,7 +212,14 @@ ANN static m_str macro_data(void* data, const m_bool);
 "["                                 { adjust(yyscanner); return LBRACK; }
 "]"                                 { adjust(yyscanner); return RBRACK; }
 "{"                                 { adjust(yyscanner); return LBRACE; }
-"}"                                 { adjust(yyscanner); return RBRACE; }
+"}"                                 {
+  adjust(yyscanner);
+  Scanner *scan = yyget_extra(yyscanner);
+  if(!scan->interp_state)
+   return RBRACE;
+  BEGIN(interp);
+  return INTERP_EXP;
+}
 
 "class"                             { adjust(yyscanner); return CLASS;}
 "operator"                          { adjust(yyscanner); return OPERATOR;}

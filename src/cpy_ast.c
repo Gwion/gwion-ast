@@ -208,6 +208,10 @@ ANN static void cpy_exp_typeof(MemPool p, Exp_Typeof *a, const Exp_Typeof *src) 
   a->exp = cpy_exp(p, src->exp);
 }
 
+ANN static void cpy_exp_interp(MemPool p, Exp_Interp *a, const Exp_Interp *src) {
+  a->exp = cpy_exp(p, src->exp);
+}
+
 ANN static Exp cpy_exp(MemPool p, const Exp src) {
   Exp a = mp_calloc(p, Exp);
   if(src->next)
@@ -251,6 +255,9 @@ ANN static Exp cpy_exp(MemPool p, const Exp src) {
       break;
     case ae_exp_typeof:
       cpy_exp_typeof(p, &a->d.exp_typeof, &src->d.exp_typeof);
+      break;
+    case ae_exp_interp:
+      cpy_exp_interp(p, &a->d.exp_interp, &src->d.exp_interp);
       break;
   }
   a->exp_type = src->exp_type;

@@ -1,4 +1,4 @@
- #include "gwion_util.h"
+#include "gwion_util.h"
 #include "gwion_ast.h"
 
 ANN AST_FREE(Var_Decl, var_decl) {
@@ -169,6 +169,10 @@ ANN static AST_FREE(Exp_Primary*, prim) {
 }
 
 ANN static AST_FREE(Exp_Typeof*, exp_typeof) {
+  free_exp(p, a->exp);
+}
+
+ANN static AST_FREE(Exp_Interp*, exp_interp) {
   free_exp(p, a->exp);
 }
 

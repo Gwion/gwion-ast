@@ -66,12 +66,12 @@ ANN Symbol lambda_name(const Scanner*);
   OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
-  RARROW "->" BACKSLASH "\\"
+  RARROW "->" BACKSLASH "\\" BACKTICK "`"
 
 %token<lval> NUM "<integer>"
 %type<ival> atsym decl_flag vec_type flow breaks
 %token<fval> FLOATT
-%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>"
+%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_LIT "<interp string>" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
@@ -89,7 +89,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl000 type_decl00  type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
-%type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren
+%type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp _typeof_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
@@ -535,6 +535,20 @@ vec_type: SHARPPAREN   { $$ = ae_prim_complex; }
         | PERCENTPAREN { $$ = ae_prim_polar;   }
         | ATPAREN      { $$ = ae_prim_vec;     };
 
+interp_exp: INTERP_LIT { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); }
+      | exp INTERP_EXP { $$ = $1; }
+
+interp: interp interp_exp
+{
+  Exp next = $1;
+  while(next->next) {
+    if(!next->next)
+      break;
+  next = next->next; }
+  next->next = $2; $$ = $1;
+}
+    | interp_exp { $$ = $1; }
+
 prim_exp
   : id                  { $$ = new_prim_id(     mpool(arg), $1, GET_LOC(&@$)); }
   | NUM                 { $$ = new_prim_int(    mpool(arg), $1, GET_LOC(&@$)); }
@@ -550,5 +564,6 @@ prim_exp
   | LPAREN exp RPAREN   { $$ = $2;                }
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     GET_LOC(&@$)); }
+  | BACKTICK interp       { $$ = new_exp_interp(mpool(arg),     $2); }
   ;
 %%

@@ -88,6 +88,12 @@ AST_NEW(Exp, exp_typeof, Exp exp) {
   return a;
 }
 
+AST_NEW(Exp, exp_interp, Exp exp) {
+  Exp a = new_exp(p, ae_exp_interp, loc_cpy(p, exp->pos));
+  a->d.exp_interp.exp = exp;
+  return a;
+}
+
 AST_NEW(ID_List, id_list, struct Symbol_* xid, const loc_t pos) {
   ID_List a = mp_calloc(p, ID_List);
   a->xid = xid;

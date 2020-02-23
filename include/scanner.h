@@ -8,6 +8,7 @@ typedef struct Scanner_ {
   struct PP_* pp;
   struct PPArg_ *ppa;
   struct pos_t pos;
+  int interp_state;
 } Scanner;
 
 #endif

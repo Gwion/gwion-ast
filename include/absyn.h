@@ -120,7 +120,7 @@ ANN void free_arg_list(MemPool p, Arg_List);
 
 typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
                ae_exp_cast, ae_exp_post, ae_exp_call, ae_exp_array, ae_exp_slice,
-               ae_exp_if, ae_exp_dot, ae_exp_lambda, ae_exp_typeof
+               ae_exp_if, ae_exp_dot, ae_exp_lambda, ae_exp_typeof, ae_exp_interp
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
@@ -210,6 +210,9 @@ typedef struct {
 typedef struct {
   Exp exp;
 } Exp_Typeof;
+typedef struct {
+  Exp exp;
+} Exp_Interp;
 
 struct Exp_ {
   struct Type_* type;
@@ -230,6 +233,7 @@ struct Exp_ {
     Exp_Slice     exp_slice;
     Exp_Lambda    exp_lambda;
     Exp_Typeof    exp_typeof;
+    Exp_Interp    exp_interp;
   } d;
   loc_t pos;
   ae_exp_t exp_type;
@@ -278,6 +282,7 @@ ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp);
 ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*);
 ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt);
 ANEW ANN AST_NEW(Exp, exp_typeof, Exp exp);
+ANEW ANN AST_NEW(Exp, exp_interp, Exp exp);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
 
 static inline Exp take_exp(const Exp exp, const m_uint n) {
