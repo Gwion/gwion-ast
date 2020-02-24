@@ -67,4 +67,4 @@ uninstall: translation-uninstall
 	rm ${DESTDIR}/${PREFIX}/bin/lib${PACKAGE}.a
 
 include $(wildcard .d/*.d)
-include ${UTIL_DIR}/intl.mk
+include ${UTIL_DIR}/locale.mk
