@@ -128,6 +128,9 @@ ANN Symbol lambda_name(const Scanner*);
 %left "=="  "!="
 %left "&&"
 %left "||"
+%left LPAREN RPAREN
+%left LBRACK RBRACK
+%left LBRACE RBRACE
 %right "?:" "::"
 %right "="
 
