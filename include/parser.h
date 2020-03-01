@@ -152,8 +152,7 @@ extern int gwion_debug;
     EXCLAMATION = 358,
     DYNOP = 359,
     UMINUS = 360,
-    UTIMES = 361,
-    NO_PP_ELSE = 363
+    UTIMES = 361
   };
 #endif
 /* Tokens.  */
@@ -261,7 +260,6 @@ extern int gwion_debug;
 #define DYNOP 359
 #define UMINUS 360
 #define UTIMES 361
-#define NO_PP_ELSE 363
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -297,7 +295,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 301 "include/parser.h"
+#line 299 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
