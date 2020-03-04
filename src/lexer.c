@@ -1021,7 +1021,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #define GWYY_DEFINE  BEGIN(INITIAL); GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL);
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
 #define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) \
-{ const m_bool ret = has_macro(yyscanner, a); xfree(a); if(ret < 0) yyterminate(); if(ret)BEGIN(skip); }
+{ const m_bool ret = has_macro(yyscanner, a); xfree(a); if(ret < 0) yyterminate(); if(ret) BEGIN(skip); }
 #define GWYY_ELSE    GWYY_LINT(NULL, PP_ELSE) BEGIN(macro_toggle(yyscanner));
 #define GWYY_ENDIF   GWYY_LINT(NULL, PP_ENDIF) macro_end(yyscanner);
 #line 1027 "src/lexer.c"
@@ -3176,7 +3176,7 @@ static inline m_bool scan_rem_macro(Scanner *scan, const m_str id) {
       vector_add(&scan->pp->global_undef, (vtype)sym);
     return ret;
   }
-  return GW_ERROR;
+  return GW_OK;
 }
 
 static m_bool rem_macro(void* data, const m_str str) {
