@@ -196,11 +196,6 @@ if(strlen(yytext) > 1)
 ","                                 { adjust(yyscanner); return COMMA;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
-"#("                                { adjust(yyscanner); return SHARPPAREN;}
-"%("                                { adjust(yyscanner); return PERCENTPAREN;}
-"@("                                { adjust(yyscanner); return ATPAREN;}
-">("                                { adjust(yyscanner); return GTPAREN;}
-"<("                                { adjust(yyscanner); return LTPAREN;}
 "new"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
 "spork"                             { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
 "fork"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }
@@ -235,6 +230,8 @@ if(strlen(yytext) > 1)
 "protect"                           { adjust(yyscanner); return PROTECT;}
 "private"                           { adjust(yyscanner); return PRIVATE;}
 "const"                             { adjust(yyscanner); return CONSTT;}
+"ref"                               { adjust(yyscanner); return REF;}
+"nonnull"                               { adjust(yyscanner); return NONNULL;}
 
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}
@@ -254,6 +251,7 @@ if(strlen(yytext) > 1)
 "enum"                              { adjust(yyscanner); return ENUM;}
 "typeof"                            { adjust(yyscanner); return TYPEOF;}
 "auto"                              { adjust(yyscanner); return AUTO;}
+"varloop"                              { adjust(yyscanner); return VARLOOP;}
 "##" { adjust(yyscanner); return PASTE; }
 "#"[A-Za-z_][A-Za-z0-9_]*           {
   adjust(yyscanner);
@@ -273,6 +271,7 @@ if(strlen(yytext) > 1)
 0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
 [0-9]+{IS}?                         { adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
 ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
+@[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID; }
 [A-Za-z_][A-Za-z0-9_]*              {
   adjust(yyscanner);
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);

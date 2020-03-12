@@ -208,46 +208,12 @@ AST_NEW(Exp, prim_range, Range *range, const loc_t pos) {
   return a;
 }
 
-AST_NEW(Exp, prim_vec, const ae_prim_t t, Exp e) {
-  Exp a = new_prim(p, loc_cpy(p, e->pos));
-  a->d.prim.prim_type = t;
-  a->d.prim.d.vec.exp = e;
-  do ++a->d.prim.d.vec.dim;
-  while((e = e->next));
-  return a;
-}
-
-AST_NEW(Exp, prim_tuple, const Exp e, const loc_t pos) {
-  Exp a = new_prim(p, loc_cpy(p, pos));
-  a->d.prim.prim_type = ae_prim_tuple;
-  a->d.prim.d.tuple.exp = e;
-  return a;
-}
-
 ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
   const ID_List ilist = new_id_list(p, type, loc_cpy(p, pos));
   Type_Decl *td = new_type_decl(p, ilist);
   const Var_Decl var = new_var_decl(p, name, NULL, loc_cpy(p, pos));
   const Var_Decl_List vlist = new_var_decl_list(p, var, NULL);
   return new_exp_decl(p, td, vlist);
-}
-
-AST_NEW(Exp, prim_unpack, const Symbol type, const ID_List l, const loc_t pos) {
-  Exp a = new_prim(p, pos);
-  a->d.prim.prim_type = ae_prim_unpack;
-  const Exp base = strcmp(s_name(l->xid), "_") ?
-    decl_from_id(p, type, l->xid, pos) : new_prim_nil(p, loc_cpy(p, pos));
-  Exp e = base;
-  ID_List list = l->next;
-  while(list) {
-    if(strcmp(s_name(list->xid), "_"))
-      e = (e->next = decl_from_id(p, type, list->xid, pos));
-    else
-      e = (e->next = new_prim_nil(p, loc_cpy(p, pos)));
-    list = list->next;
-  }
-  a->d.prim.d.tuple.exp = base;
-  return a;
 }
 
 static inline AST_NEW(Exp, exp_unary_base, const Symbol oper, const loc_t pos)  {
@@ -404,6 +370,13 @@ AST_NEW(Stmt, stmt_flow, const ae_stmt_t type, const Exp cond, const Stmt body, 
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond = cond;
   a->d.stmt_flow.body = body;
+  return a;
+}
+
+AST_NEW(Stmt, stmt_varloop, const Exp exp, const Stmt body) {
+  Stmt a = new_stmt(p, ae_stmt_varloop, loc_cpy(p, exp->pos));
+  a->d.stmt_varloop.exp = exp;
+  a->d.stmt_varloop.body = body;
   return a;
 }
 

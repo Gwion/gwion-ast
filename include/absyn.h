@@ -103,11 +103,6 @@ struct Type_List_  {
 ANN2(1, 2) ANEW AST_NEW(Type_List, type_list, Type_Decl*, const Type_List);
 ANN void free_type_list(MemPool p, Type_List);
 
-typedef struct {
-  Exp    exp;
-  m_uint dim;
-} Vec;
-
 struct Arg_List_ {
   Type_Decl* td;
   Var_Decl var_decl;
@@ -125,9 +120,7 @@ typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
                ae_prim_str, ae_prim_array, ae_prim_range,
-               ae_prim_hack, ae_prim_complex, ae_prim_polar, ae_prim_vec,
-               ae_prim_tuple, ae_prim_unpack,
-               ae_prim_char, ae_prim_nil
+               ae_prim_hack, ae_prim_char, ae_prim_nil
              } ae_prim_t;
 
 typedef struct {
@@ -135,11 +128,6 @@ typedef struct {
   struct Type_* type;
   Var_Decl_List list;
 } Exp_Decl;
-
-typedef struct Tuple_ {
-  Exp exp;
-  struct Vector_ type;
-} Tuple;
 
 ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos);
 
@@ -154,8 +142,6 @@ typedef struct {
     Array_Sub array;
     Range* range;
     Exp exp;
-    Vec vec;
-    Tuple tuple;
   } d;
   ae_prim_t prim_type;
 } Exp_Primary;
@@ -266,11 +252,8 @@ ANEW ANN AST_NEW(Exp, prim_string, const m_str, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_range, Range*, const loc_t);
 ANEW AST_NEW(Exp, prim_hack, const Exp);
-ANEW ANN AST_NEW(Exp, prim_vec, const ae_prim_t t, Exp);
 ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);
 ANEW AST_NEW(Exp, prim_nil, const loc_t);
-ANEW Exp new_prim_tuple(MemPool, const Exp, const loc_t);
-ANEW Exp new_prim_unpack(MemPool, const Symbol, const ID_List, const loc_t);
 ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List);
 ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp);
 ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol);
@@ -304,13 +287,14 @@ ANN2(1, 2) ANEW AST_NEW(Decl_List, decl_list, Exp d, Decl_List l);
 ANN void free_decl_list(MemPool p, Decl_List);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
-               ae_stmt_if, ae_stmt_code, ae_stmt_break,
+               ae_stmt_if, ae_stmt_code, ae_stmt_varloop, ae_stmt_break,
                ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump, ae_stmt_pp
              } ae_stmt_t;
 
 typedef struct Stmt_Exp_     * Stmt_Exp;
 typedef struct Stmt_Code_    * Stmt_Code;
 typedef struct Stmt_For_     * Stmt_For;
+typedef struct Stmt_VarLoop_ * Stmt_VarLoop;
 typedef struct Stmt_Flow_    * Stmt_Flow;
 typedef struct Stmt_Auto_    * Stmt_Auto;
 typedef struct Stmt_Loop_    * Stmt_Loop;
@@ -321,6 +305,11 @@ typedef struct Stmt_PP_      * Stmt_PP;
 
 struct Stmt_Exp_ {
   Exp val;
+};
+
+struct Stmt_VarLoop_ {
+  Exp  exp;
+  Stmt body;
 };
 
 struct Stmt_Flow_ {
@@ -460,6 +449,7 @@ struct Stmt_ {
     struct Stmt_Exp_        stmt_exp;
     struct Stmt_Code_       stmt_code;
     struct Stmt_Flow_       stmt_flow;
+    struct Stmt_VarLoop_    stmt_varloop;
     struct Stmt_Loop_       stmt_loop;
     struct Stmt_For_        stmt_for;
     struct Stmt_Auto_       stmt_auto;
@@ -481,6 +471,7 @@ ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp);
 ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List);
 ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool);
+ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt);
 ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_auto, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt);

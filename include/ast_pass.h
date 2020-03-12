@@ -10,9 +10,7 @@ const _##prefix##_prim_func prefix##_prim_func[] = {                            
   (_##prefix##_prim_func)prefix##_prim_id,     (_##prefix##_prim_func)prefix##_prim_num,        \
   (_##prefix##_prim_func)prefix##_prim_float,  (_##prefix##_prim_func)prefix##_prim_str,        \
   (_##prefix##_prim_func)prefix##_prim_array,  (_##prefix##_prim_func)prefix##_prim_range,      \
-  (_##prefix##_prim_func)prefix##_prim_hack,   (_##prefix##_prim_func)prefix##_prim_complex,    \
-  (_##prefix##_prim_func)prefix##_prim_polar,  (_##prefix##_prim_func)prefix##_prim_vec,        \
-  (_##prefix##_prim_func)prefix##_prim_tuple,  (_##prefix##_prim_func)prefix##_prim_unpack,     \
+  (_##prefix##_prim_func)prefix##_prim_hack,   \
   (_##prefix##_prim_func)prefix##_prim_char,   (_##prefix##_prim_func)prefix##_prim_nil         \
 };
 
@@ -35,6 +33,7 @@ const _##prefix##_stmt_func prefix##_stmt_func[] = {                            
   (_##prefix##_stmt_func)prefix##_stmt_until,  (_##prefix##_stmt_func)prefix##_stmt_for,        \
   (_##prefix##_stmt_func)prefix##_stmt_auto,   (_##prefix##_stmt_func)prefix##_stmt_loop,       \
   (_##prefix##_stmt_func)prefix##_stmt_if,     (_##prefix##_stmt_func)prefix##_stmt_code,       \
+  (_##prefix##_stmt_func)prefix##_stmt_varloop,  \
   (_##prefix##_stmt_func)prefix##_stmt_break,  (_##prefix##_stmt_func)prefix##_stmt_continue,   \
   (_##prefix##_stmt_func)prefix##_stmt_return, (_##prefix##_stmt_func)prefix##_stmt_match,      \
   (_##prefix##_stmt_func)prefix##_stmt_jump,   (_##prefix##_stmt_func)prefix##_stmt_pp          \

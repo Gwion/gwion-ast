@@ -55,7 +55,6 @@ ANN Symbol lambda_name(const Scanner*);
 
 %token SEMICOLON ";" COMMA ","
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
-  PERCENTPAREN "%(" SHARPPAREN "#(" ATPAREN "@("
   FUNCTION "fun"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
@@ -65,18 +64,19 @@ ANN Symbol lambda_name(const Scanner*);
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
   TYPEDEF "typedef"
-  NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..."
-  RARROW "->" BACKSLASH "\\" BACKTICK "`"
+  NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
+  RARROW "->" BACKSLASH "\\" BACKTICK "`" OPID
+  REF "ref" NONNULL "nonnull"
 
 %token<lval> NUM "<integer>"
-%type<ival> atsym decl_flag vec_type flow breaks
+%type<ival> ref decl_flag flow breaks
 %token<fval> FLOATT
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_LIT "<interp string>" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
-%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op
+%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID "@<operator id>"
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
-  DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:" ATSYM "@" GTPAREN ">(" LTPAREN "<("
+  DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
@@ -95,7 +95,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt
 %type<stmt> match_case_stmt label_stmt goto_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
@@ -242,6 +242,7 @@ stmt
   | match_stmt
   | jump_stmt
   | stmt_pp
+  | varloop_stmt
   ;
 
 id
@@ -299,11 +300,13 @@ loop_stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7); }
-  | FOR LPAREN AUTO atsym id COLON binary_exp RPAREN stmt
+  | FOR LPAREN AUTO ref id COLON binary_exp RPAREN stmt
       { $$ = new_stmt_auto(mpool(arg), $5, $7, $9); $$->d.stmt_auto.is_ptr = $4; }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5); }
   ;
+
+varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3); }
 
 selection_stmt
   : IF LPAREN exp RPAREN stmt %prec NOELSE
@@ -396,18 +399,13 @@ func_def
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
-  | OPERATOR ATSYM id type_decl_empty func_args RPAREN code_stmt
-{
-  const m_str str = s_name($3);
-  char c[strlen(str) + 2];
-  c[0] = '@';
-  strcpy(c + 1, str);
-  const Symbol sym = insert_symbol(c);
- $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $4, sym, $5), $7, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
-};
+  | OPERATOR OPID type_decl_empty func_args RPAREN code_stmt
+    {
+ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $4), $6, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
+    };
 
-atsym: { $$ = 0; } | ATSYM { $$ = ae_flag_ref; };
-decl_flag: EXCLAMATION { $$ = ae_flag_nonnull; } | atsym;
+ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
+decl_flag: NONNULL { $$ = ae_flag_nonnull; } | ref;
 
 type_decl000
   : dot_decl { $$ = new_type_decl(mpool(arg), $1); }
@@ -425,6 +423,7 @@ type_decl0
 
 type_decl: type_decl0 { $$ = $1; }
   | CONSTT type_decl0 { $$ = $2; SET_FLAG($$, const); };
+  | NONNULL type_decl0 { $$ = $2; SET_FLAG($$, nonnull); };
 
 decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
@@ -531,10 +530,6 @@ post_exp: prim_exp
     { $$ = new_exp_post(mpool(arg), $1, $2); } | dot_exp { $$ = $1; }
   ;
 
-vec_type: SHARPPAREN   { $$ = ae_prim_complex; }
-        | PERCENTPAREN { $$ = ae_prim_polar;   }
-        | ATPAREN      { $$ = ae_prim_vec;     };
-
 interp_exp: INTERP_LIT { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); }
       | exp INTERP_EXP { $$ = $1; }
 
@@ -557,9 +552,6 @@ prim_exp
   | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, GET_LOC(&@$)); }
   | array               { $$ = new_prim_array(  mpool(arg), $1, GET_LOC(&@$)); }
   | range               { $$ = new_prim_range(  mpool(arg), $1, GET_LOC(&@$)); }
-  | vec_type exp RPAREN { $$ = new_prim_vec(    mpool(arg), $1 ,$2); }
-  | GTPAREN id_list RPAREN  { $$ = new_prim_unpack( mpool(arg), insert_symbol("auto"), $2, GET_LOC(&@$)); }
-  | LTPAREN exp RPAREN  { $$ = new_prim_tuple(mpool(arg), $2, GET_LOC(&@$)); }
   | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2); }
   | LPAREN exp RPAREN   { $$ = $2;                }
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };

@@ -57,102 +57,100 @@ extern int gwion_debug;
     RBRACK = 263,
     LBRACE = 264,
     RBRACE = 265,
-    PERCENTPAREN = 266,
-    SHARPPAREN = 267,
-    ATPAREN = 268,
-    FUNCTION = 269,
-    IF = 270,
-    ELSE = 271,
-    WHILE = 272,
-    DO = 273,
-    UNTIL = 274,
-    LOOP = 275,
-    FOR = 276,
-    GOTO = 277,
-    MATCH = 278,
-    CASE = 279,
-    WHEN = 280,
-    WHERE = 281,
-    ENUM = 282,
-    TRETURN = 283,
-    BREAK = 284,
-    CONTINUE = 285,
-    CLASS = 286,
-    STATIC = 287,
-    GLOBAL = 288,
-    PRIVATE = 289,
-    PROTECT = 290,
-    EXTENDS = 291,
-    DOT = 292,
-    OPERATOR = 293,
-    TYPEDEF = 294,
-    NOELSE = 295,
-    UNION = 296,
-    CONSTT = 297,
-    AUTO = 298,
-    PASTE = 299,
-    ELLIPSE = 300,
-    RARROW = 301,
-    BACKSLASH = 302,
-    BACKTICK = 303,
-    NUM = 304,
-    FLOATT = 305,
-    ID = 306,
-    STRING_LIT = 307,
-    CHAR_LIT = 308,
-    INTERP_LIT = 309,
-    INTERP_EXP = 310,
-    PP_COMMENT = 311,
-    PP_INCLUDE = 312,
-    PP_DEFINE = 313,
-    PP_PRAGMA = 314,
-    PP_UNDEF = 315,
-    PP_IFDEF = 316,
-    PP_IFNDEF = 317,
-    PP_ELSE = 318,
-    PP_ENDIF = 319,
-    PP_NL = 320,
-    PLUS = 321,
-    PLUSPLUS = 322,
-    MINUS = 323,
-    MINUSMINUS = 324,
-    TIMES = 325,
-    DIVIDE = 326,
-    PERCENT = 327,
-    DOLLAR = 328,
-    QUESTION = 329,
-    COLON = 330,
-    COLONCOLON = 331,
-    QUESTIONCOLON = 332,
-    ATSYM = 333,
-    GTPAREN = 334,
-    LTPAREN = 335,
-    NEW = 336,
-    SPORK = 337,
-    FORK = 338,
-    TYPEOF = 339,
-    L_HACK = 340,
-    R_HACK = 341,
-    AND = 342,
-    EQ = 343,
-    GE = 344,
-    GT = 345,
-    LE = 346,
-    LT = 347,
-    NEQ = 348,
-    SHIFT_LEFT = 349,
-    SHIFT_RIGHT = 350,
-    S_AND = 351,
-    S_OR = 352,
-    S_XOR = 353,
-    OR = 354,
-    LTMPL = 355,
-    RTMPL = 356,
-    TILDA = 357,
-    EXCLAMATION = 358,
-    DYNOP = 359,
-    UMINUS = 360,
-    UTIMES = 361
+    FUNCTION = 266,
+    IF = 267,
+    ELSE = 268,
+    WHILE = 269,
+    DO = 270,
+    UNTIL = 271,
+    LOOP = 272,
+    FOR = 273,
+    GOTO = 274,
+    MATCH = 275,
+    CASE = 276,
+    WHEN = 277,
+    WHERE = 278,
+    ENUM = 279,
+    TRETURN = 280,
+    BREAK = 281,
+    CONTINUE = 282,
+    CLASS = 283,
+    STATIC = 284,
+    GLOBAL = 285,
+    PRIVATE = 286,
+    PROTECT = 287,
+    EXTENDS = 288,
+    DOT = 289,
+    OPERATOR = 290,
+    TYPEDEF = 291,
+    NOELSE = 292,
+    UNION = 293,
+    CONSTT = 294,
+    AUTO = 295,
+    PASTE = 296,
+    ELLIPSE = 297,
+    VARLOOP = 298,
+    RARROW = 299,
+    BACKSLASH = 300,
+    BACKTICK = 301,
+    OPID = 302,
+    REF = 303,
+    NONNULL = 304,
+    NUM = 305,
+    FLOATT = 306,
+    ID = 307,
+    STRING_LIT = 308,
+    CHAR_LIT = 309,
+    INTERP_LIT = 310,
+    INTERP_EXP = 311,
+    PP_COMMENT = 312,
+    PP_INCLUDE = 313,
+    PP_DEFINE = 314,
+    PP_PRAGMA = 315,
+    PP_UNDEF = 316,
+    PP_IFDEF = 317,
+    PP_IFNDEF = 318,
+    PP_ELSE = 319,
+    PP_ENDIF = 320,
+    PP_NL = 321,
+    PLUS = 323,
+    PLUSPLUS = 324,
+    MINUS = 325,
+    MINUSMINUS = 326,
+    TIMES = 327,
+    DIVIDE = 328,
+    PERCENT = 329,
+    DOLLAR = 330,
+    QUESTION = 331,
+    COLON = 332,
+    COLONCOLON = 333,
+    QUESTIONCOLON = 334,
+    NEW = 335,
+    SPORK = 336,
+    FORK = 337,
+    TYPEOF = 338,
+    L_HACK = 339,
+    R_HACK = 340,
+    AND = 341,
+    EQ = 342,
+    GE = 343,
+    GT = 344,
+    LE = 345,
+    LT = 346,
+    NEQ = 347,
+    SHIFT_LEFT = 348,
+    SHIFT_RIGHT = 349,
+    S_AND = 350,
+    S_OR = 351,
+    S_XOR = 352,
+    OR = 353,
+    LTMPL = 354,
+    RTMPL = 355,
+    TILDA = 356,
+    EXCLAMATION = 357,
+    DYNOP = 358,
+    UMINUS = 359,
+    UTIMES = 360
   };
 #endif
 /* Tokens.  */
@@ -164,102 +162,100 @@ extern int gwion_debug;
 #define RBRACK 263
 #define LBRACE 264
 #define RBRACE 265
-#define PERCENTPAREN 266
-#define SHARPPAREN 267
-#define ATPAREN 268
-#define FUNCTION 269
-#define IF 270
-#define ELSE 271
-#define WHILE 272
-#define DO 273
-#define UNTIL 274
-#define LOOP 275
-#define FOR 276
-#define GOTO 277
-#define MATCH 278
-#define CASE 279
-#define WHEN 280
-#define WHERE 281
-#define ENUM 282
-#define TRETURN 283
-#define BREAK 284
-#define CONTINUE 285
-#define CLASS 286
-#define STATIC 287
-#define GLOBAL 288
-#define PRIVATE 289
-#define PROTECT 290
-#define EXTENDS 291
-#define DOT 292
-#define OPERATOR 293
-#define TYPEDEF 294
-#define NOELSE 295
-#define UNION 296
-#define CONSTT 297
-#define AUTO 298
-#define PASTE 299
-#define ELLIPSE 300
-#define RARROW 301
-#define BACKSLASH 302
-#define BACKTICK 303
-#define NUM 304
-#define FLOATT 305
-#define ID 306
-#define STRING_LIT 307
-#define CHAR_LIT 308
-#define INTERP_LIT 309
-#define INTERP_EXP 310
-#define PP_COMMENT 311
-#define PP_INCLUDE 312
-#define PP_DEFINE 313
-#define PP_PRAGMA 314
-#define PP_UNDEF 315
-#define PP_IFDEF 316
-#define PP_IFNDEF 317
-#define PP_ELSE 318
-#define PP_ENDIF 319
-#define PP_NL 320
-#define PLUS 321
-#define PLUSPLUS 322
-#define MINUS 323
-#define MINUSMINUS 324
-#define TIMES 325
-#define DIVIDE 326
-#define PERCENT 327
-#define DOLLAR 328
-#define QUESTION 329
-#define COLON 330
-#define COLONCOLON 331
-#define QUESTIONCOLON 332
-#define ATSYM 333
-#define GTPAREN 334
-#define LTPAREN 335
-#define NEW 336
-#define SPORK 337
-#define FORK 338
-#define TYPEOF 339
-#define L_HACK 340
-#define R_HACK 341
-#define AND 342
-#define EQ 343
-#define GE 344
-#define GT 345
-#define LE 346
-#define LT 347
-#define NEQ 348
-#define SHIFT_LEFT 349
-#define SHIFT_RIGHT 350
-#define S_AND 351
-#define S_OR 352
-#define S_XOR 353
-#define OR 354
-#define LTMPL 355
-#define RTMPL 356
-#define TILDA 357
-#define EXCLAMATION 358
-#define DYNOP 359
-#define UMINUS 360
-#define UTIMES 361
+#define FUNCTION 266
+#define IF 267
+#define ELSE 268
+#define WHILE 269
+#define DO 270
+#define UNTIL 271
+#define LOOP 272
+#define FOR 273
+#define GOTO 274
+#define MATCH 275
+#define CASE 276
+#define WHEN 277
+#define WHERE 278
+#define ENUM 279
+#define TRETURN 280
+#define BREAK 281
+#define CONTINUE 282
+#define CLASS 283
+#define STATIC 284
+#define GLOBAL 285
+#define PRIVATE 286
+#define PROTECT 287
+#define EXTENDS 288
+#define DOT 289
+#define OPERATOR 290
+#define TYPEDEF 291
+#define NOELSE 292
+#define UNION 293
+#define CONSTT 294
+#define AUTO 295
+#define PASTE 296
+#define ELLIPSE 297
+#define VARLOOP 298
+#define RARROW 299
+#define BACKSLASH 300
+#define BACKTICK 301
+#define OPID 302
+#define REF 303
+#define NONNULL 304
+#define NUM 305
+#define FLOATT 306
+#define ID 307
+#define STRING_LIT 308
+#define CHAR_LIT 309
+#define INTERP_LIT 310
+#define INTERP_EXP 311
+#define PP_COMMENT 312
+#define PP_INCLUDE 313
+#define PP_DEFINE 314
+#define PP_PRAGMA 315
+#define PP_UNDEF 316
+#define PP_IFDEF 317
+#define PP_IFNDEF 318
+#define PP_ELSE 319
+#define PP_ENDIF 320
+#define PP_NL 321
+#define PLUS 323
+#define PLUSPLUS 324
+#define MINUS 325
+#define MINUSMINUS 326
+#define TIMES 327
+#define DIVIDE 328
+#define PERCENT 329
+#define DOLLAR 330
+#define QUESTION 331
+#define COLON 332
+#define COLONCOLON 333
+#define QUESTIONCOLON 334
+#define NEW 335
+#define SPORK 336
+#define FORK 337
+#define TYPEOF 338
+#define L_HACK 339
+#define R_HACK 340
+#define AND 341
+#define EQ 342
+#define GE 343
+#define GT 344
+#define LE 345
+#define LT 346
+#define NEQ 347
+#define SHIFT_LEFT 348
+#define SHIFT_RIGHT 349
+#define S_AND 350
+#define S_OR 351
+#define S_XOR 352
+#define OR 353
+#define LTMPL 354
+#define RTMPL 355
+#define TILDA 356
+#define EXCLAMATION 357
+#define DYNOP 358
+#define UMINUS 359
+#define UTIMES 360
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -295,7 +291,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 299 "include/parser.h"
+#line 295 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

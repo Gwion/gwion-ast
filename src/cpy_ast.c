@@ -95,11 +95,6 @@ ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
   return a;
 }
 
-ANN static void cpy_vec(MemPool p, Vec* a, const Vec* src) {
-  a->exp = cpy_exp(p, src->exp);
-  a->dim = src->dim;
-}
-
 ANN static Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
   Arg_List a = mp_calloc(p, Arg_List);
   if(src->td)
@@ -138,9 +133,6 @@ ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
       break;
     case ae_prim_range:
       a->d.range = cpy_range(p, src->d.range);
-      break;
-    case ae_prim_vec:
-      cpy_vec(p, &a->d.vec, &src->d.vec);
       break;
     default:
       if(src->d.exp)
@@ -285,6 +277,12 @@ ANN static void cpy_stmt_flow(MemPool p, Stmt_Flow a,const Stmt_Flow src) {
   if(src->body)
     a->body = cpy_stmt(p, src->body);
   a->is_do = src->is_do;
+}
+
+ANN static void cpy_stmt_varloop(MemPool p, Stmt_VarLoop a,const Stmt_VarLoop src) {
+  a->exp = cpy_exp(p, src->exp);
+  if(src->body)
+    a->body = cpy_stmt(p, src->body);
 }
 
 ANN static void cpy_stmt_code(MemPool p, Stmt_Code a, const Stmt_Code src) {
@@ -433,6 +431,9 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
     case ae_stmt_while:
     case ae_stmt_until:
       cpy_stmt_flow(p, &a->d.stmt_flow, &src->d.stmt_flow);
+      break;
+    case ae_stmt_varloop:
+      cpy_stmt_varloop(p, &a->d.stmt_varloop, &src->d.stmt_varloop);
       break;
     case ae_stmt_loop:
       cpy_stmt_loop(p, &a->d.stmt_loop, &src->d.stmt_loop);

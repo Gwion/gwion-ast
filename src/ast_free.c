@@ -160,12 +160,6 @@ ANN static AST_FREE(Exp_Primary*, prim) {
     free_array_sub(p, a->d.array);
   else if(t == ae_prim_range)
     free_range(p, a->d.range);
-  else if(t== ae_prim_complex ||
-          t == ae_prim_polar  ||
-          t == ae_prim_vec)
-    free_exp(p, a->d.vec.exp);
-  else if(t == ae_prim_tuple)
-    free_exp(p, a->d.tuple.exp);
 }
 
 ANN static AST_FREE(Exp_Typeof*, exp_typeof) {
@@ -208,6 +202,11 @@ ANN static inline AST_FREE(struct Stmt_Exp_*, stmt_exp) {
 
 ANN static AST_FREE(struct Stmt_Flow_*, stmt_flow) {
   free_exp(p, a->cond);
+  free_stmt(p, a->body);
+}
+
+ANN static AST_FREE(struct Stmt_VarLoop_*, stmt_varloop) {
+  free_exp(p, a->exp);
   free_stmt(p, a->body);
 }
 

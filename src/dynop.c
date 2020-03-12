@@ -7,7 +7,6 @@ ANN enum yytokentype op1(const m_str str) {
     case '?': return QUESTION; break;
     case ':': return COLON;    break;
     case '$': return DOLLAR;   break;
-    case '@': return ATSYM;    break;
     case '+': return PLUS;     break;
     case '-': return MINUS;    break;
     case '*': return TIMES;    break;
