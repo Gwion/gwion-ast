@@ -171,6 +171,7 @@ AST_NEW(Exp, prim_nil, const loc_t pos) {
 
 AST_NEW(Exp, prim_id, struct Symbol_* xid, const loc_t pos) {
   Exp a = new_prim(p, pos);
+  exp_setmeta(a, 0);
   a->d.prim.prim_type = ae_prim_id;
   a->d.prim.d.var = xid;
   return a;

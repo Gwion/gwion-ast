@@ -201,7 +201,6 @@ typedef struct {
 } Exp_Interp;
 
 enum exp_state {
-  exp_state_none,
   exp_state_meta, // ae_meta_value
   exp_state_prot, // ae_meta_protect
   exp_state_addr,
@@ -232,13 +231,9 @@ struct Exp_ {
     Exp_Interp    exp_interp;
   } d;
   struct ExpInfo_ *info;
-//  struct Type_* type;
-//  struct Nspc_* nspc;
-//  struct Type_* cast_to;
   Exp next;
   loc_t pos;
   ae_exp_t exp_type;
-//  ae_Exp_Meta meta;
   enum exp_state emit_var;
 };
 
@@ -249,7 +244,10 @@ ANN static inline enum exp_state exp_getvar(const Exp e) {
 }
 
 ANN static inline void exp_setvar(const Exp e, const uint val) {
-  e->emit_var |= val << exp_state_addr;
+  if(val)
+    e->emit_var |= 1 << exp_state_addr;
+  else
+    e->emit_var &= ~(1 << exp_state_addr);
 }
 
 ANN static inline enum exp_state exp_getprot(const Exp e) {
@@ -257,7 +255,10 @@ ANN static inline enum exp_state exp_getprot(const Exp e) {
 }
 
 ANN static inline void exp_setprot(const Exp e, const uint val) {
-  e->emit_var |= val << exp_state_prot;
+  if(val)
+    e->emit_var |= 1 << exp_state_prot;
+  else
+    e->emit_var &= ~(1 << exp_state_prot);
 }
 
 ANN static inline enum exp_state exp_getnonnull(const Exp e) {
@@ -265,7 +266,10 @@ ANN static inline enum exp_state exp_getnonnull(const Exp e) {
 }
 
 ANN static inline void exp_setnonnull(const Exp e, const uint val) {
-  e->emit_var |= val << exp_state_null;
+  if(val)
+    e->emit_var |= 1 << exp_state_null;
+  else
+    e->emit_var &= ~(1 << exp_state_null);
 }
 
 ANN static inline enum exp_state exp_getmeta(const Exp e) {
@@ -273,7 +277,10 @@ ANN static inline enum exp_state exp_getmeta(const Exp e) {
 }
 
 ANN static inline void exp_setmeta(const Exp e, const uint val) {
-  e->emit_var |= val << exp_state_meta;
+  if(val)
+    e->emit_var |= 1 << exp_state_meta;
+  else
+    e->emit_var &= ~(1 << exp_state_meta);
 }
 
 ANN static inline m_str exp_access(const Exp e) {
