@@ -53,6 +53,7 @@ Array_Sub prepend_array_sub(const Array_Sub a, const Exp exp) {
 
 ANN static AST_NEW(Exp, exp, const ae_exp_t type, const loc_t pos) {
   Exp a = mp_calloc(p, Exp);
+  a->info = mp_calloc(p, ExpInfo);
   a->exp_type = type;
   a->pos = pos;
   return a;
@@ -60,7 +61,6 @@ ANN static AST_NEW(Exp, exp, const ae_exp_t type, const loc_t pos) {
 
 AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt code) {
   Exp a = new_exp(p, ae_exp_lambda, loc_cpy(p, code->pos));
-  a->meta = ae_meta_var;
   Func_Base *base = new_func_base(p, NULL, xid, args);
   a->d.exp_lambda.def = new_func_def(p, base, code, ae_flag_none, loc_cpy(p, code->pos));
   return a;
@@ -68,7 +68,6 @@ AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt code)
 
 AST_NEW(Exp, exp_array, const Exp base, const Array_Sub array) {
   Exp a = new_exp(p, ae_exp_array, loc_cpy(p, base->pos));
-  a->meta = ae_meta_var;
   a->d.exp_array.base = base;
   a->d.exp_array.array = array;
   return a;
@@ -76,7 +75,6 @@ AST_NEW(Exp, exp_array, const Exp base, const Array_Sub array) {
 
 AST_NEW(Exp, exp_slice, const Exp base, Range *range) {
   Exp a = new_exp(p, ae_exp_slice, loc_cpy(p, base->pos));
-  a->meta = ae_meta_var;
   a->d.exp_slice.base = base;
   a->d.exp_slice.range = range;
   return a;
@@ -116,7 +114,7 @@ AST_NEW(Exp, exp_decl, Type_Decl* td, const Var_Decl_List list) {
 
 AST_NEW(Exp, exp_binary, const Exp lhs, const Symbol op, const Exp rhs) {
   Exp a = new_exp(p, ae_exp_binary, loc_cpy(p, lhs->pos));
-  a->meta = ae_meta_value;
+  exp_setmeta(a, 1);
   a->d.exp_binary.lhs = lhs;
   a->d.exp_binary.op = op;
   a->d.exp_binary.rhs = rhs;
@@ -125,7 +123,7 @@ AST_NEW(Exp, exp_binary, const Exp lhs, const Symbol op, const Exp rhs) {
 
 AST_NEW(Exp, exp_cast, Type_Decl* td, const Exp exp) {
   Exp a = new_exp(p, ae_exp_cast, loc_cpy(p, exp->pos));
-  a->meta = ae_meta_value;
+  exp_setmeta(a, 1);
   a->d.exp_cast.td = td;
   a->d.exp_cast.exp = exp;
   return a;
@@ -133,7 +131,6 @@ AST_NEW(Exp, exp_cast, Type_Decl* td, const Exp exp) {
 
 AST_NEW(Exp, exp_post, const Exp exp, const Symbol op) {
   Exp a = new_exp(p, ae_exp_post, loc_cpy(p, exp->pos));
-  a->meta = ae_meta_var;
   a->d.exp_post.exp = exp;
   a->d.exp_post.op = op;
   return a;
@@ -141,7 +138,7 @@ AST_NEW(Exp, exp_post, const Exp exp, const Symbol op) {
 
 static AST_NEW(Exp, prim, const loc_t pos) {
   Exp a = new_exp(p, ae_exp_primary, pos);
-  a->meta = ae_meta_value;
+  exp_setmeta(a, 1);
   return a;
 }
 
@@ -174,7 +171,6 @@ AST_NEW(Exp, prim_nil, const loc_t pos) {
 
 AST_NEW(Exp, prim_id, struct Symbol_* xid, const loc_t pos) {
   Exp a = new_prim(p, pos);
-  a->meta = ae_meta_var;
   a->d.prim.prim_type = ae_prim_id;
   a->d.prim.d.var = xid;
   return a;
@@ -224,29 +220,30 @@ static inline AST_NEW(Exp, exp_unary_base, const Symbol oper, const loc_t pos)  
 
 AST_NEW(Exp, exp_unary, const Symbol oper, const Exp exp) {
   Exp a = new_exp_unary_base(p, oper, loc_cpy(p, exp->pos));
-  a->meta = exp->meta;
+  exp_setmeta(a, exp_getmeta(exp));
   a->d.exp_unary.exp = exp;
   return a;
 }
 
 AST_NEW(Exp, exp_unary2, const Symbol oper, Type_Decl* td) {
   Exp a = new_exp_unary_base(p, oper, loc_cpy(p, td_pos(td)));
-  a->meta = ae_meta_value;
+  exp_setmeta(a, 1);
   a->d.exp_unary.td = td;
   return a;
 }
 
 AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt code) {
   Exp a = new_exp_unary_base(p, oper, loc_cpy(p, code->pos));
-  a->meta = ae_meta_value;
+  exp_setmeta(a, 1);
   a->d.exp_unary.code = code;
   return a;
 }
 
 AST_NEW(Exp, exp_if, const restrict Exp cond, const restrict Exp if_exp, const restrict Exp else_exp) {
   Exp a = new_exp(p, ae_exp_if, loc_cpy(p, cond->pos));
-  a->meta = (!((if_exp ?: cond)->meta == ae_meta_var) &&
-              else_exp->meta == ae_meta_var) ? ae_meta_var : ae_meta_value;
+  enum exp_state state = (!(!exp_getmeta(if_exp ?: cond)) &&
+              !exp_getmeta(else_exp)) ? 0 : 1;
+  exp_setmeta(a, state);
   a->d.exp_if.cond = cond;
   a->d.exp_if.if_exp = if_exp;
   a->d.exp_if.else_exp = else_exp;
@@ -319,7 +316,7 @@ AST_NEW(Tmpl*, tmpl_call, const Type_List tl) {
 
 AST_NEW(Exp, exp_call, const Exp base, const Exp args) {
   Exp a = new_exp(p, ae_exp_call, loc_cpy(p, base->pos));
-  a->meta = ae_meta_value;
+  exp_setmeta(a, 1);
   a->d.exp_call.func = base;
   a->d.exp_call.args = args;
   return a;
@@ -327,7 +324,6 @@ AST_NEW(Exp, exp_call, const Exp base, const Exp args) {
 
 AST_NEW(Exp, exp_dot, const Exp base, struct Symbol_* xid) {
   Exp a = new_exp(p, ae_exp_dot, loc_cpy(p, base->pos));
-  a->meta = ae_meta_var;
   a->d.exp_dot.base = base;
   a->d.exp_dot.xid = xid;
   return a;

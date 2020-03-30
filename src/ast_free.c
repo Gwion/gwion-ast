@@ -173,6 +173,7 @@ ANN static AST_FREE(Exp_Interp*, exp_interp) {
 DECL_EXP_FUNC(free, void, MemPool)
 
 AST_FREE(Exp, exp) {
+  mp_free(p, ExpInfo, a->info);
   if(a->next)
     free_exp(p, a->next);
   free_exp_func[a->exp_type](p, &a->d);

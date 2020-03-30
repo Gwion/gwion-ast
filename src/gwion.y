@@ -59,7 +59,7 @@ ANN Symbol lambda_name(const Scanner*);
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue"
-  CLASS "class"
+  CLASS "class" STRUCT "struct"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
@@ -83,7 +83,7 @@ ANN Symbol lambda_name(const Scanner*);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   LTMPL "<~" RTMPL "~>"
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<flag> flag opt_flag
+%type<flag> flag opt_flag class_type
   storage_flag access_flag arg_type
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
@@ -155,9 +155,13 @@ section
   | type_def  { $$ = new_section_type_def(mpool(arg), $1); }
   ;
 
+class_type: CLASS { $$ = ae_flag_none; } | STRUCT { $$ = ae_flag_struct; }
 class_def
-  : CLASS decl_template opt_flag id class_ext LBRACE class_body RBRACE
-    { $$ =new_class_def(mpool(arg), $3, $4, $5, $7, GET_LOC(&@$));
+  : class_type decl_template opt_flag id class_ext LBRACE class_body RBRACE
+    {
+      if($1 == ae_flag_struct && $5)
+        { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
+      $$ =new_class_def(mpool(arg), $1 | $3, $4, $5, $7, GET_LOC(&@$));
       if($2)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $2);
   };

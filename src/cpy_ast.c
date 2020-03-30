@@ -204,6 +204,12 @@ ANN static void cpy_exp_interp(MemPool p, Exp_Interp *a, const Exp_Interp *src) 
   a->exp = cpy_exp(p, src->exp);
 }
 
+ANN static struct ExpInfo_* cpy_expinfo(MemPool p, const struct ExpInfo_ *src) {
+  struct ExpInfo_ *a = mp_calloc(p, ExpInfo);
+  memcpy(a, src, sizeof(struct ExpInfo_));
+  return a;
+}
+
 ANN static Exp cpy_exp(MemPool p, const Exp src) {
   Exp a = mp_calloc(p, Exp);
   if(src->next)
@@ -252,8 +258,10 @@ ANN static Exp cpy_exp(MemPool p, const Exp src) {
       cpy_exp_interp(p, &a->d.exp_interp, &src->d.exp_interp);
       break;
   }
+  a->info = cpy_expinfo(p, src->info);
   a->exp_type = src->exp_type;
-  a->meta = src->meta;// maybe meta shoyuld be set as in constructors
+  a->emit_var = src->emit_var;
+//  a->meta = src->meta;// maybe meta shoyuld be set as in constructors
   a->pos = loc_cpy(p, src->pos);
   return a;
 }

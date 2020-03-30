@@ -217,6 +217,7 @@ if(strlen(yytext) > 1)
 }
 
 "class"                             { adjust(yyscanner); return CLASS;}
+"struct"                            { adjust(yyscanner); return STRUCT;}
 "operator"                          { adjust(yyscanner); return OPERATOR;}
 "extends"                           { adjust(yyscanner); return EXTENDS;}
 "..."|,{SPACE}*"..."                { adjust(yyscanner); return ELLIPSE;}
@@ -286,7 +287,7 @@ if(strlen(yytext) > 1)
 
 \"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return STRING_LIT; }
 '(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
-.                                   { GWYY_FATAL_ERROR(_("stray in program")); }
+.                                   { gwlex_error(yyscanner, _("stray in program")); return 1;}
 
 %% // LCOV_EXCL_LINE
 // LCOV_EXCL_LINE

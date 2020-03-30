@@ -200,11 +200,21 @@ typedef struct {
   Exp exp;
 } Exp_Interp;
 
-struct Exp_ {
-  struct Type_* type;
-  struct Type_* cast_to;
+enum exp_state {
+  exp_state_none,
+  exp_state_meta, // ae_meta_value
+  exp_state_prot, // ae_meta_protect
+  exp_state_addr,
+  exp_state_null,
+};
+
+struct ExpInfo_ {
+  struct Type_ *type;
   struct Nspc_* nspc;
-  Exp next;
+  struct Type_* cast_to;
+};
+
+struct Exp_ {
   union exp_data {
     Exp_Postfix   exp_post;
     Exp_Primary   prim;
@@ -221,13 +231,56 @@ struct Exp_ {
     Exp_Typeof    exp_typeof;
     Exp_Interp    exp_interp;
   } d;
+  struct ExpInfo_ *info;
+//  struct Type_* type;
+//  struct Nspc_* nspc;
+//  struct Type_* cast_to;
+  Exp next;
   loc_t pos;
   ae_exp_t exp_type;
-  ae_Exp_Meta meta;
-  uint emit_var;
+//  ae_Exp_Meta meta;
+  enum exp_state emit_var;
 };
 
-static inline loc_t td_pos(const Type_Decl *td) { return td->xid ? td->xid->pos : td->exp->pos; }
+ANN static inline loc_t td_pos(const Type_Decl *td) { return td->xid ? td->xid->pos : td->exp->pos; }
+
+ANN static inline enum exp_state exp_getvar(const Exp e) {
+  return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
+}
+
+ANN static inline void exp_setvar(const Exp e, const uint val) {
+  e->emit_var |= val << exp_state_addr;
+}
+
+ANN static inline enum exp_state exp_getprot(const Exp e) {
+  return (e->emit_var & (1 << exp_state_prot)) == (1 << exp_state_prot);
+}
+
+ANN static inline void exp_setprot(const Exp e, const uint val) {
+  e->emit_var |= val << exp_state_prot;
+}
+
+ANN static inline enum exp_state exp_getnonnull(const Exp e) {
+  return (e->emit_var & (1 << exp_state_null)) == (1 << exp_state_null);
+}
+
+ANN static inline void exp_setnonnull(const Exp e, const uint val) {
+  e->emit_var |= val << exp_state_null;
+}
+
+ANN static inline enum exp_state exp_getmeta(const Exp e) {
+  return (e->emit_var & (1 << exp_state_meta)) == (1 << exp_state_meta);
+}
+
+ANN static inline void exp_setmeta(const Exp e, const uint val) {
+  e->emit_var |= val << exp_state_meta;
+}
+
+ANN static inline m_str exp_access(const Exp e) {
+  if(exp_getmeta(e))
+    return "non-mutable";
+  return !exp_getprot(e) ? NULL : "protected";
+}
 
 static inline Exp exp_self(const void *data) {
   return container_of((char*)data, struct Exp_, d);
