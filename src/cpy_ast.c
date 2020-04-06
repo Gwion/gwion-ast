@@ -144,11 +144,11 @@ ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
 
 ANN Tmpl* cpy_tmpl(MemPool p, const Tmpl *src) {
   Tmpl *a = mp_calloc(p, Tmpl);
-  if(src->list)
-    a->list = cpy_id_list(p, src->list);
+  a->base = src->base;
+  a->list = (a->base == - 1 && src->list) ?
+     cpy_id_list(p, src->list) : src->list;
   if(src->call)
     a->call = cpy_type_list(p, src->call);
-  a->base = src->base;
   return a;
 }
 

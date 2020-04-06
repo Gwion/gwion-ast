@@ -101,26 +101,26 @@ ANN static AST_FREE(Exp_If*, exp_if) {
 AST_FREE(Tmpl*, tmpl) {
   if(a->base == -1)
     free_id_list(p, a->list);
+  if(a->call)
+    free_type_list(p, a->call);
   mp_free(p, Tmpl, a);
 }
 
 ANN AST_FREE(Func_Base*, func_base) {
-  if(!a->func) {
-    if(a->args)
-      free_arg_list(p, a->args);
-    if(a->td)
-      free_type_decl(p, a->td);
-  }
+  if(a->args)
+    free_arg_list(p, a->args);
+  if(a->td)
+    free_type_decl(p, a->td);
+  if(a->tmpl)
+    free_tmpl(p, a->tmpl);
 }
 
 AST_FREE(Func_Def, func_def) {
-  if(!a->base->tmpl && !GET_FLAG(a, global)) {
-    free_func_base(p, a->base);
-    if(!GET_FLAG(a, builtin) && a->d.code)
-      free_stmt(p, a->d.code);
-    free_loc(p, a->pos);
-    mp_free(p, Func_Def, a);
-  }
+  free_func_base(p, a->base);
+  if(!GET_FLAG(a, builtin) && a->d.code)
+    free_stmt(p, a->d.code);
+  free_loc(p, a->pos);
+  mp_free(p, Func_Def, a);
 }
 
 ANN AST_FREE(Type_Def, type_def){
@@ -134,14 +134,9 @@ ANN AST_FREE(Fptr_Def, fptr_def) {
   mp_free(p, Fptr_Def, a);
 }
 
-ANN static AST_FREE(Tmpl*, tmpl_call) {
-  free_type_list(p, a->call);
-  mp_free(p, Tmpl, a);
-}
-
 ANN static AST_FREE(Exp_Call*, exp_call) {
   if(a->tmpl)
-    free_tmpl_call(p, a->tmpl);
+    free_tmpl(p, a->tmpl);
   free_exp(p, a->func);
   if(a->args)
     free_exp(p, a->args);
