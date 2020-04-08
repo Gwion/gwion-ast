@@ -157,13 +157,13 @@ section
 
 class_type: CLASS { $$ = ae_flag_none; } | STRUCT { $$ = ae_flag_struct; }
 class_def
-  : class_type decl_template opt_flag id class_ext LBRACE class_body RBRACE
+  : class_type opt_flag decl_template id class_ext LBRACE class_body RBRACE
     {
       if($1 == ae_flag_struct && $5)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
-      $$ =new_class_def(mpool(arg), $1 | $3, $4, $5, $7, GET_LOC(&@$));
-      if($2)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $2);
+      $$ =new_class_def(mpool(arg), $1 | $2, $4, $5, $7, GET_LOC(&@$));
+      if($3)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $3);
   };
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };

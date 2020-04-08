@@ -268,8 +268,7 @@ ANN AST_FREE(Decl_List, decl_list) {
 }
 
 ANN AST_FREE(Union_Def, union_def) {
-  if(!GET_FLAG(a, template) && !GET_FLAG(a, global))
-    free_decl_list(p, a->l);
+  free_decl_list(p, a->l);
   free_loc(p, a->pos); // ??
   mp_free(p, Union_Def, a);
 }
@@ -300,8 +299,6 @@ AST_FREE(Stmt_List, stmt_list) {
 }
 
 AST_FREE(Class_Def, class_def) {
-  if(GET_FLAG(a, global) || (a->base.type && GET_FLAG(a, template)))
-    return;
   if(a->base.ext)
     free_type_decl(p, a->base.ext);
   if(a->base.tmpl)
@@ -322,6 +319,8 @@ ANN static AST_FREE(Section*, section) {
     free_func_def(p, a->d.func_def);
   else if(t == ae_section_enum)
     free_enum_def(p, a->d.enum_def);
+  else if(t == ae_section_union)
+    free_union_def(p, a->d.union_def);
   else if(t == ae_section_fptr)
     free_fptr_def(p, a->d.fptr_def);
   else if(t == ae_section_type)
