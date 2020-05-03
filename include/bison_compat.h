@@ -1,7 +1,7 @@
 #ifndef __BISON_COMPAT
 #define __BISON_COMPAT
 
-#define YYLTYPE struct loc_t
+#define YYLTYPE struct loc_t_
 
 #define YYLTYPE_IS_DECLARED
   #define YY_USER_ACTION                                     \

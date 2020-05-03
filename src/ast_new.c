@@ -16,15 +16,17 @@ AST_NEW(Var_Decl_List, var_decl_list, const Var_Decl decl, const Var_Decl_List l
   return a;
 }
 
-AST_NEW(Type_Decl*, type_decl, const ID_List xid) {
+AST_NEW(Type_Decl*, type_decl, const Symbol xid, const loc_t pos) {
   Type_Decl* a = mp_calloc(p, Type_Decl);
   a->xid = xid;
+  a->pos = pos;
   return a;
 }
 
-AST_NEW(Type_Decl*, type_decl2, const Exp exp) {
+AST_NEW(Type_Decl*, type_decl2, const Exp exp, const loc_t pos) {
   Type_Decl* a = mp_calloc(p, Type_Decl);
   a->exp = exp;
+  a->pos = pos;
   return a;
 }
 
@@ -206,8 +208,7 @@ AST_NEW(Exp, prim_range, Range *range, const loc_t pos) {
 }
 
 ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
-  const ID_List ilist = new_id_list(p, type, loc_cpy(p, pos));
-  Type_Decl *td = new_type_decl(p, ilist);
+  Type_Decl *td = new_type_decl(p, type, loc_cpy(p, pos));
   const Var_Decl var = new_var_decl(p, name, NULL, loc_cpy(p, pos));
   const Var_Decl_List vlist = new_var_decl_list(p, var, NULL);
   return new_exp_decl(p, td, vlist);

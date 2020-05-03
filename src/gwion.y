@@ -88,7 +88,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl000 type_decl00  type_decl0 type_decl type_decl_array type_decl_empty type_decl_exp class_ext
+%type<type_decl> type_decl_tmpl type_decl_noflag type_decl0 type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp _typeof_exp typeof_exp
@@ -108,8 +108,8 @@ ANN Symbol lambda_name(const Scanner*);
 %type<type_def> type_def
 %type<section> section
 %type<class_def> class_def
-%type<ast> class_body class_body2
-%type<id_list> id_list dot_decl decl_template
+%type<ast> class_body
+%type<id_list> id_list decl_template
 %type<type_list> type_list call_template
 %type<ast> ast prg
 
@@ -168,15 +168,9 @@ class_def
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
 
-class_body : class_body2 | { $$ = NULL; };
-
-class_body2
-  : section             { $$ = new_ast(mpool(arg), $1, NULL); }
-  | section class_body2 { $$ = new_ast(mpool(arg), $1, $2); }
-  ;
+class_body : ast | { $$ = NULL; };
 
 id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
-dot_decl:  id  { $$ = new_id_list(mpool(arg), $1, loc_cpy(mpool(arg), &@1)); } | id RARROW dot_decl     { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
 
@@ -363,9 +357,9 @@ range
 array: array_exp | array_empty;
 decl_exp2: con_exp | decl_exp3
   | AUTO decl_flag var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
-     new_id_list(mpool(arg), insert_symbol("auto"), GET_LOC(&@$))), $3); }
+     insert_symbol("auto"), GET_LOC(&@$)), $3); }
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
-union_exp: type_decl00 arg_decl { $1->flag |= ae_flag_ref | ae_flag_nonnull; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
+union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref | ae_flag_nonnull; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -411,18 +405,23 @@ func_def
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
 decl_flag: NONNULL { $$ = ae_flag_nonnull; } | ref;
 
-type_decl000
-  : dot_decl { $$ = new_type_decl(mpool(arg), $1); }
-  | _typeof_exp { $$ = new_type_decl2(mpool(arg), $1); }
+type_decl_tmpl
+  : id { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); }
+  | LTMPL type_list RTMPL id { $$ = new_type_decl(mpool(arg), $4, GET_LOC(&@$)); $$->types = $2; }
   ;
 
-type_decl00
-  : type_decl000 { $$ = $1; }
-  | LTMPL type_list RTMPL type_decl000 { $$ = $4; $$->types = $2; }
+type_decl_next
+  : type_decl_tmpl
+  | type_decl_tmpl "->" type_decl_tmpl { $1->next = $3; }
+  ;
+
+type_decl_noflag
+  : type_decl_next { $$ = $1; }
+  | _typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
 type_decl0
-  : type_decl00 decl_flag { $1->flag |= $2; $$ = $1; }
+  : type_decl_noflag decl_flag { $1->flag |= $2; $$ = $1; }
   ;
 
 type_decl: type_decl0 { $$ = $1; }

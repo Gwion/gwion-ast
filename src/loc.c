@@ -3,7 +3,7 @@
 #include "parser.h"
 
 loc_t loc_cpy(MemPool mp, const loc_t src) {
-  loc_t loc = mp_calloc2(mp, sizeof(struct loc_t));
+  loc_t loc = mp_calloc(mp, loc_t);
   loc->first.line = src->first.line;
   loc->first.column = src->first.column;
   loc->last.line = src->last.line;
@@ -12,7 +12,7 @@ loc_t loc_cpy(MemPool mp, const loc_t src) {
 }
 
 void free_loc(MemPool p, loc_t loc) {
-  mp_free2(p, sizeof(struct loc_t), loc);
+  mp_free(p, loc_t, loc);
 }
 
 #define MIN(a,b) (a < b ? a : b)

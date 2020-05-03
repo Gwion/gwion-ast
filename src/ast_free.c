@@ -23,10 +23,11 @@ AST_FREE(Range*, range) {
 }
 
 ANN AST_FREE(Var_Decl_List, var_decl_list) {
-  if(a->next)
-    free_var_decl_list(p, a->next);
   free_var_decl(p, a->self);
+  const Var_Decl_List next = a->next;
   mp_free(p, Var_Decl_List, a);
+  if(next)
+    free_var_decl_list(p, next);
 }
 
 ANN AST_FREE(Exp_Lambda*, exp_lambda) {
@@ -44,11 +45,12 @@ ANN AST_FREE(Exp_Slice*, exp_slice) {
 }
 
 AST_FREE(ID_List, id_list) {
-  if(a->next)
-    free_id_list(p, a->next);
   if(a->pos)
     free_loc(p, a->pos);
+  const ID_List next = a->next;
   mp_free(p, ID_List, a);
+  if(next)
+    free_id_list(p, next);
 }
 
 AST_FREE(Type_Decl*, type_decl) {
@@ -56,11 +58,12 @@ AST_FREE(Type_Decl*, type_decl) {
     free_type_list(p, a->types);
   if(a->array)
     free_array_sub(p, a->array);
-  if(a->xid)
-    free_id_list(p, a->xid);
   if(a->exp)
     free_exp(p, a->exp);
+  Type_Decl *next = a->next;
   mp_free(p, Type_Decl, a);
+  if(next)
+    free_type_decl(p, next);
 }
 
 ANN AST_FREE(Exp_Decl*, exp_decl) {
@@ -169,21 +172,22 @@ DECL_EXP_FUNC(free, void, MemPool)
 
 AST_FREE(Exp, exp) {
   mp_free(p, ExpInfo, a->info);
-  if(a->next)
-    free_exp(p, a->next);
   free_exp_func[a->exp_type](p, &a->d);
   free_loc(p, a->pos);
+  const Exp next = a->next;
   mp_free(p, Exp, a);
+  if(next)
+    free_exp(p, next);
 }
 
 AST_FREE(Arg_List, arg_list) {
-  if(a->next)
-    free_arg_list(p, a->next);
   if(a->td)
     free_type_decl(p, a->td);
   free_var_decl(p, a->var_decl);
+  const Arg_List next = a->next;
   mp_free(p, Arg_List, a);
-
+  if(next)
+    free_arg_list(p, next);
 }
 
 ANN static AST_FREE(Stmt_Code, stmt_code) {
@@ -260,11 +264,12 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
 }
 
 ANN AST_FREE(Decl_List, decl_list) {
-  if(a->next)
-    free_decl_list(p, a->next);
   if(a->self)
     free_exp(p, a->self);
+  const Decl_List next = a->next;
   mp_free(p, Decl_List, a);
+  if(next)
+    free_decl_list(p, next);
 }
 
 ANN AST_FREE(Union_Def, union_def) {
@@ -292,10 +297,11 @@ AST_FREE(Stmt, stmt) {
 }
 
 AST_FREE(Stmt_List, stmt_list) {
-  if(a->next)
-    free_stmt_list(p, a->next);
   free_stmt(p, a->stmt);
+  const Stmt_List next = a->next;
   mp_free(p, Stmt_List, a);
+  if(next)
+    free_stmt_list(p, next);
 }
 
 AST_FREE(Class_Def, class_def) {
@@ -329,10 +335,11 @@ ANN static AST_FREE(Section*, section) {
 }
 
 AST_FREE(Type_List, type_list) {
-  if(a->next)
-    free_type_list(p, a->next);
   free_type_decl(p, a->td);
+  const Type_List next = a->next;
   mp_free(p, Type_List, a);
+  if(next)
+    free_type_list(p, next);
 }
 
 AST_FREE(Ast, ast) {

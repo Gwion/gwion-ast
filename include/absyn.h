@@ -74,15 +74,17 @@ struct Var_Decl_List_ {
 ANN2(1, 2) ANEW AST_NEW(Var_Decl_List, var_decl_list, const Var_Decl, const Var_Decl_List);
 
 typedef struct Type_Decl_ {
-  ID_List xid;
+  Symbol xid;
   Exp exp;
   Array_Sub array;
   Type_List types;
+  loc_t pos;
+  struct Type_Decl_* next;
   ae_flag flag;
 } Type_Decl;
 
-ANEW ANN AST_NEW(Type_Decl*, type_decl, const ID_List);
-ANEW ANN AST_NEW(Type_Decl*, type_decl2, const Exp);
+ANEW ANN AST_NEW(Type_Decl*, type_decl, const Symbol, const loc_t pos);
+ANEW ANN AST_NEW(Type_Decl*, type_decl2, const Exp, const loc_t pos);
 ANN void free_type_decl(MemPool p, Type_Decl*);
 ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 
@@ -234,12 +236,14 @@ struct Exp_ {
   Exp next;
   loc_t pos;
   ae_exp_t exp_type;
-  enum exp_state emit_var;
+//  enum exp_state emit_var;
+  int emit_var;
 };
 
-ANN static inline loc_t td_pos(const Type_Decl *td) { return td->xid ? td->xid->pos : td->exp->pos; }
+// TODO remove me
+ANN static inline loc_t td_pos(const Type_Decl *td) { return td->pos; }
 
-ANN static inline enum exp_state exp_getvar(const Exp e) {
+ANN static inline int exp_getvar(const Exp e) {
   return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
 }
 
@@ -250,7 +254,7 @@ ANN static inline void exp_setvar(const Exp e, const uint val) {
     e->emit_var &= ~(1 << exp_state_addr);
 }
 
-ANN static inline enum exp_state exp_getprot(const Exp e) {
+ANN static inline int exp_getprot(const Exp e) {
   return (e->emit_var & (1 << exp_state_prot)) == (1 << exp_state_prot);
 }
 
@@ -261,7 +265,7 @@ ANN static inline void exp_setprot(const Exp e, const uint val) {
     e->emit_var &= ~(1 << exp_state_prot);
 }
 
-ANN static inline enum exp_state exp_getnonnull(const Exp e) {
+ANN static inline int exp_getnonnull(const Exp e) {
   return (e->emit_var & (1 << exp_state_null)) == (1 << exp_state_null);
 }
 
@@ -272,7 +276,7 @@ ANN static inline void exp_setnonnull(const Exp e, const uint val) {
     e->emit_var &= ~(1 << exp_state_null);
 }
 
-ANN static inline enum exp_state exp_getmeta(const Exp e) {
+ANN static inline int exp_getmeta(const Exp e) {
   return (e->emit_var & (1 << exp_state_meta)) == (1 << exp_state_meta);
 }
 
@@ -285,8 +289,8 @@ ANN static inline void exp_setmeta(const Exp e, const uint val) {
 
 ANN static inline m_str exp_access(const Exp e) {
   if(exp_getmeta(e))
-    return "non-mutable";
-  return !exp_getprot(e) ? NULL : "protected";
+    return (m_str)"non-mutable";
+  return !exp_getprot(e) ? NULL : (m_str)"protected";
 }
 
 static inline Exp exp_self(const void *data) {

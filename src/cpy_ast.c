@@ -64,15 +64,17 @@ ANN static Var_Decl_List cpy_var_decl_list(MemPool p, const Var_Decl_List src) {
 
 ANN Type_Decl* cpy_type_decl(MemPool p, const Type_Decl* src) {
   Type_Decl* a = mp_calloc(p, Type_Decl);
-  if(src->xid)
-    a->xid = cpy_id_list(p, src->xid); // 1 
+  a->xid = src->xid;
   if(src->exp)
     a->exp = cpy_exp(p, src->exp); // 1 
   if(src->array)
     a->array = cpy_array_sub(p, src->array); // 1 
   if(src->types)
     a->types = cpy_type_list(p, src->types); // 1 
+  a->pos = loc_cpy(p, src->pos);
   a->flag = src->flag; // 1 
+  if(src->next)
+    a->next = cpy_type_decl(p, a);
   return a;
 }
 
