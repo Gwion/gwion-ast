@@ -343,8 +343,9 @@ AST_FREE(Type_List, type_list) {
 }
 
 AST_FREE(Ast, ast) {
-  if(a->next)
-    free_ast(p, a->next);
+  const Ast next = a->next;
   free_section(p, a->section);
   mp_free(p, Ast, a);
+  if(next)
+    free_ast(p, next);
 }
