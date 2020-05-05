@@ -120,15 +120,14 @@ ANN AST_FREE(Func_Base*, func_base) {
 
 AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
-  if(!GET_FLAG(a, builtin) && a->d.code)
+  if(a->d.code && !GET_FLAG(a, builtin))
     free_stmt(p, a->d.code);
   free_loc(p, a->pos);
   mp_free(p, Func_Def, a);
 }
 
 ANN AST_FREE(Type_Def, type_def){
-  if(!a->type)
-    free_type_decl(p, a->ext);
+  free_type_decl(p, a->ext);
   mp_free(p, Type_Def, a);
 }
 
