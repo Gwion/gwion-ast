@@ -147,7 +147,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <skip>\n      { newline(yyscanner); YY_USER_ACTION; }
 <skip>^#else{SPACE}*\n { BEGIN(macro_toggle(yyscanner)); }
 <skip>^#endif{SPACE}*\n { macro_end(yyscanner); BEGIN(INITIAL); }
-<skip>.         { continue;}
+<skip>.*         { continue;}
 
 ^#include{SPACE}+<[A-Za-z0-9_./]*>{SPACE}* { GWYY_INCLUDE; }
 
@@ -159,7 +159,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <comment>!\#     { BEGIN(INITIAL); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
-<comment>.       { GWYY_COMMENT;  }
+<comment>.*       { GWYY_COMMENT;  }
 
 <interp>"`" {
   adjust(yyscanner);
