@@ -359,7 +359,7 @@ decl_exp2: con_exp | decl_exp3
   | AUTO decl_flag var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
      insert_symbol("auto"), GET_LOC(&@$)), $3); }
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
-union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref | ae_flag_nonnull; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
+union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
