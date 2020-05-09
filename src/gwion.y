@@ -255,7 +255,7 @@ id
 opt_id: id | { $$ = NULL; };
 
 enum_def
-  : ENUM opt_flag LBRACE id_list RBRACE opt_id SEMICOLON    { $$ = new_enum_def(mpool(arg), $4, $6, GET_LOC(&@$));
+  : ENUM opt_flag opt_id LBRACE id_list RBRACE    { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
     $$->flag = $2; };
 
 label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
