@@ -198,10 +198,6 @@ ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
     a->code = cpy_stmt(p, src->code);
 }
 
-ANN static void cpy_exp_interp(MemPool p, Exp_Interp *a, const Exp_Interp *src) {
-  a->exp = cpy_exp(p, src->exp);
-}
-
 ANN static struct ExpInfo_* cpy_expinfo(MemPool p, const struct ExpInfo_ *src) {
   struct ExpInfo_ *a = mp_calloc(p, ExpInfo);
   memcpy(a, src, sizeof(struct ExpInfo_));
@@ -248,9 +244,6 @@ ANN static Exp cpy_exp(MemPool p, const Exp src) {
       break;
     case ae_exp_lambda:
       cpy_exp_lambda(p, &a->d.exp_lambda, &src->d.exp_lambda);
-      break;
-    case ae_exp_interp:
-      cpy_exp_interp(p, &a->d.exp_interp, &src->d.exp_interp);
       break;
   }
   a->info = cpy_expinfo(p, src->info);

@@ -3523,7 +3523,7 @@ yyreduce:
 
   case 262:
 #line 561 "src/gwion.y"
-                          { (yyval.exp) = new_exp_interp(mpool(arg),     (yyvsp[0].exp)); }
+                          { (yyval.exp) = new_prim_interp(mpool(arg),     (yyvsp[0].exp)); }
 #line 3528 "src/parser.c"
     break;
 

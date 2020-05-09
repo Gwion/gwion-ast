@@ -558,7 +558,7 @@ prim_exp
   | LPAREN exp RPAREN   { $$ = $2;                }
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     GET_LOC(&@$)); }
-  | BACKTICK interp       { $$ = new_exp_interp(mpool(arg),     $2); }
+  | BACKTICK interp       { $$ = new_prim_interp(mpool(arg),     $2); }
   | typeof_exp { $$ = $1; }
   ;
 %%

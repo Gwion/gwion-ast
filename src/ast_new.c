@@ -82,12 +82,6 @@ AST_NEW(Exp, exp_slice, const Exp base, Range *range) {
   return a;
 }
 
-AST_NEW(Exp, exp_interp, Exp exp) {
-  Exp a = new_exp(p, ae_exp_interp, loc_cpy(p, exp->pos));
-  a->d.exp_interp.exp = exp;
-  return a;
-}
-
 AST_NEW(ID_List, id_list, struct Symbol_* xid, const loc_t pos) {
   ID_List a = mp_calloc(p, ID_List);
   a->xid = xid;
@@ -187,6 +181,12 @@ AST_NEW(Exp, prim_typeof, Exp exp) {
   return a;
 }
 
+AST_NEW(Exp, prim_interp, Exp exp) {
+  Exp a = new_prim(p, loc_cpy(p, exp->pos));
+  a->d.prim.prim_type = ae_prim_interp;
+  a->d.prim.d.exp = exp;
+  return a;
+}
 
 AST_NEW(Exp, prim_char, const m_str chr, const loc_t pos) {
   Exp a = new_prim(p, pos);
