@@ -91,7 +91,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<type_decl> type_decl_tmpl type_decl_noflag type_decl0 type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp _typeof_exp typeof_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
@@ -417,7 +417,7 @@ type_decl_next
 
 type_decl_noflag
   : type_decl_next { $$ = $1; }
-  | _typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
+  | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
 type_decl0
@@ -489,10 +489,7 @@ rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool
 shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 mul_exp: dur_exp | mul_exp mul_op dur_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-dur_exp: typeof_exp | dur_exp "::" cast_exp         { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-
-_typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_exp_typeof(mpool(arg), $3); };
-typeof_exp: cast_exp | _typeof_exp
+dur_exp: cast_exp | dur_exp "::" cast_exp         { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1); };
@@ -547,6 +544,8 @@ interp: interp interp_exp
 }
     | interp_exp { $$ = $1; }
 
+typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3); };
+
 prim_exp
   : id                  { $$ = new_prim_id(     mpool(arg), $1, GET_LOC(&@$)); }
   | NUM                 { $$ = new_prim_int(    mpool(arg), $1, GET_LOC(&@$)); }
@@ -560,5 +559,6 @@ prim_exp
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     GET_LOC(&@$)); }
   | BACKTICK interp       { $$ = new_exp_interp(mpool(arg),     $2); }
+  | typeof_exp { $$ = $1; }
   ;
 %%

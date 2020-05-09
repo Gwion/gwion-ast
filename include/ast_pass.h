@@ -11,7 +11,8 @@ const _##prefix##_prim_func prefix##_prim_func[] = {                            
   (_##prefix##_prim_func)prefix##_prim_float,  (_##prefix##_prim_func)prefix##_prim_str,        \
   (_##prefix##_prim_func)prefix##_prim_array,  (_##prefix##_prim_func)prefix##_prim_range,      \
   (_##prefix##_prim_func)prefix##_prim_hack,   \
-  (_##prefix##_prim_func)prefix##_prim_char,   (_##prefix##_prim_func)prefix##_prim_nil         \
+  (_##prefix##_prim_func)prefix##_prim_char,   (_##prefix##_prim_func)prefix##_prim_nil,        \
+  (_##prefix##_prim_func)prefix##_prim_typeof \
 };
 
 #define DECL_EXP_FUNC(prefix, type, arg)                                                        \
@@ -23,7 +24,7 @@ const _##prefix##_exp_func prefix##_exp_func[] = {                              
   (_##prefix##_exp_func)prefix##_exp_call,   (_##prefix##_exp_func)prefix##_exp_array,          \
   (_##prefix##_exp_func)prefix##_exp_slice,  (_##prefix##_exp_func)prefix##_exp_if,             \
   (_##prefix##_exp_func)prefix##_exp_dot,    (_##prefix##_exp_func)prefix##_exp_lambda,         \
-  (_##prefix##_exp_func)prefix##_exp_typeof, (_##prefix##_exp_func)prefix##_exp_interp          \
+  (_##prefix##_exp_func)prefix##_exp_interp          \
 };
 
 #define DECL_STMT_FUNC(prefix, type, arg)                                                       \
