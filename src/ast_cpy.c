@@ -3,9 +3,9 @@
 
 ANN static Ast cpy_ast(MemPool p, const Ast);
 ANN static Stmt cpy_stmt(MemPool p, const Stmt src);
-ANN static Exp cpy_exp(MemPool p, const Exp src);
+ANN Exp cpy_exp(MemPool p, const Exp src);
 ANN Type_List cpy_type_list(MemPool p, const Type_List src);
-ANN static Arg_List cpy_arg_list(MemPool p, const Arg_List src);
+ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src);
 ANN Class_Def cpy_class_def(MemPool p, const Class_Def src);
 ANN static Stmt_List cpy_stmt_list(MemPool p, const Stmt_List src);
 
@@ -45,7 +45,7 @@ ANN static void cpy_exp_slice(MemPool p, Exp_Slice *a, const Exp_Slice *src) {
   a->range = cpy_range(p, src->range);
 }
 
-ANN static Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
+ANN /*static */Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
   Var_Decl a = mp_calloc(p, Var_Decl);
   a->xid = src->xid; // 1 
   if(src->array)
@@ -97,12 +97,14 @@ ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
   return a;
 }
 
-ANN static Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
+ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
   Arg_List a = mp_calloc(p, Arg_List);
   if(src->td)
     a->td = cpy_type_decl(p, src->td); // 1 
   if(src->var_decl)
     a->var_decl = cpy_var_decl(p, src->var_decl); // 1 
+  if(src->exp)
+    a->exp = cpy_exp(p, src->exp); // 1 
   if(src->next)
     a->next = cpy_arg_list(p, src->next); // 1 
   return a;
@@ -204,7 +206,7 @@ ANN static struct ExpInfo_* cpy_expinfo(MemPool p, const struct ExpInfo_ *src) {
   return a;
 }
 
-ANN static Exp cpy_exp(MemPool p, const Exp src) {
+ANN Exp cpy_exp(MemPool p, const Exp src) {
   Exp a = mp_calloc(p, Exp);
   if(src->next)
     a->next = cpy_exp(p, src->next);

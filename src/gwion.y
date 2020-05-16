@@ -180,7 +180,7 @@ fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool
   if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
 
 fptr_def: TYPEDEF opt_flag fptr_base arg_type {
-  if($3->td->array && !$3->td->array->exp) {
+  if($3->td->array && $3->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
   }
@@ -203,8 +203,20 @@ type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
     { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
   $$ = $1; }
 
-arg: type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
-arg_list: arg { $$ = $1; } | arg COMMA arg_list { $1->next = $3; $$ = $1; };
+arg
+  : type_decl arg_decl ":" binary_exp { $$ = new_arg_list(mpool(arg), $1, $2, NULL); $$->exp = $4; }
+  | type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); };
+arg_list:
+     arg { $$ = $1; }
+  |  arg_list COMMA arg {
+     Arg_List last = $1;
+     while(last->next)
+       last = last->next;
+     if(last->exp && !$3->exp)
+        { gwion_error(&@3, arg, "missing default argument"); YYERROR;}
+     last->next = $3; $$ = $1;
+   };
+
 fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
 fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list {
   if(!$1)

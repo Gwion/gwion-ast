@@ -108,6 +108,7 @@ ANN void free_type_list(MemPool p, Type_List);
 struct Arg_List_ {
   Type_Decl* td;
   Var_Decl var_decl;
+  Exp exp;
   struct Type_* type;
   Arg_List  next;
 };

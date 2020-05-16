@@ -174,6 +174,8 @@ AST_FREE(Exp, exp) {
 AST_FREE(Arg_List, arg_list) {
   if(a->td)
     free_type_decl(p, a->td);
+  if(a->exp)
+    free_exp(p, a->exp);
   free_var_decl(p, a->var_decl);
   const Arg_List next = a->next;
   mp_free(p, Arg_List, a);
