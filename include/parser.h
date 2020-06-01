@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.4.  */
+/* A Bison parser, made by GNU Bison 3.6.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_GWION_INCLUDE_PARSER_H_INCLUDED
 # define YY_GWION_INCLUDE_PARSER_H_INCLUDED
@@ -44,117 +45,125 @@
 extern int gwion_debug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    SEMICOLON = 258,
-    COMMA = 259,
-    LPAREN = 260,
-    RPAREN = 261,
-    LBRACK = 262,
-    RBRACK = 263,
-    LBRACE = 264,
-    RBRACE = 265,
-    FUNCTION = 266,
-    IF = 267,
-    ELSE = 268,
-    WHILE = 269,
-    DO = 270,
-    UNTIL = 271,
-    LOOP = 272,
-    FOR = 273,
-    GOTO = 274,
-    MATCH = 275,
-    CASE = 276,
-    WHEN = 277,
-    WHERE = 278,
-    ENUM = 279,
-    TRETURN = 280,
-    BREAK = 281,
-    CONTINUE = 282,
-    CLASS = 283,
-    STRUCT = 284,
-    STATIC = 285,
-    GLOBAL = 286,
-    PRIVATE = 287,
-    PROTECT = 288,
-    EXTENDS = 289,
-    DOT = 290,
-    OPERATOR = 291,
-    TYPEDEF = 292,
-    NOELSE = 293,
-    UNION = 294,
-    CONSTT = 295,
-    AUTO = 296,
-    PASTE = 297,
-    ELLIPSE = 298,
-    VARLOOP = 299,
-    RARROW = 300,
-    BACKSLASH = 301,
-    BACKTICK = 302,
-    OPID = 303,
-    REF = 304,
-    NONNULL = 305,
-    NUM = 306,
-    FLOATT = 307,
-    ID = 308,
-    STRING_LIT = 309,
-    CHAR_LIT = 310,
-    INTERP_LIT = 311,
-    INTERP_EXP = 312,
-    PP_COMMENT = 313,
-    PP_INCLUDE = 314,
-    PP_DEFINE = 315,
-    PP_PRAGMA = 316,
-    PP_UNDEF = 317,
-    PP_IFDEF = 318,
-    PP_IFNDEF = 319,
-    PP_ELSE = 320,
-    PP_ENDIF = 321,
-    PP_NL = 322,
-    PLUS = 324,
-    PLUSPLUS = 325,
-    MINUS = 326,
-    MINUSMINUS = 327,
-    TIMES = 328,
-    DIVIDE = 329,
-    PERCENT = 330,
-    DOLLAR = 331,
-    QUESTION = 332,
-    COLON = 333,
-    COLONCOLON = 334,
-    QUESTIONCOLON = 335,
-    NEW = 336,
-    SPORK = 337,
-    FORK = 338,
-    TYPEOF = 339,
-    L_HACK = 340,
-    R_HACK = 341,
-    AND = 342,
-    EQ = 343,
-    GE = 344,
-    GT = 345,
-    LE = 346,
-    LT = 347,
-    NEQ = 348,
-    SHIFT_LEFT = 349,
-    SHIFT_RIGHT = 350,
-    S_AND = 351,
-    S_OR = 352,
-    S_XOR = 353,
-    OR = 354,
-    LTMPL = 355,
-    RTMPL = 356,
-    TILDA = 357,
-    EXCLAMATION = 358,
-    DYNOP = 359,
-    UMINUS = 360,
-    UTIMES = 361
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    SEMICOLON = 258,               /* ";"  */
+    COMMA = 259,                   /* ","  */
+    LPAREN = 260,                  /* "("  */
+    RPAREN = 261,                  /* ")"  */
+    LBRACK = 262,                  /* "["  */
+    RBRACK = 263,                  /* "]"  */
+    LBRACE = 264,                  /* "{"  */
+    RBRACE = 265,                  /* "}"  */
+    FUNCTION = 266,                /* "fun"  */
+    IF = 267,                      /* "if"  */
+    ELSE = 268,                    /* "else"  */
+    WHILE = 269,                   /* "while"  */
+    DO = 270,                      /* "do"  */
+    UNTIL = 271,                   /* "until"  */
+    LOOP = 272,                    /* "repeat"  */
+    FOR = 273,                     /* "for"  */
+    GOTO = 274,                    /* "goto"  */
+    MATCH = 275,                   /* "match"  */
+    CASE = 276,                    /* "case"  */
+    WHEN = 277,                    /* "when"  */
+    WHERE = 278,                   /* "where"  */
+    ENUM = 279,                    /* "enum"  */
+    TRETURN = 280,                 /* "return"  */
+    BREAK = 281,                   /* "break"  */
+    CONTINUE = 282,                /* "continue"  */
+    CLASS = 283,                   /* "class"  */
+    STRUCT = 284,                  /* "struct"  */
+    STATIC = 285,                  /* "static"  */
+    GLOBAL = 286,                  /* "global"  */
+    PRIVATE = 287,                 /* "private"  */
+    PROTECT = 288,                 /* "protect"  */
+    EXTENDS = 289,                 /* "extends"  */
+    DOT = 290,                     /* "."  */
+    OPERATOR = 291,                /* "operator"  */
+    TYPEDEF = 292,                 /* "typedef"  */
+    NOELSE = 293,                  /* NOELSE  */
+    UNION = 294,                   /* "union"  */
+    CONSTT = 295,                  /* "const"  */
+    AUTO = 296,                    /* "auto"  */
+    PASTE = 297,                   /* "##"  */
+    ELLIPSE = 298,                 /* "..."  */
+    VARLOOP = 299,                 /* "varloop"  */
+    RARROW = 300,                  /* "->"  */
+    BACKSLASH = 301,               /* "\\"  */
+    BACKTICK = 302,                /* "`"  */
+    OPID = 303,                    /* OPID  */
+    REF = 304,                     /* "ref"  */
+    NONNULL = 305,                 /* "nonnull"  */
+    NUM = 306,                     /* "<integer>"  */
+    FLOATT = 307,                  /* FLOATT  */
+    ID = 308,                      /* "<identifier>"  */
+    STRING_LIT = 309,              /* "<litteral string>"  */
+    CHAR_LIT = 310,                /* "<litteral char>"  */
+    INTERP_LIT = 311,              /* "<interp string>"  */
+    INTERP_EXP = 312,              /* INTERP_EXP  */
+    PP_COMMENT = 313,              /* "<comment>"  */
+    PP_INCLUDE = 314,              /* "#include"  */
+    PP_DEFINE = 315,               /* "#define"  */
+    PP_PRAGMA = 316,               /* "#pragma"  */
+    PP_UNDEF = 317,                /* "#undef"  */
+    PP_IFDEF = 318,                /* "#ifdef"  */
+    PP_IFNDEF = 319,               /* "#ifndef"  */
+    PP_ELSE = 320,                 /* "#else"  */
+    PP_ENDIF = 321,                /* "#if"  */
+    PP_NL = 322,                   /* "\n"  */
+    PLUS = 324,                    /* "+"  */
+    PLUSPLUS = 325,                /* "++"  */
+    MINUS = 326,                   /* "-"  */
+    MINUSMINUS = 327,              /* "--"  */
+    TIMES = 328,                   /* "*"  */
+    DIVIDE = 329,                  /* "/"  */
+    PERCENT = 330,                 /* "%"  */
+    DOLLAR = 331,                  /* "$"  */
+    QUESTION = 332,                /* "?"  */
+    COLON = 333,                   /* ":"  */
+    COLONCOLON = 334,              /* "::"  */
+    QUESTIONCOLON = 335,           /* "?:"  */
+    NEW = 336,                     /* "new"  */
+    SPORK = 337,                   /* "spork"  */
+    FORK = 338,                    /* "fork"  */
+    TYPEOF = 339,                  /* "typeof"  */
+    L_HACK = 340,                  /* "<<<"  */
+    R_HACK = 341,                  /* ">>>"  */
+    AND = 342,                     /* "&&"  */
+    EQ = 343,                      /* "=="  */
+    GE = 344,                      /* ">="  */
+    GT = 345,                      /* ">"  */
+    LE = 346,                      /* "<="  */
+    LT = 347,                      /* "<"  */
+    NEQ = 348,                     /* "!="  */
+    SHIFT_LEFT = 349,              /* "<<"  */
+    SHIFT_RIGHT = 350,             /* ">>"  */
+    S_AND = 351,                   /* "&"  */
+    S_OR = 352,                    /* "|"  */
+    S_XOR = 353,                   /* "^"  */
+    OR = 354,                      /* "||"  */
+    LTMPL = 355,                   /* "<~"  */
+    RTMPL = 356,                   /* "~>"  */
+    TILDA = 357,                   /* "~"  */
+    EXCLAMATION = 358,             /* "!"  */
+    DYNOP = 359,                   /* "<dynamic_operator>"  */
+    UMINUS = 360,                  /* UMINUS  */
+    UTIMES = 361                   /* UTIMES  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define SEMICOLON 258
 #define COMMA 259
 #define LPAREN 260
@@ -293,7 +302,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 297 "include/parser.h"
+#line 306 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

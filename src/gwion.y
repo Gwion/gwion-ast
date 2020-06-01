@@ -179,7 +179,7 @@ fptr_base: type_decl_array id decl_template fptr_args { $$ = new_func_base(mpool
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
 
-fptr_def: TYPEDEF opt_flag fptr_base arg_type {
+fptr_def: TYPEDEF opt_flag fptr_base arg_type SEMICOLON {
   if($3->td->array && $3->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
