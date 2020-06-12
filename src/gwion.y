@@ -141,8 +141,8 @@ prg: ast { arg->ast = $$ = $1; }
   | /* empty */ { gwion_error(&@$, arg, "file is empty.\n"); YYERROR; }
 
 ast
-  : section { $$ = new_ast(mpool(arg), $1, NULL); }
-  | section ast { $$ = new_ast(mpool(arg), $1, $2); }
+  : section { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); }
+  | section ast { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, $2) : new_ast(mpool(arg), $1, $2); }
   ;
 
 section

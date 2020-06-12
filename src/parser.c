@@ -2343,13 +2343,13 @@ yyreduce:
 
   case 4:
 #line 144 "src/gwion.y"
-            { (yyval.ast) = new_ast(mpool(arg), (yyvsp[0].section), NULL); }
+            { (yyval.ast) = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), (yyvsp[0].section), NULL) : new_ast(mpool(arg), (yyvsp[0].section), NULL); }
 #line 2348 "src/parser.c"
     break;
 
   case 5:
 #line 145 "src/gwion.y"
-                { (yyval.ast) = new_ast(mpool(arg), (yyvsp[-1].section), (yyvsp[0].ast)); }
+                { (yyval.ast) = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), (yyvsp[-1].section), (yyvsp[0].ast)) : new_ast(mpool(arg), (yyvsp[-1].section), (yyvsp[0].ast)); }
 #line 2354 "src/parser.c"
     break;
 
