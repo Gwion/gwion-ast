@@ -95,7 +95,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt _exp_stmt where_stmt varloop_stmt
 %type<stmt> match_case_stmt label_stmt goto_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
@@ -335,9 +335,11 @@ jump_stmt
   | breaks SEMICOLON    { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
+_exp_stmt: SEMICOLON _exp_stmt | SEMICOLON;
+
 exp_stmt
   : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1); }
-  | SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_exp, GET_LOC(&@$)); }
+  | _exp_stmt     { $$ = new_stmt(mpool(arg), ae_stmt_exp, GET_LOC(&@$)); }
   ;
 
 exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
