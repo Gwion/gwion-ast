@@ -275,21 +275,6 @@ Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code,
   return a;
 }
 
-ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs) {
-  Arg_List e1 = lhs->base->args;
-  Arg_List e2 = rhs->base->args;
-
-  while(e1 && e2) {
-    if(e1->type != e2->type)
-      return GW_ERROR;
-    e1 = e1->next;
-    e2 = e2->next;
-  }
-  if(e1 || e2)
-    return GW_ERROR;
-  return GW_OK;
-}
-
 AST_NEW(Func_Base*, func_base, Type_Decl* td, const Symbol xid, const Arg_List args) {
   Func_Base *a = (Func_Base*)mp_calloc(p, Func_Base);
   a->td = td;

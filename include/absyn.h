@@ -556,7 +556,6 @@ struct Func_Def_ {
 };
 
 ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt, const ae_flag, const loc_t);
-ANN m_bool compat_func(const restrict Func_Def lhs, const restrict Func_Def rhs);
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def);
 
