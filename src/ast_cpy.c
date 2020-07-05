@@ -74,7 +74,7 @@ ANN Type_Decl* cpy_type_decl(MemPool p, const Type_Decl* src) {
   a->pos = loc_cpy(p, src->pos);
   a->flag = src->flag; // 1 
   if(src->next)
-    a->next = cpy_type_decl(p, a);
+    a->next = cpy_type_decl(p, src->next);
   return a;
 }
 
