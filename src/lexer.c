@@ -3054,7 +3054,8 @@ static inline void header(const Scanner *scan, const char *msg) {
 ANN void gwlex_error(yyscan_t yyscanner, const char *msg) {
   struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
-  header(scan, msg);
+  if(!scan->error++)
+    header(scan, msg);
 }
 
 char* strip_lit(char* str){
@@ -3124,6 +3125,8 @@ static void adjust(void* data) {
 }
 
 ANN int gwion_error(loc_t loc, Scanner* scan, const char* s) {
+  if(scan->error++)
+    return 0;
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   const m_str name = ppstate->filename;
   m_str filename = name;

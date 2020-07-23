@@ -9,6 +9,7 @@ typedef struct Scanner_ {
   struct PPArg_ *ppa;
   struct pos_t pos;
   int interp_state;
+  int error;
 } Scanner;
 
 #endif

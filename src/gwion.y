@@ -138,7 +138,7 @@ ANN Symbol lambda_name(const Scanner*);
 %%
 
 prg: ast { arg->ast = $$ = $1; }
-  | /* empty */ { gwion_error(&@$, arg, "file is empty.\n"); YYERROR; }
+  | /* empty */ { gwion_error(&@$, arg, "file is empty."); YYERROR; }
 
 ast
   : section { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); }
@@ -335,7 +335,7 @@ jump_stmt
   | breaks SEMICOLON    { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
-_exp_stmt: SEMICOLON _exp_stmt | SEMICOLON;
+_exp_stmt: SEMICOLON _exp_stmt { $$ = $2; } | SEMICOLON { $$ = NULL; };
 
 exp_stmt
   : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1); }
