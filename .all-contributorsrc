@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Pranav2612000",
+      "name": "Pranav Joglekar",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20909078?v=4",
+      "profile": "https://github.com/Pranav2612000",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "gwion-ast",
+  "projectOwner": "fennecdjay",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
