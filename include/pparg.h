@@ -1,3 +1,6 @@
+/** @file: pparg.h
+\brief parser arguments
+*/
 #ifndef __PPARG
 #define __PPARG
 

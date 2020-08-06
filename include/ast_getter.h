@@ -1,3 +1,6 @@
+/** @file: ast_getter.h
+@brief: helper structure to get an AST
+*/
 #ifndef __AST_GETTER
 #define __AST_GETTER
 

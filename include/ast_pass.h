@@ -1,3 +1,6 @@
+/** @file: ast_pass.h
+\brief macros to simplify pass writing
+*/
 #ifndef __AST_PASS
 #define __AST_PASS
 

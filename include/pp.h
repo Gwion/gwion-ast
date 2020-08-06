@@ -1,3 +1,7 @@
+/** @file: pp.h
+@brief parser state
+*/
+
 #ifndef __PP
 #define __PP
 

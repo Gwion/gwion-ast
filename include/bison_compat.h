@@ -1,3 +1,6 @@
+/** @file: bison_compat.h
+\brief helper for bison locations
+*/
 #ifndef __BISON_COMPAT
 #define __BISON_COMPAT
 

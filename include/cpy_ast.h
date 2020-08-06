@@ -1,3 +1,7 @@
+/** @file: cpy_ast.h
+@brief copy ast nodes
+*/
+
 #ifndef __CPY_AST
 #define __CPY_AST
 ANN Array_Sub cpy_array_sub(MemPool, Array_Sub);

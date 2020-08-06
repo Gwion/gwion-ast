@@ -1,3 +1,6 @@
+/** @file: loc.h
+\brief locations
+*/
 #ifndef __LOC
 #define __LOC
 

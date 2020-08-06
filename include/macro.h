@@ -1,3 +1,6 @@
+/** @file: macro.h
+\brief macros
+*/
 #ifndef __MACRO
 #define __MACRO
 

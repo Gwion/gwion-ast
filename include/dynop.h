@@ -1,3 +1,6 @@
+/** @file: dynop.h
+@brief parse operators
+*/
 #ifndef __DYNOP
 #define __DYNOP
 

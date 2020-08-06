@@ -1,3 +1,6 @@
+/** @file: scanner.h
+\brief scanner
+*/
 #ifndef __SCANNER
 #define __SCANNER
 

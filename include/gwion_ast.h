@@ -1,3 +1,6 @@
+/** @file: gwion_ast.h
+@brief include this file to use gwion-ast library
+*/
 #ifndef __GWION_AST
 #define __GWION_AST
 #include "loc.h"

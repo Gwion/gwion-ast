@@ -1,3 +1,7 @@
+/** @file: absyn.h
+\brief: Abstract Syntaxic tree
+*/
+
 #ifndef __ABSYN
 #define __ABSYN
 

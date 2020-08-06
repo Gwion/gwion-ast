@@ -49,6 +49,7 @@ void loc_err(const loc_t loc, const m_str filename) {
     }
     n++;
   }
+  gw_err("\033[0m");
   fclose(f);
   free(line);
 }
