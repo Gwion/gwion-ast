@@ -65,6 +65,7 @@ install: translation-install libgwion_ast.a
 uninstall: translation-uninstall
 	$(info uninstalling ${GWION_PACKAGE} from ${PREFIX})
 	rm ${DESTDIR}/${PREFIX}/bin/lib${PACKAGE}.a
+	rm -r ${DESTDIR}/${PREFIX}/include/gwion/ast
 
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/locale.mk
