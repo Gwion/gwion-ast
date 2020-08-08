@@ -1,5 +1,5 @@
 /** @file: absyn.h
-\brief: Abstract Syntaxic tree
+\brief Abstract Syntaxic tree
 */
 
 #ifndef __ABSYN
@@ -24,16 +24,22 @@ typedef struct Arg_List_      * Arg_List;
 typedef struct ID_List_       * ID_List;
 typedef struct Type_List_     * Type_List;
 
+/** a dot expression. @code object.member @endcode */
 typedef struct {
   Exp base;
   struct Type_ *t_base;
   struct Symbol_ *xid;
 } Exp_Dot;
+
+/** a lambda expression. @code \a b { <<< a + b >>>; } @endcode */
 typedef struct {
   Func_Def def;
   struct Type_*owner;
 } Exp_Lambda;
 ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List,const Stmt);
+
+
+/** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
   Exp    exp;
   struct Type_ *type;
@@ -43,37 +49,41 @@ ANEW AST_NEW(Array_Sub, array_sub, const Exp);
 ANN2(1) Array_Sub prepend_array_sub(const Array_Sub, const Exp);
 ANN void free_array_sub(MemPool p, Array_Sub);
 
+/** array expression. @code instrument_list[1][2] @endcode */
 typedef struct {
   Exp       base;
   Array_Sub array;
 } Exp_Array;
 ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub);
 
+/** range. @code [12:12] @endcode or @code [1:] @endcode or @code [:12] @endcode*/
 typedef struct Range_ {
-// one is optionnal
-  Exp start;
-  Exp end;
+  Exp start;   ///< start of range expression
+  Exp end;     ///< end   of range expression
 } Range;
 AST_NEW(Range*, range, const Exp, const Exp);
 
+/** slice. @code "test"[12:12] @endcode see \ref Range_ */
 typedef struct {
-  Exp       base;
+  Exp    base;
   Range *range;
 } Exp_Slice;
 ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range*);
 
+/** variable declaration **/
 struct Var_Decl_ {
-  struct Symbol_* xid;
-  struct Value_ * value;
-  Array_Sub array;
-  void* addr;
-  loc_t pos;
+  struct Symbol_* xid;   ///< variable name
+  struct Value_ * value; ///< corresponding value
+  Array_Sub array;       ///< array subscript, if any
+  void* addr;            ///< variable data, if any
+  loc_t pos;             ///< position
 };
 ANN2(1, 2) ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_*, const Array_Sub, const loc_t);
 
+/** a list of \ref Var_Decl_ */
 struct Var_Decl_List_ {
-  Var_Decl self;
-  Var_Decl_List next;
+  Var_Decl self;       ///< the \ref Var_Decl_ itself
+  Var_Decl_List next;  ///< pointer to the next \ref Var_Decl_ in list
 };
 ANN2(1, 2) ANEW AST_NEW(Var_Decl_List, var_decl_list, const Var_Decl, const Var_Decl_List);
 
@@ -82,7 +92,7 @@ typedef struct Type_Decl_ {
   Exp exp;
   Array_Sub array;
   Type_List types;
-  loc_t pos;
+  loc_t pos;               ///< position
   struct Type_Decl_* next;
   ae_flag flag;
 } Type_Decl;
@@ -95,7 +105,7 @@ ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 struct ID_List_    {
   struct Symbol_* xid;
   ID_List next;
-  loc_t pos;
+  loc_t pos;          ///< position
 };
 
 ANEW ANN AST_NEW(ID_List, id_list, struct Symbol_*, const loc_t);
@@ -232,7 +242,7 @@ struct Exp_ {
   } d;
   struct ExpInfo_ *info;
   Exp next;
-  loc_t pos;
+  loc_t pos;                  ///< position
   ae_exp_t exp_type;
 //  enum exp_state emit_var;
   int emit_var;
@@ -435,7 +445,7 @@ struct Enum_Def_ {
   struct Symbol_* xid;
   struct Type_* t;
   struct Vector_ values;
-  loc_t pos;
+  loc_t pos;             ///< position
   ae_flag flag;
 };
 ANN2(1,2,4) ANEW AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_*, const loc_t);
@@ -481,7 +491,7 @@ struct Union_Def_ {
     struct Type_* type;
   };
   Tmpl *tmpl;
-  loc_t pos;
+  loc_t pos;                ///< position
   uint s;
   uint o;
   ae_flag flag;
@@ -520,7 +530,7 @@ struct Stmt_ {
     struct Stmt_Match_     stmt_match;
     struct Stmt_PP_    stmt_pp;
   } d;
-  loc_t pos;
+  loc_t pos;                                ///< position
   ae_stmt_t stmt_type;
 };
 
@@ -555,7 +565,7 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
-  loc_t pos;
+  loc_t pos;           ///< position
   ae_flag flag;
 };
 
@@ -592,7 +602,7 @@ struct Class_Def_ {
     Decl_List list; // parent template union
     Union_Def union_def;// child template union
   };
-  loc_t pos;
+  loc_t pos;            ///< position
   ae_flag flag;
 };
 ANN2(1, 3) ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,
