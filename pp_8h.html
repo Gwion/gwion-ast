@@ -90,25 +90,176 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a41fe8548033d472bea4d4122c93928da"><td class="memItemLeft" align="right" valign="top"><a id="a41fe8548033d472bea4d4122c93928da"></a>
-typedef struct <a class="el" href="structPP__.html">PP_</a>&#160;</td><td class="memItemRight" valign="bottom"><b>PP</b></td></tr>
+<tr class="memitem:a41fe8548033d472bea4d4122c93928da"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structPP__.html">PP_</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp_8h.html#a41fe8548033d472bea4d4122c93928da">PP</a></td></tr>
 <tr class="separator:a41fe8548033d472bea4d4122c93928da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5d5e5427edc7a5b329571a5686a02765"><td class="memItemLeft" align="right" valign="top"><a id="a5d5e5427edc7a5b329571a5686a02765"></a>
-ANN struct <a class="el" href="structPPState__.html">PPState_</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>new_ppstate</b> (MemPool, const m_str)</td></tr>
+<tr class="memitem:a5d5e5427edc7a5b329571a5686a02765"><td class="memItemLeft" align="right" valign="top">ANN struct <a class="el" href="structPPState__.html">PPState_</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp_8h.html#a5d5e5427edc7a5b329571a5686a02765">new_ppstate</a> (MemPool, const m_str)</td></tr>
 <tr class="separator:a5d5e5427edc7a5b329571a5686a02765"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ed1234c09daf2aa31251c0251492df9"><td class="memItemLeft" align="right" valign="top"><a id="a3ed1234c09daf2aa31251c0251492df9"></a>
-ANEW <a class="el" href="structPP__.html">PP</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>new_pp</b> (MemPool p, const uint size, const m_str)</td></tr>
+<tr class="memitem:a3ed1234c09daf2aa31251c0251492df9"><td class="memItemLeft" align="right" valign="top">ANEW <a class="el" href="pp_8h.html#a41fe8548033d472bea4d4122c93928da">PP</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp_8h.html#a3ed1234c09daf2aa31251c0251492df9">new_pp</a> (MemPool p, const uint size, const m_str)</td></tr>
 <tr class="separator:a3ed1234c09daf2aa31251c0251492df9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a915c35f03a98eece2e5fbdb30747cbd9"><td class="memItemLeft" align="right" valign="top"><a id="a915c35f03a98eece2e5fbdb30747cbd9"></a>
-ANN void&#160;</td><td class="memItemRight" valign="bottom"><b>free_pp</b> (MemPool p, <a class="el" href="structPP__.html">PP</a> *pp, void *data)</td></tr>
+<tr class="memitem:a915c35f03a98eece2e5fbdb30747cbd9"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp_8h.html#a915c35f03a98eece2e5fbdb30747cbd9">free_pp</a> (MemPool p, <a class="el" href="pp_8h.html#a41fe8548033d472bea4d4122c93928da">PP</a> *pp, void *data)</td></tr>
 <tr class="separator:a915c35f03a98eece2e5fbdb30747cbd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>parser state </p>
-</div></div><!-- contents -->
+
+<p class="definition">Definition in file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a41fe8548033d472bea4d4122c93928da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41fe8548033d472bea4d4122c93928da">&#9670;&nbsp;</a></span>PP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structPP__.html">PP_</a> <a class="el" href="pp_8h.html#a41fe8548033d472bea4d4122c93928da">PP</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a915c35f03a98eece2e5fbdb30747cbd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a915c35f03a98eece2e5fbdb30747cbd9">&#9670;&nbsp;</a></span>free_pp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ANN void free_pp </td>
+          <td>(</td>
+          <td class="paramtype">MemPool&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="pp_8h.html#a41fe8548033d472bea4d4122c93928da">PP</a> *&#160;</td>
+          <td class="paramname"><em>pp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00035">35</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                                {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <a class="code" href="pp_8c.html#aee06fac92dbf124e031edf293c8040e5">pp_post</a>(pp, data);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">global_undef</a>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  hend(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  mp_free(p, Hash, pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  mp_free2(p, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code" href="structpp__info.html">pp_info</a>), pp-&gt;<a class="code" href="structPP__.html#ac1b53c35341e6c3d425fa9c9f51704d1">def</a>); <span class="comment">// watch me</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  mp_free(p, <a class="code" href="structPP__.html">PP</a>, pp);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a3ed1234c09daf2aa31251c0251492df9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ed1234c09daf2aa31251c0251492df9">&#9670;&nbsp;</a></span>new_pp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ANEW <a class="el" href="pp_8h.html#a41fe8548033d472bea4d4122c93928da">PP</a>* new_pp </td>
+          <td>(</td>
+          <td class="paramtype">MemPool&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const&#160;</td>
+          <td class="paramname"><em>m_str</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00011">11</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                                                              {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <a class="code" href="structPP__.html">PP</a>* pp = (<a class="code" href="structPP__.html">PP</a>*)mp_calloc(p, <a class="code" href="structPP__.html">PP</a>);</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  pp-&gt;<a class="code" href="structPP__.html#ac1b53c35341e6c3d425fa9c9f51704d1">def</a> = (<span class="keyword">struct </span><a class="code" href="structpp__info.html">pp_info</a>*)mp_calloc2(p, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code" href="structpp__info.html">pp_info</a>));<span class="comment">// watchme</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a> = (Hash)mp_calloc(p, Hash);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  hini(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>, size);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>-&gt;p = p; <span class="comment">// in ctor ?</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  vector_init(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  vector_init(&amp;pp-&gt;<a class="code" href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">global_undef</a>);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  vector_add(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>, (vtype)<a class="code" href="pp_8c.html#a88db1595fd77c50542421035b5f99328">new_ppstate</a>(p, name));</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <span class="keywordflow">return</span> pp;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a5d5e5427edc7a5b329571a5686a02765"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d5e5427edc7a5b329571a5686a02765">&#9670;&nbsp;</a></span>new_ppstate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ANN struct <a class="el" href="structPPState__.html">PPState_</a>* new_ppstate </td>
+          <td>(</td>
+          <td class="paramtype">MemPool&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const&#160;</td>
+          <td class="paramname"><em>m_str</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00005">5</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                                                                  {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  <span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a> * ppstate = mp_calloc(p, PPState);</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  ppstate-&gt;<a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a> = <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a>;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  <span class="keywordflow">return</span> ppstate;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;};</div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
+<div class="ttc" id="astructPPState___html"><div class="ttname"><a href="structPPState__.html">PPState_</a></div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00008">pp.h:8</a></div></div>
+<div class="ttc" id="astructPP___html"><div class="ttname"><a href="structPP__.html">PP_</a></div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00024">pp.h:24</a></div></div>
+<div class="ttc" id="astructPP___html_a8a9999477f7bb04115d316bf7b3368f1"><div class="ttname"><a href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">PP_::global_undef</a></div><div class="ttdeci">struct Vector_ global_undef</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00026">pp.h:27</a></div></div>
+<div class="ttc" id="astructPP___html_ac1b53c35341e6c3d425fa9c9f51704d1"><div class="ttname"><a href="structPP__.html#ac1b53c35341e6c3d425fa9c9f51704d1">PP_::def</a></div><div class="ttdeci">struct pp_info * def</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00029">pp.h:29</a></div></div>
+<div class="ttc" id="astructpp__info_html"><div class="ttname"><a href="structpp__info.html">pp_info</a></div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00019">pp.h:19</a></div></div>
+<div class="ttc" id="astructPPState___html_aafe86e38061b80b33bc86e1eefc408c5"><div class="ttname"><a href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">PPState_::filename</a></div><div class="ttdeci">m_str filename</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00015">pp.h:15</a></div></div>
+<div class="ttc" id="app_8c_html_aee06fac92dbf124e031edf293c8040e5"><div class="ttname"><a href="pp_8c.html#aee06fac92dbf124e031edf293c8040e5">pp_post</a></div><div class="ttdeci">static void pp_post(PP *pp, void *data)</div><div class="ttdef"><b>Definition:</b> <a href="pp_8c_source.html#l00023">pp.c:23</a></div></div>
+<div class="ttc" id="astructPP___html_a2089b211cc14b266ee663e25d188d384"><div class="ttname"><a href="structPP__.html#a2089b211cc14b266ee663e25d188d384">PP_::macros</a></div><div class="ttdeci">struct Hash_ * macros</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00026">pp.h:26</a></div></div>
+<div class="ttc" id="app_8c_html_a88db1595fd77c50542421035b5f99328"><div class="ttname"><a href="pp_8c.html#a88db1595fd77c50542421035b5f99328">new_ppstate</a></div><div class="ttdeci">ANN struct PPState_ * new_ppstate(MemPool p, const m_str filename)</div><div class="ttdef"><b>Definition:</b> <a href="pp_8c_source.html#l00005">pp.c:5</a></div></div>
+<div class="ttc" id="astructPP___html_af9536f140696eb244b97e11040638065"><div class="ttname"><a href="structPP__.html#af9536f140696eb244b97e11040638065">PP_::filename</a></div><div class="ttdeci">struct Vector_ filename</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00021">pp.h:25</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

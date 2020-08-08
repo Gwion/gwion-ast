@@ -67,32 +67,141 @@ $(function() {
 <div class="title">PPState_ Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="pp_8h_source.html">pp.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a19203c50c60dc6e6c0f51ce116e37e0e"><td class="memItemLeft" align="right" valign="top"><a id="a19203c50c60dc6e6c0f51ce116e37e0e"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>state</b></td></tr>
+<tr class="memitem:a19203c50c60dc6e6c0f51ce116e37e0e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPPState__.html#a19203c50c60dc6e6c0f51ce116e37e0e">state</a></td></tr>
 <tr class="separator:a19203c50c60dc6e6c0f51ce116e37e0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a855485aa4d9fa15d8860d98a67c205c2"><td class="memItemLeft" ><a id="a855485aa4d9fa15d8860d98a67c205c2"></a>
-union {</td></tr>
-<tr class="memitem:aeb561c78324373445a8dbdf5822adc5d"><td class="memItemLeft" >
-&#160;&#160;&#160;FILE *&#160;&#160;&#160;<b>file</b></td></tr>
-<tr class="separator:aeb561c78324373445a8dbdf5822adc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a938b7686654314b93903d7dfd00a04b8"><td class="memItemLeft" >
-&#160;&#160;&#160;<a class="el" href="structMacroArg__.html">MacroArg</a>&#160;&#160;&#160;<b>arg</b></td></tr>
-<tr class="separator:a938b7686654314b93903d7dfd00a04b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc551424069d5600f511dfd285b568d2"><td class="memItemLeft" >
-&#160;&#160;&#160;void *&#160;&#160;&#160;<b>data</b></td></tr>
-<tr class="separator:adc551424069d5600f511dfd285b568d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a855485aa4d9fa15d8860d98a67c205c2"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a855485aa4d9fa15d8860d98a67c205c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafe86e38061b80b33bc86e1eefc408c5"><td class="memItemLeft" align="right" valign="top"><a id="aafe86e38061b80b33bc86e1eefc408c5"></a>
-m_str&#160;</td><td class="memItemRight" valign="bottom"><b>filename</b></td></tr>
+<tr class="memitem:afac42d887ff49aee5386343fd809a87a"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:a959b4bfecf33a32c7015ac3f29f87378"><td class="memItemLeft" >&#160;&#160;&#160;FILE *&#160;&#160;&#160;<a class="el" href="structPPState__.html#a2f3c3a545f5d6f39c9f67458a86ac541">file</a></td></tr>
+<tr class="separator:a959b4bfecf33a32c7015ac3f29f87378"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e42990b1ac1f5d1f82c25b2281aae65"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="macro_8h.html#ae1c7131eaf2eb8011c3c20863ef75576">MacroArg</a>&#160;&#160;&#160;<a class="el" href="structPPState__.html#a80e41b1662677c755ccf6fcfb3a613e0">arg</a></td></tr>
+<tr class="separator:a6e42990b1ac1f5d1f82c25b2281aae65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15fa1ae3dfd3ba08057d814b61dee113"><td class="memItemLeft" >&#160;&#160;&#160;void *&#160;&#160;&#160;<a class="el" href="structPPState__.html#a39e773ed13515fe396e1114aa9433870">data</a></td></tr>
+<tr class="separator:a15fa1ae3dfd3ba08057d814b61dee113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afac42d887ff49aee5386343fd809a87a"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:afac42d887ff49aee5386343fd809a87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafe86e38061b80b33bc86e1eefc408c5"><td class="memItemLeft" align="right" valign="top">m_str&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a></td></tr>
 <tr class="separator:aafe86e38061b80b33bc86e1eefc408c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f5aa62746e8eacbdf0e11316af7be61"><td class="memItemLeft" align="right" valign="top"><a id="a1f5aa62746e8eacbdf0e11316af7be61"></a>
-struct <a class="el" href="structpos__t.html">pos_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pos</b></td></tr>
+<tr class="memitem:a1f5aa62746e8eacbdf0e11316af7be61"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structpos__t.html">pos_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPPState__.html#a1f5aa62746e8eacbdf0e11316af7be61">pos</a></td></tr>
 <tr class="separator:a1f5aa62746e8eacbdf0e11316af7be61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00008">8</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="afac42d887ff49aee5386343fd809a87a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afac42d887ff49aee5386343fd809a87a">&#9670;&nbsp;</a></span>@7</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">union { ... } </td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a80e41b1662677c755ccf6fcfb3a613e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80e41b1662677c755ccf6fcfb3a613e0">&#9670;&nbsp;</a></span>arg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="macro_8h.html#ae1c7131eaf2eb8011c3c20863ef75576">MacroArg</a> PPState_::arg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00012">12</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+
+</div>
+</div>
+<a id="a39e773ed13515fe396e1114aa9433870"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39e773ed13515fe396e1114aa9433870">&#9670;&nbsp;</a></span>data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* PPState_::data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00013">13</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+
+</div>
+</div>
+<a id="a2f3c3a545f5d6f39c9f67458a86ac541"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f3c3a545f5d6f39c9f67458a86ac541">&#9670;&nbsp;</a></span>file</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">FILE* PPState_::file</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00011">11</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+
+</div>
+</div>
+<a id="aafe86e38061b80b33bc86e1eefc408c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafe86e38061b80b33bc86e1eefc408c5">&#9670;&nbsp;</a></span>filename</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">m_str PPState_::filename</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00015">15</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+
+</div>
+</div>
+<a id="a1f5aa62746e8eacbdf0e11316af7be61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f5aa62746e8eacbdf0e11316af7be61">&#9670;&nbsp;</a></span>pos</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structpos__t.html">pos_t</a> PPState_::pos</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00015">15</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+
+</div>
+</div>
+<a id="a19203c50c60dc6e6c0f51ce116e37e0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19203c50c60dc6e6c0f51ce116e37e0e">&#9670;&nbsp;</a></span>state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* PPState_::state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="pp_8h_source.html#l00009">9</a> of file <a class="el" href="pp_8h_source.html">pp.h</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>include/<a class="el" href="pp_8h_source.html">pp.h</a></li>
 </ul>

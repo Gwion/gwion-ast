@@ -85,13 +85,47 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af103c28df90ed0c10a8aef42c63c035a"><td class="memItemLeft" align="right" valign="top"><a id="af103c28df90ed0c10a8aef42c63c035a"></a>
-ANN <a class="el" href="structAst__.html">Ast</a>&#160;</td><td class="memItemRight" valign="bottom"><b>parse</b> (const struct <a class="el" href="structAstGetter__.html">AstGetter_</a> *)</td></tr>
+<tr class="memitem:af103c28df90ed0c10a8aef42c63c035a"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="absyn_8h.html#a69176241db2251bc1c0bd30315cfd4c1">Ast</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__getter_8h.html#af103c28df90ed0c10a8aef42c63c035a">parse</a> (const struct <a class="el" href="structAstGetter__.html">AstGetter_</a> *)</td></tr>
 <tr class="separator:af103c28df90ed0c10a8aef42c63c035a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>: helper structure to get an AST </p>
-</div></div><!-- contents -->
+
+<p class="definition">Definition in file <a class="el" href="ast__getter_8h_source.html">ast_getter.h</a>.</p>
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="af103c28df90ed0c10a8aef42c63c035a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af103c28df90ed0c10a8aef42c63c035a">&#9670;&nbsp;</a></span>parse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ANN <a class="el" href="absyn_8h.html#a69176241db2251bc1c0bd30315cfd4c1">Ast</a> parse </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structAstGetter__.html">AstGetter_</a> *&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00035">35</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                        {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <a class="code" href="structScanner__.html">Scanner</a>* s = <a class="code" href="scanner_8c.html#a005b41f4a57817b39bbcefe6be723696">new_scanner</a>(arg);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keyword">const</span> <a class="code" href="structAst__.html">Ast</a> <a class="code" href="absyn_8h.html#a83d838e3813fb5999c0492e0d9474bd9">ast</a> = <a class="code" href="scanner_8c.html#abe3597bfd89439a5389123b2d8507687">get_ast</a>(arg-&gt;ppa-&gt;hash.p, s);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <a class="code" href="scanner_8c.html#a9e1f3129d9f754aefe401c9a246b990c">free_scanner</a>(s);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="absyn_8h.html#a83d838e3813fb5999c0492e0d9474bd9">ast</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
+<div class="ttc" id="astructScanner___html"><div class="ttname"><a href="structScanner__.html">Scanner_</a></div><div class="ttdef"><b>Definition:</b> <a href="scanner_8h_source.html#l00007">scanner.h:7</a></div></div>
+<div class="ttc" id="aabsyn_8h_html_a83d838e3813fb5999c0492e0d9474bd9"><div class="ttname"><a href="absyn_8h.html#a83d838e3813fb5999c0492e0d9474bd9">ast</a></div><div class="ttdeci">ast</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00616">absyn.h:616</a></div></div>
+<div class="ttc" id="ascanner_8c_html_a9e1f3129d9f754aefe401c9a246b990c"><div class="ttname"><a href="scanner_8c.html#a9e1f3129d9f754aefe401c9a246b990c">free_scanner</a></div><div class="ttdeci">static ANN void free_scanner(Scanner *scan)</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8c_source.html#l00021">scanner.c:21</a></div></div>
+<div class="ttc" id="astructAst___html"><div class="ttname"><a href="structAst__.html">Ast_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00612">absyn.h:612</a></div></div>
+<div class="ttc" id="ascanner_8c_html_a005b41f4a57817b39bbcefe6be723696"><div class="ttname"><a href="scanner_8c.html#a005b41f4a57817b39bbcefe6be723696">new_scanner</a></div><div class="ttdeci">static ANEW Scanner * new_scanner(const struct AstGetter_ *arg)</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8c_source.html#l00009">scanner.c:9</a></div></div>
+<div class="ttc" id="ascanner_8c_html_abe3597bfd89439a5389123b2d8507687"><div class="ttname"><a href="scanner_8c.html#abe3597bfd89439a5389123b2d8507687">get_ast</a></div><div class="ttdeci">static ANN Ast get_ast(MemPool mp, Scanner *s)</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8c_source.html#l00027">scanner.c:27</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

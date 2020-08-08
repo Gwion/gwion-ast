@@ -66,7 +66,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ast_pass.h File Reference</div>  </div>
 </div><!--header-->
@@ -79,17 +80,24 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:aaa3bdd0bb0695b2e2c594cf3b42f93dc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>DECL_PRIM_FUNC</b>(prefix,  type,  arg)</td></tr>
+<tr class="memitem:aaa3bdd0bb0695b2e2c594cf3b42f93dc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__pass_8h.html#aaa3bdd0bb0695b2e2c594cf3b42f93dc">DECL_PRIM_FUNC</a>(prefix,  type,  arg)</td></tr>
 <tr class="separator:aaa3bdd0bb0695b2e2c594cf3b42f93dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56df460dd25e9d7e2be3b03e5a26b43f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>DECL_EXP_FUNC</b>(prefix,  type,  arg)</td></tr>
+<tr class="memitem:a56df460dd25e9d7e2be3b03e5a26b43f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__pass_8h.html#a56df460dd25e9d7e2be3b03e5a26b43f">DECL_EXP_FUNC</a>(prefix,  type,  arg)</td></tr>
 <tr class="separator:a56df460dd25e9d7e2be3b03e5a26b43f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2042ebc89a1389e080ea8c97705f97c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>DECL_STMT_FUNC</b>(prefix,  type,  arg)</td></tr>
+<tr class="memitem:ac2042ebc89a1389e080ea8c97705f97c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__pass_8h.html#ac2042ebc89a1389e080ea8c97705f97c">DECL_STMT_FUNC</a>(prefix,  type,  arg)</td></tr>
 <tr class="separator:ac2042ebc89a1389e080ea8c97705f97c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ac748666a56d3c3ad41458916422c69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>DECL_SECTION_FUNC</b>(prefix,  type,  arg)</td></tr>
+<tr class="memitem:a3ac748666a56d3c3ad41458916422c69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__pass_8h.html#a3ac748666a56d3c3ad41458916422c69">DECL_SECTION_FUNC</a>(prefix,  type,  arg)</td></tr>
 <tr class="separator:a3ac748666a56d3c3ad41458916422c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a365b68090fe7fc2a0aae68b15d96baaa"><td class="memItemLeft" align="right" valign="top">static m_bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__pass_8h.html#a365b68090fe7fc2a0aae68b15d96baaa">dummy_func</a> (const void *a NUSED, const void *b NUSED)</td></tr>
+<tr class="separator:a365b68090fe7fc2a0aae68b15d96baaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>macros to simplify pass writing </p>
+
+<p class="definition">Definition in file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a56df460dd25e9d7e2be3b03e5a26b43f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a56df460dd25e9d7e2be3b03e5a26b43f">&#9670;&nbsp;</a></span>DECL_EXP_FUNC</h2>
@@ -132,6 +140,8 @@ Macros</h2></td></tr>
 <div class="line">  (_##prefix##_exp_func)prefix##_exp_dot,    (_##prefix##_exp_func)prefix##_exp_lambda,         \</div>
 <div class="line">};</div>
 </div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00022">22</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
+
 </div>
 </div>
 <a id="aaa3bdd0bb0695b2e2c594cf3b42f93dc"></a>
@@ -175,6 +185,8 @@ Macros</h2></td></tr>
 <div class="line">  (_##prefix##_prim_func)prefix##_prim_typeof, (_##prefix##_prim_func)prefix##_prim_interp      \</div>
 <div class="line">};</div>
 </div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00011">11</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
+
 </div>
 </div>
 <a id="a3ac748666a56d3c3ad41458916422c69"></a>
@@ -216,6 +228,8 @@ Macros</h2></td></tr>
 <div class="line">  (_##prefix##_section_func)prefix##_type_def                                                   \</div>
 <div class="line">};</div>
 </div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00046">46</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
+
 </div>
 </div>
 <a id="ac2042ebc89a1389e080ea8c97705f97c"></a>
@@ -260,6 +274,48 @@ Macros</h2></td></tr>
 <div class="line">  (_##prefix##_stmt_func)prefix##_stmt_return, (_##prefix##_stmt_func)prefix##_stmt_match,      \</div>
 <div class="line">  (_##prefix##_stmt_func)prefix##_stmt_jump,   (_##prefix##_stmt_func)prefix##_stmt_pp          \</div>
 <div class="line">};</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00033">33</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a365b68090fe7fc2a0aae68b15d96baaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a365b68090fe7fc2a0aae68b15d96baaa">&#9670;&nbsp;</a></span>dummy_func()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static m_bool dummy_func </td>
+          <td>(</td>
+          <td class="paramtype">const void *a&#160;</td>
+          <td class="paramname"><em>NUSED</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *b&#160;</td>
+          <td class="paramname"><em>NUSED</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00007">7</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
+<div class="fragment"><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                      { <span class="keywordflow">return</span> 1; }</div>
 </div><!-- fragment -->
 </div>
 </div>

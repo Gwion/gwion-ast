@@ -80,25 +80,24 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a05958fcca5262ce3895ecf3be642dc52"><td class="memItemLeft" align="right" valign="top"><a id="a05958fcca5262ce3895ecf3be642dc52"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>YYLTYPE</b>&#160;&#160;&#160;struct <a class="el" href="structloc__t__.html">loc_t_</a></td></tr>
+<tr class="memitem:a05958fcca5262ce3895ecf3be642dc52"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bison__compat_8h.html#a05958fcca5262ce3895ecf3be642dc52">YYLTYPE</a>&#160;&#160;&#160;struct <a class="el" href="structloc__t__.html">loc_t_</a></td></tr>
 <tr class="separator:a05958fcca5262ce3895ecf3be642dc52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4332d355678b732da19b65634dc8df36"><td class="memItemLeft" align="right" valign="top"><a id="a4332d355678b732da19b65634dc8df36"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>YYLTYPE_IS_DECLARED</b></td></tr>
+<tr class="memitem:a4332d355678b732da19b65634dc8df36"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bison__compat_8h.html#a4332d355678b732da19b65634dc8df36">YYLTYPE_IS_DECLARED</a></td></tr>
 <tr class="separator:a4332d355678b732da19b65634dc8df36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6198b2fcf96178b24ad4efff2a3debb0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>YY_USER_ACTION</b></td></tr>
+<tr class="memitem:a6198b2fcf96178b24ad4efff2a3debb0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bison__compat_8h.html#a6198b2fcf96178b24ad4efff2a3debb0">YY_USER_ACTION</a></td></tr>
 <tr class="separator:a6198b2fcf96178b24ad4efff2a3debb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a485d38f93de30679900c9cad6e7f3446"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>YYLLOC_DEFAULT</b>(Current,  Rhs,  N)</td></tr>
+<tr class="memitem:a485d38f93de30679900c9cad6e7f3446"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bison__compat_8h.html#a485d38f93de30679900c9cad6e7f3446">YYLLOC_DEFAULT</a>(Current,  Rhs,  N)</td></tr>
 <tr class="separator:a485d38f93de30679900c9cad6e7f3446"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa18e3f737f350057a57b2834ec49d400"><td class="memItemLeft" align="right" valign="top"><a id="aa18e3f737f350057a57b2834ec49d400"></a>
-ANN void&#160;</td><td class="memItemRight" valign="bottom"><b>clear_buffer</b> (void *state, void *scan)</td></tr>
+<tr class="memitem:aa18e3f737f350057a57b2834ec49d400"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bison__compat_8h.html#aa18e3f737f350057a57b2834ec49d400">clear_buffer</a> (void *state, void *scan)</td></tr>
 <tr class="separator:aa18e3f737f350057a57b2834ec49d400"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>helper for bison locations </p>
+
+<p class="definition">Definition in file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a6198b2fcf96178b24ad4efff2a3debb0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6198b2fcf96178b24ad4efff2a3debb0">&#9670;&nbsp;</a></span>YY_USER_ACTION</h2>
@@ -120,6 +119,8 @@ ANN void&#160;</td><td class="memItemRight" valign="bottom"><b>clear_buffer</b> 
 <div class="line">      yylloc-&gt;last.column = get_currpos(yyscanner);          \</div>
 <div class="line">    }</div>
 </div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="bison__compat_8h_source.html#l00011">11</a> of file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
+
 </div>
 </div>
 <a id="a485d38f93de30679900c9cad6e7f3446"></a>
@@ -170,6 +171,69 @@ ANN void&#160;</td><td class="memItemRight" valign="bottom"><b>clear_buffer</b> 
 <div class="line">        }                                                               \</div>
 <div class="line">    while (0)</div>
 </div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="bison__compat_8h_source.html#l00021">21</a> of file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
+
+</div>
+</div>
+<a id="a05958fcca5262ce3895ecf3be642dc52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05958fcca5262ce3895ecf3be642dc52">&#9670;&nbsp;</a></span>YYLTYPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define YYLTYPE&#160;&#160;&#160;struct <a class="el" href="structloc__t__.html">loc_t_</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="bison__compat_8h_source.html#l00008">8</a> of file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
+
+</div>
+</div>
+<a id="a4332d355678b732da19b65634dc8df36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4332d355678b732da19b65634dc8df36">&#9670;&nbsp;</a></span>YYLTYPE_IS_DECLARED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define YYLTYPE_IS_DECLARED</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="bison__compat_8h_source.html#l00010">10</a> of file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aa18e3f737f350057a57b2834ec49d400"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa18e3f737f350057a57b2834ec49d400">&#9670;&nbsp;</a></span>clear_buffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ANN void clear_buffer </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>scan</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 </div><!-- contents -->

@@ -73,11 +73,11 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#ifndef __AST_PASS</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#define __AST_PASS</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> m_bool dummy_func(<span class="keyword">const</span> <span class="keywordtype">void</span>*a NUSED,</div>
+<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#a365b68090fe7fc2a0aae68b15d96baaa">    7</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> m_bool <a class="code" href="ast__pass_8h.html#a365b68090fe7fc2a0aae68b15d96baaa">dummy_func</a>(<span class="keyword">const</span> <span class="keywordtype">void</span>*a NUSED,</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">void</span>*b NUSED) { <span class="keywordflow">return</span> 1; }</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define DECL_PRIM_FUNC(prefix, type, arg)                                                       \</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">typedef type (*_##prefix##_prim_func)(arg, union prim_data*);                                   \</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#aaa3bdd0bb0695b2e2c594cf3b42f93dc">   11</a></span>&#160;<span class="preprocessor">typedef type (*_##prefix##_prim_func)(arg, union prim_data*);                                   \</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">const _##prefix##_prim_func prefix##_prim_func[] = {                                            \</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">  (_##prefix##_prim_func)prefix##_prim_id,     (_##prefix##_prim_func)prefix##_prim_num,        \</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">  (_##prefix##_prim_func)prefix##_prim_float,  (_##prefix##_prim_func)prefix##_prim_str,        \</span></div>
@@ -88,7 +88,7 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">};</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define DECL_EXP_FUNC(prefix, type, arg)                                                        \</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">typedef type (*_##prefix##_exp_func)(const arg, union exp_data*);                               \</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#a56df460dd25e9d7e2be3b03e5a26b43f">   22</a></span>&#160;<span class="preprocessor">typedef type (*_##prefix##_exp_func)(const arg, union exp_data*);                               \</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">const _##prefix##_exp_func prefix##_exp_func[] = {                                              \</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">  (_##prefix##_exp_func)prefix##_exp_decl,   (_##prefix##_exp_func)prefix##_exp_binary,         \</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">  (_##prefix##_exp_func)prefix##_exp_unary,  (_##prefix##_exp_func)prefix##_prim,               \</span></div>
@@ -99,7 +99,7 @@ $(function() {
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">};</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define DECL_STMT_FUNC(prefix, type, arg)                                                       \</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">typedef type (*_##prefix##_stmt_func)(const arg, union stmt_data*);                             \</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#ac2042ebc89a1389e080ea8c97705f97c">   33</a></span>&#160;<span class="preprocessor">typedef type (*_##prefix##_stmt_func)(const arg, union stmt_data*);                             \</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">const _##prefix##_stmt_func prefix##_stmt_func[] = {                                            \</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">  (_##prefix##_stmt_func)prefix##_stmt_exp,    (_##prefix##_stmt_func)prefix##_stmt_while,      \</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">  (_##prefix##_stmt_func)prefix##_stmt_until,  (_##prefix##_stmt_func)prefix##_stmt_for,        \</span></div>
@@ -112,7 +112,7 @@ $(function() {
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">};</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#define DECL_SECTION_FUNC(prefix, type, arg)                                                    \</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">typedef type (*_##prefix##_section_func)(const arg, union section_data*);                       \</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#a3ac748666a56d3c3ad41458916422c69">   46</a></span>&#160;<span class="preprocessor">typedef type (*_##prefix##_section_func)(const arg, union section_data*);                       \</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">const _##prefix##_section_func prefix##_section_func[] = {                                      \</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">  (_##prefix##_section_func)prefix##_stmt_list, (_##prefix##_section_func)prefix##_func_def,    \</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">  (_##prefix##_section_func)prefix##_class_def, (_##prefix##_section_func)prefix##_enum_def,    \</span></div>
@@ -122,6 +122,7 @@ $(function() {
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aast__pass_8h_html_a365b68090fe7fc2a0aae68b15d96baaa"><div class="ttname"><a href="ast__pass_8h.html#a365b68090fe7fc2a0aae68b15d96baaa">dummy_func</a></div><div class="ttdeci">static m_bool dummy_func(const void *a NUSED, const void *b NUSED)</div><div class="ttdef"><b>Definition:</b> <a href="ast__pass_8h_source.html#l00007">ast_pass.h:7</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
