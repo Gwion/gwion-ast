@@ -3,6 +3,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![BCH compliance](https://bettercodehub.com/edge/badge/fennecdjay/gwion-ast?branch=master)](https://bettercodehub.com/)
+[![Line Count](https://tokei.rs/b1/github/fennecdjay/gwion-ast)](https://github.com/fennecdjay/gwion-ast)
 
 # Gwion-AST
 
