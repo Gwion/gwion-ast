@@ -70,29 +70,29 @@ extern int gwion_debug;
     UNTIL = 271,                   /* "until"  */
     LOOP = 272,                    /* "repeat"  */
     FOR = 273,                     /* "for"  */
-    GOTO = 274,                    /* "goto"  */
-    MATCH = 275,                   /* "match"  */
-    CASE = 276,                    /* "case"  */
-    WHEN = 277,                    /* "when"  */
-    WHERE = 278,                   /* "where"  */
-    ENUM = 279,                    /* "enum"  */
-    TRETURN = 280,                 /* "return"  */
-    BREAK = 281,                   /* "break"  */
-    CONTINUE = 282,                /* "continue"  */
-    CLASS = 283,                   /* "class"  */
-    STRUCT = 284,                  /* "struct"  */
-    STATIC = 285,                  /* "static"  */
-    GLOBAL = 286,                  /* "global"  */
-    PRIVATE = 287,                 /* "private"  */
-    PROTECT = 288,                 /* "protect"  */
-    EXTENDS = 289,                 /* "extends"  */
-    DOT = 290,                     /* "."  */
-    OPERATOR = 291,                /* "operator"  */
-    TYPEDEF = 292,                 /* "typedef"  */
-    NOELSE = 293,                  /* NOELSE  */
-    UNION = 294,                   /* "union"  */
-    CONSTT = 295,                  /* "const"  */
-    AUTO = 296,                    /* "auto"  */
+    FOREACH = 274,                 /* "foreach"  */
+    GOTO = 275,                    /* "goto"  */
+    MATCH = 276,                   /* "match"  */
+    CASE = 277,                    /* "case"  */
+    WHEN = 278,                    /* "when"  */
+    WHERE = 279,                   /* "where"  */
+    ENUM = 280,                    /* "enum"  */
+    TRETURN = 281,                 /* "return"  */
+    BREAK = 282,                   /* "break"  */
+    CONTINUE = 283,                /* "continue"  */
+    CLASS = 284,                   /* "class"  */
+    STRUCT = 285,                  /* "struct"  */
+    STATIC = 286,                  /* "static"  */
+    GLOBAL = 287,                  /* "global"  */
+    PRIVATE = 288,                 /* "private"  */
+    PROTECT = 289,                 /* "protect"  */
+    EXTENDS = 290,                 /* "extends"  */
+    DOT = 291,                     /* "."  */
+    OPERATOR = 292,                /* "operator"  */
+    TYPEDEF = 293,                 /* "typedef"  */
+    NOELSE = 294,                  /* NOELSE  */
+    UNION = 295,                   /* "union"  */
+    CONSTT = 296,                  /* "const"  */
     PASTE = 297,                   /* "##"  */
     ELLIPSE = 298,                 /* "..."  */
     VARLOOP = 299,                 /* "varloop"  */
@@ -180,29 +180,29 @@ extern int gwion_debug;
 #define UNTIL 271
 #define LOOP 272
 #define FOR 273
-#define GOTO 274
-#define MATCH 275
-#define CASE 276
-#define WHEN 277
-#define WHERE 278
-#define ENUM 279
-#define TRETURN 280
-#define BREAK 281
-#define CONTINUE 282
-#define CLASS 283
-#define STRUCT 284
-#define STATIC 285
-#define GLOBAL 286
-#define PRIVATE 287
-#define PROTECT 288
-#define EXTENDS 289
-#define DOT 290
-#define OPERATOR 291
-#define TYPEDEF 292
-#define NOELSE 293
-#define UNION 294
-#define CONSTT 295
-#define AUTO 296
+#define FOREACH 274
+#define GOTO 275
+#define MATCH 276
+#define CASE 277
+#define WHEN 278
+#define WHERE 279
+#define ENUM 280
+#define TRETURN 281
+#define BREAK 282
+#define CONTINUE 283
+#define CLASS 284
+#define STRUCT 285
+#define STATIC 286
+#define GLOBAL 287
+#define PRIVATE 288
+#define PROTECT 289
+#define EXTENDS 290
+#define DOT 291
+#define OPERATOR 292
+#define TYPEDEF 293
+#define NOELSE 294
+#define UNION 295
+#define CONSTT 296
 #define PASTE 297
 #define ELLIPSE 298
 #define VARLOOP 299

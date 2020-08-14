@@ -244,6 +244,7 @@ if(strlen(yytext) > 1)
 "until"                             { adjust(yyscanner); return UNTIL;}
 "repeat"                            { adjust(yyscanner); return LOOP;}
 "for"                               { adjust(yyscanner); return FOR;}
+"foreach"                           { adjust(yyscanner); return FOREACH;}
 "goto"                              { adjust(yyscanner); return GOTO;}
 "match"                             { adjust(yyscanner); return MATCH;}
 "where"                             { adjust(yyscanner); return WHERE;}
@@ -251,8 +252,7 @@ if(strlen(yytext) > 1)
 "case"                              { adjust(yyscanner); return CASE;}
 "enum"                              { adjust(yyscanner); return ENUM;}
 "typeof"                            { adjust(yyscanner); return TYPEOF;}
-"auto"                              { adjust(yyscanner); return AUTO;}
-"varloop"                              { adjust(yyscanner); return VARLOOP;}
+"varloop"                           { adjust(yyscanner); return VARLOOP;}
 "##" { adjust(yyscanner); return PASTE; }
 "#"[A-Za-z_][A-Za-z0-9_]*           {
   adjust(yyscanner);

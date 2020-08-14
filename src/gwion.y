@@ -57,14 +57,14 @@ ANN Symbol lambda_name(const Scanner*);
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
   FUNCTION "fun"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
-  LOOP "repeat" FOR "for" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
+  LOOP "repeat" FOR "for" FOREACH "foreach" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue"
   CLASS "class" STRUCT "struct"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
   TYPEDEF "typedef"
-  NOELSE UNION "union" CONSTT "const" AUTO "auto" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
+  NOELSE UNION "union" CONSTT "const" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
   RARROW "->" BACKSLASH "\\" BACKTICK "`" OPID
   REF "ref" NONNULL "nonnull"
 
@@ -310,8 +310,8 @@ loop_stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7); }
-  | FOR LPAREN AUTO ref id COLON binary_exp RPAREN stmt
-      { $$ = new_stmt_auto(mpool(arg), $5, $7, $9); $$->d.stmt_auto.is_ptr = $4; }
+  | FOREACH LPAREN ref id COLON binary_exp RPAREN stmt
+      { $$ = new_stmt_auto(mpool(arg), $4, $6, $8); $$->d.stmt_auto.is_ptr = $3; }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5); }
   ;
@@ -369,9 +369,7 @@ range
   ;
 
 array: array_exp | array_empty;
-decl_exp2: con_exp | decl_exp3
-  | AUTO decl_flag var_decl_list { $$= new_exp_decl(mpool(arg), new_type_decl(mpool(arg),
-     insert_symbol("auto"), GET_LOC(&@$)), $3); }
+decl_exp2: con_exp | decl_exp3;
 decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
 union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
