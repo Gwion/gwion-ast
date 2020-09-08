@@ -4,6 +4,7 @@
 #ifndef __GWION_AST
 #define __GWION_AST
 #include "loc.h"
+#include "flags.h"
 #include "absyn.h"
 #include "cpy_ast.h"
 #include "macro.h"
