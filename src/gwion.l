@@ -60,10 +60,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 #define GWYY_COMMENT     if(GWYY_ISLINT) { yymore(); continue; }
 #define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); newline(yyscanner); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strdup(yytext); return PP_COMMENT; }
+#define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yyextra, yytext, 1), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER))yyterminate();
-#define GWYY_UNDEF   GWYY_LINT(strdup(yytext), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
+#define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
 #define GWYY_DEFINE  BEGIN(INITIAL); GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL);
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
 #define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) \
@@ -123,14 +123,14 @@ ANN static m_str macro_data(void* data, const m_bool);
 <define>.*\n          { adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
 
 ^"#pragma"{SPACE}+ { BEGIN(pragma); }
-<pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strdup(yytext); BEGIN(INITIAL); return PP_PRAGMA; }
+<pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 
 ^#ifn?def{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* {
   adjust(yyscanner);
   const m_bool def = yytext[3] == 'n';
   m_str s = yytext + 6 + def;
-  GWYY_LINT(strdup(s), def ? PP_IFNDEF : PP_IFDEF)
   while(isspace(*s))++s;
+  GWYY_LINT(strdup(s), def ? PP_IFNDEF : PP_IFDEF)
   size_t sz = strlen(s);
   while(isspace(s[--sz]));
   char c[sz + 2];
@@ -155,7 +155,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 
-"#!"             { YY_USER_ACTION; BEGIN(comment); }
+"#!"{SPACE}*             { YY_USER_ACTION; BEGIN(comment); }
 <comment>!\#     { BEGIN(INITIAL); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
@@ -565,9 +565,13 @@ static m_str macro_data(void* data, const m_bool call) {
     strcpy(c + offset, e->text->str);
     offset += strlen(e->text->str);
   }
-  c[offset] = '\0';
+  if(c[offset - 1] == '\n')
+    c[offset - 1] = '\0';
+  else
+    c[offset] = '\0';
   scan->pp->entry = NULL;
-  return s_name(insert_symbol(scan->st, c));
+//  return s_name(insert_symbol(scan->st, c));
+  return strdup(c);
 }
 
 static int macro_toggle(void* data) {
