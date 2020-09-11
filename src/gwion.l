@@ -269,8 +269,8 @@ if(strlen(yytext) > 1)
 "__file__"                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 
 0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                 return NUM;        }
-0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
-[0-9]+{IS}?                         { adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
+0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
+[0-9]+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
 @[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID; }
 [A-Za-z_][A-Za-z0-9_]*              {
@@ -330,9 +330,9 @@ char* alloc_str(void *data, const char* str) {
 }
 
 
-unsigned long htol(const char* str) {
+m_uint htol(const char* str) {
   unsigned char * c = (unsigned char*)str;
-  unsigned long n = 0;
+  m_uint n = 0;
 
   c += 2;
   while(*c) {

@@ -1934,12 +1934,12 @@ YY_RULE_SETUP
 case 96:
 YY_RULE_SETUP
 #line 272 "src/gwion.l"
-{ adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
+{ adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 273 "src/gwion.l"
-{ adjust(yyscanner); yylval->lval = (unsigned long)atoi(yytext);  return NUM;        }
+{ adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
@@ -3074,9 +3074,9 @@ char* alloc_str(void *data, const char* str) {
 }
 
 
-unsigned long htol(const char* str) {
+m_uint htol(const char* str) {
   unsigned char * c = (unsigned char*)str;
-  unsigned long n = 0;
+  m_uint n = 0;
 
   c += 2;
   while(*c) {
