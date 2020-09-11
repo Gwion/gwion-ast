@@ -424,7 +424,7 @@ type_decl_tmpl
 
 type_decl_next
   : type_decl_tmpl
-  | type_decl_tmpl "->" type_decl_tmpl { $1->next = $3; }
+  | type_decl_next "->" type_decl_tmpl { $1->next = $3; }
   ;
 
 type_decl_noflag
