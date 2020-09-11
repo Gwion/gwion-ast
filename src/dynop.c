@@ -57,11 +57,6 @@ ANN enum yytokentype op2(const m_str str) {
       return RTMPL;
     return DYNOP;
   }
-  if(str[0] == '-') {
-    if(str[1] == '>')
-      return RARROW;
-    return DYNOP;
-  }
   if(str[0] == '!' && str[1] == '=')
       return NEQ;
   if(str[0] == '?' && str[1] == ':')

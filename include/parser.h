@@ -63,40 +63,40 @@ extern int gwion_debug;
     LBRACE = 264,                  /* "{"  */
     RBRACE = 265,                  /* "}"  */
     FUNCTION = 266,                /* "fun"  */
-    IF = 267,                      /* "if"  */
-    ELSE = 268,                    /* "else"  */
-    WHILE = 269,                   /* "while"  */
-    DO = 270,                      /* "do"  */
-    UNTIL = 271,                   /* "until"  */
-    LOOP = 272,                    /* "repeat"  */
-    FOR = 273,                     /* "for"  */
-    FOREACH = 274,                 /* "foreach"  */
-    GOTO = 275,                    /* "goto"  */
-    MATCH = 276,                   /* "match"  */
-    CASE = 277,                    /* "case"  */
-    WHEN = 278,                    /* "when"  */
-    WHERE = 279,                   /* "where"  */
-    ENUM = 280,                    /* "enum"  */
-    TRETURN = 281,                 /* "return"  */
-    BREAK = 282,                   /* "break"  */
-    CONTINUE = 283,                /* "continue"  */
-    CLASS = 284,                   /* "class"  */
-    STRUCT = 285,                  /* "struct"  */
-    STATIC = 286,                  /* "static"  */
-    GLOBAL = 287,                  /* "global"  */
-    PRIVATE = 288,                 /* "private"  */
-    PROTECT = 289,                 /* "protect"  */
-    EXTENDS = 290,                 /* "extends"  */
-    DOT = 291,                     /* "."  */
-    OPERATOR = 292,                /* "operator"  */
-    TYPEDEF = 293,                 /* "typedef"  */
-    NOELSE = 294,                  /* NOELSE  */
-    UNION = 295,                   /* "union"  */
-    CONSTT = 296,                  /* "const"  */
-    PASTE = 297,                   /* "##"  */
-    ELLIPSE = 298,                 /* "..."  */
-    VARLOOP = 299,                 /* "varloop"  */
-    RARROW = 300,                  /* "->"  */
+    VAR = 267,                     /* "var"  */
+    IF = 268,                      /* "if"  */
+    ELSE = 269,                    /* "else"  */
+    WHILE = 270,                   /* "while"  */
+    DO = 271,                      /* "do"  */
+    UNTIL = 272,                   /* "until"  */
+    LOOP = 273,                    /* "repeat"  */
+    FOR = 274,                     /* "for"  */
+    FOREACH = 275,                 /* "foreach"  */
+    GOTO = 276,                    /* "goto"  */
+    MATCH = 277,                   /* "match"  */
+    CASE = 278,                    /* "case"  */
+    WHEN = 279,                    /* "when"  */
+    WHERE = 280,                   /* "where"  */
+    ENUM = 281,                    /* "enum"  */
+    TRETURN = 282,                 /* "return"  */
+    BREAK = 283,                   /* "break"  */
+    CONTINUE = 284,                /* "continue"  */
+    CLASS = 285,                   /* "class"  */
+    STRUCT = 286,                  /* "struct"  */
+    STATIC = 287,                  /* "static"  */
+    GLOBAL = 288,                  /* "global"  */
+    PRIVATE = 289,                 /* "private"  */
+    PROTECT = 290,                 /* "protect"  */
+    EXTENDS = 291,                 /* "extends"  */
+    DOT = 292,                     /* "."  */
+    OPERATOR = 293,                /* "operator"  */
+    TYPEDEF = 294,                 /* "typedef"  */
+    NOELSE = 295,                  /* NOELSE  */
+    UNION = 296,                   /* "union"  */
+    CONSTT = 297,                  /* "const"  */
+    PASTE = 298,                   /* "##"  */
+    ELLIPSE = 299,                 /* "..."  */
+    VARLOOP = 300,                 /* "varloop"  */
     BACKSLASH = 301,               /* "\\"  */
     BACKTICK = 302,                /* "`"  */
     OPID = 303,                    /* OPID  */
@@ -173,40 +173,40 @@ extern int gwion_debug;
 #define LBRACE 264
 #define RBRACE 265
 #define FUNCTION 266
-#define IF 267
-#define ELSE 268
-#define WHILE 269
-#define DO 270
-#define UNTIL 271
-#define LOOP 272
-#define FOR 273
-#define FOREACH 274
-#define GOTO 275
-#define MATCH 276
-#define CASE 277
-#define WHEN 278
-#define WHERE 279
-#define ENUM 280
-#define TRETURN 281
-#define BREAK 282
-#define CONTINUE 283
-#define CLASS 284
-#define STRUCT 285
-#define STATIC 286
-#define GLOBAL 287
-#define PRIVATE 288
-#define PROTECT 289
-#define EXTENDS 290
-#define DOT 291
-#define OPERATOR 292
-#define TYPEDEF 293
-#define NOELSE 294
-#define UNION 295
-#define CONSTT 296
-#define PASTE 297
-#define ELLIPSE 298
-#define VARLOOP 299
-#define RARROW 300
+#define VAR 267
+#define IF 268
+#define ELSE 269
+#define WHILE 270
+#define DO 271
+#define UNTIL 272
+#define LOOP 273
+#define FOR 274
+#define FOREACH 275
+#define GOTO 276
+#define MATCH 277
+#define CASE 278
+#define WHEN 279
+#define WHERE 280
+#define ENUM 281
+#define TRETURN 282
+#define BREAK 283
+#define CONTINUE 284
+#define CLASS 285
+#define STRUCT 286
+#define STATIC 287
+#define GLOBAL 288
+#define PRIVATE 289
+#define PROTECT 290
+#define EXTENDS 291
+#define DOT 292
+#define OPERATOR 293
+#define TYPEDEF 294
+#define NOELSE 295
+#define UNION 296
+#define CONSTT 297
+#define PASTE 298
+#define ELLIPSE 299
+#define VARLOOP 300
 #define BACKSLASH 301
 #define BACKTICK 302
 #define OPID 303

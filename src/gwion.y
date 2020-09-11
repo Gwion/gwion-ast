@@ -55,7 +55,7 @@ ANN Symbol lambda_name(const Scanner*);
 
 %token SEMICOLON ";" COMMA ","
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
-  FUNCTION "fun"
+  FUNCTION "fun" VAR "var"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" FOREACH "foreach" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue"
@@ -65,11 +65,11 @@ ANN Symbol lambda_name(const Scanner*);
   OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
-  RARROW "->" BACKSLASH "\\" BACKTICK "`" OPID
+  BACKSLASH "\\" BACKTICK "`" OPID
   REF "ref" NONNULL "nonnull"
 
 %token<lval> NUM "<integer>"
-%type<ival> ref decl_flag flow breaks
+%type<ival> ref flow breaks
 %token<fval> FLOATT
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_LIT "<interp string>" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
@@ -88,7 +88,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl_tmpl type_decl_noflag type_decl0 type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
+%type<type_decl> type_decl_tmpl type_decl_noflag type_decl_next type_decl type_decl_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
@@ -370,7 +370,7 @@ range
 
 array: array_exp | array_empty;
 decl_exp2: con_exp | decl_exp3;
-decl_exp: type_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
+decl_exp: type_decl_decl var_decl_list { $$= new_exp_decl(mpool(arg), $1, $2); };
 union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 decl_exp3: decl_exp | flag decl_exp { $2->d.exp_decl.td->flag |= $1; $$ = $2; };
 
@@ -415,7 +415,6 @@ func_def
     };
 
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
-decl_flag: NONNULL { $$ = ae_flag_nonnull; } | ref;
 
 type_decl_tmpl
   : id { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); }
@@ -424,7 +423,7 @@ type_decl_tmpl
 
 type_decl_next
   : type_decl_tmpl
-  | type_decl_next "->" type_decl_tmpl { $1->next = $3; }
+  | type_decl_tmpl "." type_decl_next { $1->next = $3; }
   ;
 
 type_decl_noflag
@@ -432,13 +431,15 @@ type_decl_noflag
   | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
-type_decl0
-  : type_decl_noflag decl_flag { $1->flag |= $2; $$ = $1; }
-  ;
+type_decl: type_decl_noflag { $$ = $1; }
+  | REF type_decl { $$ = $2; SET_FLAG($$, ref); };
+  | CONSTT type_decl { $$ = $2; SET_FLAG($$, const); };
+  | NONNULL type_decl { $$ = $2; SET_FLAG($$, nonnull); };
 
-type_decl: type_decl0 { $$ = $1; }
-  | CONSTT type_decl0 { $$ = $2; SET_FLAG($$, const); };
-  | NONNULL type_decl0 { $$ = $2; SET_FLAG($$, nonnull); };
+type_decl_decl: "var" type_decl_noflag { $$ = $2; }
+  | REF type_decl { $$ = $2; SET_FLAG($$, ref); };
+  | CONSTT type_decl { $$ = $2; SET_FLAG($$, const); };
+  | NONNULL type_decl { $$ = $2; SET_FLAG($$, nonnull); };
 
 decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
