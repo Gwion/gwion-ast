@@ -993,7 +993,7 @@ ANN void gwlex_error(yyscan_t yyscanner, const char*);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
-ANN static unsigned long htol(const char* str);
+ANN static m_uint htol(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
