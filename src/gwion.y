@@ -347,6 +347,7 @@ exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
 binary_exp
   : decl_exp
   | binary_exp op decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+  | binary_exp OPID decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
 call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
@@ -517,7 +518,8 @@ unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
   | EXCLAMATION | SPORK | FORK | TILDA
   ;
 
-unary_exp : post_exp | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
+unary_exp : post_exp
+  | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
   | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2); }
   | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
