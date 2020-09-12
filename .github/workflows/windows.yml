@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: windows-latest
-    name:  ${{ matrix.double && 'double' || '' }}
+    name:  Windows ${{ matrix.double && 'double' || '' }}
     strategy:
       matrix:
         double: [0, 1]
