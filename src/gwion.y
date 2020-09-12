@@ -89,7 +89,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl_tmpl type_decl_noflag type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
-%type<exp> prim_exp decl_exp union_exp decl_exp2 decl_exp3 binary_exp call_paren interp interp_exp
+%type<exp> prim_exp decl_exp union_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
@@ -344,7 +344,9 @@ exp_stmt
 
 exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
 
-binary_exp: decl_exp2 | binary_exp op decl_exp2     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+binary_exp
+  : decl_exp
+  | binary_exp op decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
 call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
@@ -369,13 +371,11 @@ range
   ;
 
 array: array_exp | array_empty;
-decl_exp2: con_exp | decl_exp3;
-
 decl_exp
-  : type_decl_flag2 opt_flag type_decl_noflag var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4); $$->d.exp_decl.td->flag |= $1 | $2; };
+  : con_exp
+  | type_decl_flag2 opt_flag type_decl_noflag var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4); $$->d.exp_decl.td->flag |= $1 | $2; };
 
 union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
-decl_exp3: decl_exp
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -558,7 +558,8 @@ interp: interp interp_exp
   while(next->next) {
     if(!next->next)
       break;
-  next = next->next; }
+    next = next->next;
+  }
   next->next = $2; $$ = $1;
 }
     | interp_exp { $$ = $1; }
