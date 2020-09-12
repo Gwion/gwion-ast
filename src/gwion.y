@@ -520,6 +520,7 @@ unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
+  | LPAREN OPID RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4); }
   | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2); }
   | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
@@ -548,7 +549,10 @@ post_exp: prim_exp
     { $$ = new_exp_call(mpool(arg), $1, $3);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
   | post_exp post_op
-    { $$ = new_exp_post(mpool(arg), $1, $2); } | dot_exp { $$ = $1; }
+    { $$ = new_exp_post(mpool(arg), $1, $2); }
+  | post_exp OPID
+    { $$ = new_exp_post(mpool(arg), $1, $2); }
+  | dot_exp { $$ = $1; }
   ;
 
 interp_exp: INTERP_LIT { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); }
