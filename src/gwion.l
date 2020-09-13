@@ -273,7 +273,8 @@ if(strlen(yytext) > 1)
 0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 [0-9]+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
-@[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID; }
+@[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
+$[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_D; }
 [A-Za-z_][A-Za-z0-9_]*              {
   adjust(yyscanner);
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);

@@ -65,7 +65,7 @@ ANN Symbol lambda_name(const Scanner*);
   OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
-  BACKSLASH "\\" BACKTICK "`" OPID
+  BACKSLASH "\\" BACKTICK "`" OPID_A OPID_D
   REF "ref" NONNULL "nonnull"
 
 %token<lval> NUM "<integer>"
@@ -74,7 +74,7 @@ ANN Symbol lambda_name(const Scanner*);
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_LIT "<interp string>" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
-%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID "@<operator id>"
+%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D "$<operator id>"
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
@@ -157,13 +157,13 @@ section
 
 class_type: CLASS { $$ = ae_flag_none; } | STRUCT { $$ = ae_flag_struct; }
 class_def
-  : class_type opt_flag decl_template id class_ext LBRACE class_body RBRACE
+  : class_type opt_flag id decl_template class_ext LBRACE class_body RBRACE
     {
       if($1 == ae_flag_struct && $5)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
-      $$ =new_class_def(mpool(arg), $1 | $2, $4, $5, $7, GET_LOC(&@$));
-      if($3)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $3);
+      $$ =new_class_def(mpool(arg), $1 | $2, $3, $5, $7, GET_LOC(&@$));
+      if($4)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
   };
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
@@ -346,8 +346,8 @@ exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
 
 binary_exp
   : decl_exp
+  | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
   | binary_exp op decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-  | binary_exp OPID decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
 call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
 
@@ -413,7 +413,7 @@ func_def
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
     { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
-  | OPERATOR OPID type_decl_empty func_args RPAREN code_stmt
+  | OPERATOR OPID_A type_decl_empty func_args RPAREN code_stmt
     {
  $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $4), $6, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
     };
@@ -421,8 +421,7 @@ func_def
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
 
 type_decl_tmpl
-  : id { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); }
-  | LTMPL type_list RTMPL id { $$ = new_type_decl(mpool(arg), $4, GET_LOC(&@$)); $$->types = $2; }
+  : id call_template { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); $$->types = $2; }
   ;
 
 type_decl_next
@@ -452,13 +451,13 @@ decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
 union_def
-  : UNION opt_flag decl_template opt_id LBRACE decl_list RBRACE opt_id SEMICOLON {
+  : UNION opt_flag opt_id decl_template LBRACE decl_list RBRACE opt_id SEMICOLON {
       $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
-      $$->type_xid = $4;
+      $$->type_xid = $3;
       $$->xid = $8;
       $$->flag = $2;
-      if($3) {
-        if(!$4) {
+      if($4) {
+        if(!$3) {
           gwion_error(&@$, arg, _("Template unions requires type name\n"));
           YYERROR;
         }
@@ -466,7 +465,7 @@ union_def
           gwion_error(&@$, arg, _("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
-        $$->tmpl = new_tmpl_base(mpool(arg), $3);
+        $$->tmpl = new_tmpl_base(mpool(arg), $4);
       }
     }
   ;
@@ -520,7 +519,7 @@ unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2); }
-  | LPAREN OPID RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4); }
+  | LPAREN OPID_D RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4); }
   | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2); }
   | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
@@ -550,7 +549,7 @@ post_exp: prim_exp
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
   | post_exp post_op
     { $$ = new_exp_post(mpool(arg), $1, $2); }
-  | post_exp OPID
+  | post_exp OPID_D
     { $$ = new_exp_post(mpool(arg), $1, $2); }
   | dot_exp { $$ = $1; }
   ;
