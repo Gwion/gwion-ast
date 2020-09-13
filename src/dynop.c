@@ -43,8 +43,6 @@ ANN enum yytokentype op2(const m_str str) {
   if(str[0] == '<') {
     if(str[1] == '=')
       return LE;
-    if(str[1] == '~')
-      return LTMPL;
     return DYNOP;
   }
   if(str[0] == '>') {

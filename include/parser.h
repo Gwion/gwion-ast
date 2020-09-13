@@ -151,7 +151,7 @@ extern int gwion_debug;
     S_OR = 354,                    /* "|"  */
     S_XOR = 355,                   /* "^"  */
     OR = 356,                      /* "||"  */
-    LTMPL = 357,                   /* "<~"  */
+    TMPL = 357,                    /* "<["  */
     TILDA = 358,                   /* "~"  */
     EXCLAMATION = 359,             /* "!"  */
     DYNOP = 360,                   /* "<dynamic_operator>"  */
@@ -261,7 +261,7 @@ extern int gwion_debug;
 #define S_OR 354
 #define S_XOR 355
 #define OR 356
-#define LTMPL 357
+#define TMPL 357
 #define TILDA 358
 #define EXCLAMATION 359
 #define DYNOP 360

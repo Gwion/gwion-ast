@@ -187,6 +187,7 @@ if(strlen(yytext) > 1)
 <interp>. { yymore(); adjust(yyscanner); continue; }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
+"<["                                { adjust(yyscanner); return TMPL;}
 {SPACE}                             { adjust(yyscanner); continue; }
 {OP}{1} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
 {OP}{2} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op2(yytext); }
