@@ -231,7 +231,7 @@ extern int gwion_debug;
     S_OR = 354,                    /* "|"  */
     S_XOR = 355,                   /* "^"  */
     OR = 356,                      /* "||"  */
-    TMPL = 357,                    /* "<["  */
+    TMPL = 357,                    /* ":["  */
     TILDA = 358,                   /* "~"  */
     EXCLAMATION = 359,             /* "!"  */
     DYNOP = 360,                   /* "<dynamic_operator>"  */
@@ -515,7 +515,7 @@ enum yysymbol_kind_t
   YYSYMBOL_S_OR = 99,                      /* "|"  */
   YYSYMBOL_S_XOR = 100,                    /* "^"  */
   YYSYMBOL_OR = 101,                       /* "||"  */
-  YYSYMBOL_TMPL = 102,                     /* "<["  */
+  YYSYMBOL_TMPL = 102,                     /* ":["  */
   YYSYMBOL_TILDA = 103,                    /* "~"  */
   YYSYMBOL_EXCLAMATION = 104,              /* "!"  */
   YYSYMBOL_DYNOP = 105,                    /* "<dynamic_operator>"  */
@@ -1070,7 +1070,7 @@ static const char *const yytname[] =
   "\"/\"", "\"%\"", "\"$\"", "\"?\"", "\":\"", "\"::\"", "\"?:\"",
   "\"new\"", "\"spork\"", "\"fork\"", "\"typeof\"", "\"<<<\"", "\">>>\"",
   "\"&&\"", "\"==\"", "\">=\"", "\">\"", "\"<=\"", "\"<\"", "\"!=\"",
-  "\"<<\"", "\">>\"", "\"&\"", "\"|\"", "\"^\"", "\"||\"", "\"<[\"",
+  "\"<<\"", "\">>\"", "\"&\"", "\"|\"", "\"^\"", "\"||\"", "\":[\"",
   "\"~\"", "\"!\"", "\"<dynamic_operator>\"", "UMINUS", "UTIMES", "\"=\"",
   "$accept", "prg", "ast", "section", "class_type", "class_def",
   "class_ext", "class_body", "id_list", "stmt_list", "fptr_base",

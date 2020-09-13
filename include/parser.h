@@ -151,7 +151,7 @@ extern int gwion_debug;
     S_OR = 354,                    /* "|"  */
     S_XOR = 355,                   /* "^"  */
     OR = 356,                      /* "||"  */
-    TMPL = 357,                    /* "<["  */
+    TMPL = 357,                    /* ":["  */
     TILDA = 358,                   /* "~"  */
     EXCLAMATION = 359,             /* "!"  */
     DYNOP = 360,                   /* "<dynamic_operator>"  */

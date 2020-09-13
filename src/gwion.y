@@ -81,7 +81,7 @@ ANN Symbol lambda_name(const Scanner*);
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
-  TMPL "<["
+  TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
 %type<flag> flag opt_flag class_type
   storage_flag access_flag arg_type type_decl_flag type_decl_flag2
