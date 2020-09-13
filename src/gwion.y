@@ -81,7 +81,7 @@ ANN Symbol lambda_name(const Scanner*);
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
-  LTMPL "<~" RTMPL "~>"
+  LTMPL "<~"
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
 %type<flag> flag opt_flag class_type
   storage_flag access_flag arg_type type_decl_flag type_decl_flag2
@@ -349,7 +349,7 @@ binary_exp
   | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
   | binary_exp op decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
-call_template: LTMPL type_list RTMPL { $$ = $2; } | { $$ = NULL; };
+call_template: LTMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
 op: EQ | NEQ | DYNOP;
 
@@ -382,7 +382,7 @@ func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: LTMPL id_list RTMPL { $$ = $2; } | { $$ = NULL; };
+decl_template: LTMPL id_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
 storage_flag: STATIC { $$ = ae_flag_static; }
   | GLOBAL { $$ = ae_flag_global; }

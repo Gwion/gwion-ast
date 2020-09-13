@@ -152,12 +152,11 @@ extern int gwion_debug;
     S_XOR = 355,                   /* "^"  */
     OR = 356,                      /* "||"  */
     LTMPL = 357,                   /* "<~"  */
-    RTMPL = 358,                   /* "~>"  */
-    TILDA = 359,                   /* "~"  */
-    EXCLAMATION = 360,             /* "!"  */
-    DYNOP = 361,                   /* "<dynamic_operator>"  */
-    UMINUS = 362,                  /* UMINUS  */
-    UTIMES = 363                   /* UTIMES  */
+    TILDA = 358,                   /* "~"  */
+    EXCLAMATION = 359,             /* "!"  */
+    DYNOP = 360,                   /* "<dynamic_operator>"  */
+    UMINUS = 361,                  /* UMINUS  */
+    UTIMES = 362                   /* UTIMES  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -263,12 +262,11 @@ extern int gwion_debug;
 #define S_XOR 355
 #define OR 356
 #define LTMPL 357
-#define RTMPL 358
-#define TILDA 359
-#define EXCLAMATION 360
-#define DYNOP 361
-#define UMINUS 362
-#define UTIMES 363
+#define TILDA 358
+#define EXCLAMATION 359
+#define DYNOP 360
+#define UMINUS 361
+#define UTIMES 362
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -304,7 +302,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 308 "include/parser.h"
+#line 306 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
