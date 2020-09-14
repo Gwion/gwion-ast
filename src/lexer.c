@@ -1043,7 +1043,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #define GWYY_NL          if(GWYY_ISLINT) { yylval->sval = NULL; return PP_NL; }
 
 #define GWYY_COMMENT     if(GWYY_ISLINT) { yymore(); continue; }
-#define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); newline(yyscanner); YY_USER_ACTION; continue; }
+#define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); YY_USER_ACTION; continue; }
 #define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yyextra, yytext, 1), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER))yyterminate();
