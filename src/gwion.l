@@ -71,7 +71,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #define GWYY_ELSE    GWYY_LINT(NULL, PP_ELSE) BEGIN(macro_toggle(yyscanner));
 #define GWYY_ENDIF   GWYY_LINT(NULL, PP_ENDIF) macro_end(yyscanner);
 %}
-%option noyyalloc noyyrealloc noyyfree nounput
+%option noyyalloc noyyrealloc noyyfree
 %option noyylineno
 %option noyyget_text
 %option noyyget_lineno noyyset_lineno
@@ -177,6 +177,13 @@ if(strlen(yytext) > 1)
   ++scan->interp_state;
   BEGIN(interp);
   return BACKTICK;
+}
+<interp>"\\${" {
+  unput('{');
+  unput('$');
+  for(int i = yyleng - 2; --i; )
+    unput(yytext[i - 1]);
+  continue;
 }
 <interp>"${" {
   adjust(yyscanner); BEGIN(INITIAL);
