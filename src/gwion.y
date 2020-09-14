@@ -65,13 +65,13 @@ ANN Symbol lambda_name(const Scanner*);
   OPERATOR "operator"
   TYPEDEF "typedef"
   NOELSE UNION "union" CONSTT "const" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
-  BACKSLASH "\\" BACKTICK "`" OPID_A OPID_D
+  BACKSLASH "\\" OPID_A OPID_D
   REF "ref" NONNULL "nonnull"
 
 %token<lval> NUM "<integer>"
 %type<ival> ref flow breaks
 %token<fval> FLOATT
-%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_LIT "<interp string>" INTERP_EXP
+%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D "$<operator id>"
@@ -554,20 +554,24 @@ post_exp: prim_exp
   | dot_exp { $$ = $1; }
   ;
 
-interp_exp: INTERP_LIT { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); }
-      | exp INTERP_EXP { $$ = $1; }
+interp_exp
+  : INTERP_END { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); }
+  | INTERP_LIT interp_exp { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); $$->next = $2; }
+  | exp INTERP_EXP interp_exp { $$ = $1; $$->next = $3; }
 
-interp: interp interp_exp
-{
-  Exp next = $1;
-  while(next->next) {
-    if(!next->next)
-      break;
-    next = next->next;
-  }
-  next->next = $2; $$ = $1;
+interp: INTERP_START interp_exp { $$ = $2; }
+| interp INTERP_START interp_exp {
+  Exp e = $1;
+  while(e->next)
+    e = e->next;
+  if(!$3->next) {
+    char c[strlen($1->d.prim.d.str) + strlen($3->d.prim.d.str) + 1];
+    sprintf(c, "%s%s\n", $1->d.prim.d.str, $3->d.prim.d.str);
+    $1->d.prim.d.str = s_name(insert_symbol(c));
+    free_exp(mpool(arg), $3);
+  } else
+  e->next = $3;
 }
-    | interp_exp { $$ = $1; }
 
 typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3); };
 
@@ -575,6 +579,7 @@ prim_exp
   : id                  { $$ = new_prim_id(     mpool(arg), $1, GET_LOC(&@$)); }
   | NUM                 { $$ = new_prim_int(    mpool(arg), $1, GET_LOC(&@$)); }
   | FLOATT              { $$ = new_prim_float(  mpool(arg), $1, GET_LOC(&@$)); }
+  | interp              { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1); }
   | STRING_LIT          { $$ = new_prim_string( mpool(arg), $1, GET_LOC(&@$)); }
   | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, GET_LOC(&@$)); }
   | array               { $$ = new_prim_array(  mpool(arg), $1, GET_LOC(&@$)); }
@@ -583,7 +588,6 @@ prim_exp
   | LPAREN exp RPAREN   { $$ = $2;                }
   | lambda_arg code_stmt { $$ = new_exp_lambda(     mpool(arg), lambda_name(arg), $1, $2); };
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     GET_LOC(&@$)); }
-  | BACKTICK interp       { $$ = new_prim_interp(mpool(arg),     $2); }
   | typeof_exp { $$ = $1; }
   ;
 %%

@@ -161,22 +161,21 @@ ANN static m_str macro_data(void* data, const m_bool);
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
 <comment>.*       { GWYY_COMMENT;  }
 
-<interp>"`" {
+<interp>"\"" {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
   --scan->interp_state;
   yytext[yyleng - 1] = '\0';
   yylval->sval = alloc_str(yyscanner, yytext);
   BEGIN(INITIAL);
-  return INTERP_LIT;
+  return INTERP_END;
 }
-"`" {
-if(strlen(yytext) > 1)
+"\"" {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
   ++scan->interp_state;
   BEGIN(interp);
-  return BACKTICK;
+  return INTERP_START;
 }
 <interp>"\\${" {
   unput('{');
@@ -241,7 +240,7 @@ if(strlen(yytext) > 1)
 "private"                           { adjust(yyscanner); return PRIVATE;}
 "const"                             { adjust(yyscanner); return CONSTT;}
 "ref"                               { adjust(yyscanner); return REF;}
-"nonnull"                               { adjust(yyscanner); return NONNULL;}
+"nonnull"                           { adjust(yyscanner); return NONNULL;}
 
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}
@@ -295,7 +294,6 @@ $[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sy
     continue;
 }
 
-\"(\\.|[^\\"])*\"                   { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return STRING_LIT; }
 '(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
 .                                   { gwlex_error(yyscanner, _("stray in program")); return 1;}
 
