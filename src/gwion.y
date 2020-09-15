@@ -83,7 +83,7 @@ ANN Symbol lambda_name(const Scanner*);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<flag> flag opt_flag class_type
+%type<flag> flag class_type
   storage_flag access_flag arg_type type_decl_flag type_decl_flag2
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
@@ -157,7 +157,7 @@ section
 
 class_type: CLASS { $$ = ae_flag_none; } | STRUCT { $$ = ae_flag_struct; }
 class_def
-  : class_type opt_flag id decl_template class_ext LBRACE class_body RBRACE
+  : class_type flag id decl_template class_ext LBRACE class_body RBRACE
     {
       if($1 == ae_flag_struct && $5)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
@@ -179,14 +179,14 @@ fptr_base: type_decl_array id decl_template fptr_args { $$ = new_func_base(mpool
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
 
-fptr_def: TYPEDEF opt_flag fptr_base arg_type SEMICOLON {
+fptr_def: TYPEDEF flag fptr_base arg_type SEMICOLON {
   if($3->td->array && $3->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
   }
   $$ = new_fptr_def(mpool(arg), $3, $2 | $4);
 };
-type_def: TYPEDEF opt_flag type_decl_array id decl_template SEMICOLON {
+type_def: TYPEDEF flag type_decl_array id decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);
   $3->flag |= $2;
   if($5)
@@ -267,7 +267,7 @@ id
 opt_id: id | { $$ = NULL; };
 
 enum_def
-  : ENUM opt_flag opt_id LBRACE id_list RBRACE    { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
+  : ENUM flag opt_id LBRACE id_list RBRACE    { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
     $$->flag = $2; };
 
 label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
@@ -374,7 +374,7 @@ range
 array: array_exp | array_empty;
 decl_exp
   : con_exp
-  | type_decl_flag2 opt_flag type_decl_noflag var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4); $$->d.exp_decl.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl_noflag var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4); $$->d.exp_decl.td->flag |= $1 | $2; };
 
 union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL)); };
 
@@ -392,15 +392,14 @@ access_flag: PRIVATE { $$ = ae_flag_private; }
   | PROTECT { $$ = ae_flag_protect; }
   ;
 
-flag: access_flag { $$ = $1; }
+flag: { $$ = ae_flag_none; }
+  |access_flag { $$ = $1; }
   | storage_flag { $$ = $1; }
   | storage_flag access_flag { $$ = $1 | $2; }
   ;
 
-opt_flag:  { $$ = 0; } | flag { $$ = $1; };
-
 func_def_base
-  : FUNCTION opt_flag fdef_base arg_type code_stmt
+  : FUNCTION flag fdef_base arg_type code_stmt
     { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, GET_LOC(&@$)); };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
@@ -451,7 +450,7 @@ decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
 union_def
-  : UNION opt_flag opt_id decl_template LBRACE decl_list RBRACE opt_id SEMICOLON {
+  : UNION flag opt_id decl_template LBRACE decl_list RBRACE opt_id SEMICOLON {
       $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
       $$->type_xid = $3;
       $$->xid = $8;
