@@ -64,7 +64,7 @@ ANN Symbol lambda_name(const Scanner*);
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
   TYPEDEF "typedef" FUNCDEF "funcdef"
-  NOELSE UNION "union" CONSTT "const" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
+  NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop"
   BACKSLASH "\\" OPID_A OPID_D
   REF "ref" NONNULL "nonnull"
 
@@ -255,14 +255,7 @@ stmt
   | varloop_stmt
   ;
 
-id
-  : ID { $$ = insert_symbol($1); }
-  | ID PASTE id {
-    char c[strlen(s_name($3)) + strlen($1)];
-    sprintf(c, "%s%s", $1, s_name($3));
-    $$ = insert_symbol(c);
-  }
-  ;
+id: ID { $$ = insert_symbol($1); }
 
 opt_id: id | { $$ = NULL; };
 
@@ -311,7 +304,7 @@ loop_stmt
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7); }
   | FOREACH LPAREN ref id COLON binary_exp RPAREN stmt
-      { $$ = new_stmt_auto(mpool(arg), $4, $6, $8); $$->d.stmt_auto.is_ptr = $3; }
+      { $$ = new_stmt_each(mpool(arg), $4, $6, $8); $$->d.stmt_each.is_ptr = $3; }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5); }
   ;

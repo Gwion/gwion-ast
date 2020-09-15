@@ -34,6 +34,7 @@ ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
 ANN2(1,2) static m_bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static m_bool rem_macro(void* data, const m_str id);
 ANN static m_bool has_macro(void* data, const m_str id);
+static m_str pp_data(void* data, const m_str id);
 ANN static int macro_toggle(void*);
 ANN static void macro_end(void*);
 ANN2(1,2) static int is_macro(void*, const m_str, YY_BUFFER_STATE);
@@ -263,7 +264,28 @@ ANN static m_str macro_data(void* data, const m_bool);
 "enum"                              { adjust(yyscanner); return ENUM;}
 "typeof"                            { adjust(yyscanner); return TYPEOF;}
 "varloop"                           { adjust(yyscanner); return VARLOOP;}
-"##" { adjust(yyscanner); return PASTE; }
+{LEX_ID}{SPACE}*("##"{SPACE}*{LEX_ID})*{SPACE}*"##"{SPACE}*{LEX_ID} {
+  adjust(yyscanner);
+  char c[yyleng], *buf = c;
+  Scanner* scan = yyget_extra(yyscanner);
+  GwText text = { .mp=scan->st->p };
+  while(*yytext) {
+    if(isspace(*yytext) || *yytext == '#') {
+      *buf = '\0';
+      text_add(&text, pp_data(yyscanner, c));
+      while(*yytext && isspace(*yytext))++yytext;
+      while(*yytext && *yytext == '#')++yytext;
+      while(*yytext && isspace(*yytext))++yytext;
+      buf = c;
+    } else
+     *buf++ = *yytext++;
+  }
+  *buf = '\0';
+  text_add(&text, pp_data(yyscanner, c));
+  yylval->sval = alloc_str(yyscanner, text.str);
+  text_release(&text);
+  return ID;
+}
 "#"{LEX_ID}           {
   adjust(yyscanner);
   const m_str text = get_arg_text(yyscanner, yytext + 1);
@@ -487,6 +509,17 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
   if(global)
     return global;
   return macro_has(scan->pp->macros, id);
+}
+
+static m_str pp_data(void* data, const m_str id) {
+  Scanner* scan = yyget_extra(data);
+  const m_str arg = get_arg_text(data, id);
+  if(arg)
+    return arg;
+  Macro e = scan_has_macro(scan, id);
+  if(e)
+    return e->text->str;
+  return id;
 }
 
 static m_bool has_macro(void* data, const m_str id) {
@@ -714,10 +747,11 @@ static m_str get_arg_text(void* data, const m_str id) {
   return NULL;
 }
 
-static void macro_append(void* data, const m_str text) {
+static void macro_append(void* data, const m_str str) {
   Scanner* scan = yyget_extra(data);
-assert(scan->pp->entry);
-  text_add(scan->pp->entry->text, text);
+  assert(scan->pp->entry);
+  str[strlen(str) - 1] = '\0';
+  text_add(scan->pp->entry->text, str);
 }
 
 ANN void clear_buffer(void *state, void* scan) {
