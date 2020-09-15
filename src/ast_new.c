@@ -373,11 +373,11 @@ AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2, const re
   return a;
 }
 
-AST_NEW(Stmt, stmt_auto, struct Symbol_* sym, const Exp exp, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_auto, loc_cpy(p, exp->pos));
-  a->d.stmt_auto.sym = sym;
-  a->d.stmt_auto.exp = exp;
-  a->d.stmt_auto.body = body;
+AST_NEW(Stmt, stmt_each, struct Symbol_* sym, const Exp exp, const Stmt body) {
+  Stmt a = new_stmt(p, ae_stmt_each, loc_cpy(p, exp->pos));
+  a->d.stmt_each.sym = sym;
+  a->d.stmt_each.exp = exp;
+  a->d.stmt_each.body = body;
   return a;
 }
 

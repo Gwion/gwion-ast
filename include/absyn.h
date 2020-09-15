@@ -358,7 +358,7 @@ struct Decl_List_ {
 ANN2(1, 2) ANEW AST_NEW(Decl_List, decl_list, Exp d, Decl_List l);
 ANN void free_decl_list(MemPool p, Decl_List);
 
-typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_auto, ae_stmt_loop,
+typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_each, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_varloop, ae_stmt_break,
                ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_jump, ae_stmt_pp
              } ae_stmt_t;
@@ -368,7 +368,7 @@ typedef struct Stmt_Code_    * Stmt_Code;
 typedef struct Stmt_For_     * Stmt_For;
 typedef struct Stmt_VarLoop_ * Stmt_VarLoop;
 typedef struct Stmt_Flow_    * Stmt_Flow;
-typedef struct Stmt_Auto_    * Stmt_Auto;
+typedef struct Stmt_Each_    * Stmt_Each;
 typedef struct Stmt_Loop_    * Stmt_Loop;
 typedef struct Stmt_If_      * Stmt_If;
 typedef struct Stmt_Match_   * Stmt_Match;
@@ -410,7 +410,7 @@ struct Stmt_For_ {
   Stmt body;
 };
 
-struct Stmt_Auto_ {
+struct Stmt_Each_ {
   struct Symbol_* sym;
   Exp exp;
   Stmt body;
@@ -525,7 +525,7 @@ struct Stmt_ {
     struct Stmt_VarLoop_    stmt_varloop;
     struct Stmt_Loop_       stmt_loop;
     struct Stmt_For_        stmt_for;
-    struct Stmt_Auto_       stmt_auto;
+    struct Stmt_Each_       stmt_each;
     struct Stmt_If_         stmt_if;
     struct Stmt_Jump_       stmt_jump;
     struct Stmt_Match_     stmt_match;
@@ -546,7 +546,7 @@ ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool);
 ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt);
 ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt);
-ANEW ANN AST_NEW(Stmt, stmt_auto, struct Symbol_*, const Exp, const Stmt);
+ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt);
 ANEW ANN AST_NEW(Stmt, stmt_jump, struct Symbol_*, const m_bool, const loc_t);
 ANEW ANN2(1,3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str, const loc_t);

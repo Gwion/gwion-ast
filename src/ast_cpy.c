@@ -299,7 +299,7 @@ ANN static void cpy_stmt_for(MemPool p, Stmt_For a, const Stmt_For src) {
     a->body = cpy_stmt(p, src->body); 
 }
 
-ANN static void cpy_stmt_auto(MemPool p, Stmt_Auto a, const Stmt_Auto src) {
+ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
   if(src->sym)
     a->sym = src->sym;
   if(src->exp)
@@ -440,8 +440,8 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
     case ae_stmt_for:
       cpy_stmt_for(p, &a->d.stmt_for, &src->d.stmt_for);
       break;
-    case ae_stmt_auto:
-      cpy_stmt_auto(p, &a->d.stmt_auto, &src->d.stmt_auto);
+    case ae_stmt_each:
+      cpy_stmt_each(p, &a->d.stmt_each, &src->d.stmt_each);
       break;
     case ae_stmt_if:
       cpy_stmt_if(p, &a->d.stmt_if, &src->d.stmt_if);

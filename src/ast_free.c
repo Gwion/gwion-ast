@@ -227,7 +227,7 @@ ANN static AST_FREE(Stmt_For, stmt_for) {
   free_stmt(p, a->body);
 }
 
-ANN static AST_FREE(Stmt_Auto, stmt_auto) {
+ANN static AST_FREE(Stmt_Each, stmt_each) {
   free_exp(p, a->exp);
   free_stmt(p, a->body);
 }

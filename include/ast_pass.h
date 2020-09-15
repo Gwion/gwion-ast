@@ -34,7 +34,7 @@ typedef type (*_##prefix##_stmt_func)(const arg, union stmt_data*);             
 const _##prefix##_stmt_func prefix##_stmt_func[] = {                                            \
   (_##prefix##_stmt_func)prefix##_stmt_exp,    (_##prefix##_stmt_func)prefix##_stmt_while,      \
   (_##prefix##_stmt_func)prefix##_stmt_until,  (_##prefix##_stmt_func)prefix##_stmt_for,        \
-  (_##prefix##_stmt_func)prefix##_stmt_auto,   (_##prefix##_stmt_func)prefix##_stmt_loop,       \
+  (_##prefix##_stmt_func)prefix##_stmt_each,   (_##prefix##_stmt_func)prefix##_stmt_loop,       \
   (_##prefix##_stmt_func)prefix##_stmt_if,     (_##prefix##_stmt_func)prefix##_stmt_code,       \
   (_##prefix##_stmt_func)prefix##_stmt_varloop,  \
   (_##prefix##_stmt_func)prefix##_stmt_break,  (_##prefix##_stmt_func)prefix##_stmt_continue,   \
