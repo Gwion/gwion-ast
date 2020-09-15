@@ -63,7 +63,7 @@ ANN Symbol lambda_name(const Scanner*);
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
-  TYPEDEF "typedef"
+  TYPEDEF "typedef" FUNCDEF "funcdef"
   NOELSE UNION "union" CONSTT "const" PASTE "##" ELLIPSE "..." VARLOOP "varloop"
   BACKSLASH "\\" OPID_A OPID_D
   REF "ref" NONNULL "nonnull"
@@ -101,7 +101,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<decl_list> decl_list
 %type<func_def> func_def func_def_base
-%type<func_base> fdef_base fptr_base
+%type<func_base> func_base
 %type<enum_def> enum_def
 %type<union_def> union_def
 %type<fptr_def> fptr_def
@@ -174,12 +174,12 @@ id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_li
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
 
-fptr_base: flag type_decl_array id decl_template fptr_args arg_type { $$ = new_func_base(mpool(arg), $2, $3, $5, $1 | $6);
+func_base: flag type_decl_empty id decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
   if($4) { $$->flag |= ae_flag_template; $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
-fdef_base: flag type_decl_empty id decl_template func_args  arg_type { $$ = new_func_base(mpool(arg), $2, $3, $5, $1 | $6);
-  if($4) $$->tmpl = new_tmpl_base(mpool(arg), $4); }
 
-fptr_def: TYPEDEF fptr_base SEMICOLON {
+fptr_def: FUNCDEF func_base fptr_args arg_type SEMICOLON {
+  $2->args = $3;
+  $2->flag |= $4;
   if($2->td->array && $2->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
@@ -399,8 +399,11 @@ flag: access_flag { $$ = $1; }
   ;
 
 func_def_base
-  : FUNCTION fdef_base code_stmt
-    { $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); };
+  : FUNCTION func_base func_args arg_type code_stmt {
+    $2->args = $3;
+    $2->flag |= $4;
+    $$ = new_func_def(mpool(arg), $2, $5, GET_LOC(&@$));
+  };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 

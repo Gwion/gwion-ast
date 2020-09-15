@@ -203,6 +203,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 ","                                 { adjust(yyscanner); return COMMA;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
+"funcdef"                           { adjust(yyscanner); return FUNCDEF;}
 "var"                               { adjust(yyscanner); return VAR; }
 "new"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
 "spork"                             { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
