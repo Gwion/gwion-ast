@@ -174,17 +174,17 @@ id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_li
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
 
-fptr_base: type_decl_array id decl_template fptr_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
-  if($3) { $1->flag |= ae_flag_template; $$->tmpl = new_tmpl_base(mpool(arg), $3); } }
-fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
-  if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
+fptr_base: flag type_decl_array id decl_template fptr_args arg_type { $$ = new_func_base(mpool(arg), $2, $3, $5, $1 | $6);
+  if($4) { $$->flag |= ae_flag_template; $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
+fdef_base: flag type_decl_empty id decl_template func_args  arg_type { $$ = new_func_base(mpool(arg), $2, $3, $5, $1 | $6);
+  if($4) $$->tmpl = new_tmpl_base(mpool(arg), $4); }
 
-fptr_def: TYPEDEF flag fptr_base arg_type SEMICOLON {
-  if($3->td->array && $3->td->array->exp) {
+fptr_def: TYPEDEF fptr_base SEMICOLON {
+  if($2->td->array && $2->td->array->exp) {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
   }
-  $$ = new_fptr_def(mpool(arg), $3, $2 | $4);
+  $$ = new_fptr_def(mpool(arg), $2, ae_flag_none);
 };
 type_def: TYPEDEF flag type_decl_array id decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);
@@ -399,22 +399,22 @@ flag: access_flag { $$ = $1; }
   ;
 
 func_def_base
-  : FUNCTION flag fdef_base arg_type code_stmt
-    { $$ = new_func_def(mpool(arg), $3, $5, $2 | $4, GET_LOC(&@$)); };
+  : FUNCTION fdef_base code_stmt
+    { $$ = new_func_def(mpool(arg), $2, $3, $2->flag, GET_LOC(&@$)); };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $9, ae_flag_op, GET_LOC(&@$)); $5->next = $7;}
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op), $9, ae_flag_op, GET_LOC(&@$)); $5->next = $7;}
   |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5), $7, ae_flag_op, GET_LOC(&@$)); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op), $7, ae_flag_op, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5, ae_flag_op | ae_flag_unary), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
   | OPERATOR OPID_A type_decl_empty func_args RPAREN code_stmt
     {
- $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $4), $6, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
+ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $4, ae_flag_op | ae_flag_typedef), $6, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
     };
 
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };

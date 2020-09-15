@@ -63,7 +63,7 @@ ANN static AST_NEW(Exp, exp, const ae_exp_t type, const loc_t pos) {
 
 AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt code) {
   Exp a = new_exp(p, ae_exp_lambda, loc_cpy(p, code->pos));
-  Func_Base *base = new_func_base(p, NULL, xid, args);
+  Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none);
   a->d.exp_lambda.def = new_func_def(p, base, code, ae_flag_none, loc_cpy(p, code->pos));
   return a;
 }
@@ -275,18 +275,19 @@ Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code,
   return a;
 }
 
-AST_NEW(Func_Base*, func_base, Type_Decl* td, const Symbol xid, const Arg_List args) {
+AST_NEW(Func_Base*, func_base, Type_Decl* td, const Symbol xid, const Arg_List args, const ae_flag flag) {
   Func_Base *a = (Func_Base*)mp_calloc(p, Func_Base);
   a->td = td;
   a->xid = xid;
   a->args = args;
+  a->flag = flag;
   return a;
 }
 
 AST_NEW(Fptr_Def, fptr_def, Func_Base *base, const ae_flag flag) {
   Fptr_Def a = mp_calloc(p, Fptr_Def);
   a->base = base;
-  base->td->flag |= flag;
+  base->flag |= flag;
   return a;
 }
 
@@ -500,7 +501,7 @@ AST_NEW(Ast, ast_expand, Section* section, const Ast next) {
         if(former)
           former->next = NULL;
         Func_Base *base = new_func_base(p, cpy_type_decl(p, base_fdef->base->td),
-          base_fdef->base->xid, former ? cpy_arg_list(p, base_fdef->base->args) : NULL);
+          base_fdef->base->xid, former ? cpy_arg_list(p, base_fdef->base->args) : NULL, base_fdef->flag);
         const Exp efunc = new_prim_id(p, base_fdef->base->xid, loc_cpy(p, base_fdef->pos));
         Exp arg_exp = former ? arglist2exp(p, base_fdef->base->args, base_arg->exp) :
         cpy_exp(p, base_arg->exp);

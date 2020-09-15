@@ -458,9 +458,10 @@ typedef struct Func_Base_ {
   struct Func_       *func;
   struct Type_*       ret_type;
   Tmpl *tmpl;
+  ae_flag flag;
 } Func_Base;
 
-ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List);
+ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List, const ae_flag flag);
 
 typedef struct Fptr_Def_* Fptr_Def;
 struct Fptr_Def_ {

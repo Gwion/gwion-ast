@@ -379,6 +379,7 @@ ANN Func_Base* cpy_func_base(MemPool p, const Func_Base* src) {
     a->args = cpy_arg_list(p, src->args); // 1 
   if(src->tmpl)
     a->tmpl = cpy_tmpl(p, src->tmpl); // 1 
+  a->flag = src->flag;
   return a;
 }
 
