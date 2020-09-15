@@ -560,9 +560,6 @@ interp_exp
 
 interp: INTERP_START interp_exp { $$ = $2; }
 | interp INTERP_START interp_exp {
-  Exp e = $1;
-  while(e->next)
-    e = e->next;
   if(!$3->next) {
     char c[strlen($1->d.prim.d.str) + strlen($3->d.prim.d.str) + 1];
     sprintf(c, "%s%s\n", $1->d.prim.d.str, $3->d.prim.d.str);
@@ -570,7 +567,7 @@ interp: INTERP_START interp_exp { $$ = $2; }
     $1->pos->last = $3->pos->last;
     free_exp(mpool(arg), $3);
   } else
-  e->next = $3;
+  $1->next = $3;
 }
 
 typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3); };
