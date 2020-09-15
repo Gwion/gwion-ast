@@ -567,10 +567,9 @@ struct Func_Def_ {
     void* dl_func_ptr;
   } d;
   loc_t pos;           ///< position
-  ae_flag flag;
 };
 
-ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt, const ae_flag, const loc_t);
+ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt, const loc_t);
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def);
 

@@ -400,21 +400,21 @@ flag: access_flag { $$ = $1; }
 
 func_def_base
   : FUNCTION fdef_base code_stmt
-    { $$ = new_func_def(mpool(arg), $2, $3, $2->flag, GET_LOC(&@$)); };
+    { $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 
 func_def
   : func_def_base
   |  OPERATOR op_op type_decl_empty LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op), $9, ae_flag_op, GET_LOC(&@$)); $5->next = $7;}
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op), $9, GET_LOC(&@$)); $5->next = $7;}
   |  OPERATOR post_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op), $7, ae_flag_op, GET_LOC(&@$)); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op), $7, GET_LOC(&@$)); }
   |  unary_op OPERATOR type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5, ae_flag_op | ae_flag_unary), $7, ae_flag_op | ae_flag_unary, GET_LOC(&@$)); }
+    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $1, $5, ae_flag_op | ae_flag_unary), $7, GET_LOC(&@$)); }
   | OPERATOR OPID_A type_decl_empty func_args RPAREN code_stmt
     {
- $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $4, ae_flag_op | ae_flag_typedef), $6, ae_flag_op | ae_flag_typedef, GET_LOC(&@$));
+ $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $4, ae_flag_op | ae_flag_typedef), $6, GET_LOC(&@$));
     };
 
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
