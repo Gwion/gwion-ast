@@ -175,7 +175,7 @@ id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_li
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
 
 fptr_base: type_decl_array id decl_template fptr_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
-  if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
+  if($3) { $1->flag |= ae_flag_template; $$->tmpl = new_tmpl_base(mpool(arg), $3); } }
 fdef_base: type_decl_empty id decl_template func_args { $$ = new_func_base(mpool(arg), $1, $2, $4);
   if($3) $$->tmpl = new_tmpl_base(mpool(arg), $3); }
 
