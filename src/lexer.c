@@ -984,7 +984,7 @@ static const flex_int16_t yy_chk[908] =
 #define YY_MORE_ADJ yyg->yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "src/gwion.l"
-#line 5 "src/gwion.l"
+#line 6 "src/gwion.l"
 #include <ctype.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
@@ -1328,7 +1328,7 @@ YY_DECL
 		}
 
 	{
-#line 91 "src/gwion.l"
+#line 92 "src/gwion.l"
 
 
 #line 1334 "src/lexer.c"
@@ -1393,17 +1393,17 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 93 "src/gwion.l"
+#line 94 "src/gwion.l"
 { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 94 "src/gwion.l"
+#line 95 "src/gwion.l"
 { adjust(yyscanner); handle_lpar(yyscanner); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 95 "src/gwion.l"
+#line 96 "src/gwion.l"
 { adjust(yyscanner);
   const m_bool ret = handle_rpar(yyscanner);
   if(ret < 0)
@@ -1416,12 +1416,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 104 "src/gwion.l"
+#line 105 "src/gwion.l"
 { adjust(yyscanner); handle_char(yyscanner, yytext); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 106 "src/gwion.l"
+#line 107 "src/gwion.l"
 {
   if(!add_macro(yyscanner, yytext))
     yyterminate();
@@ -1430,75 +1430,75 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 111 "src/gwion.l"
+#line 112 "src/gwion.l"
 { adjust(yyscanner); macro_arg(yyscanner, yytext); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 112 "src/gwion.l"
+#line 113 "src/gwion.l"
 { adjust(yyscanner); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 113 "src/gwion.l"
+#line 114 "src/gwion.l"
 { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 114 "src/gwion.l"
+#line 115 "src/gwion.l"
 { GWYY_FATAL_ERROR(_("Invalid")); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 115 "src/gwion.l"
+#line 116 "src/gwion.l"
 { adjust(yyscanner); BEGIN(define); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 116 "src/gwion.l"
+#line 117 "src/gwion.l"
 { GWYY_FATAL_ERROR(_("invalid char in macro")); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 118 "src/gwion.l"
+#line 119 "src/gwion.l"
 { adjust(yyscanner); BEGIN(define_arg); };
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 119 "src/gwion.l"
+#line 120 "src/gwion.l"
 { adjust(yyscanner); BEGIN(define); };
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 120 "src/gwion.l"
+#line 121 "src/gwion.l"
 { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE; };
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 122 "src/gwion.l"
+#line 123 "src/gwion.l"
 { adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 123 "src/gwion.l"
+#line 124 "src/gwion.l"
 { adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 125 "src/gwion.l"
+#line 126 "src/gwion.l"
 { BEGIN(pragma); }
 	YY_BREAK
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 126 "src/gwion.l"
+#line 127 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 128 "src/gwion.l"
+#line 129 "src/gwion.l"
 {
   adjust(yyscanner);
   const m_bool def = yytext[3] == 'n';
@@ -1519,84 +1519,84 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 144 "src/gwion.l"
+#line 145 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
 	YY_BREAK
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 145 "src/gwion.l"
+#line 146 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 147 "src/gwion.l"
+#line 148 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; }
 	YY_BREAK
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 148 "src/gwion.l"
+#line 149 "src/gwion.l"
 { BEGIN(macro_toggle(yyscanner)); }
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 149 "src/gwion.l"
+#line 150 "src/gwion.l"
 { macro_end(yyscanner); BEGIN(INITIAL); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 150 "src/gwion.l"
+#line 151 "src/gwion.l"
 { continue;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 152 "src/gwion.l"
+#line 153 "src/gwion.l"
 { GWYY_INCLUDE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 154 "src/gwion.l"
+#line 155 "src/gwion.l"
 { GWYY_UNDEF }
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 156 "src/gwion.l"
+#line 157 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 158 "src/gwion.l"
+#line 159 "src/gwion.l"
 { YY_USER_ACTION; BEGIN(comment); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 159 "src/gwion.l"
+#line 160 "src/gwion.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 160 "src/gwion.l"
+#line 161 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 	YY_BREAK
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 161 "src/gwion.l"
+#line 162 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 162 "src/gwion.l"
+#line 163 "src/gwion.l"
 { GWYY_COMMENT;  }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 164 "src/gwion.l"
+#line 165 "src/gwion.l"
 {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
@@ -1609,7 +1609,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 173 "src/gwion.l"
+#line 174 "src/gwion.l"
 {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
@@ -1620,7 +1620,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 180 "src/gwion.l"
+#line 181 "src/gwion.l"
 {
   unput('{');
   unput('$');
@@ -1631,7 +1631,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 187 "src/gwion.l"
+#line 188 "src/gwion.l"
 {
   adjust(yyscanner); BEGIN(INITIAL);
   yytext[yyleng - 2] = '\0';
@@ -1641,128 +1641,128 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 193 "src/gwion.l"
+#line 194 "src/gwion.l"
 { yymore(); adjust(yyscanner); continue; }
 	YY_BREAK
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 195 "src/gwion.l"
+#line 196 "src/gwion.l"
 { newline(yyscanner); YY_USER_ACTION; continue; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 196 "src/gwion.l"
+#line 197 "src/gwion.l"
 { adjust(yyscanner); return TMPL;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 197 "src/gwion.l"
+#line 198 "src/gwion.l"
 { adjust(yyscanner); continue; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 198 "src/gwion.l"
+#line 199 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 199 "src/gwion.l"
+#line 200 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op2(yytext); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 200 "src/gwion.l"
+#line 201 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op3(yytext); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 201 "src/gwion.l"
+#line 202 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DYNOP; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 202 "src/gwion.l"
+#line 203 "src/gwion.l"
 { adjust(yyscanner); return SEMICOLON;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 203 "src/gwion.l"
+#line 204 "src/gwion.l"
 { adjust(yyscanner); return COMMA;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 204 "src/gwion.l"
+#line 205 "src/gwion.l"
 { adjust(yyscanner); return FUNCTION;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 205 "src/gwion.l"
+#line 206 "src/gwion.l"
 { adjust(yyscanner); return TYPEDEF;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 206 "src/gwion.l"
+#line 207 "src/gwion.l"
 { adjust(yyscanner); return FUNCDEF;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 207 "src/gwion.l"
+#line 208 "src/gwion.l"
 { adjust(yyscanner); return VAR; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 208 "src/gwion.l"
+#line 209 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 209 "src/gwion.l"
+#line 210 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 210 "src/gwion.l"
+#line 211 "src/gwion.l"
 { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 211 "src/gwion.l"
+#line 212 "src/gwion.l"
 { adjust(yyscanner); return UNION; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 213 "src/gwion.l"
+#line 214 "src/gwion.l"
 { adjust(yyscanner); return BACKSLASH; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 214 "src/gwion.l"
+#line 215 "src/gwion.l"
 { adjust(yyscanner); return LPAREN; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 215 "src/gwion.l"
+#line 216 "src/gwion.l"
 { adjust(yyscanner); return RPAREN; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 216 "src/gwion.l"
+#line 217 "src/gwion.l"
 { adjust(yyscanner); return LBRACK; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 217 "src/gwion.l"
+#line 218 "src/gwion.l"
 { adjust(yyscanner); return RBRACK; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 218 "src/gwion.l"
+#line 219 "src/gwion.l"
 { adjust(yyscanner); return LBRACE; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 219 "src/gwion.l"
+#line 220 "src/gwion.l"
 {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
@@ -1774,174 +1774,174 @@ YY_RULE_SETUP
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 228 "src/gwion.l"
+#line 229 "src/gwion.l"
 { adjust(yyscanner); return CLASS;}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 229 "src/gwion.l"
+#line 230 "src/gwion.l"
 { adjust(yyscanner); return STRUCT;}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 230 "src/gwion.l"
+#line 231 "src/gwion.l"
 { adjust(yyscanner); return OPERATOR;}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 231 "src/gwion.l"
+#line 232 "src/gwion.l"
 { adjust(yyscanner); return EXTENDS;}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 232 "src/gwion.l"
+#line 233 "src/gwion.l"
 { adjust(yyscanner); return ELLIPSE;}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 233 "src/gwion.l"
+#line 234 "src/gwion.l"
 { adjust(yyscanner); return DOT;}
 	YY_BREAK
  /* storage modifiers */
 case 69:
 YY_RULE_SETUP
-#line 236 "src/gwion.l"
+#line 237 "src/gwion.l"
 { adjust(yyscanner); return GLOBAL;}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 237 "src/gwion.l"
+#line 238 "src/gwion.l"
 { adjust(yyscanner); return STATIC;}
 	YY_BREAK
  /*access modifiers */
 case 71:
 YY_RULE_SETUP
-#line 240 "src/gwion.l"
+#line 241 "src/gwion.l"
 { adjust(yyscanner); return PROTECT;}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 241 "src/gwion.l"
+#line 242 "src/gwion.l"
 { adjust(yyscanner); return PRIVATE;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 242 "src/gwion.l"
+#line 243 "src/gwion.l"
 { adjust(yyscanner); return CONSTT;}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 243 "src/gwion.l"
+#line 244 "src/gwion.l"
 { adjust(yyscanner); return REF;}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 244 "src/gwion.l"
+#line 245 "src/gwion.l"
 { adjust(yyscanner); return NONNULL;}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 246 "src/gwion.l"
+#line 247 "src/gwion.l"
 { adjust(yyscanner); return IF;}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 247 "src/gwion.l"
+#line 248 "src/gwion.l"
 { adjust(yyscanner); return ELSE;}
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 248 "src/gwion.l"
+#line 249 "src/gwion.l"
 { adjust(yyscanner); return BREAK;}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 249 "src/gwion.l"
+#line 250 "src/gwion.l"
 { adjust(yyscanner); return CONTINUE;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 250 "src/gwion.l"
+#line 251 "src/gwion.l"
 { adjust(yyscanner); return TRETURN;}
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 251 "src/gwion.l"
+#line 252 "src/gwion.l"
 { adjust(yyscanner); return WHILE;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 252 "src/gwion.l"
+#line 253 "src/gwion.l"
 { adjust(yyscanner); return DO;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 253 "src/gwion.l"
+#line 254 "src/gwion.l"
 { adjust(yyscanner); return UNTIL;}
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 254 "src/gwion.l"
+#line 255 "src/gwion.l"
 { adjust(yyscanner); return LOOP;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 255 "src/gwion.l"
+#line 256 "src/gwion.l"
 { adjust(yyscanner); return FOR;}
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 256 "src/gwion.l"
+#line 257 "src/gwion.l"
 { adjust(yyscanner); return FOREACH;}
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 257 "src/gwion.l"
+#line 258 "src/gwion.l"
 { adjust(yyscanner); return GOTO;}
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 258 "src/gwion.l"
+#line 259 "src/gwion.l"
 { adjust(yyscanner); return MATCH;}
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 259 "src/gwion.l"
+#line 260 "src/gwion.l"
 { adjust(yyscanner); return WHERE;}
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 260 "src/gwion.l"
+#line 261 "src/gwion.l"
 { adjust(yyscanner); return WHEN;}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 261 "src/gwion.l"
+#line 262 "src/gwion.l"
 { adjust(yyscanner); return CASE;}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 262 "src/gwion.l"
+#line 263 "src/gwion.l"
 { adjust(yyscanner); return ENUM;}
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 263 "src/gwion.l"
+#line 264 "src/gwion.l"
 { adjust(yyscanner); return TYPEOF;}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 264 "src/gwion.l"
+#line 265 "src/gwion.l"
 { adjust(yyscanner); return VARLOOP;}
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 265 "src/gwion.l"
+#line 266 "src/gwion.l"
 { adjust(yyscanner); return PASTE; }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 266 "src/gwion.l"
+#line 267 "src/gwion.l"
 {
   adjust(yyscanner);
   const m_str text = get_arg_text(yyscanner, yytext + 1);
@@ -1956,47 +1956,47 @@ YY_RULE_SETUP
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 277 "src/gwion.l"
+#line 278 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 278 "src/gwion.l"
+#line 279 "src/gwion.l"
 { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 280 "src/gwion.l"
+#line 281 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = htol(yytext);                 return NUM;        }
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 281 "src/gwion.l"
+#line 282 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 282 "src/gwion.l"
+#line 283 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 283 "src/gwion.l"
+#line 284 "src/gwion.l"
 { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 284 "src/gwion.l"
+#line 285 "src/gwion.l"
 { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 285 "src/gwion.l"
+#line 286 "src/gwion.l"
 { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_D; }
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 286 "src/gwion.l"
+#line 287 "src/gwion.l"
 {
   adjust(yyscanner);
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
@@ -2012,17 +2012,17 @@ YY_RULE_SETUP
 case 106:
 /* rule 106 can match eol */
 YY_RULE_SETUP
-#line 298 "src/gwion.l"
+#line 299 "src/gwion.l"
 { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 299 "src/gwion.l"
+#line 300 "src/gwion.l"
 { gwlex_error(yyscanner, _("stray in program")); return 1;}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 301 "src/gwion.l"
+#line 302 "src/gwion.l"
 ECHO;
 	YY_BREAK
 #line 2028 "src/lexer.c"
@@ -3107,7 +3107,7 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 301 "src/gwion.l"
+#line 302 "src/gwion.l"
 
 // LCOV_EXCL_LINE
 #include <stdio.h>

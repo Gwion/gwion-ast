@@ -1,6 +1,7 @@
 IS    (u|U|l|L)*
 SPACE [ \r\t]
 OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
+LEX_ID [A-Za-z_][A-Za-z0-9_]*
 %{
 #include <ctype.h>
 #include "gwion_util.h"
@@ -103,12 +104,12 @@ ANN static m_str macro_data(void* data, const m_bool);
 }
 <get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
-^#define{SPACE}+[A-Za-z_][A-Za-z0-9_]* {
+^#define{SPACE}+{LEX_ID} {
   if(!add_macro(yyscanner, yytext))
     yyterminate();
   BEGIN(define_arg_start);
 }
-<define_arg>[A-Za-z_][A-Za-z0-9_]* { adjust(yyscanner); macro_arg(yyscanner, yytext); }
+<define_arg>{LEX_ID} { adjust(yyscanner); macro_arg(yyscanner, yytext); }
 <define_arg>{SPACE}*","{SPACE}*    { adjust(yyscanner); }
 <define_arg>"..."{SPACE}*")"{SPACE}* { adjust(yyscanner); macro_arg(yyscanner, "__VA_ARGS__"); BEGIN(define); }
 <define_arg>" "   { GWYY_FATAL_ERROR(_("Invalid")); }
@@ -125,7 +126,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 ^"#pragma"{SPACE}+ { BEGIN(pragma); }
 <pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 
-^#ifn?def{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* {
+^#ifn?def{SPACE}+{LEX_ID}{SPACE}* {
   adjust(yyscanner);
   const m_bool def = yytext[3] == 'n';
   m_str s = yytext + 6 + def;
@@ -151,7 +152,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 ^#include{SPACE}+<[A-Za-z0-9_./]*>{SPACE}* { GWYY_INCLUDE; }
 
-^#undef{SPACE}+[A-Za-z_][A-Za-z0-9_]*{SPACE}* { GWYY_UNDEF }
+^#undef{SPACE}+{LEX_ID}{SPACE}* { GWYY_UNDEF }
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 
@@ -263,7 +264,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 "typeof"                            { adjust(yyscanner); return TYPEOF;}
 "varloop"                           { adjust(yyscanner); return VARLOOP;}
 "##" { adjust(yyscanner); return PASTE; }
-"#"[A-Za-z_][A-Za-z0-9_]*           {
+"#"{LEX_ID}           {
   adjust(yyscanner);
   const m_str text = get_arg_text(yyscanner, yytext + 1);
   if(text) {
@@ -281,9 +282,9 @@ ANN static m_str macro_data(void* data, const m_bool);
 0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 [0-9]+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
 ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
-@[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
-$[A-Za-z_][A-Za-z0-9_]*             { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_D; }
-[A-Za-z_][A-Za-z0-9_]*              {
+@{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
+${LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_D; }
+{LEX_ID}                            {
   adjust(yyscanner);
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
   if(ret < 0)
