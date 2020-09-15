@@ -392,10 +392,10 @@ access_flag: PRIVATE { $$ = ae_flag_private; }
   | PROTECT { $$ = ae_flag_protect; }
   ;
 
-flag: { $$ = ae_flag_none; }
-  |access_flag { $$ = $1; }
-  | storage_flag { $$ = $1; }
-  | storage_flag access_flag { $$ = $1 | $2; }
+flag: access_flag { $$ = $1; }
+  |  storage_flag { $$ = $1; }
+  |  storage_flag access_flag { $$ = $1 | $2; }
+  | { $$ = ae_flag_none; }
   ;
 
 func_def_base
