@@ -157,11 +157,11 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 
-"#!"{SPACE}*             { YY_USER_ACTION; BEGIN(comment); }
-<comment>!\#     { BEGIN(INITIAL); }
+"#!".*"!#"       { YY_USER_ACTION; BEGIN(INITIAL); }
+"#!"{SPACE}*     { YY_USER_ACTION; BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
-<comment>.*       { GWYY_COMMENT;  }
+<comment>.*      { GWYY_COMMENT;  }
 
 <interp>"\"" {
   adjust(yyscanner);
