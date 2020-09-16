@@ -2383,7 +2383,7 @@ yyreduce:
     {
       if((yyvsp[-7].flag) == ae_flag_struct && (yyvsp[-3].type_decl))
         { gwion_error(&(yyloc), arg, "'struct' inherit other types"); YYERROR; }
-      (yyval.class_def) =new_class_def(mpool(arg), (yyvsp[-7].flag) | (yyvsp[-6].flag), (yyvsp[-5].sym), (yyvsp[-3].type_decl), (yyvsp[-1].ast), GET_LOC(&(yyloc)));
+      (yyval.class_def) = new_class_def(mpool(arg), (yyvsp[-7].flag) | (yyvsp[-6].flag), (yyvsp[-5].sym), (yyvsp[-3].type_decl), (yyvsp[-1].ast), GET_LOC(&(yyloc)));
       if((yyvsp[-4].id_list))
         (yyval.class_def)->base.tmpl = new_tmpl_base(mpool(arg), (yyvsp[-4].id_list));
   }
@@ -2448,7 +2448,7 @@ yyreduce:
     gwion_error(&(yyloc), arg, "type must be defined with empty []'s");
     YYERROR;
   }
-  (yyval.fptr_def) = new_fptr_def(mpool(arg), (yyvsp[-3].func_base), ae_flag_none);
+  (yyval.fptr_def) = new_fptr_def(mpool(arg), (yyvsp[-3].func_base));
 }
 #line 2454 "src/parser.c"
     break;

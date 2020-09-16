@@ -282,10 +282,9 @@ AST_NEW(Func_Base*, func_base, Type_Decl* td, const Symbol xid, const Arg_List a
   return a;
 }
 
-AST_NEW(Fptr_Def, fptr_def, Func_Base *base, const ae_flag flag) {
+AST_NEW(Fptr_Def, fptr_def, Func_Base *base) {
   Fptr_Def a = mp_calloc(p, Fptr_Def);
   a->base = base;
-  base->flag |= flag;
   return a;
 }
 

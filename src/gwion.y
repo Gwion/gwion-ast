@@ -161,7 +161,7 @@ class_def
     {
       if($1 == ae_flag_struct && $5)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
-      $$ =new_class_def(mpool(arg), $1 | $2, $3, $5, $7, GET_LOC(&@$));
+      $$ = new_class_def(mpool(arg), $1 | $2, $3, $5, $7, GET_LOC(&@$));
       if($4)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
   };
@@ -184,7 +184,7 @@ fptr_def: FUNCDEF func_base fptr_args arg_type SEMICOLON {
     gwion_error(&@$, arg, "type must be defined with empty []'s");
     YYERROR;
   }
-  $$ = new_fptr_def(mpool(arg), $2, ae_flag_none);
+  $$ = new_fptr_def(mpool(arg), $2);
 };
 type_def: TYPEDEF flag type_decl_array id decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);

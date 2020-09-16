@@ -469,7 +469,7 @@ struct Fptr_Def_ {
   struct Type_*       type;
   struct Value_      *value;
 };
-ANEW ANN AST_NEW(Fptr_Def, fptr_def, Func_Base*, const ae_flag);
+ANEW ANN AST_NEW(Fptr_Def, fptr_def, Func_Base*);
 ANN void free_fptr_def(MemPool p, Fptr_Def);
 
 typedef struct Type_Def_* Type_Def;
