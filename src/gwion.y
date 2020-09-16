@@ -387,7 +387,7 @@ access_flag: PRIVATE { $$ = ae_flag_private; }
 
 flag: access_flag { $$ = $1; }
   |  storage_flag { $$ = $1; }
-  |  storage_flag access_flag { $$ = $1 | $2; }
+  |  access_flag storage_flag { $$ = $1 | $2; }
   | { $$ = ae_flag_none; }
   ;
 
