@@ -52,4 +52,5 @@ void loc_err(const loc_t loc, const m_str filename) {
   gw_err("\033[0m");
   fclose(f);
   free(line);
+  gw_err("\033[1m%s:%u:%u:\033[0m ", filename, loc->first.line, loc->first.column);
 }
