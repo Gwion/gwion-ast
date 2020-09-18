@@ -544,10 +544,7 @@ static FILE* get_include(const m_str str, const Vector v) {
     const m_str dir = (m_str)vector_at(v, i);
     char c[strlen(dir) + sz + 2];
     sprintf(c, "%s/%s", dir, str);
-    FILE* f = fopen(str, "r");
-    if(f) {
-      return f;
-    }
+    return fopen(str, "r");
   }
   return NULL;
 }
