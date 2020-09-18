@@ -1,7 +1,8 @@
-IS    (u|U|l|L)*
-SPACE [ \r\t]
-OP    [\?:\$@\+\-\*/%~\<\>\^|&\!=]
-LEX_ID [A-Za-z_][A-Za-z0-9_]*
+IS       (u|U|l|L)*
+SPACE    [ \r\t]
+OP       [\?:\$@\+\-\*/%~\<\>\^|&\!=]
+LEX_ID   [A-Za-z_][A-Za-z0-9_]*
+FILENAME [A-Za-z0-9_./]*
 %{
 #include <ctype.h>
 #include "gwion_util.h"
@@ -30,7 +31,8 @@ ANN static uint  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
 ANN int gwion_error(loc_t, Scanner*, const char *);
 ANN static Macro add_macro(void* data, const m_str id);
-ANN static m_str strip_include(Scanner* scan, const m_str line, const m_bool);
+ANN static m_str strip_include(const m_str line);
+ANN static m_str get_current_filename(void*);
 ANN2(1,2) static m_bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static m_bool rem_macro(void* data, const m_str id);
 ANN static m_bool has_macro(void* data, const m_str id);
@@ -64,7 +66,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 #define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); YY_USER_ACTION; continue; }
 #define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
 
-#define GWYY_INCLUDE  GWYY_LINT(strip_include(yyextra, yytext, 1), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER))yyterminate();
+#define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
 #define GWYY_DEFINE  BEGIN(INITIAL); GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL);
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
@@ -89,7 +91,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-%x define define_arg_start define_arg skip get_arg pragma interp
+%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end
 %%
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
@@ -151,7 +153,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 <skip>^#endif{SPACE}*\n { macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.*         { continue;}
 
-^#include{SPACE}+<[A-Za-z0-9_./]*>{SPACE}* { GWYY_INCLUDE; }
+
+<include_end>{FILENAME} { BEGIN(INITIAL); yylval->sval = strdup(yytext); return PP_INCLUDE; }
+^#include{SPACE} { BEGIN(include_start); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
+<include_start><{FILENAME}> { GWYY_INCLUDE; BEGIN(include_end); }
 
 ^#undef{SPACE}+{LEX_ID}{SPACE}* { GWYY_UNDEF }
 
@@ -458,14 +463,11 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
-static m_str strip_include(Scanner* scan, const m_str line, const m_bool sign) {
-  m_str str = line + 8;
-  while(isspace(*str)) ++str;
-  if(!sign)
-    ++str;
+static m_str strip_include(const m_str line) {
+  const m_str str = line + 1;
   m_str end = strstr(str, ">");
-  scan->pos.column += 2;
-  return strndup(str, strlen(str) - strlen(end) + (uint)sign);
+  *end = '\0';
+  return strdup(str);
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
@@ -549,9 +551,19 @@ static FILE* get_include(const m_str str, const Vector v) {
   return NULL;
 }
 
+static m_str get_current_filename(void* data) {
+  Scanner* scan = yyget_extra(data);
+  for(m_uint i = vector_size(&scan->pp->filename) + 1; --i;) {
+    const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i - 1);
+    if(*ppstate->filename != '@')
+      return ppstate->filename;
+  }
+  return NULL;
+}
+
 static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
-  const m_str str = strip_include(scan, filename, 0);
+  const m_str str = strip_include(filename);
   FILE* f = fopen(str, "r") ?: get_include(str, &scan->ppa->path);
   if(!f) {
     xfree(str);
@@ -561,6 +573,10 @@ static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE h
   gwpp_stack(scan, handle, f, str);
   pos_ini(&scan->pos);
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
+  struct yyguts_t *yyg = (struct yyguts_t*)data;
+  void *yyscanner =data;
+  for(m_uint i = strlen(str) + 1; --i;)
+    unput(str[i-1]);
   return GW_OK;
 }
 
@@ -652,7 +668,6 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
   const m_bool is_str = s[0] == '#';
   m_str id = is_str ? s+1 : s;
-  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   for(m_uint i = 0; i < vector_size(&scan->pp->filename); ++i) {
     const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i);
     if(ppstate->filename && ppstate->filename[0] == '@' && !strncmp(s, ppstate->filename + 8, strlen(ppstate->filename + 8) - 1)) {
@@ -661,6 +676,9 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
       return GW_ERROR;
     }
   }
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  if(vector_size(&scan->pp->filename) > 1 && *ppstate->filename != '@')
+    return 0; // parsing an include
   MacroArg arg = ppstate->arg;
   while(arg) {
     if(!strcmp(id, arg->name)) {
