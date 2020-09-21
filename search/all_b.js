@@ -16,6 +16,5 @@ var searchData=
   ['match_335',['match',['../dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089',1,'dynop.c']]],
   ['min_336',['MIN',['../loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f',1,'loc.c']]],
   ['mk_5fsection_337',['mk_section',['../ast__new_8c.html#ab4bb5f2dd595bd2eb9059168c345e7aa',1,'mk_section():&#160;ast_new.c'],['../ast__new_8c.html#a1e0322a4a442ec653626d65c9d5c1856',1,'mk_section(Stmt_List, stmt_list, stmt):&#160;ast_new.c']]],
-  ['mkentry_338',['mkentry',['../macro_8c.html#a0db4e8f733d96a94004aedd81926a9c7',1,'macro.c']]],
-  ['mp_339',['mp',['../structPPArg__.html#a8d8628ff8293f119e6bf80358e48b5f7',1,'PPArg_']]]
+  ['mkentry_338',['mkentry',['../macro_8c.html#a0db4e8f733d96a94004aedd81926a9c7',1,'macro.c']]]
 ];
