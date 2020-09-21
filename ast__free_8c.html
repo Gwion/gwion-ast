@@ -156,8 +156,8 @@ Functions</h2></td></tr>
 <tr class="separator:a02fc29f332f913212182dbbe554e63aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbff8f1ca7e713919875044f3ce08795"><td class="memItemLeft" align="right" valign="top">static ANN&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__free_8c.html#abbff8f1ca7e713919875044f3ce08795">AST_FREE</a> (<a class="el" href="absyn_8h.html#a09d6278ba0db7abf45c7edb613944c4f">Stmt_For</a>, <a class="el" href="absyn_8h.html#ad24cb76a466de760c8f2631575284438">stmt_for</a>)</td></tr>
 <tr class="separator:abbff8f1ca7e713919875044f3ce08795"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada93961a2bb7b66062b0a7c8c68c339c"><td class="memItemLeft" align="right" valign="top">static ANN&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__free_8c.html#ada93961a2bb7b66062b0a7c8c68c339c">AST_FREE</a> (<a class="el" href="absyn_8h.html#a96eb2bbd0c460d0e0cd26b99cef8e050">Stmt_Auto</a>, stmt_auto)</td></tr>
-<tr class="separator:ada93961a2bb7b66062b0a7c8c68c339c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70bf9f93a218be4f19bae843cb80eb68"><td class="memItemLeft" align="right" valign="top">static ANN&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__free_8c.html#a70bf9f93a218be4f19bae843cb80eb68">AST_FREE</a> (<a class="el" href="absyn_8h.html#a15bbf23ba70d031f85d0d1e53234d59c">Stmt_Each</a>, stmt_each)</td></tr>
+<tr class="separator:a70bf9f93a218be4f19bae843cb80eb68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f9a6eef52352c00867fbdc51598a2d8"><td class="memItemLeft" align="right" valign="top">static ANN&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__free_8c.html#a2f9a6eef52352c00867fbdc51598a2d8">AST_FREE</a> (<a class="el" href="absyn_8h.html#a7191008a608469fbd11a881b45a845af">Stmt_Loop</a>, stmt_loop)</td></tr>
 <tr class="separator:a2f9a6eef52352c00867fbdc51598a2d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9948e937493d8de1615a237308bee732"><td class="memItemLeft" align="right" valign="top">static ANN&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__free_8c.html#a9948e937493d8de1615a237308bee732">AST_FREE</a> (<a class="el" href="absyn_8h.html#ae47e7ff57b239517d93e9b9c567602fe">Stmt_If</a>, stmt_if)</td></tr>
@@ -1120,7 +1120,7 @@ Functions</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="ast__free_8c_source.html#l00121">121</a> of file <a class="el" href="ast__free_8c_source.html">ast_free.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                             {</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <a class="code" href="absyn_8h.html#add7ae175b70d4b9ce453e5f417d0b9ea">free_func_base</a>(p, a-&gt;base);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="keywordflow">if</span>(a-&gt;d.code &amp;&amp; !<a class="code" href="flags_8h.html#a60f4871e59540db27a2a6992336cf52b">GET_FLAG</a>(a, builtin))</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="keywordflow">if</span>(a-&gt;d.code &amp;&amp; !<a class="code" href="flags_8h.html#a60f4871e59540db27a2a6992336cf52b">GET_FLAG</a>(a-&gt;base, builtin))</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <a class="code" href="absyn_8h.html#a14adea7fbcbad3795cbac33d5401a3b9">free_stmt</a>(p, a-&gt;d.code);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <a class="code" href="loc_8c.html#a402c1213b9c0bf5766eb9d8c79c466ca">free_loc</a>(p, a-&gt;pos);</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  mp_free(p, <a class="code" href="structFunc__Def__.html">Func_Def</a>, a);</div>
@@ -1294,50 +1294,8 @@ Functions</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="ada93961a2bb7b66062b0a7c8c68c339c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada93961a2bb7b66062b0a7c8c68c339c">&#9670;&nbsp;</a></span>AST_FREE() <span class="overload">[27/46]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static ANN AST_FREE </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="absyn_8h.html#a96eb2bbd0c460d0e0cd26b99cef8e050">Stmt_Auto</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">stmt_auto&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="ast__free_8c_source.html#l00230">230</a> of file <a class="el" href="ast__free_8c_source.html">ast_free.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                                          {</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  <a class="code" href="absyn_8h.html#ab907cd174e6a2cdceb2cd9e8bfd1bc56">free_exp</a>(p, a-&gt;exp);</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  <a class="code" href="absyn_8h.html#a14adea7fbcbad3795cbac33d5401a3b9">free_stmt</a>(p, a-&gt;body);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
-</div><!-- fragment -->
-</div>
-</div>
 <a id="a798916279eccf963248eb4af9eac9af6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a798916279eccf963248eb4af9eac9af6">&#9670;&nbsp;</a></span>AST_FREE() <span class="overload">[28/46]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a798916279eccf963248eb4af9eac9af6">&#9670;&nbsp;</a></span>AST_FREE() <span class="overload">[27/46]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1375,6 +1333,48 @@ Functions</h2></td></tr>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  <span class="keywordflow">if</span>(a-&gt;stmt_list)</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <a class="code" href="absyn_8h.html#a96e12d9957cefb6f6f72fd36d65a503e">free_stmt_list</a>(p, a-&gt;stmt_list);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a70bf9f93a218be4f19bae843cb80eb68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70bf9f93a218be4f19bae843cb80eb68">&#9670;&nbsp;</a></span>AST_FREE() <span class="overload">[28/46]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static ANN AST_FREE </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="absyn_8h.html#a15bbf23ba70d031f85d0d1e53234d59c">Stmt_Each</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">stmt_each&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ast__free_8c_source.html#l00230">230</a> of file <a class="el" href="ast__free_8c_source.html">ast_free.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                                          {</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  <a class="code" href="absyn_8h.html#ab907cd174e6a2cdceb2cd9e8bfd1bc56">free_exp</a>(p, a-&gt;exp);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  <a class="code" href="absyn_8h.html#a14adea7fbcbad3795cbac33d5401a3b9">free_stmt</a>(p, a-&gt;body);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -2139,10 +2139,10 @@ Functions</h2></td></tr>
 </div>
 </div>
 </div><!-- contents -->
-<div class="ttc" id="astructStmt__List___html_a3df8819bba45f0a81676688d7c1173b4"><div class="ttname"><a href="structStmt__List__.html#a3df8819bba45f0a81676688d7c1173b4">Stmt_List_::next</a></div><div class="ttdeci">Stmt_List next</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00556">absyn.h:556</a></div></div>
+<div class="ttc" id="astructStmt__List___html_a3df8819bba45f0a81676688d7c1173b4"><div class="ttname"><a href="structStmt__List__.html#a3df8819bba45f0a81676688d7c1173b4">Stmt_List_::next</a></div><div class="ttdeci">Stmt_List next</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00557">absyn.h:557</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_aa96261c31d14ee3e9c2616871ee7a12e"><div class="ttname"><a href="absyn_8h.html#aa96261c31d14ee3e9c2616871ee7a12e">free_func_def</a></div><div class="ttdeci">ANN void free_func_def(MemPool p, Func_Def)</div></div>
 <div class="ttc" id="aabsyn_8h_html_ab907cd174e6a2cdceb2cd9e8bfd1bc56"><div class="ttname"><a href="absyn_8h.html#ab907cd174e6a2cdceb2cd9e8bfd1bc56">free_exp</a></div><div class="ttdeci">ANN void free_exp(MemPool p, Exp)</div></div>
-<div class="ttc" id="aunionStmt___1_1stmt__data_html_a3e9b1e53b650270faabf7e12d0f792c0"><div class="ttname"><a href="unionStmt___1_1stmt__data.html#a3e9b1e53b650270faabf7e12d0f792c0">Stmt_::stmt_data::stmt_match</a></div><div class="ttdeci">struct Stmt_Match_ stmt_match</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00534">absyn.h:530</a></div></div>
+<div class="ttc" id="aunionStmt___1_1stmt__data_html_a3e9b1e53b650270faabf7e12d0f792c0"><div class="ttname"><a href="unionStmt___1_1stmt__data.html#a3e9b1e53b650270faabf7e12d0f792c0">Stmt_::stmt_data::stmt_match</a></div><div class="ttdeci">struct Stmt_Match_ stmt_match</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00535">absyn.h:531</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_a96e12d9957cefb6f6f72fd36d65a503e"><div class="ttname"><a href="absyn_8h.html#a96e12d9957cefb6f6f72fd36d65a503e">free_stmt_list</a></div><div class="ttdeci">ANN void free_stmt_list(MemPool p, Stmt_List)</div></div>
 <div class="ttc" id="aabsyn_8h_html_a3738c0ea24940b5ab6c033e95e65e2dd"><div class="ttname"><a href="absyn_8h.html#a3738c0ea24940b5ab6c033e95e65e2dd">free_tmpl</a></div><div class="ttdeci">ANN void free_tmpl(MemPool p, Tmpl *)</div></div>
 <div class="ttc" id="astructDecl__List___html_a0bb3ed319adbaa13596b19cb714075ff"><div class="ttname"><a href="structDecl__List__.html#a0bb3ed319adbaa13596b19cb714075ff">Decl_List_::next</a></div><div class="ttdeci">Decl_List next</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00355">absyn.h:355</a></div></div>
@@ -2173,12 +2173,12 @@ Functions</h2></td></tr>
 <div class="ttc" id="aabsyn_8h_html_aa6a90807ae1abd0395bde9c894ab1c1d"><div class="ttname"><a href="absyn_8h.html#aa6a90807ae1abd0395bde9c894ab1c1d">free_type_def</a></div><div class="ttdeci">ANN void free_type_def(MemPool p, Type_Def)</div></div>
 <div class="ttc" id="aabsyn_8h_html_aadbb2ddb7dbdf9deb50470550ce729eaabf81e4be0cd92454ab19ad1512679399"><div class="ttname"><a href="absyn_8h.html#aadbb2ddb7dbdf9deb50470550ce729eaabf81e4be0cd92454ab19ad1512679399">ae_section_stmt</a></div><div class="ttdeci">@ ae_section_stmt</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00576">absyn.h:576</a></div></div>
 <div class="ttc" id="aflags_8h_html_a60f4871e59540db27a2a6992336cf52b"><div class="ttname"><a href="flags_8h.html#a60f4871e59540db27a2a6992336cf52b">GET_FLAG</a></div><div class="ttdeci">#define GET_FLAG(a, b)</div><div class="ttdef"><b>Definition:</b> <a href="flags_8h_source.html#l00012">flags.h:12</a></div></div>
-<div class="ttc" id="astructUnion__Def___html"><div class="ttname"><a href="structUnion__Def__.html">Union_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00485">absyn.h:485</a></div></div>
-<div class="ttc" id="astructFunc__Def___html"><div class="ttname"><a href="structFunc__Def__.html">Func_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00561">absyn.h:561</a></div></div>
+<div class="ttc" id="astructUnion__Def___html"><div class="ttname"><a href="structUnion__Def__.html">Union_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00486">absyn.h:486</a></div></div>
+<div class="ttc" id="astructFunc__Def___html"><div class="ttname"><a href="structFunc__Def__.html">Func_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00562">absyn.h:562</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_a50770f9e4aa6b4180097a7a54cbef2c5"><div class="ttname"><a href="absyn_8h.html#a50770f9e4aa6b4180097a7a54cbef2c5">free_ast</a></div><div class="ttdeci">ANN void free_ast(MemPool p, Ast)</div></div>
 <div class="ttc" id="aabsyn_8h_html_a5561361084ec7fbab67566f42bc135d0a3929f212f7ac1d39c8087a8c371c089e"><div class="ttname"><a href="absyn_8h.html#a5561361084ec7fbab67566f42bc135d0a3929f212f7ac1d39c8087a8c371c089e">ae_prim_typeof</a></div><div class="ttdeci">@ ae_prim_typeof</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00141">absyn.h:141</a></div></div>
 <div class="ttc" id="astructClass__Def___html"><div class="ttname"><a href="structClass__Def__.html">Class_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00598">absyn.h:598</a></div></div>
-<div class="ttc" id="astructStmt__List___html_a43366cf44cf77b62057e4b44f0c80094"><div class="ttname"><a href="structStmt__List__.html#a43366cf44cf77b62057e4b44f0c80094">Stmt_List_::stmt</a></div><div class="ttdeci">Stmt stmt</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00555">absyn.h:555</a></div></div>
+<div class="ttc" id="astructStmt__List___html_a43366cf44cf77b62057e4b44f0c80094"><div class="ttname"><a href="structStmt__List__.html#a43366cf44cf77b62057e4b44f0c80094">Stmt_List_::stmt</a></div><div class="ttdeci">Stmt stmt</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00556">absyn.h:556</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_a5561361084ec7fbab67566f42bc135d0a5196dd90529734d227adbdfe95c865c9"><div class="ttname"><a href="absyn_8h.html#a5561361084ec7fbab67566f42bc135d0a5196dd90529734d227adbdfe95c865c9">ae_prim_hack</a></div><div class="ttdeci">@ ae_prim_hack</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00140">absyn.h:140</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_a5561361084ec7fbab67566f42bc135d0a761dd22a9026e85b7c7fc0daa1748aac"><div class="ttname"><a href="absyn_8h.html#a5561361084ec7fbab67566f42bc135d0a761dd22a9026e85b7c7fc0daa1748aac">ae_prim_interp</a></div><div class="ttdeci">@ ae_prim_interp</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00142">absyn.h:141</a></div></div>
 <div class="ttc" id="astructType__Decl___html_af3d56f18d1c8608f0ef4f0c4ef3311ba"><div class="ttname"><a href="structType__Decl__.html#af3d56f18d1c8608f0ef4f0c4ef3311ba">Type_Decl_::next</a></div><div class="ttdeci">struct Type_Decl_ * next</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00096">absyn.h:96</a></div></div>
@@ -2187,7 +2187,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="astructVar__Decl___html"><div class="ttname"><a href="structVar__Decl__.html">Var_Decl_</a></div><div class="ttdoc">variable declaration</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00074">absyn.h:74</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_a5561361084ec7fbab67566f42bc135d0a2a0678383a359a93b3e8f5b214462d5e"><div class="ttname"><a href="absyn_8h.html#a5561361084ec7fbab67566f42bc135d0a2a0678383a359a93b3e8f5b214462d5e">ae_prim_array</a></div><div class="ttdeci">@ ae_prim_array</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00139">absyn.h:139</a></div></div>
 <div class="ttc" id="astructType__Decl___html"><div class="ttname"><a href="structType__Decl__.html">Type_Decl_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00090">absyn.h:90</a></div></div>
-<div class="ttc" id="astructType__Def___html"><div class="ttname"><a href="structType__Def__.html">Type_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00475">absyn.h:475</a></div></div>
+<div class="ttc" id="astructType__Def___html"><div class="ttname"><a href="structType__Def__.html">Type_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00476">absyn.h:476</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_a1cd3c955a6567be03e4ae11097092533"><div class="ttname"><a href="absyn_8h.html#a1cd3c955a6567be03e4ae11097092533">free_array_sub</a></div><div class="ttdeci">ANN void free_array_sub(MemPool p, Array_Sub)</div></div>
 <div class="ttc" id="aabsyn_8h_html_acc11088dfc21f96a79127c4d969fe9b0"><div class="ttname"><a href="absyn_8h.html#acc11088dfc21f96a79127c4d969fe9b0">free_decl_list</a></div><div class="ttdeci">ANN void free_decl_list(MemPool p, Decl_List)</div></div>
 <div class="ttc" id="astructID__List___html"><div class="ttname"><a href="structID__List__.html">ID_List_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00105">absyn.h:105</a></div></div>
@@ -2197,12 +2197,12 @@ Functions</h2></td></tr>
 <div class="ttc" id="astructExp___html"><div class="ttname"><a href="structExp__.html">Exp_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00228">absyn.h:228</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_aadbb2ddb7dbdf9deb50470550ce729eaa2f3a29f6aa31762a6e5320b4a96b5d55"><div class="ttname"><a href="absyn_8h.html#aadbb2ddb7dbdf9deb50470550ce729eaa2f3a29f6aa31762a6e5320b4a96b5d55">ae_section_enum</a></div><div class="ttdeci">@ ae_section_enum</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00577">absyn.h:577</a></div></div>
 <div class="ttc" id="astructType__List___html_a1dc6a23697c00493d4ae000b242f703b"><div class="ttname"><a href="structType__List__.html#a1dc6a23697c00493d4ae000b242f703b">Type_List_::next</a></div><div class="ttdeci">Type_List next</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00117">absyn.h:117</a></div></div>
-<div class="ttc" id="astructStmt___html"><div class="ttname"><a href="structStmt__.html">Stmt_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00519">absyn.h:519</a></div></div>
+<div class="ttc" id="astructStmt___html"><div class="ttname"><a href="structStmt__.html">Stmt_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00520">absyn.h:520</a></div></div>
 <div class="ttc" id="astructTmpl___html"><div class="ttname"><a href="structTmpl__.html">Tmpl_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00167">absyn.h:167</a></div></div>
-<div class="ttc" id="astructStmt__List___html"><div class="ttname"><a href="structStmt__List__.html">Stmt_List_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00554">absyn.h:554</a></div></div>
+<div class="ttc" id="astructStmt__List___html"><div class="ttname"><a href="structStmt__List__.html">Stmt_List_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00555">absyn.h:555</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_ab1e869b29241e405aa5236baeea15714"><div class="ttname"><a href="absyn_8h.html#ab1e869b29241e405aa5236baeea15714">free_enum_def</a></div><div class="ttdeci">ANN void free_enum_def(MemPool p, Enum_Def)</div></div>
 <div class="ttc" id="astructDecl__List___html"><div class="ttname"><a href="structDecl__List__.html">Decl_List_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00353">absyn.h:353</a></div></div>
-<div class="ttc" id="astructFptr__Def___html"><div class="ttname"><a href="structFptr__Def__.html">Fptr_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00466">absyn.h:466</a></div></div>
+<div class="ttc" id="astructFptr__Def___html"><div class="ttname"><a href="structFptr__Def__.html">Fptr_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00467">absyn.h:467</a></div></div>
 <div class="ttc" id="astructArg__List___html"><div class="ttname"><a href="structArg__List__.html">Arg_List_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00122">absyn.h:122</a></div></div>
 <div class="ttc" id="aabsyn_8h_html_add7ae175b70d4b9ce453e5f417d0b9ea"><div class="ttname"><a href="absyn_8h.html#add7ae175b70d4b9ce453e5f417d0b9ea">free_func_base</a></div><div class="ttdeci">ANN void free_func_base(MemPool p, Func_Base *)</div></div>
 <div class="ttc" id="aabsyn_8h_html_aadbb2ddb7dbdf9deb50470550ce729eaa9c71336ee53a9890ff3dacd5be9d48e9"><div class="ttname"><a href="absyn_8h.html#aadbb2ddb7dbdf9deb50470550ce729eaa9c71336ee53a9890ff3dacd5be9d48e9">ae_section_type</a></div><div class="ttdeci">@ ae_section_type</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00577">absyn.h:577</a></div></div>

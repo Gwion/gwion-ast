@@ -77,13 +77,13 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a5650f8da2960d5e791264b64c6f6db58"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a5650f8da2960d5e791264b64c6f6db58">SET_FLAG</a>(a,  b)&#160;&#160;&#160;(a)-&gt;flag |= (ae_flag_##b)</td></tr>
+<tr class="memitem:a5650f8da2960d5e791264b64c6f6db58"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a5650f8da2960d5e791264b64c6f6db58">SET_FLAG</a>(a,  b)&#160;&#160;&#160;(a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> |= (ae_flag_##b)</td></tr>
 <tr class="separator:a5650f8da2960d5e791264b64c6f6db58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60f4871e59540db27a2a6992336cf52b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a60f4871e59540db27a2a6992336cf52b">GET_FLAG</a>(a,  b)&#160;&#160;&#160;(((a)-&gt;flag &amp; ae_flag_##b) == (ae_flag_##b))</td></tr>
+<tr class="memitem:a60f4871e59540db27a2a6992336cf52b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a60f4871e59540db27a2a6992336cf52b">GET_FLAG</a>(a,  b)&#160;&#160;&#160;(((a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> &amp; ae_flag_##b) == (ae_flag_##b))</td></tr>
 <tr class="separator:a60f4871e59540db27a2a6992336cf52b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ad29bcc4ad469c255ae3b03a9d0710a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a2ad29bcc4ad469c255ae3b03a9d0710a">SAFE_FLAG</a>(a,  b)&#160;&#160;&#160;(a &amp;&amp; ((a)-&gt;flag &amp; (ae_flag_##b)) == (ae_flag_##b))</td></tr>
+<tr class="memitem:a2ad29bcc4ad469c255ae3b03a9d0710a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a2ad29bcc4ad469c255ae3b03a9d0710a">SAFE_FLAG</a>(a,  b)&#160;&#160;&#160;(a &amp;&amp; ((a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> &amp; (ae_flag_##b)) == (ae_flag_##b))</td></tr>
 <tr class="separator:a2ad29bcc4ad469c255ae3b03a9d0710a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74c408e5772910a002071d42764a23d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a74c408e5772910a002071d42764a23d2">UNSET_FLAG</a>(a,  b)&#160;&#160;&#160;((a)-&gt;flag &amp;= (uint)~(ae_flag_##b))</td></tr>
+<tr class="memitem:a74c408e5772910a002071d42764a23d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="flags_8h.html#a74c408e5772910a002071d42764a23d2">UNSET_FLAG</a>(a,  b)&#160;&#160;&#160;((a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> &amp;= (uint)~(ae_flag_##b))</td></tr>
 <tr class="separator:a74c408e5772910a002071d42764a23d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -156,7 +156,7 @@ Enumerations</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(((a)-&gt;flag &amp; ae_flag_##b) == (ae_flag_##b))</td>
+          <td></td><td>&#160;&#160;&#160;(((a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> &amp; ae_flag_##b) == (ae_flag_##b))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -186,7 +186,7 @@ Enumerations</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(a &amp;&amp; ((a)-&gt;flag &amp; (ae_flag_##b)) == (ae_flag_##b))</td>
+          <td></td><td>&#160;&#160;&#160;(a &amp;&amp; ((a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> &amp; (ae_flag_##b)) == (ae_flag_##b))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -216,7 +216,7 @@ Enumerations</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(a)-&gt;flag |= (ae_flag_##b)</td>
+          <td></td><td>&#160;&#160;&#160;(a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> |= (ae_flag_##b)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -246,7 +246,7 @@ Enumerations</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;((a)-&gt;flag &amp;= (uint)~(ae_flag_##b))</td>
+          <td></td><td>&#160;&#160;&#160;((a)-&gt;<a class="el" href="absyn_8h.html#a9972debbe9b5f4c5108dd15e9359c266">flag</a> &amp;= (uint)~(ae_flag_##b))</td>
         </tr>
       </table>
 </div><div class="memdoc">
