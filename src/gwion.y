@@ -533,7 +533,14 @@ call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
 
 post_op : PLUSPLUS | MINUSMINUS;
 
-dot_exp: post_exp DOT id { $$ = new_exp_dot(mpool(arg), $1, $3); };
+dot_exp: post_exp DOT id {
+  if($1->next) {
+    gwion_error(&@$, arg, "can't use multiple expression"
+      " in dot member base expression");
+    YYERROR;
+  };
+  $$ = new_exp_dot(mpool(arg), $1, $3);
+};
 post_exp: prim_exp
   | post_exp array_exp
     { $$ = new_exp_array(mpool(arg), $1, $2); }
