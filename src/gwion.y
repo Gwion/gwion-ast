@@ -180,12 +180,9 @@ func_base: flag type_decl_empty id decl_template { $$ = new_func_base(mpool(arg)
 fptr_def: FUNCDEF func_base fptr_args arg_type SEMICOLON {
   $2->args = $3;
   $2->flag |= $4;
-  if($2->td->array && $2->td->array->exp) {
-    gwion_error(&@$, arg, "type must be defined with empty []'s");
-    YYERROR;
-  }
   $$ = new_fptr_def(mpool(arg), $2);
 };
+
 type_def: TYPEDEF flag type_decl_array id decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);
   $3->flag |= $2;
