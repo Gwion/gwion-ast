@@ -78,7 +78,7 @@ struct Var_Decl_ {
   void* addr;            ///< variable data, if any
   loc_t pos;             ///< position
 };
-ANN2(1, 2) ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_*, const Array_Sub, const loc_t);
+ANN2(1) ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_*, const Array_Sub, const loc_t);
 
 /** a list of \ref Var_Decl_ */
 struct Var_Decl_List_ {
