@@ -15,12 +15,12 @@ jobs:
     steps:
     - name: deps
       run: |
-        git clone https://github.com/fennecdjay/gwion-util util
+        git clone https://github.com/Gwion/gwion-util util
         cd util
         make USE_DOUBLE=${{ matrix.double }}
 #    - uses: actions/checkout@v1
     - name: clone
-      run: git clone https://github.com/fennecdjay/gwion-ast ast
+      run: git clone https://github.com/Gwion/gwion-ast ast
     - name: build
       env:
          USE_DOUBLE: ${{ matrix.double }}

@@ -14,11 +14,11 @@ jobs:
       env:
          CFLAGS: -DBUILD_ON_WINDOWS  
       run: |
-        git clone https://github.com/fennecdjay/gwion-util util
+        git clone https://github.com/Gwion/gwion-util util
         cd util
         make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
     - name: clone
-      run: git clone https://github.com/fennecdjay/gwion-ast ast
+      run: git clone https://github.com/Gwion/gwion-ast ast
     - name: build
       env:
          CFLAGS: -DBUILD_ON_WINDOWS  
