@@ -5,8 +5,10 @@ runs:
   - run: git clone --depth=1 https://github.com/Gwion/gwion-util util
     shell: bash
 
-  - run: |
-      cd util
-      make
+  - name: Debug
+    run: echo ${CC} ${USE_DOUBLE}
+    shell: bash
+
+  - run: make -C util
     shell: bash
 
