@@ -1,8 +1,9 @@
-uses: actions/checkout@v2
-with:
-  repository: 'Gwion/gwion-util'
-  path: 'util'
+runs:
+  - uses: actions/checkout@v2
+    with:
+    repository: 'Gwion/gwion-util'
+    path: 'util'
 
-run: |
-  cd util
-  make
+  - run: |
+    cd util
+    make
