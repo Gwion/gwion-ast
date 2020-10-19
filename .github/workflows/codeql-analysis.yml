@@ -53,8 +53,6 @@ jobs:
 
     - name: Build gwion-util
       uses: ./.github/workflows/util
-      env:
-        USE_DOUBLE: ${{ matrix.double }}
       
     - name: Build
       run: make UTIL_DIR=./util
