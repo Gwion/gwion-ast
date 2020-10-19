@@ -2,16 +2,8 @@ runs:
   using: "composite"
   steps:
 
-  - uses: actions/checkout@v2
-    with:
-      repository: 'Gwion/gwion-util'
-      path: 'util'
-
-#  - run: |
-#      git clone https://github.com/Gwion/gwion-util util
-#      cd util
-#      make
-#    shell: bash
+  - run: git clone -depth https://github.com/Gwion/gwion-util util
+    shell: bash
 
   - run: |
       cd util
