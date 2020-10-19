@@ -1,7 +1,10 @@
 runs:
   using: "composite"
   steps:
-  - run: git clone https://github.com/Gwion/gwion-util && cd util && make
+  - run: |
+      git clone https://github.com/Gwion/gwion-util util
+      cd util
+      make
     shell: bash
 
 #  - uses: actions/checkout@v2
