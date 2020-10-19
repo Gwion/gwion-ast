@@ -8,12 +8,11 @@ env:
 
 jobs:
   build:
+    name: Linux ${{ matrix.cc }} ${{ matrix.double && 'double' || 'float'}}
+    runs-on: ubuntu-latest
     env:
       CC: ${{ matrix.cc }}
       USE_DOUBLE: ${{ matrix.double }}
-
-    name: Linux ${{ matrix.cc }} ${{ matrix.double && 'double' || 'float'}}
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         cc: [gcc, clang]
@@ -27,8 +26,6 @@ jobs:
       uses: ./.github/workflows/util
 
     - name: build
-      env:
-         CC: ${{ matrix.cc }}        
-         USE_DOUBLE: ${{ matrix.double }}
-         UTIL_DIR: ./util
       run: make
+      env:
+         UTIL_DIR: ./util
