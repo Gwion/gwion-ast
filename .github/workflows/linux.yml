@@ -2,13 +2,6 @@ name: Linux
 
 on: [push, pull_request]
 
-defaults:
-  env:
-    CC: ${{ matrix.cc }}
-    USE_DOUBLE: ${{ matrix.double }}
-    CFLAGS: -fsanitize=address -fno-omit-frame-pointer
-    LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
-
 jobs:
   build:
     name: Linux ${{ matrix.cc }} ${{ matrix.double && 'double' || 'float'}}
@@ -24,8 +17,17 @@ jobs:
 
     - name: Build gwion-util
       uses: ./.github/workflows/util
+      env:
+        CC: ${{ matrix.cc }}
+        USE_DOUBLE: ${{ matrix.double }}
+        CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+        LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
 
     - name: build
       env:
+         CC: ${{ matrix.cc }}        
+         USE_DOUBLE: ${{ matrix.double }}
+         CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+         LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
          UTIL_DIR: ./util
       run: make

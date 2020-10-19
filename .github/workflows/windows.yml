@@ -16,12 +16,12 @@ jobs:
     - name: Build gwion-util
       uses: ./.github/workflows/util
       env:
-        CC: $(which gcc)
+        CC: mingw32-gcc
         USE_DOUBLE: ${{ matrix.double }}
 
     - name: build
       env:
-         CC: $(which gcc)
+         CC: mingw32-gcc
          USE_DOUBLE: ${{ matrix.double }}
          UTIL_DIR: ./util
       run: make
