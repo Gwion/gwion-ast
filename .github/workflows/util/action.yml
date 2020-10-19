@@ -1,8 +1,9 @@
 runs:
+  using: "composite"
   - uses: actions/checkout@v2
     with:
-    repository: 'Gwion/gwion-util'
-    path: 'util'
+      repository: 'Gwion/gwion-util'
+      path: 'util'
 
   - run: |
     cd util
