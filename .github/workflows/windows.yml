@@ -16,12 +16,14 @@ jobs:
     - name: Build gwion-util
       uses: ./.github/workflows/util
       env:
+        CC: $(which gcc)
         USE_DOUBLE: ${{ matrix.double }}
         CFLAGS: -fsanitize=address -fno-omit-frame-pointer
         LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
 
     - name: build
       env:
+         CC: $(which gcc)
          USE_DOUBLE: ${{ matrix.double }}
          CFLAGS: -fsanitize=address -fno-omit-frame-pointer
          LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
