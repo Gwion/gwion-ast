@@ -7,11 +7,11 @@ env:
   LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
 
 jobs:
-  env:
-    CC: ${{ matrix.cc }}
-    USE_DOUBLE: ${{ matrix.double }}
-
   build:
+    env:
+      CC: ${{ matrix.cc }}
+      USE_DOUBLE: ${{ matrix.double }}
+
     name: Linux ${{ matrix.cc }} ${{ matrix.double && 'double' || 'float'}}
     runs-on: ubuntu-latest
     strategy:
