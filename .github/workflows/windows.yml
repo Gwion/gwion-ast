@@ -13,15 +13,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Set compiler
+      run: "CC=$(which gcc)" >> $GITHUB_ENV
+
     - name: Build gwion-util
       uses: ./.github/workflows/util
       env:
-        CC: mingw32-gcc
         USE_DOUBLE: ${{ matrix.double }}
 
     - name: build
       env:
-         CC: mingw32-gcc
          USE_DOUBLE: ${{ matrix.double }}
          UTIL_DIR: ./util
       run: make
