@@ -1,10 +1,12 @@
 runs:
   using: "composite"
-  - uses: actions/checkout@v2
-    with:
-      repository: 'Gwion/gwion-util'
-      path: 'util'
+  steps:
 
-  - run: |
-    cd util
-    make
+    - uses: actions/checkout@v2
+      with:
+        repository: 'Gwion/gwion-util'
+        path: 'util'
+
+    - run: |
+      cd util
+      make
