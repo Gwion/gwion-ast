@@ -51,17 +51,13 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-    - name: deps
-      run: |
-        git clone https://github.com/Gwion/gwion-util util
-        cd util
-        make
-
-    - name: clone
-      run: |
-        git clone https://github.com/Gwion/gwion-ast ast
-        cd ast
-        make
+    - name: Build gwion-util
+      uses: ./.github/workflows/util
+      env:
+        USE_DOUBLE: ${{ matrix.double }}
+      
+    - name: Build
+      run: make UTIL_DIR=./util
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

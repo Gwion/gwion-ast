@@ -10,19 +10,20 @@ jobs:
       matrix:
         double: [0, 1]
     steps:
-    - name: deps
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build gwion-util
+      uses: ./.github/workflows/util
       env:
-         CFLAGS: -DBUILD_ON_WINDOWS  
-      run: |
-        git clone https://github.com/Gwion/gwion-util util
-        cd util
-        make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
-    - name: clone
-      run: git clone https://github.com/Gwion/gwion-ast ast
+        USE_DOUBLE: ${{ matrix.double }}
+        CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+        LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
+
     - name: build
       env:
-         CFLAGS: -DBUILD_ON_WINDOWS  
          USE_DOUBLE: ${{ matrix.double }}
-      run: | 
-        cd ast;
-        make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
+         CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+         LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
+         UTIL_DIR: ./util
+      run: make

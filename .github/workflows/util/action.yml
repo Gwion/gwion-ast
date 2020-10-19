@@ -1,0 +1,8 @@
+- uses: actions/checkout@v2
+  with:
+    repository: 'Gwion/gwion-util'
+    path: 'util'
+
+- run: |
+    cd util
+    make

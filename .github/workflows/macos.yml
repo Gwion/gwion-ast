@@ -1,4 +1,3 @@
-
 name: MacOs
 
 on: [push, pull_request]
@@ -13,17 +12,22 @@ jobs:
         double: [0, 1]
 
     steps:
-    - name: deps
-      run: |
-        git clone https://github.com/Gwion/gwion-util util
-        cd util
-        make USE_DOUBLE=${{ matrix.double }}
-#    - uses: actions/checkout@v1
-    - name: clone
-      run: git clone https://github.com/Gwion/gwion-ast ast
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build gwion-util
+      uses: ./.github/workflows/util
+      env:
+        CC: ${{ matrix.cc }}
+        USE_DOUBLE: ${{ matrix.double }}
+        CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+        LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
+
     - name: build
       env:
+         CC: ${{ matrix.cc }}
          USE_DOUBLE: ${{ matrix.double }}
          CFLAGS: -fsanitize=address -fno-omit-frame-pointer
          LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
-      run: cd ast; make CC=${{ matrix.cc }} USE_DOUBLE=${{ matrix.double }}
+         UTIL_DIR: ./util
+      run: make
