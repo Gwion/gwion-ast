@@ -17,10 +17,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Build gwion-util
+    - name: Util lib
       uses: ./.github/workflows/util
 
-    - name: build
+    - name: Build
       run: make
       env:
          UTIL_DIR: ./util
