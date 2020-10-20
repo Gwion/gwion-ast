@@ -6,6 +6,9 @@ jobs:
   build:
     runs-on: windows-latest
     name:  Windows ${{ matrix.double && 'double' || 'float' }}
+    env:
+        CC: gcc
+        USE_DOUBLE: ${{ matrix.double }}
     strategy:
       matrix:
         double: [0, 1]
@@ -13,34 +16,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Test compiler
-      run: echo "CC=$(which gcc)"
-
-    - name: Check ENV
-      run: echo "$GITHUB_ENV"
-
-    - name: Set compiler
-      run: echo "CC=$(which gcc)" >> $GITHUB_ENV
-
-    - name: Test Env
-      run: echo "${{ env.CC }}"
-
-    - name: Test Env
-      run: echo "$CC"
-
-    - name: Set env
-      run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-    - name: Test
-      run: echo $GITHUB_SHA_SHORT
-
     - name: Build gwion-util
       uses: ./.github/workflows/util
       env:
-        CC: ${{ env.CC }}
-        USE_DOUBLE: ${{ matrix.double }}
 
     - name: build
-      env:
-         USE_DOUBLE: ${{ matrix.double }}
-         UTIL_DIR: ./util
       run: make
+      env:
+         UTIL_DIR: ./util
