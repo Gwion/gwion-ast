@@ -6,23 +6,21 @@ jobs:
   build:
     runs-on: windows-latest
     name:  Windows ${{ matrix.double && 'double' || 'float' }}
+    env:
+        CC: gcc
+        USE_DOUBLE: ${{ matrix.double }}
+        BUILD_ON_WINDOWS: 1
     strategy:
       matrix:
         double: [0, 1]
     steps:
-    - name: deps
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Util lib
+      uses: ./.github/workflows/util
+
+    - name: Build
+      run: make
       env:
-         CFLAGS: -DBUILD_ON_WINDOWS  
-      run: |
-        git clone https://github.com/Gwion/gwion-util util
-        cd util
-        make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
-    - name: clone
-      run: git clone https://github.com/Gwion/gwion-ast ast
-    - name: build
-      env:
-         CFLAGS: -DBUILD_ON_WINDOWS  
-         USE_DOUBLE: ${{ matrix.double }}
-      run: | 
-        cd ast;
-        make CC=$(which gcc) USE_DOUBLE=${{ matrix.double }}
+         UTIL_DIR: ./util

@@ -1,29 +1,31 @@
-
 name: Linux
 
 on: [push, pull_request]
+
+env:
+  CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+  LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
 
 jobs:
   build:
     name: Linux ${{ matrix.cc }} ${{ matrix.double && 'double' || 'float'}}
     runs-on: ubuntu-latest
+    env:
+      CC: ${{ matrix.cc }}
+      USE_DOUBLE: ${{ matrix.double }}
     strategy:
       matrix:
         cc: [gcc, clang]
         double: [0, 1]
 
     steps:
-    - name: deps
-      run: |
-        git clone https://github.com/Gwion/gwion-util util
-        cd util
-        make USE_DOUBLE=${{ matrix.double }}
-#    - uses: actions/checkout@v1
-    - name: clone
-      run: git clone https://github.com/Gwion/gwion-ast ast
-    - name: build
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Util lib
+      uses: ./.github/workflows/util
+
+    - name: Build
+      run: make
       env:
-         USE_DOUBLE: ${{ matrix.double }}
-         CFLAGS: -fsanitize=address -fno-omit-frame-pointer
-         LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
-      run: cd ast; make CC=${{ matrix.cc }} USE_DOUBLE=${{ matrix.double }}
+         UTIL_DIR: ./util
