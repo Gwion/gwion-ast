@@ -16,6 +16,9 @@ jobs:
     - name: Test compiler
       run: echo "CC=$(which gcc)"
 
+    - name: Check ENV
+      run: echo "$GITHUB_ENV"
+
     - name: Set compiler
       run: echo "CC=$(which gcc)" >> $GITHUB_ENV
 
