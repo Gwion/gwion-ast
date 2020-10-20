@@ -22,6 +22,7 @@ jobs:
     - name: Build gwion-util
       uses: ./.github/workflows/util
       env:
+        CC: ${{ env.CC }}
         USE_DOUBLE: ${{ matrix.double }}
 
     - name: build
