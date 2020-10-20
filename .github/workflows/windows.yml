@@ -18,7 +18,6 @@ jobs:
 
     - name: Build gwion-util
       uses: ./.github/workflows/util
-      env:
 
     - name: build
       run: make
