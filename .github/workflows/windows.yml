@@ -19,6 +19,9 @@ jobs:
     - name: Set compiler
       run: echo "CC=$(which gcc)" >> $GITHUB_ENV
 
+    - name: Test Env
+      run: echo "${{ env.CC }}"
+
     - name: Build gwion-util
       uses: ./.github/workflows/util
       env:
