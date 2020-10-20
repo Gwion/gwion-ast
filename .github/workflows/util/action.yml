@@ -1,0 +1,10 @@
+runs:
+  using: "composite"
+  steps:
+
+  - run: git clone --depth=1 https://github.com/Gwion/gwion-util
+    shell: bash
+
+  - run: make -C gwion-util
+    shell: bash
+
