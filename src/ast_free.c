@@ -120,7 +120,7 @@ ANN AST_FREE(Func_Base*, func_base) {
 
 AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
-  if(a->d.code && !GET_FLAG(a->base, builtin))
+  if(a->d.code)
     free_stmt(p, a->d.code);
   free_loc(p, a->pos);
   mp_free(p, Func_Def, a);

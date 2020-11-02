@@ -27,6 +27,8 @@ ANN Symbol lambda_name(const Scanner*);
   int ival;
   long unsigned int lval;
   ae_flag flag;
+  enum fbflag fbflag;
+  enum cflag cflag;
   m_float fval;
   Symbol sym;
   Array_Sub array_sub;
@@ -60,7 +62,7 @@ ANN Symbol lambda_name(const Scanner*);
   LOOP "repeat" FOR "for" FOREACH "foreach" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue"
   CLASS "class" STRUCT "struct"
-  STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect"
+  STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
   TYPEDEF "typedef" FUNCDEF "funcdef"
@@ -83,8 +85,10 @@ ANN Symbol lambda_name(const Scanner*);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<flag> flag class_type
-  storage_flag access_flag arg_type type_decl_flag type_decl_flag2
+%type<flag> flag final modifier
+  storage_flag access_flag type_decl_flag type_decl_flag2
+%type<fbflag> arg_type
+%type<cflag> class_type
 %type<sym>id opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
@@ -100,8 +104,8 @@ ANN Symbol lambda_name(const Scanner*);
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<decl_list> decl_list
-%type<func_def> func_def func_def_base
-%type<func_base> func_base
+%type<func_def> func_def op_def func_def_base abstract_fdef
+%type<func_base> func_base fptr_base op_base
 %type<enum_def> enum_def
 %type<union_def> union_def
 %type<fptr_def> fptr_def
@@ -155,15 +159,17 @@ section
   | type_def  { $$ = new_section_type_def(mpool(arg), $1); }
   ;
 
-class_type: CLASS { $$ = ae_flag_none; } | STRUCT { $$ = ae_flag_struct; }
+class_type: CLASS { $$ = cflag_none; } | STRUCT { $$ = cflag_struct; }
 class_def
-  : class_type flag id decl_template class_ext LBRACE class_body RBRACE
+  : class_type flag modifier id decl_template class_ext LBRACE class_body RBRACE
     {
-      if($1 == ae_flag_struct && $5)
+      if($1 == cflag_struct && $6)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
-      $$ = new_class_def(mpool(arg), $1 | $2, $3, $5, $7, GET_LOC(&@$));
-      if($4)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+      $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, GET_LOC(&@$));
+      if($5)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $5);
+      if($1)
+        $$->cflag |= cflag_struct;
   };
 
 class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
@@ -174,12 +180,15 @@ id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_li
 
 stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
 
-func_base: flag type_decl_empty id decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
-  if($4) { $$->flag |= ae_flag_template; $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
+fptr_base: flag type_decl_empty id decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
+  if($4) { $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
 
-fptr_def: FUNCDEF func_base fptr_args arg_type SEMICOLON {
+func_base: flag final type_decl_empty id decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2);
+  if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
+
+fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
   $2->args = $3;
-  $2->flag |= $4;
+  $2->fbflag |= $4;
   $$ = new_fptr_def(mpool(arg), $2);
 };
 
@@ -370,7 +379,7 @@ union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
-arg_type: ELLIPSE RPAREN { $$ = ae_flag_variadic; }| RPAREN { $$ = 0; };
+arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: TMPL id_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
@@ -388,27 +397,47 @@ flag: access_flag { $$ = $1; }
   | { $$ = ae_flag_none; }
   ;
 
+final: FINAL { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
+
+modifier: ABSTRACT { $$ = ae_flag_abstract; } | final;
+
 func_def_base
   : FUNCTION func_base func_args arg_type code_stmt {
     $2->args = $3;
-    $2->flag |= $4;
+    $2->fbflag |= $4;
     $$ = new_func_def(mpool(arg), $2, $5, GET_LOC(&@$));
   };
 
-op_op: op | shift_op | rel_op | mul_op | add_op;
-
-func_def
-  : func_def_base
-  |  OPERATOR type_decl_empty op_op LPAREN arg COMMA arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $2, $3, $5, ae_flag_op), $9, GET_LOC(&@$)); $5->next = $7;}
-  |  OPERATOR type_decl_empty post_op LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $2, $3, $5, ae_flag_op), $7, GET_LOC(&@$)); }
-  |  OPERATOR unary_op type_decl_empty LPAREN arg RPAREN code_stmt
-    { $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $3, $2, $5, ae_flag_op | ae_flag_unary), $7, GET_LOC(&@$)); }
-  | OPERATOR type_decl_empty OPID_A func_args RPAREN code_stmt
-    {
- $$ = new_func_def(mpool(arg), new_func_base(mpool(arg), $2, $3, $4, ae_flag_op | ae_flag_typedef), $6, GET_LOC(&@$));
+abstract_fdef
+  : FUNCTION flag ABSTRACT type_decl_empty id decl_template fptr_args arg_type ";"
+    { Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract);
+      if($6)
+        base->tmpl = new_tmpl_base(mpool(arg), $6);
+      base->args = $7;
+      base->fbflag |= $8;
+      $$ = new_func_def(mpool(arg), base, NULL, GET_LOC(&@$));
     };
+
+op_op: op | shift_op | rel_op | mul_op | add_op;
+op_base
+  :  type_decl_empty op_op LPAREN arg COMMA arg RPAREN
+    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none); $4->next = $6;}
+  |  type_decl_empty post_op LPAREN arg RPAREN code_stmt
+    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none); }
+  |  unary_op type_decl_empty LPAREN arg RPAREN
+    {
+      $$ = new_func_base(mpool(arg), $2, $1, $4, ae_flag_none);
+      $$->fbflag |= fbflag_unary;
+    }
+  | type_decl_empty OPID_A func_args RPAREN
+    {
+      $$ = new_func_base(mpool(arg), $1, $2, $3, ae_flag_none);
+      $$->fbflag |= fbflag_internal;
+    };
+op_def:  OPERATOR op_base code_stmt
+{ $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); };
+
+func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
 

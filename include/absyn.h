@@ -451,6 +451,15 @@ struct Enum_Def_ {
 ANN2(1,2,4) ANEW AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_*, const loc_t);
 ANN void free_enum_def(MemPool p, Enum_Def);
 
+enum fbflag {
+  fbflag_none     = 1 << 0,
+  fbflag_op       = 1 << 1,
+  fbflag_unary    = 1 << 3,
+  fbflag_postfix  = 1 << 4,
+  fbflag_variadic = 1 << 5,
+  fbflag_internal = 1 << 6,
+} __attribute__((packed));
+
 typedef struct Func_Base_ {
   Type_Decl* td;
   struct Symbol_*     xid;
@@ -459,8 +468,12 @@ typedef struct Func_Base_ {
   struct Type_*       ret_type;
   Tmpl *tmpl;
   ae_flag flag;
+  enum fbflag fbflag;
 } Func_Base;
 
+static inline int fbflag(const Func_Base *fb, const enum fbflag flag) {
+  return (fb->fbflag & flag) == flag;
+}
 ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List, const ae_flag flag);
 
 typedef struct Fptr_Def_* Fptr_Def;
@@ -595,16 +608,23 @@ ANEW ANN AST_NEW(Section*, section_union_def, const Union_Def);
 ANEW ANN AST_NEW(Section*, section_fptr_def, const Fptr_Def);
 ANEW ANN AST_NEW(Section*, section_type_def, const Type_Def);
 
+enum cflag {
+  cflag_none,
+  cflag_struct
+};
+
 struct Class_Def_ {
   struct Type_Def_ base;
-  union {
-    Ast body;
-    Decl_List list; // parent template union
-    Union_Def union_def;// child template union
-  };
+  Ast body;
   loc_t pos;            ///< position
   ae_flag flag;
+  enum cflag cflag;
 };
+
+ANN static inline int cflag(const Class_Def c, const enum cflag flag) {
+  return (c->cflag & flag) == flag;
+}
+
 ANN2(1, 3) ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,
                         Type_Decl*, const Ast, const loc_t);
 ANN void free_class_def(MemPool p, Class_Def);

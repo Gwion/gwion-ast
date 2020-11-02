@@ -1,7 +1,6 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-ANN static Ast cpy_ast(MemPool p, const Ast);
 ANN static Stmt cpy_stmt(MemPool p, const Stmt src);
 ANN Exp cpy_exp(MemPool p, const Exp src);
 ANN Type_List cpy_type_list(MemPool p, const Type_List src);
@@ -380,6 +379,7 @@ ANN Func_Base* cpy_func_base(MemPool p, const Func_Base* src) {
   if(src->tmpl)
     a->tmpl = cpy_tmpl(p, src->tmpl); // 1 
   a->flag = src->flag;
+  a->fbflag = src->fbflag;
   return a;
 }
 
@@ -403,7 +403,7 @@ ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
   return a;
 }
 
-ANN static Union_Def cpy_union_def(MemPool p, const Union_Def src) {
+ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   Union_Def a = mp_calloc(p, Union_Def);
   a->l = cpy_decl_list(p, src->l); // 1 
   if(src->xid)
@@ -467,11 +467,8 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
 ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base = cpy_func_base(p, src->base);
-  if(!GET_FLAG(src->base, builtin)) {
-    if(src->d.code)
+  if(src->d.code)
       a->d.code = cpy_stmt(p, src->d.code);
-  } else
-    a->d.dl_func_ptr = src->d.dl_func_ptr;
   a->pos = loc_cpy(p, src->pos);
   return a;
 }
@@ -516,18 +513,14 @@ ANN static Section* cpy_section(MemPool p, const Section *src) {
 ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   Class_Def a = mp_calloc(p, Class_Def);
   cpy_type_def2(p, &a->base, &src->base);
-  if(src->body) {
-    if(!GET_FLAG(src, union))
+  if(src->body)
       a->body = cpy_ast(p, src->body);
-    else
-      a->list = cpy_decl_list(p, src->list);
-  }
   a->flag = src->flag;
   a->pos = loc_cpy(p, src->pos);
   return a;
 }
 
-ANN static Ast cpy_ast(MemPool p, const Ast src) {
+ANN Ast cpy_ast(MemPool p, const Ast src) {
   Ast a = mp_calloc(p, Ast);
   a->section = cpy_section(p, src->section);
   if(src->next)

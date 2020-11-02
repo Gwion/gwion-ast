@@ -243,6 +243,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 "global"                            { adjust(yyscanner); return GLOBAL;}
 "static"                            { adjust(yyscanner); return STATIC;}
 
+%{ /* modifiers */ %}
+"abstract"                          { adjust(yyscanner); return ABSTRACT;}
+"final"                             { adjust(yyscanner); return FINAL;}
+
 %{ /*access modifiers */ %}
 "protect"                           { adjust(yyscanner); return PROTECT;}
 "private"                           { adjust(yyscanner); return PRIVATE;}
