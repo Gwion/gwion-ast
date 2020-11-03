@@ -75,7 +75,7 @@ ANN Symbol lambda_name(const Scanner*);
 %token<fval> FLOATT
 %token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
-  PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
+  PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_REQUIRE "require"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D "$<operator id>"
 %token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
@@ -246,6 +246,7 @@ stmt_pp
   | PP_ELSE    { $$ = new_stmt_pp(mpool(arg), ae_pp_else,    $1, GET_LOC(&@$)); }
   | PP_ENDIF   { $$ = new_stmt_pp(mpool(arg), ae_pp_endif,   $1, GET_LOC(&@$)); }
   | PP_NL      { $$ = new_stmt_pp(mpool(arg), ae_pp_nl,      $1, GET_LOC(&@$)); }
+  | PP_REQUIRE { $$ = new_stmt_pp(mpool(arg), ae_pp_require, $1, GET_LOC(&@$)); }
   ;
 
 stmt

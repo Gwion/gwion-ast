@@ -91,7 +91,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end
+%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end require require_end
 %%
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
@@ -157,6 +157,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 <include_end>{FILENAME} { BEGIN(INITIAL); yylval->sval = strdup(yytext); return PP_INCLUDE; }
 ^#include{SPACE} { BEGIN(include_start); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start><{FILENAME}> { GWYY_INCLUDE; BEGIN(include_end); }
+
+<require>{LEX_ID} { BEGIN(require_end); yylval->sval = strdup(yytext); return PP_REQUIRE; }
+<require_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
+^#require{SPACE}+ { BEGIN(require); }
 
 ^#undef{SPACE}+{LEX_ID}{SPACE}* { GWYY_UNDEF }
 

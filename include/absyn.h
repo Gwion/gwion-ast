@@ -523,8 +523,10 @@ enum ae_pp_type {
   ae_pp_ifndef,
   ae_pp_else,
   ae_pp_endif,
+  ae_pp_require,
   ae_pp_nl
 };
+
 struct Stmt_PP_ {
   m_str data;
   enum ae_pp_type pp_type;
