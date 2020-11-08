@@ -1,9 +1,4 @@
-TARGET?=
 GWION_PACKAGE=gwion_ast
-
-ifneq (,$(findstring -DGWION_PACKAGE,$(MAKEFLAGS)))
-CFLAGS += -DGWION_PACKAGE='"${GWION_PACKAGE}"'
-endif
 
 ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
@@ -39,9 +34,6 @@ libgwion_ast.a: ${obj}
 
 generated: src/lexer.c src/parser.c
 	@export obj="$obj src/lexer.c src/parser.c"
-
-_${TARGET}lib: ${TARGET}
-	@CFLAGS="${CFLAGS} -I${TARGET}" make -s libgwion_${TARGET}.a
 
 include/lexer.h src/lexer.c: src/gwion.l
 	$(info generating lexer)
