@@ -299,9 +299,12 @@ ANN static m_str macro_data(void* data, const m_bool);
   text_release(&text);
   return ID;
 }
-"#"{LEX_ID}           {
+"#"{SPACE}*{LEX_ID}           {
   adjust(yyscanner);
-  const m_str text = get_arg_text(yyscanner, yytext + 1);
+  ++yytext;
+  while(isspace(*yytext))
+    ++yytext;
+  const m_str text = get_arg_text(yyscanner, yytext);
   if(text) {
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
