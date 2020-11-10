@@ -458,6 +458,7 @@ enum fbflag {
   fbflag_postfix  = 1 << 4,
   fbflag_variadic = 1 << 5,
   fbflag_internal = 1 << 6,
+  fbflag_lambda   = 1 << 7,
 } __attribute__((packed));
 
 typedef struct Func_Base_ {
@@ -467,6 +468,7 @@ typedef struct Func_Base_ {
   struct Func_       *func;
   struct Type_*       ret_type;
   Tmpl *tmpl;
+  Scope values;
   ae_flag flag;
   enum fbflag fbflag;
 } Func_Base;
@@ -619,8 +621,8 @@ struct Class_Def_ {
   struct Type_Def_ base;
   Ast body;
   loc_t pos;            ///< position
-  ae_flag flag;
   enum cflag cflag;
+  ae_flag flag;
 };
 
 ANN static inline int cflag(const Class_Def c, const enum cflag flag) {

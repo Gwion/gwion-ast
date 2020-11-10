@@ -64,6 +64,7 @@ ANN static AST_NEW(Exp, exp, const ae_exp_t type, const loc_t pos) {
 AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt code) {
   Exp a = new_exp(p, ae_exp_lambda, loc_cpy(p, code->pos));
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none);
+  base->fbflag |= fbflag_lambda;
   a->d.exp_lambda.def = new_func_def(p, base, code, loc_cpy(p, code->pos));
   return a;
 }
