@@ -189,7 +189,6 @@ typedef struct {
 typedef struct {
   Type_Decl* td;
   Exp exp;
-  struct Func_* func;
 } Exp_Cast;
 typedef struct {
   Exp lhs, rhs;
