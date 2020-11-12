@@ -295,7 +295,7 @@ ANN static m_str macro_data(void* data, const m_bool);
   }
   *buf = '\0';
   text_add(&text, pp_data(yyscanner, c));
-  yylval->sval = alloc_str(yyscanner, text.str);
+  yylval->sym = alloc_sym(yyscanner, text.str);
   text_release(&text);
   return ID;
 }
@@ -328,7 +328,7 @@ ${LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sy
   if(ret < 0)
     yyterminate();
   if(!ret) {
-    yylval->sval = alloc_str(yyscanner, yytext);
+    yylval->sym = alloc_sym(yyscanner, yytext);
     return ID;
   } else
     continue;

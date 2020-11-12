@@ -106,24 +106,24 @@ extern int gwion_debug;
     NONNULL = 307,                 /* "nonnull"  */
     NUM = 308,                     /* "<integer>"  */
     FLOATT = 309,                  /* FLOATT  */
-    ID = 310,                      /* "<identifier>"  */
-    STRING_LIT = 311,              /* "<litteral string>"  */
-    CHAR_LIT = 312,                /* "<litteral char>"  */
-    INTERP_START = 313,            /* "`"  */
-    INTERP_LIT = 314,              /* "<interp string>"  */
-    INTERP_EXP = 315,              /* INTERP_EXP  */
-    INTERP_END = 316,              /* "<interp string>`"  */
-    PP_COMMENT = 317,              /* "<comment>"  */
-    PP_INCLUDE = 318,              /* "#include"  */
-    PP_DEFINE = 319,               /* "#define"  */
-    PP_PRAGMA = 320,               /* "#pragma"  */
-    PP_UNDEF = 321,                /* "#undef"  */
-    PP_IFDEF = 322,                /* "#ifdef"  */
-    PP_IFNDEF = 323,               /* "#ifndef"  */
-    PP_ELSE = 324,                 /* "#else"  */
-    PP_ENDIF = 325,                /* "#if"  */
-    PP_NL = 326,                   /* "\n"  */
-    PP_REQUIRE = 327,              /* "require"  */
+    STRING_LIT = 310,              /* "<litteral string>"  */
+    CHAR_LIT = 311,                /* "<litteral char>"  */
+    INTERP_START = 312,            /* "`"  */
+    INTERP_LIT = 313,              /* "<interp string>"  */
+    INTERP_EXP = 314,              /* INTERP_EXP  */
+    INTERP_END = 315,              /* "<interp string>`"  */
+    PP_COMMENT = 316,              /* "<comment>"  */
+    PP_INCLUDE = 317,              /* "#include"  */
+    PP_DEFINE = 318,               /* "#define"  */
+    PP_PRAGMA = 319,               /* "#pragma"  */
+    PP_UNDEF = 320,                /* "#undef"  */
+    PP_IFDEF = 321,                /* "#ifdef"  */
+    PP_IFNDEF = 322,               /* "#ifndef"  */
+    PP_ELSE = 323,                 /* "#else"  */
+    PP_ENDIF = 324,                /* "#if"  */
+    PP_NL = 325,                   /* "\n"  */
+    PP_REQUIRE = 326,              /* "require"  */
+    ID = 329,                      /* "<identifier>"  */
     PLUS = 330,                    /* "+"  */
     PLUSPLUS = 331,                /* "++"  */
     MINUS = 332,                   /* "-"  */
@@ -159,8 +159,11 @@ extern int gwion_debug;
     TILDA = 362,                   /* "~"  */
     EXCLAMATION = 363,             /* "!"  */
     DYNOP = 364,                   /* "<dynamic_operator>"  */
-    UMINUS = 365,                  /* UMINUS  */
-    UTIMES = 366                   /* UTIMES  */
+    RANGE_EMPTY = 365,             /* RANGE_EMPTY  */
+    UMINUS = 366,                  /* UMINUS  */
+    UTIMES = 367,                  /* UTIMES  */
+    STMT_ASSOC = 369,              /* STMT_ASSOC  */
+    STMT_NOASSOC = 370             /* STMT_NOASSOC  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -220,24 +223,24 @@ extern int gwion_debug;
 #define NONNULL 307
 #define NUM 308
 #define FLOATT 309
-#define ID 310
-#define STRING_LIT 311
-#define CHAR_LIT 312
-#define INTERP_START 313
-#define INTERP_LIT 314
-#define INTERP_EXP 315
-#define INTERP_END 316
-#define PP_COMMENT 317
-#define PP_INCLUDE 318
-#define PP_DEFINE 319
-#define PP_PRAGMA 320
-#define PP_UNDEF 321
-#define PP_IFDEF 322
-#define PP_IFNDEF 323
-#define PP_ELSE 324
-#define PP_ENDIF 325
-#define PP_NL 326
-#define PP_REQUIRE 327
+#define STRING_LIT 310
+#define CHAR_LIT 311
+#define INTERP_START 312
+#define INTERP_LIT 313
+#define INTERP_EXP 314
+#define INTERP_END 315
+#define PP_COMMENT 316
+#define PP_INCLUDE 317
+#define PP_DEFINE 318
+#define PP_PRAGMA 319
+#define PP_UNDEF 320
+#define PP_IFDEF 321
+#define PP_IFNDEF 322
+#define PP_ELSE 323
+#define PP_ENDIF 324
+#define PP_NL 325
+#define PP_REQUIRE 326
+#define ID 329
 #define PLUS 330
 #define PLUSPLUS 331
 #define MINUS 332
@@ -273,8 +276,11 @@ extern int gwion_debug;
 #define TILDA 362
 #define EXCLAMATION 363
 #define DYNOP 364
-#define UMINUS 365
-#define UTIMES 366
+#define RANGE_EMPTY 365
+#define UMINUS 366
+#define UTIMES 367
+#define STMT_ASSOC 369
+#define STMT_NOASSOC 370
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -312,7 +318,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 316 "include/parser.h"
+#line 322 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

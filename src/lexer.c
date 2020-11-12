@@ -2243,7 +2243,7 @@ YY_RULE_SETUP
   }
   *buf = '\0';
   text_add(&text, pp_data(yyscanner, c));
-  yylval->sval = alloc_str(yyscanner, text.str);
+  yylval->sym = alloc_sym(yyscanner, text.str);
   text_release(&text);
   return ID;
 }
@@ -2315,7 +2315,7 @@ YY_RULE_SETUP
   if(ret < 0)
     yyterminate();
   if(!ret) {
-    yylval->sval = alloc_str(yyscanner, yytext);
+    yylval->sym = alloc_sym(yyscanner, yytext);
     return ID;
   } else
     continue;

@@ -73,11 +73,11 @@ ANN Symbol lambda_name(const Scanner*);
 %token<lval> NUM "<integer>"
 %type<ival> ref flow breaks
 %token<fval> FLOATT
-%token<sval> ID "<identifier>" STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
+%token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_REQUIRE "require"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D "$<operator id>"
-%token <sym>  PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
+%token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
   L_HACK "<<<" R_HACK ">>>"
@@ -89,7 +89,7 @@ ANN Symbol lambda_name(const Scanner*);
   storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
 %type<cflag> class_type
-%type<sym>id opt_id
+%type<sym>opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl_tmpl type_decl_noflag type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
@@ -119,6 +119,9 @@ ANN Symbol lambda_name(const Scanner*);
 
 %start prg
 
+%nonassoc ";"
+%right RANGE_EMPTY
+
 %left "."
 %right "!" "~"
 %left "*" "/" "%"
@@ -135,6 +138,8 @@ ANN Symbol lambda_name(const Scanner*);
 %right "?:" "::"
 %right "="
 
+%nonassoc STMT_ASSOC
+%nonassoc STMT_NOASSOC
 %nonassoc NOELSE
 %nonassoc ELSE
 
@@ -161,7 +166,7 @@ section
 
 class_type: CLASS { $$ = cflag_none; } | STRUCT { $$ = cflag_struct; }
 class_def
-  : class_type flag modifier id decl_template class_ext LBRACE class_body RBRACE
+  : class_type flag modifier ID decl_template class_ext LBRACE class_body RBRACE
     {
       if($1 == cflag_struct && $6)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
@@ -176,14 +181,15 @@ class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
 
 class_body : ast | { $$ = NULL; };
 
-id_list: id { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | id COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
+id_list: ID { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | ID COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
 
-stmt_list: stmt { $$ = new_stmt_list(mpool(arg), $1, NULL);} | stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); } ;
+stmt_list: stmt %prec STMT_NOASSOC { $$ = new_stmt_list(mpool(arg), $1, NULL);} |
+  %prec STMT_ASSOC stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); };
 
-fptr_base: flag type_decl_empty id decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
+fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
   if($4) { $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
 
-func_base: flag final type_decl_empty id decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2);
+func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2);
   if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
 
 fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
@@ -192,7 +198,7 @@ fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
   $$ = new_fptr_def(mpool(arg), $2);
 };
 
-type_def: TYPEDEF flag type_decl_array id decl_template SEMICOLON {
+type_def: TYPEDEF flag type_decl_array ID decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);
   $3->flag |= $2;
   if($5)
@@ -262,17 +268,15 @@ stmt
   | varloop_stmt
   ;
 
-id: ID { $$ = insert_symbol($1); }
-
-opt_id: id | { $$ = NULL; };
+opt_id: ID | { $$ = NULL; };
 
 enum_def
   : ENUM flag opt_id LBRACE id_list RBRACE    { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
     $$->flag = $2; };
 
-label_stmt: id COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
+label_stmt: ID COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
 
-goto_stmt: GOTO id SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, GET_LOC(&@$)); };
+goto_stmt: GOTO ID SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, GET_LOC(&@$)); };
 
 when_exp: WHEN exp { $$ = $2; } | { $$ = NULL; }
 
@@ -310,7 +314,7 @@ loop_stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7); }
-  | FOREACH LPAREN ref id COLON binary_exp RPAREN stmt
+  | FOREACH LPAREN ref ID COLON binary_exp RPAREN stmt
       { $$ = new_stmt_each(mpool(arg), $4, $6, $8); $$->d.stmt_each.is_ptr = $3; }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5); }
@@ -347,7 +351,7 @@ exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
 binary_exp
   : decl_exp
   | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
-  | binary_exp op decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
+  | binary_exp DYNOP decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3); };
 
 call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
@@ -356,7 +360,7 @@ op: EQ | NEQ | DYNOP;
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
   | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
-  | LBRACK exp RBRACK array_empty { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
+  | LBRACK exp RBRACK LBRACK RBRACK  { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
@@ -368,7 +372,7 @@ array_empty
 range
   : LBRACK exp COLON exp RBRACK { $$ = new_range(mpool(arg), $2, $4); }
   | LBRACK exp COLON RBRACK     { $$ = new_range(mpool(arg), $2, NULL); }
-  | LBRACK COLON exp RBRACK     { $$ = new_range(mpool(arg), NULL, $3); }
+  | LBRACK %prec RANGE_EMPTY COLON exp RBRACK     { $$ = new_range(mpool(arg), NULL, $3); }
   ;
 
 array: array_exp | array_empty;
@@ -410,7 +414,7 @@ func_def_base
   };
 
 abstract_fdef
-  : FUNCTION flag ABSTRACT type_decl_empty id decl_template fptr_args arg_type ";"
+  : FUNCTION flag ABSTRACT type_decl_empty ID decl_template fptr_args arg_type ";"
     { Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract);
       if($6)
         base->tmpl = new_tmpl_base(mpool(arg), $6);
@@ -443,7 +447,7 @@ func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= 
 ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
 
 type_decl_tmpl
-  : id call_template { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); $$->types = $2; }
+  : ID call_template { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); $$->types = $2; }
   ;
 
 type_decl_next
@@ -493,16 +497,16 @@ union_def
   ;
 
 var_decl_list
-  : var_decl { $$ = new_var_decl_list(mpool(arg), $1, NULL); }
-  | var_decl COMMA var_decl_list { $$ = new_var_decl_list(mpool(arg), $1, $3); }
+  : var_decl COMMA var_decl_list { $$ = new_var_decl_list(mpool(arg), $1, $3); }
+  | var_decl { $$ = new_var_decl_list(mpool(arg), $1, NULL); }
   ;
 
-var_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
-  | id array    { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); };
+var_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
+  | ID array   { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); };
 
-arg_decl: id { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
-  | id array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); }
-  | id array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
+arg_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
+  | ID array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); }
+  | ID array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
 fptr_arg_decl: arg_decl | { $$ = new_var_decl(mpool(arg), NULL, NULL, GET_LOC(&@$)); }
 
 eq_op : EQ | NEQ;
@@ -545,8 +549,8 @@ unary_exp : post_exp
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2); };
 
 lambda_list:
- id { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), NULL); }
-|    id lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), $2); }
+ ID { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), NULL); }
+|    ID lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), $2); }
 lambda_arg: BACKSLASH lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 type_list
@@ -558,7 +562,7 @@ call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
 
 post_op : PLUSPLUS | MINUSMINUS;
 
-dot_exp: post_exp DOT id {
+dot_exp: post_exp DOT ID {
   if($1->next) {
     gwion_error(&@$, arg, "can't use multiple expression"
       " in dot member base expression");
@@ -601,7 +605,7 @@ interp: INTERP_START interp_exp { $$ = $2; }
 typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3); };
 
 prim_exp
-  : id                  { $$ = new_prim_id(     mpool(arg), $1, GET_LOC(&@$)); }
+  : ID                  { $$ = new_prim_id(     mpool(arg), $1, GET_LOC(&@$)); }
   | NUM                 { $$ = new_prim_int(    mpool(arg), $1, GET_LOC(&@$)); }
   | FLOATT              { $$ = new_prim_float(  mpool(arg), $1, GET_LOC(&@$)); }
   | interp              { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1); }
