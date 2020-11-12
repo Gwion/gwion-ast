@@ -75,7 +75,6 @@ struct Var_Decl_ {
   struct Symbol_* xid;   ///< variable name
   struct Value_ * value; ///< corresponding value
   Array_Sub array;       ///< array subscript, if any
-  void* addr;            ///< variable data, if any
   loc_t pos;             ///< position
 };
 ANN2(1) ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_*, const Array_Sub, const loc_t);
