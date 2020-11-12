@@ -83,15 +83,14 @@ AST_NEW(Exp, exp_slice, const Exp base, Range *range) {
   return a;
 }
 
-AST_NEW(ID_List, id_list, struct Symbol_* xid, const loc_t pos) {
+AST_NEW(ID_List, id_list, struct Symbol_* xid) {
   ID_List a = mp_calloc(p, ID_List);
   a->xid = xid;
-  a->pos = pos;
   return a;
 }
 
-ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list, const loc_t pos) {
-  ID_List a = new_id_list(p, xid, pos);
+ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list) {
+  ID_List a = new_id_list(p, xid);
   a->next = list;
   return a;
 }

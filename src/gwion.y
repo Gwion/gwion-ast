@@ -181,7 +181,7 @@ class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
 
 class_body : ast | { $$ = NULL; };
 
-id_list: ID { $$ = new_id_list(mpool(arg), $1, GET_LOC(&@$)); } | ID COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3, loc_cpy(mpool(arg), &@1)); };
+id_list: ID { $$ = new_id_list(mpool(arg), $1); } | ID COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3); };
 
 stmt_list: stmt %prec STMT_NOASSOC { $$ = new_stmt_list(mpool(arg), $1, NULL);} |
   %prec STMT_ASSOC stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); };

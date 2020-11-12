@@ -2136,13 +2136,13 @@ yyreduce:
 
   case 20: /* id_list: "<identifier>"  */
 #line 184 "src/gwion.y"
-            { (yyval.id_list) = new_id_list(mpool(arg), (yyvsp[0].sym), GET_LOC(&(yyloc))); }
+            { (yyval.id_list) = new_id_list(mpool(arg), (yyvsp[0].sym)); }
 #line 2141 "src/parser.c"
     break;
 
   case 21: /* id_list: "<identifier>" "," id_list  */
 #line 184 "src/gwion.y"
-                                                                                    { (yyval.id_list) = prepend_id_list(mpool(arg), (yyvsp[-2].sym), (yyvsp[0].id_list), loc_cpy(mpool(arg), &(yylsp[-2]))); }
+                                                                      { (yyval.id_list) = prepend_id_list(mpool(arg), (yyvsp[-2].sym), (yyvsp[0].id_list)); }
 #line 2147 "src/parser.c"
     break;
 

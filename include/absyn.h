@@ -104,11 +104,10 @@ ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 struct ID_List_    {
   struct Symbol_* xid;
   ID_List next;
-  loc_t pos;          ///< position
 };
 
-ANEW ANN AST_NEW(ID_List, id_list, struct Symbol_*, const loc_t);
-ANEW ANN2(1, 2) ID_List prepend_id_list(MemPool p, struct Symbol_*, ID_List, const loc_t);
+ANEW ANN AST_NEW(ID_List, id_list, struct Symbol_*);
+ANEW ANN2(1, 2) ID_List prepend_id_list(MemPool p, struct Symbol_*, ID_List);
 ANN void free_id_list(MemPool p, ID_List);
 
 struct Type_List_  {

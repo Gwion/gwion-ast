@@ -45,8 +45,6 @@ ANN AST_FREE(Exp_Slice*, exp_slice) {
 }
 
 AST_FREE(ID_List, id_list) {
-  if(a->pos)
-    free_loc(p, a->pos);
   const ID_List next = a->next;
   mp_free(p, ID_List, a);
   if(next)
