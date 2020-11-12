@@ -61,23 +61,24 @@ ANN static AST_NEW(Exp, exp, const ae_exp_t type, const loc_t pos) {
   return a;
 }
 
-AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt code) {
-  Exp a = new_exp(p, ae_exp_lambda, loc_cpy(p, code->pos));
+AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args,
+      const Stmt code, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_lambda, pos);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none);
   base->fbflag |= fbflag_lambda;
-  a->d.exp_lambda.def = new_func_def(p, base, code, loc_cpy(p, code->pos));
+  a->d.exp_lambda.def = new_func_def(p, base, code, loc_cpy(p, pos));
   return a;
 }
 
-AST_NEW(Exp, exp_array, const Exp base, const Array_Sub array) {
-  Exp a = new_exp(p, ae_exp_array, loc_cpy(p, base->pos));
+AST_NEW(Exp, exp_array, const Exp base, const Array_Sub array, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_array, pos);
   a->d.exp_array.base = base;
   a->d.exp_array.array = array;
   return a;
 }
 
-AST_NEW(Exp, exp_slice, const Exp base, Range *range) {
-  Exp a = new_exp(p, ae_exp_slice, loc_cpy(p, base->pos));
+AST_NEW(Exp, exp_slice, const Exp base, Range *range, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_slice, pos);
   a->d.exp_slice.base = base;
   a->d.exp_slice.range = range;
   return a;
@@ -95,15 +96,15 @@ ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list) {
   return a;
 }
 
-AST_NEW(Exp, exp_decl, Type_Decl* td, const Var_Decl_List list) {
-  Exp a = new_exp(p, ae_exp_decl, loc_cpy(p, td_pos(td)));
+AST_NEW(Exp, exp_decl, Type_Decl* td, const Var_Decl_List list, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_decl, pos);
   a->d.exp_decl.td = td;
   a->d.exp_decl.list = list;
   return a;
 }
 
-AST_NEW(Exp, exp_binary, const Exp lhs, const Symbol op, const Exp rhs) {
-  Exp a = new_exp(p, ae_exp_binary, loc_cpy(p, lhs->pos));
+AST_NEW(Exp, exp_binary, const Exp lhs, const Symbol op, const Exp rhs, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_binary, pos);
   exp_setmeta(a, 1);
   a->d.exp_binary.lhs = lhs;
   a->d.exp_binary.op = op;
@@ -111,16 +112,16 @@ AST_NEW(Exp, exp_binary, const Exp lhs, const Symbol op, const Exp rhs) {
   return a;
 }
 
-AST_NEW(Exp, exp_cast, Type_Decl* td, const Exp exp) {
-  Exp a = new_exp(p, ae_exp_cast, loc_cpy(p, exp->pos));
+AST_NEW(Exp, exp_cast, Type_Decl* td, const Exp exp, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_cast, pos);
   exp_setmeta(a, 1);
   a->d.exp_cast.td = td;
   a->d.exp_cast.exp = exp;
   return a;
 }
 
-AST_NEW(Exp, exp_post, const Exp exp, const Symbol op) {
-  Exp a = new_exp(p, ae_exp_post, loc_cpy(p, exp->pos));
+AST_NEW(Exp, exp_post, const Exp exp, const Symbol op, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_post, pos);
   a->d.exp_post.exp = exp;
   a->d.exp_post.op = op;
   return a;
@@ -167,22 +168,22 @@ AST_NEW(Exp, prim_id, struct Symbol_* xid, const loc_t pos) {
   return a;
 }
 
-AST_NEW(Exp, prim_hack, const Exp exp) {
-  Exp a = new_prim(p, loc_cpy(p, exp->pos));
+AST_NEW(Exp, prim_hack, const Exp exp, const loc_t pos) {
+  Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_hack;
   a->d.prim.d.exp = exp;
   return a;
 }
 
-AST_NEW(Exp, prim_typeof, Exp exp) {
-  Exp a = new_prim(p, loc_cpy(p, exp->pos));
+AST_NEW(Exp, prim_typeof, Exp exp, const loc_t pos) {
+  Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_typeof;
   a->d.prim.d.exp = exp;
   return a;
 }
 
-AST_NEW(Exp, prim_interp, Exp exp) {
-  Exp a = new_prim(p, loc_cpy(p, exp->pos));
+AST_NEW(Exp, prim_interp, Exp exp, const loc_t pos) {
+  Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_interp;
   a->d.prim.d.exp = exp;
   return a;
@@ -213,7 +214,7 @@ ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
   Type_Decl *td = new_type_decl(p, type, loc_cpy(p, pos));
   const Var_Decl var = new_var_decl(p, name, NULL, loc_cpy(p, pos));
   const Var_Decl_List vlist = new_var_decl_list(p, var, NULL);
-  return new_exp_decl(p, td, vlist);
+  return new_exp_decl(p, td, vlist, loc_cpy(p, pos));
 }
 
 static inline AST_NEW(Exp, exp_unary_base, const Symbol oper, const loc_t pos)  {
@@ -222,29 +223,30 @@ static inline AST_NEW(Exp, exp_unary_base, const Symbol oper, const loc_t pos)  
   return a;
 }
 
-AST_NEW(Exp, exp_unary, const Symbol oper, const Exp exp) {
-  Exp a = new_exp_unary_base(p, oper, loc_cpy(p, exp->pos));
+AST_NEW(Exp, exp_unary, const Symbol oper, const Exp exp, const loc_t pos) {
+  Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, exp_getmeta(exp));
   a->d.exp_unary.exp = exp;
   return a;
 }
 
-AST_NEW(Exp, exp_unary2, const Symbol oper, Type_Decl* td) {
-  Exp a = new_exp_unary_base(p, oper, loc_cpy(p, td_pos(td)));
+AST_NEW(Exp, exp_unary2, const Symbol oper, Type_Decl* td, const loc_t pos) {
+  Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
   a->d.exp_unary.td = td;
   return a;
 }
 
-AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt code) {
-  Exp a = new_exp_unary_base(p, oper, loc_cpy(p, code->pos));
+AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt code, const loc_t pos) {
+  Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
   a->d.exp_unary.code = code;
   return a;
 }
 
-AST_NEW(Exp, exp_if, const restrict Exp cond, const restrict Exp if_exp, const restrict Exp else_exp) {
-  Exp a = new_exp(p, ae_exp_if, loc_cpy(p, cond->pos));
+AST_NEW(Exp, exp_if, const restrict Exp cond, const restrict Exp if_exp,
+      const restrict Exp else_exp, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_if, pos);
   enum exp_state state = (!(!exp_getmeta(if_exp ?: cond)) &&
               !exp_getmeta(else_exp)) ? 0 : 1;
   exp_setmeta(a, state);
@@ -301,16 +303,16 @@ AST_NEW(Tmpl*, tmpl_call, const Type_List tl) {
   return a;
 }
 
-AST_NEW(Exp, exp_call, const Exp base, const Exp args) {
-  Exp a = new_exp(p, ae_exp_call, loc_cpy(p, base->pos));
+AST_NEW(Exp, exp_call, const Exp base, const Exp args, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_call, pos);
   exp_setmeta(a, 1);
   a->d.exp_call.func = base;
   a->d.exp_call.args = args;
   return a;
 }
 
-AST_NEW(Exp, exp_dot, const Exp base, struct Symbol_* xid) {
-  Exp a = new_exp(p, ae_exp_dot, loc_cpy(p, base->pos));
+AST_NEW(Exp, exp_dot, const Exp base, struct Symbol_* xid, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_dot, pos);
   a->d.exp_dot.base = base;
   a->d.exp_dot.xid = xid;
   return a;
@@ -504,7 +506,7 @@ AST_NEW(Ast, ast_expand, Section* section, const Ast next) {
         const Exp efunc = new_prim_id(p, base_fdef->base->xid, loc_cpy(p, base_fdef->pos));
         Exp arg_exp = former ? arglist2exp(p, base_fdef->base->args, base_arg->exp) :
         cpy_exp(p, base_arg->exp);
-        const Exp ecall = new_exp_call(p, efunc, arg_exp);
+        const Exp ecall = new_exp_call(p, efunc, arg_exp, loc_cpy(p, base_fdef->pos));
         const Stmt code = new_stmt_exp(p, ae_stmt_return, ecall, loc_cpy(p, base_fdef->pos));
         const Stmt_List slist = new_stmt_list(p, code, NULL);
         const Stmt body = new_stmt_code(p, slist, loc_cpy(p, base_fdef->pos));

@@ -36,8 +36,7 @@ typedef struct {
   Func_Def def;
   struct Type_*owner;
 } Exp_Lambda;
-ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List,const Stmt);
-
+ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt, const loc_t);
 
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
@@ -54,7 +53,7 @@ typedef struct {
   Exp       base;
   Array_Sub array;
 } Exp_Array;
-ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub);
+ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub, const loc_t pos);
 
 /** range. @code [12:12] @endcode or @code [1:] @endcode or @code [:12] @endcode*/
 typedef struct Range_ {
@@ -68,7 +67,7 @@ typedef struct {
   Exp    base;
   Range *range;
 } Exp_Slice;
-ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range*);
+ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range*, const loc_t pos);
 
 /** variable declaration **/
 struct Var_Decl_ {
@@ -313,28 +312,27 @@ static inline loc_t prim_pos(const void *data) {
   return e->pos;
 }
 
-
 ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_*, const loc_t);
 ANEW AST_NEW(Exp, prim_int, const unsigned long, const loc_t);
 ANEW AST_NEW(Exp, prim_float, const m_float, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_string, const m_str, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_range, Range*, const loc_t);
-ANEW AST_NEW(Exp, prim_hack, const Exp);
+ANEW AST_NEW(Exp, prim_hack, const Exp, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);
 ANEW AST_NEW(Exp, prim_nil, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_typeof, const Exp exp);
-ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp);
-ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List);
-ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp);
-ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol);
-ANN2(1,2) ANEW AST_NEW(Exp, exp_call, const Exp, const Exp args);
-ANEW ANN AST_NEW(Exp, exp_cast, Type_Decl*, const Exp);
-ANN2(1,2,4) ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp);
-ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_*);
-ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp);
-ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*);
-ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt);
+ANEW ANN AST_NEW(Exp, prim_typeof, const Exp exp, const loc_t);
+ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol, const loc_t);
+ANN2(1,2) ANEW AST_NEW(Exp, exp_call, const Exp, const Exp args, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_cast, Type_Decl*, const Exp, const loc_t);
+ANN2(1,2,4) ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_*, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt, const loc_t);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
 
 static inline Exp take_exp(const Exp exp, const m_uint n) {
