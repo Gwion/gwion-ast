@@ -2276,7 +2276,7 @@ yyreduce:
 
   case 40: /* code_stmt: "{" stmt_list "}"  */
 #line 241 "src/gwion.y"
-                            { (yyval.stmt) = new_stmt_code(mpool(arg), (yyvsp[-1].stmt_list)); }
+                            { (yyval.stmt) = new_stmt_code(mpool(arg), (yyvsp[-1].stmt_list), GET_LOC(&(yyloc))); }
 #line 2281 "src/parser.c"
     break;
 
@@ -2443,55 +2443,55 @@ yyreduce:
 
   case 77: /* loop_stmt: flow "(" exp ")" stmt  */
 #line 310 "src/gwion.y"
-    { (yyval.stmt) = new_stmt_flow(mpool(arg), (yyvsp[-4].ival), (yyvsp[-2].exp), (yyvsp[0].stmt), 0); }
+    { (yyval.stmt) = new_stmt_flow(mpool(arg), (yyvsp[-4].ival), (yyvsp[-2].exp), (yyvsp[0].stmt), 0, GET_LOC(&(yyloc))); }
 #line 2448 "src/parser.c"
     break;
 
   case 78: /* loop_stmt: "do" stmt flow exp ";"  */
 #line 312 "src/gwion.y"
-    { (yyval.stmt) = new_stmt_flow(mpool(arg), (yyvsp[-2].ival), (yyvsp[-1].exp), (yyvsp[-3].stmt), 1); }
+    { (yyval.stmt) = new_stmt_flow(mpool(arg), (yyvsp[-2].ival), (yyvsp[-1].exp), (yyvsp[-3].stmt), 1, GET_LOC(&(yyloc))); }
 #line 2454 "src/parser.c"
     break;
 
   case 79: /* loop_stmt: "for" "(" exp_stmt exp_stmt ")" stmt  */
 #line 314 "src/gwion.y"
-      { (yyval.stmt) = new_stmt_for(mpool(arg), (yyvsp[-3].stmt), (yyvsp[-2].stmt), NULL, (yyvsp[0].stmt)); }
+      { (yyval.stmt) = new_stmt_for(mpool(arg), (yyvsp[-3].stmt), (yyvsp[-2].stmt), NULL, (yyvsp[0].stmt), GET_LOC(&(yyloc))); }
 #line 2460 "src/parser.c"
     break;
 
   case 80: /* loop_stmt: "for" "(" exp_stmt exp_stmt exp ")" stmt  */
 #line 316 "src/gwion.y"
-      { (yyval.stmt) = new_stmt_for(mpool(arg), (yyvsp[-4].stmt), (yyvsp[-3].stmt), (yyvsp[-2].exp), (yyvsp[0].stmt)); }
+      { (yyval.stmt) = new_stmt_for(mpool(arg), (yyvsp[-4].stmt), (yyvsp[-3].stmt), (yyvsp[-2].exp), (yyvsp[0].stmt), GET_LOC(&(yyloc))); }
 #line 2466 "src/parser.c"
     break;
 
   case 81: /* loop_stmt: "foreach" "(" ref "<identifier>" ":" binary_exp ")" stmt  */
 #line 318 "src/gwion.y"
-      { (yyval.stmt) = new_stmt_each(mpool(arg), (yyvsp[-4].sym), (yyvsp[-2].exp), (yyvsp[0].stmt)); (yyval.stmt)->d.stmt_each.is_ptr = (yyvsp[-5].ival); }
+      { (yyval.stmt) = new_stmt_each(mpool(arg), (yyvsp[-4].sym), (yyvsp[-2].exp), (yyvsp[0].stmt), GET_LOC(&(yyloc))); (yyval.stmt)->d.stmt_each.is_ptr = (yyvsp[-5].ival); }
 #line 2472 "src/parser.c"
     break;
 
   case 82: /* loop_stmt: "repeat" "(" exp ")" stmt  */
 #line 320 "src/gwion.y"
-      { (yyval.stmt) = new_stmt_loop(mpool(arg), (yyvsp[-2].exp), (yyvsp[0].stmt)); }
+      { (yyval.stmt) = new_stmt_loop(mpool(arg), (yyvsp[-2].exp), (yyvsp[0].stmt), GET_LOC(&(yyloc))); }
 #line 2478 "src/parser.c"
     break;
 
   case 83: /* varloop_stmt: "varloop" binary_exp code_stmt  */
 #line 323 "src/gwion.y"
-                                           { (yyval.stmt) = new_stmt_varloop(mpool(arg), (yyvsp[-1].exp), (yyvsp[0].stmt)); }
+                                           { (yyval.stmt) = new_stmt_varloop(mpool(arg), (yyvsp[-1].exp), (yyvsp[0].stmt), GET_LOC(&(yyloc))); }
 #line 2484 "src/parser.c"
     break;
 
   case 84: /* selection_stmt: "if" "(" exp ")" stmt  */
 #line 327 "src/gwion.y"
-      { (yyval.stmt) = new_stmt_if(mpool(arg), (yyvsp[-2].exp), (yyvsp[0].stmt)); }
+      { (yyval.stmt) = new_stmt_if(mpool(arg), (yyvsp[-2].exp), (yyvsp[0].stmt), GET_LOC(&(yyloc))); }
 #line 2490 "src/parser.c"
     break;
 
   case 85: /* selection_stmt: "if" "(" exp ")" stmt "else" stmt  */
 #line 329 "src/gwion.y"
-      { (yyval.stmt) = new_stmt_if(mpool(arg), (yyvsp[-4].exp), (yyvsp[-2].stmt)); (yyval.stmt)->d.stmt_if.else_body = (yyvsp[0].stmt); }
+      { (yyval.stmt) = new_stmt_if(mpool(arg), (yyvsp[-4].exp), (yyvsp[-2].stmt), GET_LOC(&(yyloc))); (yyval.stmt)->d.stmt_if.else_body = (yyvsp[0].stmt); }
 #line 2496 "src/parser.c"
     break;
 
@@ -2515,7 +2515,7 @@ yyreduce:
 
   case 89: /* jump_stmt: "return" exp ";"  */
 #line 338 "src/gwion.y"
-                          { (yyval.stmt) = new_stmt_exp(mpool(arg), ae_stmt_return, (yyvsp[-1].exp)); }
+                          { (yyval.stmt) = new_stmt_exp(mpool(arg), ae_stmt_return, (yyvsp[-1].exp), GET_LOC(&(yyloc))); }
 #line 2520 "src/parser.c"
     break;
 
@@ -2539,7 +2539,7 @@ yyreduce:
 
   case 93: /* exp_stmt: exp ";"  */
 #line 345 "src/gwion.y"
-                  { (yyval.stmt) = new_stmt_exp(mpool(arg), ae_stmt_exp, (yyvsp[-1].exp)); }
+                  { (yyval.stmt) = new_stmt_exp(mpool(arg), ae_stmt_exp, (yyvsp[-1].exp), GET_LOC(&(yyloc))); }
 #line 2544 "src/parser.c"
     break;
 

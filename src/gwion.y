@@ -238,7 +238,7 @@ fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list {
 
 code_stmt
   : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, GET_LOC(&@$)); }
-  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2); }
+  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2, GET_LOC(&@$)); }
   ;
 
 stmt_pp
@@ -307,26 +307,26 @@ flow
 
 loop_stmt
   : flow LPAREN exp RPAREN stmt
-    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0); }
+    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, GET_LOC(&@$)); }
   | DO stmt flow exp SEMICOLON
-    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1); }
+    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, GET_LOC(&@$)); }
   | FOR LPAREN exp_stmt exp_stmt RPAREN stmt
-      { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6); }
+      { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, GET_LOC(&@$)); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
-      { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7); }
+      { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, GET_LOC(&@$)); }
   | FOREACH LPAREN ref ID COLON binary_exp RPAREN stmt
-      { $$ = new_stmt_each(mpool(arg), $4, $6, $8); $$->d.stmt_each.is_ptr = $3; }
+      { $$ = new_stmt_each(mpool(arg), $4, $6, $8, GET_LOC(&@$)); $$->d.stmt_each.is_ptr = $3; }
   | LOOP LPAREN exp RPAREN stmt
-      { $$ = new_stmt_loop(mpool(arg), $3, $5); }
+      { $$ = new_stmt_loop(mpool(arg), $3, $5, GET_LOC(&@$)); }
   ;
 
-varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3); }
+varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, GET_LOC(&@$)); }
 
 selection_stmt
   : IF LPAREN exp RPAREN stmt %prec NOELSE
-      { $$ = new_stmt_if(mpool(arg), $3, $5); }
+      { $$ = new_stmt_if(mpool(arg), $3, $5, GET_LOC(&@$)); }
   | IF LPAREN exp RPAREN stmt ELSE stmt
-      { $$ = new_stmt_if(mpool(arg), $3, $5); $$->d.stmt_if.else_body = $7; }
+      { $$ = new_stmt_if(mpool(arg), $3, $5, GET_LOC(&@$)); $$->d.stmt_if.else_body = $7; }
   ;
 
 breaks
@@ -335,14 +335,14 @@ breaks
   | CONTINUE  { $$ = ae_stmt_continue; }
   ;
 jump_stmt
-  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2); }
+  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, GET_LOC(&@$)); }
   | breaks SEMICOLON    { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); }
   ;
 
 _exp_stmt: SEMICOLON _exp_stmt { $$ = $2; } | SEMICOLON { $$ = NULL; };
 
 exp_stmt
-  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1); }
+  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, GET_LOC(&@$)); }
   | _exp_stmt     { $$ = new_stmt(mpool(arg), ae_stmt_exp, GET_LOC(&@$)); }
   ;
 

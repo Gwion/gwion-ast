@@ -554,14 +554,14 @@ static inline Stmt stmt_self(const void *data) {
 }
 
 ANEW AST_NEW(Stmt, stmt, const ae_stmt_t, const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp);
-ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List);
-ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt);
-ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool);
-ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt);
-ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt);
-ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt);
-ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt);
+ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp, const loc_t);
+ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List, const loc_t);
+ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt, const loc_t);
+ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool, const loc_t);
+ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt, const loc_t);
+ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt, const loc_t);
+ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt, const loc_t);
+ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt, const loc_t);
 ANEW ANN AST_NEW(Stmt, stmt_jump, struct Symbol_*, const m_bool, const loc_t);
 ANEW ANN2(1,3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str, const loc_t);
 

@@ -329,14 +329,14 @@ AST_NEW(Arg_List, arg_list, Type_Decl* td, const Var_Decl var_decl, const Arg_Li
   return a;
 }
 
-AST_NEW(Stmt, stmt_exp, const ae_stmt_t type, const Exp exp) {
-  Stmt a = new_stmt(p, type, loc_cpy(p, exp->pos));
+AST_NEW(Stmt, stmt_exp, const ae_stmt_t type, const Exp exp, const loc_t pos) {
+  Stmt a = new_stmt(p, type, pos);
   a->d.stmt_exp.val = exp;
   return a;
 }
 
-AST_NEW(Stmt, stmt_code, const Stmt_List list) {
-  Stmt a = new_stmt(p, ae_stmt_code, loc_cpy(p, list->stmt->pos));
+AST_NEW(Stmt, stmt_code, const Stmt_List list, const loc_t pos) {
+  Stmt a = new_stmt(p, ae_stmt_code, pos);
   a->d.stmt_code.stmt_list = list;
   return a;
 }
@@ -348,23 +348,25 @@ AST_NEW(Stmt, stmt, const ae_stmt_t type, const loc_t pos) {
   return a;
 }
 
-AST_NEW(Stmt, stmt_flow, const ae_stmt_t type, const Exp cond, const Stmt body, const m_bool is_do) {
-  Stmt a = new_stmt(p, type, loc_cpy(p, cond->pos));
+AST_NEW(Stmt, stmt_flow, const ae_stmt_t type, const Exp cond, const Stmt body,
+      const m_bool is_do, const loc_t pos) {
+  Stmt a = new_stmt(p, type, pos);
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond = cond;
   a->d.stmt_flow.body = body;
   return a;
 }
 
-AST_NEW(Stmt, stmt_varloop, const Exp exp, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_varloop, loc_cpy(p, exp->pos));
+AST_NEW(Stmt, stmt_varloop, const Exp exp, const Stmt body, const loc_t pos) {
+  Stmt a = new_stmt(p, ae_stmt_varloop, pos);
   a->d.stmt_varloop.exp = exp;
   a->d.stmt_varloop.body = body;
   return a;
 }
 
-AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2, const restrict Exp c3, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_for, loc_cpy(p, c1->pos));
+AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2,
+      const restrict Exp c3, const Stmt body, const loc_t pos) {
+  Stmt a = new_stmt(p, ae_stmt_for, pos);
   a->d.stmt_for.c1 = c1;
   a->d.stmt_for.c2 = c2;
   a->d.stmt_for.c3 = c3;
@@ -372,8 +374,8 @@ AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2, const re
   return a;
 }
 
-AST_NEW(Stmt, stmt_each, struct Symbol_* sym, const Exp exp, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_each, loc_cpy(p, exp->pos));
+AST_NEW(Stmt, stmt_each, struct Symbol_* sym, const Exp exp, const Stmt body, const loc_t pos) {
+  Stmt a = new_stmt(p, ae_stmt_each, pos);
   a->d.stmt_each.sym = sym;
   a->d.stmt_each.exp = exp;
   a->d.stmt_each.body = body;
@@ -387,15 +389,15 @@ AST_NEW(Stmt, stmt_jump, struct Symbol_* xid, const m_bool is_label, const loc_t
   return a;
 }
 
-AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body) {
-  Stmt a = new_stmt(p, ae_stmt_loop, loc_cpy(p, cond->pos));
+AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body, const loc_t pos) {
+  Stmt a = new_stmt(p, ae_stmt_loop, pos);
   a->d.stmt_loop.cond = cond;
   a->d.stmt_loop.body = body;
   return a;
 }
 
-AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body) {
-  Stmt a = new_stmt(p, ae_stmt_if, loc_cpy(p, cond->pos));
+AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body, const loc_t pos) {
+  Stmt a = new_stmt(p, ae_stmt_if, pos);
   a->d.stmt_if.cond = cond;
   a->d.stmt_if.if_body = if_body;
   return a;
@@ -503,9 +505,9 @@ AST_NEW(Ast, ast_expand, Section* section, const Ast next) {
         Exp arg_exp = former ? arglist2exp(p, base_fdef->base->args, base_arg->exp) :
         cpy_exp(p, base_arg->exp);
         const Exp ecall = new_exp_call(p, efunc, arg_exp);
-        const Stmt code = new_stmt_exp(p, ae_stmt_return, ecall);
+        const Stmt code = new_stmt_exp(p, ae_stmt_return, ecall, loc_cpy(p, base_fdef->pos));
         const Stmt_List slist = new_stmt_list(p, code, NULL);
-        const Stmt body = new_stmt_code(p, slist);
+        const Stmt body = new_stmt_code(p, slist, loc_cpy(p, base_fdef->pos));
         const Func_Def fdef = new_func_def(p, base, body, loc_cpy(p, base_fdef->pos));
         Section *new_section = new_section_func_def(p, fdef);
         if(former)
