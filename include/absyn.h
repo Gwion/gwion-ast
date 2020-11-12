@@ -144,8 +144,6 @@ typedef struct {
   Var_Decl_List list;
 } Exp_Decl;
 
-ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos);
-
 typedef struct {
   struct Value_ * value;
   union prim_data {

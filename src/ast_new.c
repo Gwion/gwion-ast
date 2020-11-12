@@ -210,13 +210,6 @@ AST_NEW(Exp, prim_range, Range *range, const loc_t pos) {
   return a;
 }
 
-ANN Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
-  Type_Decl *td = new_type_decl(p, type, loc_cpy(p, pos));
-  const Var_Decl var = new_var_decl(p, name, NULL, loc_cpy(p, pos));
-  const Var_Decl_List vlist = new_var_decl_list(p, var, NULL);
-  return new_exp_decl(p, td, vlist, loc_cpy(p, pos));
-}
-
 static inline AST_NEW(Exp, exp_unary_base, const Symbol oper, const loc_t pos)  {
   Exp a = new_exp(p, ae_exp_unary, pos);
   a->d.exp_unary.op = oper;
