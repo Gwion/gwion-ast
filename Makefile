@@ -49,8 +49,8 @@ clean:
 	@rm -f grammar/*.o tool/*.o
 
 install: translation-install libgwion_ast.a
-	$(info installing ${GWION_PACKAGE} in ${PREFIX})
-	install libgwion_ast.a ${DESTDIR}/${PREFIX}/bin
+	$(info installing ${GWION_PACKAGE} in ${PREFIX}/lib)
+	install libgwion_ast.a ${DESTDIR}/${PREFIX}/lib
 	@mkdir -p ${DESTDIR}/${PREFIX}/include/gwion/ast
 	@cp include/*.h ${DESTDIR}/${PREFIX}/include/gwion/ast
 
