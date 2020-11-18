@@ -389,7 +389,7 @@ arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
 decl_template: TMPL id_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
 storage_flag: STATIC { $$ = ae_flag_static; }
-  | GLOBAL { $$ = ae_flag_global; }
+  | GLOBAL { $$ = ae_flag_global; arg->global = 1; }
   ;
 
 access_flag: PRIVATE { $$ = ae_flag_private; }

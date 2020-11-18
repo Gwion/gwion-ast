@@ -13,6 +13,7 @@ typedef struct Scanner_ {
   struct pos_t pos;
   int interp_state;
   int error;
+  int global;
 } Scanner;
 
 #endif

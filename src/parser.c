@@ -2701,7 +2701,7 @@ yyreduce:
 
   case 128: /* storage_flag: "global"  */
 #line 392 "src/gwion.y"
-           { (yyval.flag) = ae_flag_global; }
+           { (yyval.flag) = ae_flag_global; arg->global = 1; }
 #line 2706 "src/parser.c"
     break;
 

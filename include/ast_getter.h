@@ -9,8 +9,9 @@ struct AstGetter_ {
   FILE* f;
   SymTable* st;
   struct PPArg_ *ppa;
+  uint global;
 };
 
-ANN Ast parse(const struct AstGetter_*);
+ANN Ast parse(struct AstGetter_*const);
 
 #endif
