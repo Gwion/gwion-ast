@@ -172,7 +172,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
 <comment>.*      { GWYY_COMMENT;  }
 
-"##!"{SPACE}*      { YY_USER_ACTION; BEGIN(docstr); }
+"#!!"{SPACE}*      { YY_USER_ACTION; BEGIN(docstr); }
 <docstr>{SPACE}*\n { BEGIN(INITIAL); }
 <docstr>.*         { yylval->sval = strdup(yytext); return PP_DOCSTR; }
 
