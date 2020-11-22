@@ -466,9 +466,8 @@ typedef struct Func_Base_ {
   enum fbflag fbflag;
 } Func_Base;
 
-static inline int fbflag(const Func_Base *fb, const enum fbflag flag) {
-  return (fb->fbflag & flag) == flag;
-}
+FLAG_FUNC(Func_Base*, fb)
+
 ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List, const ae_flag flag);
 
 typedef struct Fptr_Def_* Fptr_Def;

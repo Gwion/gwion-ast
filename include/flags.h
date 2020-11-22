@@ -26,4 +26,34 @@ typedef enum {
   ae_flag_nonnull = 1 << 9,
 } __attribute__((packed)) ae_flag;
 
+// function factory for other flag
+#define _FLAG_FUNC(A, a)                                         \
+ANN static inline int a##flag(A a, const enum a##flag flag) {    \
+  return (a->a##flag & flag) == flag;                            \
+}                                                                \
+static inline int safe_##a##flag(A a, const enum a##flag flag) { \
+  return a ? ((a->a##flag & flag) == flag) : 0;                  \
+}
+#ifndef __cplusplus
+#define FLAG_FUNC(A, a)                                              \
+ANN static inline void set_##a##flag(A a, const enum a##flag flag) { \
+  a->a##flag |= flag;                                                \
+}                                                                    \
+static inline void unset_##a##flag(A a, const enum a##flag flag) {   \
+  a->a##flag &= ~flag;                                               \
+}                                                                    \
+_FLAG_FUNC(A, a)
+#else
+#define FLAG_FUNC(A, a)                                              \
+ANN static inline void set_##a##flag(A a, const enum a##flag flag) { \
+  auto ff = a->a##flag | flag;                                       \
+  a->a##_flag = static_cast<enum a##flag>(ff);                       \
+}                                                                    \
+static inline void unset_##a##flag(A a, const enum a##flag flag) {   \
+  const auto ff = a->a##flag & ~flag;                                \
+  a->a##flag = static_cast<enum a##flag>(ff);                        \
+}
+#endif
+
+
 #endif
