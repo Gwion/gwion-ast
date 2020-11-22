@@ -90,7 +90,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 %option yymore
 %option never-interactive batch
 %option nobackup nodebug
-%x comment
+%x comment docstr
 %x define define_arg_start define_arg skip get_arg pragma interp include_start include_end require require_end
 %%
 
@@ -171,6 +171,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
 <comment>.*      { GWYY_COMMENT;  }
+
+"##!"{SPACE}*      { YY_USER_ACTION; BEGIN(docstr); }
+<docstr>{SPACE}*\n { BEGIN(INITIAL); }
+<docstr>.*         { yylval->sval = strdup(yytext); return PP_DOCSTR; }
 
 <interp>"\"" {
   adjust(yyscanner);

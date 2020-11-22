@@ -509,6 +509,7 @@ ANN void free_union_def(MemPool p, Union_Def);
 
 enum ae_pp_type {
   ae_pp_comment,
+  ae_pp_docstr,
   ae_pp_include,
   ae_pp_define,
   ae_pp_pragma,
