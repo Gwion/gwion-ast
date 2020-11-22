@@ -47,12 +47,13 @@ _FLAG_FUNC(A, a)
 #define FLAG_FUNC(A, a)                                              \
 ANN static inline void set_##a##flag(A a, const enum a##flag flag) { \
   auto ff = a->a##flag | flag;                                       \
-  a->a##_flag = static_cast<enum a##flag>(ff);                       \
+  a->a##flag = static_cast<enum a##flag>(ff);                        \
 }                                                                    \
 static inline void unset_##a##flag(A a, const enum a##flag flag) {   \
   const auto ff = a->a##flag & ~flag;                                \
   a->a##flag = static_cast<enum a##flag>(ff);                        \
-}
+}                                                                    \
+_FLAG_FUNC(A, a)
 #endif
 
 
