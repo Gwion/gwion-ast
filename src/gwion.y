@@ -74,7 +74,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<ival> ref flow breaks
 %token<fval> FLOATT
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
-  PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma" PP_DOCSTR "##! docstring"
+  PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_REQUIRE "require"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D "$<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
@@ -243,7 +243,6 @@ code_stmt
 
 stmt_pp
   : PP_COMMENT { $$ = new_stmt_pp(mpool(arg), ae_pp_comment, $1, GET_LOC(&@$)); }
-  | PP_DOCSTR  { $$ = new_stmt_pp(mpool(arg), ae_pp_docstr,  $1, GET_LOC(&@$)); }
   | PP_INCLUDE { $$ = new_stmt_pp(mpool(arg), ae_pp_include, $1, GET_LOC(&@$)); }
   | PP_DEFINE  { $$ = new_stmt_pp(mpool(arg), ae_pp_define,  $1, GET_LOC(&@$)); }
   | PP_PRAGMA  { $$ = new_stmt_pp(mpool(arg), ae_pp_pragma,  $1, GET_LOC(&@$)); }
