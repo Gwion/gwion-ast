@@ -4,6 +4,7 @@
 
 #ifndef __CPY_AST
 #define __CPY_AST
+ANN Exp cpy_exp(MemPool, Exp);
 ANN Array_Sub cpy_array_sub(MemPool, Array_Sub);
 ANN Type_Decl* cpy_type_decl(MemPool, const Type_Decl*);
 ANN Type_List cpy_type_list(MemPool, const Type_List);
