@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['free_5fstmt_5fbreak_1004',['free_stmt_break',['../ast__free_8c.html#aaf1deaadb63f9d6e9a02f040da827f32',1,'ast_free.c']]],
-  ['free_5fstmt_5fcontinue_1005',['free_stmt_continue',['../ast__free_8c.html#a1a46072711965b1bdaecd43b33e67f2c',1,'ast_free.c']]],
-  ['free_5fstmt_5freturn_1006',['free_stmt_return',['../ast__free_8c.html#a09fa829fce3ce8172c82b90c3fe38789',1,'ast_free.c']]],
-  ['free_5fstmt_5funtil_1007',['free_stmt_until',['../ast__free_8c.html#a62f1eea80d1595a14948f66e35194c71',1,'ast_free.c']]],
-  ['free_5fstmt_5fwhile_1008',['free_stmt_while',['../ast__free_8c.html#a474c21cc88f44fa9ccc9ee60046dd3a1',1,'ast_free.c']]]
+  ['decl_5fexp_5ffunc_978',['DECL_EXP_FUNC',['../ast__pass_8h.html#a56df460dd25e9d7e2be3b03e5a26b43f',1,'ast_pass.h']]],
+  ['decl_5fprim_5ffunc_979',['DECL_PRIM_FUNC',['../ast__pass_8h.html#aaa3bdd0bb0695b2e2c594cf3b42f93dc',1,'ast_pass.h']]],
+  ['decl_5fsection_5ffunc_980',['DECL_SECTION_FUNC',['../ast__pass_8h.html#a3ac748666a56d3c3ad41458916422c69',1,'ast_pass.h']]],
+  ['decl_5fstmt_5ffunc_981',['DECL_STMT_FUNC',['../ast__pass_8h.html#ac2042ebc89a1389e080ea8c97705f97c',1,'ast_pass.h']]]
 ];

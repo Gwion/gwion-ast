@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['ast_5ffree_998',['AST_FREE',['../absyn_8h.html#a2a350189ccacb930b664761ea4fda592',1,'absyn.h']]],
-  ['ast_5fnew_999',['AST_NEW',['../absyn_8h.html#a36bb7348f93250b77391059cbf255b7b',1,'absyn.h']]]
+  ['_5fflag_5ffunc_975',['_FLAG_FUNC',['../flags_8h.html#a663e117db3e04208fc776b6a0346c518',1,'flags.h']]]
 ];

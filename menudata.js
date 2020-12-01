@@ -112,7 +112,18 @@ var menudata={children:[
 {text:"p",url:"globals_func_p.html#index_p"},
 {text:"s",url:"globals_func_s.html#index_s"},
 {text:"t",url:"globals_func_t.html#index_t"}]},
-{text:"Variables",url:"globals_vars.html"},
+{text:"Variables",url:"globals_vars.html",children:[
+{text:"a",url:"globals_vars.html#index_a"},
+{text:"d",url:"globals_vars.html#index_d"},
+{text:"e",url:"globals_vars.html#index_e"},
+{text:"f",url:"globals_vars.html#index_f"},
+{text:"l",url:"globals_vars.html#index_l"},
+{text:"m",url:"globals_vars.html#index_m"},
+{text:"n",url:"globals_vars.html#index_n"},
+{text:"p",url:"globals_vars.html#index_p"},
+{text:"s",url:"globals_vars.html#index_s"},
+{text:"t",url:"globals_vars.html#index_t"},
+{text:"v",url:"globals_vars.html#index_v"}]},
 {text:"Typedefs",url:"globals_type.html",children:[
 {text:"a",url:"globals_type.html#index_a"},
 {text:"c",url:"globals_type.html#index_c"},
@@ -131,5 +142,6 @@ var menudata={children:[
 {text:"Enumerations",url:"globals_enum.html"},
 {text:"Enumerator",url:"globals_eval.html",children:[
 {text:"a",url:"globals_eval.html#index_a"},
+{text:"c",url:"globals_eval.html#index_c"},
 {text:"e",url:"globals_eval.html#index_e"}]},
 {text:"Macros",url:"globals_defs.html"}]}]}]}

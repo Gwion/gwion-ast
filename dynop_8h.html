@@ -109,7 +109,7 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="dynop_8c_source.html#l00005">5</a> of file <a class="el" href="dynop_8c_source.html">dynop.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                                          {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  <span class="keywordflow">switch</span>(*str) {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  <span class="keywordflow">switch</span>(*<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>) {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keywordflow">case</span> <span class="charliteral">&#39;?&#39;</span>: <span class="keywordflow">return</span> QUESTION; <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keywordflow">case</span> <span class="charliteral">&#39;:&#39;</span>: <span class="keywordflow">return</span> COLON;    <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keywordflow">case</span> <span class="charliteral">&#39;$&#39;</span>: <span class="keywordflow">return</span> DOLLAR;   <span class="keywordflow">break</span>;</div>
@@ -149,37 +149,37 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="dynop_8c_source.html#l00026">26</a> of file <a class="el" href="dynop_8c_source.html">dynop.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                          {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">if</span>(str[0] == str[1]) {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;+&#39;</span>)</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[1]) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;+&#39;</span>)</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      <span class="keywordflow">return</span> PLUSPLUS;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;-&#39;</span>)</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;-&#39;</span>)</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      <span class="keywordflow">return</span> MINUSMINUS;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;=&#39;</span>)</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;=&#39;</span>)</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      <span class="keywordflow">return</span> EQ;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;&amp;&#39;</span>)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;&amp;&#39;</span>)</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keywordflow">return</span> AND;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;|&#39;</span>)</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;|&#39;</span>)</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      <span class="keywordflow">return</span> OR;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;&lt;&#39;</span>)</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;&lt;&#39;</span>)</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <span class="keywordflow">return</span> SHIFT_LEFT;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;&gt;&#39;</span>)</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;&gt;&#39;</span>)</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      <span class="keywordflow">return</span> SHIFT_RIGHT;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;&lt;&#39;</span>) {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">if</span>(str[1] == <span class="charliteral">&#39;=&#39;</span>)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;&lt;&#39;</span>) {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[1] == <span class="charliteral">&#39;=&#39;</span>)</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      <span class="keywordflow">return</span> LE;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">return</span> DYNOP;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;&gt;&#39;</span>) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span>(str[1] == <span class="charliteral">&#39;=&#39;</span>)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;&gt;&#39;</span>) {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[1] == <span class="charliteral">&#39;=&#39;</span>)</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;      <span class="keywordflow">return</span> GE;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> DYNOP;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;!&#39;</span> &amp;&amp; str[1] == <span class="charliteral">&#39;=&#39;</span>)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;!&#39;</span> &amp;&amp; <a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[1] == <span class="charliteral">&#39;=&#39;</span>)</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      <span class="keywordflow">return</span> NEQ;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;?&#39;</span> &amp;&amp; str[1] == <span class="charliteral">&#39;:&#39;</span>)</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;?&#39;</span> &amp;&amp; <a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[1] == <span class="charliteral">&#39;:&#39;</span>)</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      <span class="keywordflow">return</span> QUESTIONCOLON;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordflow">if</span>(str[0] == <span class="charliteral">&#39;:&#39;</span> &amp;&amp; str[1] == <span class="charliteral">&#39;:&#39;</span>)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[0] == <span class="charliteral">&#39;:&#39;</span> &amp;&amp; <a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>[1] == <span class="charliteral">&#39;:&#39;</span>)</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      <span class="keywordflow">return</span> COLONCOLON;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordflow">return</span> DYNOP;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
@@ -204,9 +204,9 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="dynop_8c_source.html#l00068">68</a> of file <a class="el" href="dynop_8c_source.html">dynop.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                                          {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089">match</a>(str, <span class="charliteral">&#39;&lt;&#39;</span>))</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089">match</a>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>, <span class="charliteral">&#39;&lt;&#39;</span>))</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">return</span> L_HACK;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089">match</a>(str, <span class="charliteral">&#39;&gt;&#39;</span>))</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordflow">if</span>(<a class="code" href="dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089">match</a>(<a class="code" href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a>, <span class="charliteral">&#39;&gt;&#39;</span>))</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> R_HACK;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keywordflow">return</span> DYNOP;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
@@ -215,6 +215,7 @@ Functions</h2></td></tr>
 </div>
 </div><!-- contents -->
 <div class="ttc" id="adynop_8c_html_aae4fde3ecc929269186d6d6ff03c4089"><div class="ttname"><a href="dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089">match</a></div><div class="ttdeci">static m_bool match(m_str str, char c)</div><div class="ttdef"><b>Definition:</b> <a href="dynop_8c_source.html#l00062">dynop.c:62</a></div></div>
+<div class="ttc" id="apparg_8h_html_a0239af1910a651022fe355153574de87"><div class="ttname"><a href="pparg_8h.html#a0239af1910a651022fe355153574de87">str</a></div><div class="ttdeci">const m_str str</div><div class="ttdef"><b>Definition:</b> <a href="pparg_8h_source.html#l00029">pparg.h:29</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
