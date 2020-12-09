@@ -85,8 +85,8 @@ ANN Symbol lambda_name(const Scanner*);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<flag> flag final modifier
-  storage_flag access_flag type_decl_flag type_decl_flag2
+%type<flag> flag final modifier operator
+  global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
 %type<cflag> class_type
 %type<sym>opt_id
@@ -388,9 +388,9 @@ arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: TMPL id_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
-storage_flag: STATIC { $$ = ae_flag_static; }
-  | GLOBAL { $$ = ae_flag_global; arg->global = 1; }
-  ;
+global: GLOBAL { $$ = ae_flag_global; arg->global = 1; }
+
+storage_flag: STATIC { $$ = ae_flag_static; } | global;
 
 access_flag: PRIVATE { $$ = ae_flag_private; }
   | PROTECT { $$ = ae_flag_protect; }
@@ -439,8 +439,10 @@ op_base
       $$ = new_func_base(mpool(arg), $1, $2, $3, ae_flag_none);
       $$->fbflag |= fbflag_internal;
     };
-op_def:  OPERATOR op_base code_stmt
-{ $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); };
+
+operator: OPERATOR { $$ = ae_flag_none; } | OPERATOR global { $$ = ae_flag_global; };
+op_def:  operator op_base code_stmt
+{ $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
