@@ -479,18 +479,13 @@ decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
   | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
 union_def
-  : UNION flag opt_id decl_template LBRACE decl_list RBRACE opt_id SEMICOLON {
+  : UNION flag ID decl_template LBRACE decl_list RBRACE opt_id SEMICOLON {
       $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
-      $$->type_xid = $3;
-      $$->xid = $8;
+      $$->xid = $3;
       $$->flag = $2;
       if($4) {
         if(!$3) {
           gwion_error(&@$, arg, _("Template unions requires type name\n"));
-          YYERROR;
-        }
-        if($8) {
-          gwion_error(&@$, arg, _("Can't instantiate template union types at declaration site.\n"));
           YYERROR;
         }
         $$->tmpl = new_tmpl_base(mpool(arg), $4);

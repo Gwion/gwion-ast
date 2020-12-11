@@ -406,8 +406,6 @@ ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   a->l = cpy_decl_list(p, src->l); // 1 
   if(src->xid)
     a->xid = src->xid; // 1 
-  if(src->type_xid)
-    a->type_xid = src->type_xid; // 1 
   if(src->tmpl)
     a->tmpl = cpy_tmpl(p, src->tmpl); // 1 
   a->pos = loc_cpy(p, src->pos);

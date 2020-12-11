@@ -493,15 +493,9 @@ typedef struct Union_Def_* Union_Def;
 struct Union_Def_ {
   Decl_List l;
   struct Symbol_* xid;
-  struct Symbol_* type_xid;
-  union {
-    struct Value_ *value;
-    struct Type_* type;
-  };
+  struct Type_* type;
   Tmpl *tmpl;
   loc_t pos;                ///< position
-  uint s;
-  uint o;
   ae_flag flag;
 };
 ANEW ANN AST_NEW(Union_Def, union_def, const Decl_List, const loc_t);
