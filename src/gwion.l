@@ -256,7 +256,6 @@ ANN static m_str macro_data(void* data, const m_bool);
 "private"                           { adjust(yyscanner); return PRIVATE;}
 "const"                             { adjust(yyscanner); return CONSTT;}
 "ref"                               { adjust(yyscanner); return REF;}
-"nonnull"                           { adjust(yyscanner); return NONNULL;}
 
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}

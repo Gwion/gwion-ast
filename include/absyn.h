@@ -267,11 +267,11 @@ ANN static inline void exp_setprot(const Exp e, const uint val) {
     e->emit_var &= ~(1 << exp_state_prot);
 }
 
-ANN static inline int exp_getnonnull(const Exp e) {
+ANN static inline int exp_getoptionnal(const Exp e) {
   return (e->emit_var & (1 << exp_state_null)) == (1 << exp_state_null);
 }
 
-ANN static inline void exp_setnonnull(const Exp e, const uint val) {
+ANN static inline void exp_setoptionnal(const Exp e, const uint val) {
   if(val)
     e->emit_var |= 1 << exp_state_null;
   else

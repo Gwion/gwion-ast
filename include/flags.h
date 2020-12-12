@@ -23,7 +23,7 @@ typedef enum {
   ae_flag_abstract  = 1 << 6,
   ae_flag_final  = 1 << 7,
   ae_flag_protect = 1 << 8,
-  ae_flag_nonnull = 1 << 9,
+  ae_flag_optionnal = 1 << 9,
 } __attribute__((packed)) ae_flag;
 
 // function factory for other flag

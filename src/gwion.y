@@ -68,7 +68,7 @@ ANN Symbol lambda_name(const Scanner*);
   TYPEDEF "typedef" FUNCDEF "funcdef"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop"
   BACKSLASH "\\" OPID_A OPID_D
-  REF "ref" NONNULL "nonnull"
+  REF "ref"
 
 %token<lval> NUM "<integer>"
 %type<ival> ref flow breaks
@@ -85,14 +85,14 @@ ANN Symbol lambda_name(const Scanner*);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<flag> flag final modifier operator
+%type<flag> flag final modifier operator opt_type
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
 %type<cflag> class_type
 %type<sym>opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl_tmpl type_decl_noflag type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
+%type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp union_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
@@ -271,7 +271,7 @@ stmt
 opt_id: ID | { $$ = NULL; };
 
 enum_def
-  : ENUM flag opt_id LBRACE id_list RBRACE    { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
+  : ENUM flag opt_id LBRACE id_list RBRACE { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
     $$->flag = $2; };
 
 label_stmt: ID COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
@@ -378,9 +378,9 @@ range
 array: array_exp | array_empty;
 decl_exp
   : con_exp
-  | type_decl_flag2 flag type_decl_noflag var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, GET_LOC(&@$)); $$->d.exp_decl.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl_opt var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, GET_LOC(&@$)); $$->d.exp_decl.td->flag |= $1 | $2; };
 
-union_exp: type_decl_noflag arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL), GET_LOC(&@$)); };
+union_exp: type_decl_opt arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL), GET_LOC(&@$)); };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -461,35 +461,27 @@ type_decl_noflag
   : type_decl_next { $$ = $1; }
   | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
   ;
-
-type_decl: type_decl_noflag | type_decl_flag type_decl_noflag { $$ = $2; $$->flag |= $1; };
+opt_type: "?" { $$ = ae_flag_optionnal; } | { $$ = ae_flag_none; }
+type_decl_opt: type_decl_noflag opt_type { $$ = $1; $$->flag |= $2; };
+type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $1; };
 
 type_decl_flag
   : REF { $$ = ae_flag_ref; }
   | CONSTT { $$ = ae_flag_const; };
-  | NONNULL { $$ = ae_flag_nonnull; };
-  | NONNULL REF { $$ = ae_flag_nonnull | ae_flag_ref; };
   | CONSTT REF { $$ = ae_flag_const | ae_flag_ref; };
-  | CONSTT NONNULL { $$ = ae_flag_const | ae_flag_nonnull; };
-  | CONSTT NONNULL REF { $$ = ae_flag_const | ae_flag_nonnull | ae_flag_ref; };
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
-  | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
+decl_list: union_exp { $$ = new_decl_list(mpool(arg), $1, NULL); }
+  | union_exp COMMA decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
 union_def
-  : UNION flag ID decl_template LBRACE decl_list RBRACE opt_id SEMICOLON {
+  : UNION flag ID decl_template LBRACE decl_list RBRACE {
       $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
       $$->xid = $3;
       $$->flag = $2;
-      if($4) {
-        if(!$3) {
-          gwion_error(&@$, arg, _("Template unions requires type name\n"));
-          YYERROR;
-        }
+      if($4)
         $$->tmpl = new_tmpl_base(mpool(arg), $4);
-      }
     }
   ;
 
