@@ -304,7 +304,6 @@ union YYSTYPE
   Stmt stmt;
   Stmt_List stmt_list;
   Arg_List arg_list;
-  Decl_List decl_list;
   Func_Def func_def;
   Enum_Def enum_def;
   Union_Def union_def;
@@ -316,7 +315,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 320 "include/parser.h"
+#line 319 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

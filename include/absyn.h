@@ -129,7 +129,7 @@ ANN void free_arg_list(MemPool p, Arg_List);
 
 typedef enum { ae_exp_decl, ae_exp_binary, ae_exp_unary, ae_exp_primary,
                ae_exp_cast, ae_exp_post, ae_exp_call, ae_exp_array, ae_exp_slice,
-               ae_exp_if, ae_exp_dot, ae_exp_lambda
+               ae_exp_if, ae_exp_dot, ae_exp_lambda, ae_exp_td
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
@@ -233,6 +233,7 @@ struct Exp_ {
     Exp_Array     exp_array;
     Exp_Slice     exp_slice;
     Exp_Lambda    exp_lambda;
+    Type_Decl*    exp_td;
   } d;
   struct ExpInfo_ *info;
   Exp next;
@@ -331,6 +332,7 @@ ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_*, const loc_t);
 ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const loc_t);
 ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*, const loc_t);
 ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt, const loc_t);
+ANEW ANN AST_NEW(Exp, exp_td, Type_Decl*, const loc_t);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
 
 static inline Exp take_exp(const Exp exp, const m_uint n) {
@@ -341,15 +343,6 @@ static inline Exp take_exp(const Exp exp, const m_uint n) {
 }
 
 ANN void free_exp(MemPool p, Exp);
-
-typedef struct Decl_List_* Decl_List;
-struct Decl_List_ {
-  Exp self;
-  Decl_List next;
-};
-
-ANN2(1, 2) ANEW AST_NEW(Decl_List, decl_list, Exp d, Decl_List l);
-ANN void free_decl_list(MemPool p, Decl_List);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_each, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_varloop, ae_stmt_break,
@@ -491,14 +484,14 @@ ANN void free_type_def(MemPool p, Type_Def);
 
 typedef struct Union_Def_* Union_Def;
 struct Union_Def_ {
-  Decl_List l;
+  Type_List l;
   struct Symbol_* xid;
   struct Type_* type;
   Tmpl *tmpl;
   loc_t pos;                ///< position
   ae_flag flag;
 };
-ANEW ANN AST_NEW(Union_Def, union_def, const Decl_List, const loc_t);
+ANEW ANN AST_NEW(Union_Def, union_def, const Type_List, const loc_t);
 ANN void free_union_def(MemPool p, Union_Def);
 
 enum ae_pp_type {

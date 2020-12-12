@@ -27,6 +27,7 @@ const _##prefix##_exp_func prefix##_exp_func[] = {                              
   (_##prefix##_exp_func)prefix##_exp_call,   (_##prefix##_exp_func)prefix##_exp_array,          \
   (_##prefix##_exp_func)prefix##_exp_slice,  (_##prefix##_exp_func)prefix##_exp_if,             \
   (_##prefix##_exp_func)prefix##_exp_dot,    (_##prefix##_exp_func)prefix##_exp_lambda,         \
+  (_##prefix##_exp_func)prefix##_exp_td,                                                        \
 };
 
 #define DECL_STMT_FUNC(prefix, type, arg)                                                       \

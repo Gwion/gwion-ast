@@ -157,6 +157,9 @@ ANN static AST_FREE(Exp_Primary*, prim) {
     free_range(p, a->d.range);
 }
 
+ANN static AST_FREE(Type_Decl**, exp_td) {
+  free_type_decl(p, *a);
+}
 DECL_EXP_FUNC(free, void, MemPool)
 
 AST_FREE(Exp, exp) {
@@ -254,17 +257,8 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
     xfree(a->data);
 }
 
-ANN AST_FREE(Decl_List, decl_list) {
-  if(a->self)
-    free_exp(p, a->self);
-  const Decl_List next = a->next;
-  mp_free(p, Decl_List, a);
-  if(next)
-    free_decl_list(p, next);
-}
-
 ANN AST_FREE(Union_Def, union_def) {
-  free_decl_list(p, a->l);
+  free_type_list(p, a->l);
   free_loc(p, a->pos); // ??
   mp_free(p, Union_Def, a);
 }

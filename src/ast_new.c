@@ -127,6 +127,12 @@ AST_NEW(Exp, exp_post, const Exp exp, const Symbol op, const loc_t pos) {
   return a;
 }
 
+AST_NEW(Exp, exp_td, Type_Decl* td, const loc_t pos) {
+  Exp a = new_exp(p, ae_exp_td, pos);
+  a->d.exp_td = td;
+  return a;
+}
+
 static AST_NEW(Exp, prim, const loc_t pos) {
   Exp a = new_exp(p, ae_exp_primary, pos);
   exp_setmeta(a, 1);
@@ -407,7 +413,7 @@ AST_NEW(Enum_Def, enum_def, const ID_List list, struct Symbol_* xid, const loc_t
   return a;
 }
 
-AST_NEW(Union_Def, union_def, const Decl_List l, const loc_t pos) {
+AST_NEW(Union_Def, union_def, const Type_List l, const loc_t pos) {
   Union_Def a = mp_calloc(p, Union_Def);
   a->l = l;
   a->pos = pos;
@@ -419,13 +425,6 @@ AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str data, const loc_t
   a->d.stmt_pp.pp_type = type;
   a->d.stmt_pp.data = data;
   a->pos = pos;
-  return a;
-}
-
-AST_NEW(Decl_List, decl_list, const Exp d, const Decl_List l) {
-  Decl_List a = mp_calloc(p, Decl_List);
-  a->self = d;
-  a->next = l;
   return a;
 }
 

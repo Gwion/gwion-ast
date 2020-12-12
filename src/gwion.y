@@ -41,7 +41,6 @@ ANN Symbol lambda_name(const Scanner*);
   Stmt stmt;
   Stmt_List stmt_list;
   Arg_List arg_list;
-  Decl_List decl_list;
   Func_Def func_def;
   Enum_Def enum_def;
   Union_Def union_def;
@@ -76,7 +75,7 @@ ANN Symbol lambda_name(const Scanner*);
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_REQUIRE "require"
-%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D "$<operator id>"
+%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D ".<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
@@ -93,7 +92,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
-%type<exp> prim_exp decl_exp union_exp binary_exp call_paren interp interp_exp
+%type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
@@ -103,7 +102,6 @@ ANN Symbol lambda_name(const Scanner*);
 %type<stmt> match_case_stmt label_stmt goto_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
-%type<decl_list> decl_list
 %type<func_def> func_def op_def func_def_base abstract_fdef
 %type<func_base> func_base fptr_base op_base
 %type<enum_def> enum_def
@@ -114,7 +112,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<class_def> class_def
 %type<ast> class_body
 %type<id_list> id_list decl_template
-%type<type_list> type_list call_template
+%type<type_list> type_list union_list call_template
 %type<ast> ast prg
 
 %start prg
@@ -346,12 +344,15 @@ exp_stmt
   | _exp_stmt     { $$ = new_stmt(mpool(arg), ae_stmt_exp, GET_LOC(&@$)); }
   ;
 
-exp: binary_exp | binary_exp COMMA exp  { $$ = prepend_exp($1, $3); };
+exp:
+    binary_exp
+  | binary_exp COMMA exp { $$ = prepend_exp($1, $3); };
 
 binary_exp
   : decl_exp
-  | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
+  | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); }
   | binary_exp DYNOP decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
+
 
 call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
@@ -379,8 +380,6 @@ array: array_exp | array_empty;
 decl_exp
   : con_exp
   | type_decl_flag2 flag type_decl_opt var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, GET_LOC(&@$)); $$->d.exp_decl.td->flag |= $1 | $2; };
-
-union_exp: type_decl_opt arg_decl { $1->flag |= ae_flag_ref; $$= new_exp_decl(mpool(arg), $1, new_var_decl_list(mpool(arg), $2, NULL), GET_LOC(&@$)); };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -472,11 +471,11 @@ type_decl_flag
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
-  | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
+union_list: type_decl_empty { $$ = new_type_list(mpool(arg), $1, NULL); }
+  | type_decl_empty ":" union_list { $$ = new_type_list(mpool(arg), $1, $3); } ;
 
 union_def
-  : UNION flag ID decl_template LBRACE decl_list RBRACE {
+  : UNION flag ID decl_template LBRACE union_list RBRACE {
       $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
       $$->xid = $3;
       $$->flag = $2;
@@ -536,6 +535,7 @@ unary_exp : post_exp
   | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, GET_LOC(&@$)); }
   | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, GET_LOC(&@$)); };
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, GET_LOC(&@$)); };
+  | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, GET_LOC(&@$)); };
 
 lambda_list:
  ID { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), NULL); }
@@ -546,6 +546,7 @@ type_list
   : type_decl_empty { $$ = new_type_list(mpool(arg), $1, NULL); }
   | type_decl_empty COMMA type_list { $$ = new_type_list(mpool(arg), $1, $3); }
   ;
+
 
 call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
 
@@ -559,6 +560,7 @@ dot_exp: post_exp DOT ID {
   };
   $$ = new_exp_dot(mpool(arg), $1, $3, GET_LOC(&@$));
 };
+
 post_exp: prim_exp
   | post_exp array_exp
     { $$ = new_exp_array(mpool(arg), $1, $2, GET_LOC(&@$)); }

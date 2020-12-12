@@ -244,20 +244,15 @@ ANN Exp cpy_exp(MemPool p, const Exp src) {
     case ae_exp_lambda:
       cpy_exp_lambda(p, &a->d.exp_lambda, &src->d.exp_lambda);
       break;
+    case ae_exp_td:
+      a->d.exp_td = cpy_type_decl(p, src->d.exp_td);
+      break;
   }
   a->info = cpy_expinfo(p, src->info);
   a->exp_type = src->exp_type;
   a->emit_var = src->emit_var;
 //  a->meta = src->meta;// maybe meta shoyuld be set as in constructors
   a->pos = loc_cpy(p, src->pos);
-  return a;
-}
-
-ANN /*static */Decl_List cpy_decl_list(MemPool p, const Decl_List src) {
-  Decl_List a = mp_calloc(p, Decl_List);
-  a->self = cpy_exp(p, src->self);
-  if(src->next)
-    a->next = cpy_decl_list(p, src->next);
   return a;
 }
 
@@ -403,7 +398,7 @@ ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
 
 ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   Union_Def a = mp_calloc(p, Union_Def);
-  a->l = cpy_decl_list(p, src->l); // 1 
+  a->l = cpy_type_list(p, src->l); // 1 
   if(src->xid)
     a->xid = src->xid; // 1 
   if(src->tmpl)
