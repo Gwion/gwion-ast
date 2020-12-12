@@ -472,8 +472,8 @@ type_decl_flag
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-decl_list: union_exp { $$ = new_decl_list(mpool(arg), $1, NULL); }
-  | union_exp COMMA decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
+decl_list: union_exp SEMICOLON { $$ = new_decl_list(mpool(arg), $1, NULL); }
+  | union_exp SEMICOLON decl_list { $$ = new_decl_list(mpool(arg), $1, $3); } ;
 
 union_def
   : UNION flag ID decl_template LBRACE decl_list RBRACE {
