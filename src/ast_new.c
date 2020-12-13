@@ -409,7 +409,7 @@ AST_NEW(Enum_Def, enum_def, const ID_List list, struct Symbol_* xid, const loc_t
   a->xid = xid;
   a->list = list;
   a->pos = pos;
-  vector_init(&a->values);
+//  vector_init(&a->values);
   return a;
 }
 

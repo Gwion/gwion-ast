@@ -206,9 +206,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 ":["                                { adjust(yyscanner); return TMPL;}
 {SPACE}                             { adjust(yyscanner); continue; }
-{OP}{1} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
-{OP}{2} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op2(yytext); }
-{OP}{3} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op3(yytext); }
+{OP}{1}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
+\?{2,}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return OPTIONS; }
+{OP}{2}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op2(yytext); }
+{OP}{3}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op3(yytext); }
 {OP}{4,} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DYNOP; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 ","                                 { adjust(yyscanner); return COMMA;}

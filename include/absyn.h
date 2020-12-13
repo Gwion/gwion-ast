@@ -92,6 +92,7 @@ typedef struct Type_Decl_ {
   Type_List types;
   loc_t pos;               ///< position
   struct Type_Decl_* next;
+  m_uint option;
   ae_flag flag;
 } Type_Decl;
 

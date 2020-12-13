@@ -247,7 +247,6 @@ ANN static AST_FREE(Stmt_If, stmt_if) {
 
 ANN AST_FREE(Enum_Def, enum_def) {
   free_id_list(p, a->list);
-  vector_release(&a->values);
   free_loc(p, a->pos); // ??
   mp_free(p, Enum_Def, a);
 }

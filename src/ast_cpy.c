@@ -357,7 +357,6 @@ ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
   a->xid = src->xid;
   a->pos = loc_cpy(p, src->pos);
   a->flag = src->flag;
-  vector_init(&a->values);
   return a;
 }
 

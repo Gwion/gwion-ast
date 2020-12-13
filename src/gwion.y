@@ -26,6 +26,7 @@ ANN Symbol lambda_name(const Scanner*);
   char* sval;
   int ival;
   long unsigned int lval;
+  m_uint uval;
   ae_flag flag;
   enum fbflag fbflag;
   enum cflag cflag;
@@ -77,14 +78,15 @@ ANN Symbol lambda_name(const Scanner*);
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_REQUIRE "require"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D ".<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
-  DOLLAR "$" QUESTION "?" COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
+  DOLLAR "$" QUESTION "?" OPTIONS COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<flag> flag final modifier operator opt_type
+%type<uval> option
+%type<flag> flag final modifier operator
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
 %type<cflag> class_type
@@ -203,7 +205,7 @@ type_def: TYPEDEF flag type_decl_array ID decl_template SEMICOLON {
     $$->tmpl = new_tmpl_base(mpool(arg), $5);
 };
 
-type_decl_array: type_decl | type_decl array { $1->array = $2; };
+type_decl_array: type_decl array { $1->array = $2; } | type_decl
 
 type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
     { gwion_error(&@$, arg, "can't instantiate with empty '[]'"); YYERROR;}
@@ -352,11 +354,12 @@ binary_exp
   : decl_exp
   | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); }
   | binary_exp DYNOP decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
+  | binary_exp OPTIONS decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
 
 
 call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
 
-op: EQ | NEQ | DYNOP;
+op: EQ | NEQ | DYNOP | OPTIONS;
 
 array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
@@ -379,7 +382,7 @@ range
 array: array_exp | array_empty;
 decl_exp
   : con_exp
-  | type_decl_flag2 flag type_decl_opt var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, GET_LOC(&@$)); $$->d.exp_decl.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, GET_LOC(&@$)); $$->d.exp_decl.td->flag |= $1 | $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -460,8 +463,9 @@ type_decl_noflag
   : type_decl_next { $$ = $1; }
   | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
   ;
-opt_type: "?" { $$ = ae_flag_optionnal; } | { $$ = ae_flag_none; }
-type_decl_opt: type_decl_noflag opt_type { $$ = $1; $$->flag |= $2; };
+
+option: "?" { $$ = 1; } | OPTIONS { $$ = strlen(s_name($1)); } | { $$ = 0; };
+type_decl_opt: type_decl_noflag option { $$ = $1; $$->option |= $2; };
 type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $1; };
 
 type_decl_flag
