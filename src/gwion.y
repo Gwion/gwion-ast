@@ -50,6 +50,7 @@ ANN Symbol lambda_name(const Scanner*);
   Section* section;
   ID_List id_list;
   Type_List type_list;
+  Union_List union_list;
   Class_Def class_def;
   Ast ast;
 };
@@ -114,7 +115,8 @@ ANN Symbol lambda_name(const Scanner*);
 %type<class_def> class_def
 %type<ast> class_body
 %type<id_list> id_list decl_template
-%type<type_list> type_list union_list call_template
+%type<type_list> type_list call_template
+%type<union_list> union_list
 %type<ast> ast prg
 
 %start prg
@@ -475,8 +477,8 @@ type_decl_flag
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-union_list: type_decl_empty { $$ = new_type_list(mpool(arg), $1, NULL); }
-  | type_decl_empty ":" union_list { $$ = new_type_list(mpool(arg), $1, $3); } ;
+union_list: type_decl_empty ID ";" { $$ = new_union_list(mpool(arg), $1, $2, GET_LOC(&@$)); }
+  | type_decl_empty ID ";" union_list { $$ = new_union_list(mpool(arg), $1, $2, GET_LOC(&@$)); $$->next = $4; };
 
 union_def
   : UNION flag ID decl_template LBRACE union_list RBRACE {

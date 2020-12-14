@@ -395,9 +395,19 @@ ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
   return a;
 }
 
+ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
+  Union_List a = mp_calloc(p, Union_List);
+  a->td = cpy_type_decl(p, src->td);
+  a->xid = src->xid;
+  a->pos = loc_cpy(p, src->pos);
+  if(a->next)
+    a->next = cpy_union_list(p, src->next);
+  return a;
+}
+
 ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   Union_Def a = mp_calloc(p, Union_Def);
-  a->l = cpy_type_list(p, src->l); // 1 
+  a->l = cpy_union_list(p, src->l); // 1 
   if(src->xid)
     a->xid = src->xid; // 1 
   if(src->tmpl)

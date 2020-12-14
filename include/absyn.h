@@ -483,16 +483,24 @@ struct Type_Def_ {
 ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl*, struct Symbol_*);
 ANN void free_type_def(MemPool p, Type_Def);
 
-typedef struct Union_Def_* Union_Def;
-struct Union_Def_ {
-  Type_List l;
+typedef struct Union_List_ {
+  Type_Decl *td;
+  Symbol xid;
+  struct Union_List_ *next;
+  loc_t pos;
+} *Union_List;
+ANEW ANN AST_NEW(Union_List, union_list, Type_Decl*, const Symbol, const loc_t);
+ANN void free_union_list(MemPool p, Union_List);
+
+typedef struct Union_Def_ {
+  Union_List l;
   struct Symbol_* xid;
   struct Type_* type;
   Tmpl *tmpl;
   loc_t pos;                ///< position
   ae_flag flag;
-};
-ANEW ANN AST_NEW(Union_Def, union_def, const Type_List, const loc_t);
+} *Union_Def;
+ANEW ANN AST_NEW(Union_Def, union_def, const Union_List, const loc_t);
 ANN void free_union_def(MemPool p, Union_Def);
 
 enum ae_pp_type {

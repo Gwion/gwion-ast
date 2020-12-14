@@ -256,8 +256,16 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
     xfree(a->data);
 }
 
+ANN AST_FREE(Union_List, union_list) {
+  free_type_decl(p, a->td);
+  free_loc(p, a->pos); // ??
+  if(a->next)
+    free_union_list(p, a->next);
+  mp_free(p, Union_List, a);
+}
+
 ANN AST_FREE(Union_Def, union_def) {
-  free_type_list(p, a->l);
+  free_union_list(p, a->l);
   free_loc(p, a->pos); // ??
   mp_free(p, Union_Def, a);
 }

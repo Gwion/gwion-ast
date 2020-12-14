@@ -413,7 +413,15 @@ AST_NEW(Enum_Def, enum_def, const ID_List list, struct Symbol_* xid, const loc_t
   return a;
 }
 
-AST_NEW(Union_Def, union_def, const Type_List l, const loc_t pos) {
+AST_NEW(Union_List, union_list, Type_Decl *td, const Symbol xid, const loc_t pos) {
+  Union_List a = mp_calloc(p, Union_List);
+  a->td = td;
+  a->xid = xid;
+  a->pos = pos;
+  return a;
+}
+
+AST_NEW(Union_Def, union_def, const Union_List l, const loc_t pos) {
   Union_Def a = mp_calloc(p, Union_Def);
   a->l = l;
   a->pos = pos;
