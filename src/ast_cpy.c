@@ -298,7 +298,6 @@ ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
     a->exp = cpy_exp(p, src->exp);
   if(src->body)
     a->body = cpy_stmt(p, src->body);
-  a->is_ptr = src->is_ptr;
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {

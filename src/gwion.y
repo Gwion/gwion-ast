@@ -316,8 +316,8 @@ loop_stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, GET_LOC(&@$)); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, GET_LOC(&@$)); }
-  | FOREACH LPAREN ref ID COLON binary_exp RPAREN stmt
-      { $$ = new_stmt_each(mpool(arg), $4, $6, $8, GET_LOC(&@$)); $$->d.stmt_each.is_ptr = $3; }
+  | FOREACH LPAREN ID COLON binary_exp RPAREN stmt
+      { $$ = new_stmt_each(mpool(arg), $3, $5, $7, GET_LOC(&@$)); }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, GET_LOC(&@$)); }
   ;
@@ -449,8 +449,6 @@ op_def:  operator op_base code_stmt
 { $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
-
-ref: { $$ = 0; } | REF { $$ = ae_flag_ref; };
 
 type_decl_tmpl
   : ID call_template { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); $$->types = $2; }

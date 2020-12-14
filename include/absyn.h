@@ -402,7 +402,6 @@ struct Stmt_Each_ {
   Exp exp;
   Stmt body;
   struct Value_* v;
-  m_bool is_ptr;
 };
 
 struct Stmt_Loop_ {
