@@ -69,10 +69,10 @@ ANN Symbol lambda_name(const Scanner*);
   TYPEDEF "typedef" FUNCDEF "funcdef"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop"
   BACKSLASH "\\" OPID_A OPID_D
-  REF "ref"
+  LATE "LATE"
 
 %token<lval> NUM "<integer>"
-%type<ival> ref flow breaks
+%type<ival> flow breaks
 %token<fval> FLOATT
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
@@ -469,9 +469,8 @@ type_decl_opt: type_decl_noflag option { $$ = $1; $$->option |= $2; };
 type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $1; };
 
 type_decl_flag
-  : REF { $$ = ae_flag_ref; }
+  : LATE { $$ = ae_flag_late; }
   | CONSTT { $$ = ae_flag_const; };
-  | CONSTT REF { $$ = ae_flag_const | ae_flag_ref; };
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 

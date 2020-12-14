@@ -102,7 +102,7 @@ extern int gwion_debug;
     BACKSLASH = 303,               /* "\\"  */
     OPID_A = 304,                  /* OPID_A  */
     OPID_D = 305,                  /* OPID_D  */
-    REF = 306,                     /* "ref"  */
+    LATE = 306,                    /* "LATE"  */
     NUM = 307,                     /* "<integer>"  */
     FLOATT = 308,                  /* FLOATT  */
     STRING_LIT = 309,              /* "<litteral string>"  */
@@ -219,7 +219,7 @@ extern int gwion_debug;
 #define BACKSLASH 303
 #define OPID_A 304
 #define OPID_D 305
-#define REF 306
+#define LATE 306
 #define NUM 307
 #define FLOATT 308
 #define STRING_LIT 309
