@@ -68,7 +68,7 @@ ANN Symbol lambda_name(const Scanner*);
   OPERATOR "operator"
   TYPEDEF "typedef" FUNCDEF "funcdef"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop"
-  BACKSLASH "\\" OPID_A OPID_D
+  BACKSLASH "\\" OPID_A OPID_E
   LATE "LATE"
 
 %token<lval> NUM "<integer>"
@@ -77,7 +77,7 @@ ANN Symbol lambda_name(const Scanner*);
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_REQUIRE "require"
-%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_D ".<operator id>"
+%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_E "&<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" OPTIONS COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
@@ -534,7 +534,7 @@ unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, GET_LOC(&@$)); }
-  | LPAREN OPID_D RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4, GET_LOC(&@$)); }
+  | LPAREN OPID_E RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4, GET_LOC(&@$)); }
   | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, GET_LOC(&@$)); }
   | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, GET_LOC(&@$)); };
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, GET_LOC(&@$)); };
@@ -574,7 +574,7 @@ post_exp: prim_exp
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
   | post_exp post_op
     { $$ = new_exp_post(mpool(arg), $1, $2, GET_LOC(&@$)); }
-  | post_exp OPID_D
+  | post_exp OPID_E
     { $$ = new_exp_post(mpool(arg), $1, $2, GET_LOC(&@$)); }
   | dot_exp { $$ = $1; }
   ;

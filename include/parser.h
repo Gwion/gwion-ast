@@ -101,7 +101,7 @@ extern int gwion_debug;
     VARLOOP = 302,                 /* "varloop"  */
     BACKSLASH = 303,               /* "\\"  */
     OPID_A = 304,                  /* OPID_A  */
-    OPID_D = 305,                  /* OPID_D  */
+    OPID_E = 305,                  /* OPID_E  */
     LATE = 306,                    /* "LATE"  */
     NUM = 307,                     /* "<integer>"  */
     FLOATT = 308,                  /* FLOATT  */
@@ -218,7 +218,7 @@ extern int gwion_debug;
 #define VARLOOP 302
 #define BACKSLASH 303
 #define OPID_A 304
-#define OPID_D 305
+#define OPID_E 305
 #define LATE 306
 #define NUM 307
 #define FLOATT 308

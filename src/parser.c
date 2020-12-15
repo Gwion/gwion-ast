@@ -168,7 +168,7 @@ enum yysymbol_kind_t
   YYSYMBOL_VARLOOP = 47,                   /* "varloop"  */
   YYSYMBOL_BACKSLASH = 48,                 /* "\\"  */
   YYSYMBOL_OPID_A = 49,                    /* OPID_A  */
-  YYSYMBOL_OPID_D = 50,                    /* OPID_D  */
+  YYSYMBOL_OPID_E = 50,                    /* OPID_E  */
   YYSYMBOL_LATE = 51,                      /* "LATE"  */
   YYSYMBOL_NUM = 52,                       /* "<integer>"  */
   YYSYMBOL_FLOATT = 53,                    /* FLOATT  */
@@ -190,7 +190,7 @@ enum yysymbol_kind_t
   YYSYMBOL_PP_NL = 69,                     /* "\n"  */
   YYSYMBOL_PP_REQUIRE = 70,                /* "require"  */
   YYSYMBOL_71_operator_id_ = 71,           /* "@<operator id>"  */
-  YYSYMBOL_72_operator_id_ = 72,           /* ".<operator id>"  */
+  YYSYMBOL_72_operator_id_ = 72,           /* "&<operator id>"  */
   YYSYMBOL_ID = 73,                        /* "<identifier>"  */
   YYSYMBOL_PLUS = 74,                      /* "+"  */
   YYSYMBOL_PLUSPLUS = 75,                  /* "++"  */
@@ -787,12 +787,12 @@ static const char *const yytname[] =
   "\"global\"", "\"private\"", "\"protect\"", "\"abstract\"", "\"final\"",
   "\"extends\"", "\".\"", "\"operator\"", "\"typedef\"", "\"funcdef\"",
   "NOELSE", "\"union\"", "\"const\"", "\"...\"", "\"varloop\"", "\"\\\\\"",
-  "OPID_A", "OPID_D", "\"LATE\"", "\"<integer>\"", "FLOATT",
+  "OPID_A", "OPID_E", "\"LATE\"", "\"<integer>\"", "FLOATT",
   "\"<litteral string>\"", "\"<litteral char>\"", "\"`\"",
   "\"<interp string>\"", "INTERP_EXP", "\"<interp string>`\"",
   "\"<comment>\"", "\"#include\"", "\"#define\"", "\"#pragma\"",
   "\"#undef\"", "\"#ifdef\"", "\"#ifndef\"", "\"#else\"", "\"#if\"",
-  "\"\\n\"", "\"require\"", "\"@<operator id>\"", "\".<operator id>\"",
+  "\"\\n\"", "\"require\"", "\"@<operator id>\"", "\"&<operator id>\"",
   "\"<identifier>\"", "\"+\"", "\"++\"", "\"-\"", "\"--\"", "\"*\"",
   "\"/\"", "\"%\"", "\"$\"", "\"?\"", "OPTIONS", "\":\"", "\"::\"",
   "\"?:\"", "\"new\"", "\"spork\"", "\"fork\"", "\"typeof\"", "\"<<<\"",
@@ -3075,7 +3075,7 @@ yyreduce:
 #line 3076 "src/parser.c"
     break;
 
-  case 236: /* unary_exp: "(" OPID_D ")" unary_exp  */
+  case 236: /* unary_exp: "(" OPID_E ")" unary_exp  */
 #line 537 "src/gwion.y"
                                    { (yyval.exp) = new_exp_unary(mpool(arg), (yyvsp[-2].sym), (yyvsp[0].exp), GET_LOC(&(yyloc))); }
 #line 3082 "src/parser.c"
@@ -3191,7 +3191,7 @@ yyreduce:
 #line 3192 "src/parser.c"
     break;
 
-  case 257: /* post_exp: post_exp OPID_D  */
+  case 257: /* post_exp: post_exp OPID_E  */
 #line 578 "src/gwion.y"
     { (yyval.exp) = new_exp_post(mpool(arg), (yyvsp[-1].exp), (yyvsp[0].sym), GET_LOC(&(yyloc))); }
 #line 3198 "src/parser.c"
