@@ -57,7 +57,7 @@ ANN static m_str get_arg_text(void* data, const m_str id);
 ANN static m_str macro_data(void* data, const m_bool);
 
 ANN static m_uint  atoll_space(m_str, size_t);
-ANN static m_float atof_space(m_str, size_t);
+ANN static double atof_space(m_str, size_t);
 
 #define SCAN_LINT(a)     if(scan->ppa->lint)a;
 #define SCAN_NOLINT      if(!scan->ppa->lint)
@@ -358,14 +358,14 @@ ANN static m_uint  atoll_space(m_str str, size_t sz) {
   return atoll(base);
 }
 
-ANN static m_float atof_space(m_str str, size_t sz) {
+ANN static double atof_space(m_str str, size_t sz) {
   char base[sz + 1], *tmp = base;
   for(size_t i = 0; i < sz; ++i) {
     const char c = str[i];
     if(c != ' ')
       *tmp++ = c;
   }
-  tmp[sz] = '\0';
+  *tmp = '\0';
   return atof(base);
 }
 
