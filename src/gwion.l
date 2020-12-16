@@ -3,6 +3,7 @@ SPACE    [ \r\t]
 OP       [\?:\$@\+\-\*/%~\<\>\^|&\!=]
 LEX_ID   [A-Za-z_][A-Za-z0-9_]*
 FILENAME [A-Za-z0-9_./]*
+NUM      ([0-9]{1,3}+({SPACE}*[0-9]{3})*)
 %{
 #include <ctype.h>
 #include "gwion_util.h"
@@ -54,6 +55,9 @@ ANN static void handle_char(void* data, m_str str);
 ANN static m_str strip_comment(Scanner* scan, const m_str str);
 ANN static m_str get_arg_text(void* data, const m_str id);
 ANN static m_str macro_data(void* data, const m_bool);
+
+ANN static m_uint  atoll_space(m_str, size_t);
+ANN static m_float atof_space(m_str, size_t);
 
 #define SCAN_LINT(a)     if(scan->ppa->lint)a;
 #define SCAN_NOLINT      if(!scan->ppa->lint)
@@ -316,10 +320,10 @@ ANN static m_str macro_data(void* data, const m_bool);
 "__line__"                          { adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
 "__file__"                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 
-0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                 return NUM;        }
-0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
-[0-9]+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);  return NUM;        }
-([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+) { adjust(yyscanner); yylval->fval = (m_float)atof(yytext);        return FLOATT;      }
+0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                         return NUM;    }
+0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);                return NUM;    }
+{NUM}+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll_space(yytext, yyleng);  return NUM;    }
+({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+) { adjust(yyscanner); yylval->fval = (m_float)atof_space(yytext, yyleng);  return FLOATT; }
 @{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
 &{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_E; }
 {LEX_ID}                            {
@@ -342,6 +346,28 @@ ANN static m_str macro_data(void* data, const m_bool);
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+ANN static m_uint  atoll_space(m_str str, size_t sz) {
+  char base[sz + 1], *tmp = base;
+  for(size_t i = 0; i < sz; ++i) {
+    const char c = str[i];
+    if(c != ' ')
+      *tmp++ = c;
+  }
+  *tmp = '\0';
+  return atoll(base);
+}
+
+ANN static m_float atof_space(m_str str, size_t sz) {
+  char base[sz + 1], *tmp = base;
+  for(size_t i = 0; i < sz; ++i) {
+    const char c = str[i];
+    if(c != ' ')
+      *tmp++ = c;
+  }
+  tmp[sz] = '\0';
+  return atof(base);
+}
 
 ANN Symbol lambda_name(const Scanner *scan) {
   char c[6 + 1 + num_digit(scan->pos.line) + num_digit(scan->pos.column) + 2];
