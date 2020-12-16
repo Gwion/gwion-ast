@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['l_770',['l',['../structUnion__Def__.html#addfef3136742922d13e38a3d708b8374',1,'Union_Def_::l()'],['../absyn_8h.html#a20fc69d5243266964203ba4ea0aae8f2',1,'l():&#160;absyn.h']]],
+  ['l_770',['l',['../structUnion__Def__.html#ad7893f35e627f0f1c5cdfac6459603c7',1,'Union_Def_']]],
   ['last_771',['last',['../structloc__t__.html#a6661658c024ee942da7441d0afffea1b',1,'loc_t_']]],
   ['lhs_772',['lhs',['../structExp__Binary.html#aa6673241498af0146824390f1a6037f0',1,'Exp_Binary']]],
   ['line_773',['line',['../structpos__t.html#a95869659467b62c610fc1d07187884fe',1,'pos_t']]],

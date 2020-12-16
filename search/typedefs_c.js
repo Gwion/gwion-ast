@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['union_5fdef_881',['Union_Def',['../absyn_8h.html#adadd20750784c9abea8270f9e6589450',1,'absyn.h']]]
+  ['var_5fdecl_883',['Var_Decl',['../absyn_8h.html#a08b34334e396338d6f9ad9387517f0c1',1,'absyn.h']]],
+  ['var_5fdecl_5flist_884',['Var_Decl_List',['../absyn_8h.html#a005971885e8f30083d0ded28f78cafa8',1,'absyn.h']]]
 ];

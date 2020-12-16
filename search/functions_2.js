@@ -1,14 +1,13 @@
 var searchData=
 [
-  ['cflag_563',['cflag',['../absyn_8h.html#a1983aed32ea522ea0f9a21922f935524',1,'absyn.h']]],
-  ['clean_5fmacroarg_564',['clean_macroarg',['../macro_8c.html#a0ba603dde9a208ce8c33c3b9c9b68988',1,'clean_macroarg(const MacroArg a):&#160;macro.c'],['../macro_8h.html#a919dafde4069e24209b488c50da14977',1,'clean_macroarg(const MacroArg):&#160;macro.c']]],
-  ['clear_5fbuffer_565',['clear_buffer',['../bison__compat_8h.html#aa18e3f737f350057a57b2834ec49d400',1,'bison_compat.h']]],
-  ['copyright_566',['Copyright',['../License_8txt.html#aa3ed601dee313116393d6e5efc58d658',1,'License.txt']]],
-  ['cpy_5farg_5flist_567',['cpy_arg_list',['../ast__cpy_8c.html#af592f705ac72612df80e5e19b35952b8',1,'cpy_arg_list(MemPool p, const Arg_List src):&#160;ast_cpy.c'],['../ast__new_8c.html#aa67d2a500a8e858592189e5a1710d95f',1,'cpy_arg_list(MemPool, const Arg_List):&#160;ast_cpy.c']]],
-  ['cpy_5farray_5fsub_568',['cpy_array_sub',['../ast__cpy_8c.html#a1e45c076909e19f29adc26a45d60289f',1,'cpy_array_sub(MemPool p, const Array_Sub src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a439402cd31dd81198aca5b681beff687',1,'cpy_array_sub(MemPool, Array_Sub):&#160;ast_cpy.c']]],
-  ['cpy_5fast_569',['cpy_ast',['../ast__cpy_8c.html#aee78c045de1a082b15a5e3b2c410ea71',1,'cpy_ast(MemPool p, const Ast src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#ae7a743e778ed1d2a34986c725815706b',1,'cpy_ast(MemPool p, const Ast ast):&#160;ast_cpy.c']]],
-  ['cpy_5fclass_5fdef_570',['cpy_class_def',['../ast__cpy_8c.html#aff94a7fb7e94c41fa3e929a6081bf526',1,'cpy_class_def(MemPool p, const Class_Def src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#acb4f2d6ebbffdf97e2368d22bee72dd2',1,'cpy_class_def(MemPool, Class_Def):&#160;ast_cpy.c']]],
-  ['cpy_5fdecl_5flist_571',['cpy_decl_list',['../ast__cpy_8c.html#a9a0017f732ca401760162fa96767473b',1,'cpy_decl_list(MemPool p, const Decl_List src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a9a0017f732ca401760162fa96767473b',1,'cpy_decl_list(MemPool p, const Decl_List src):&#160;ast_cpy.c']]],
+  ['cflag_564',['cflag',['../absyn_8h.html#a1983aed32ea522ea0f9a21922f935524',1,'absyn.h']]],
+  ['clean_5fmacroarg_565',['clean_macroarg',['../macro_8c.html#a0ba603dde9a208ce8c33c3b9c9b68988',1,'clean_macroarg(const MacroArg a):&#160;macro.c'],['../macro_8h.html#a919dafde4069e24209b488c50da14977',1,'clean_macroarg(const MacroArg):&#160;macro.c']]],
+  ['clear_5fbuffer_566',['clear_buffer',['../bison__compat_8h.html#aa18e3f737f350057a57b2834ec49d400',1,'bison_compat.h']]],
+  ['copyright_567',['Copyright',['../License_8txt.html#aa3ed601dee313116393d6e5efc58d658',1,'License.txt']]],
+  ['cpy_5farg_5flist_568',['cpy_arg_list',['../ast__cpy_8c.html#af592f705ac72612df80e5e19b35952b8',1,'cpy_arg_list(MemPool p, const Arg_List src):&#160;ast_cpy.c'],['../ast__new_8c.html#aa67d2a500a8e858592189e5a1710d95f',1,'cpy_arg_list(MemPool, const Arg_List):&#160;ast_cpy.c']]],
+  ['cpy_5farray_5fsub_569',['cpy_array_sub',['../ast__cpy_8c.html#a1e45c076909e19f29adc26a45d60289f',1,'cpy_array_sub(MemPool p, const Array_Sub src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a439402cd31dd81198aca5b681beff687',1,'cpy_array_sub(MemPool, Array_Sub):&#160;ast_cpy.c']]],
+  ['cpy_5fast_570',['cpy_ast',['../ast__cpy_8c.html#aee78c045de1a082b15a5e3b2c410ea71',1,'cpy_ast(MemPool p, const Ast src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#ae7a743e778ed1d2a34986c725815706b',1,'cpy_ast(MemPool p, const Ast ast):&#160;ast_cpy.c']]],
+  ['cpy_5fclass_5fdef_571',['cpy_class_def',['../ast__cpy_8c.html#aff94a7fb7e94c41fa3e929a6081bf526',1,'cpy_class_def(MemPool p, const Class_Def src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#acb4f2d6ebbffdf97e2368d22bee72dd2',1,'cpy_class_def(MemPool, Class_Def):&#160;ast_cpy.c']]],
   ['cpy_5fenum_5fdef_572',['cpy_enum_def',['../ast__cpy_8c.html#a73a10e907804a34e89ff261318487523',1,'ast_cpy.c']]],
   ['cpy_5fexp_573',['cpy_exp',['../ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740',1,'cpy_exp(MemPool p, const Exp src):&#160;ast_cpy.c'],['../ast__new_8c.html#aa39c741e31c5475d57fd3308ba2be8af',1,'cpy_exp(MemPool, const Exp):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a85b688eb8b857b4861c1d1a6eb03b137',1,'cpy_exp(MemPool, Exp):&#160;ast_cpy.c']]],
   ['cpy_5fexp_5farray_574',['cpy_exp_array',['../ast__cpy_8c.html#af930a76df6551ccdb6c303d24bfdc496',1,'ast_cpy.c']]],
@@ -49,8 +48,9 @@ var searchData=
   ['cpy_5ftype_5fdecl_609',['cpy_type_decl',['../ast__cpy_8c.html#ad359d6ed68e1d11a401b69806a1f069c',1,'cpy_type_decl(MemPool p, const Type_Decl *src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#af7a62efd1763e9eb13ecaa324762dc55',1,'cpy_type_decl(MemPool, const Type_Decl *):&#160;ast_cpy.c']]],
   ['cpy_5ftype_5fdef_610',['cpy_type_def',['../ast__cpy_8c.html#acab99dee196399e2996fb80a450a751d',1,'ast_cpy.c']]],
   ['cpy_5ftype_5fdef2_611',['cpy_type_def2',['../ast__cpy_8c.html#a88d40058154cf2217946f2d01bf559b7',1,'ast_cpy.c']]],
-  ['cpy_5ftype_5flist_612',['cpy_type_list',['../ast__cpy_8c.html#a996496b648fba07b49039a4fdba48c30',1,'cpy_type_list(MemPool p, const Type_List src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#aa017dd249a5e9f51352ae7d943d7a549',1,'cpy_type_list(MemPool, const Type_List):&#160;ast_cpy.c']]],
+  ['cpy_5ftype_5flist_612',['cpy_type_list',['../ast__cpy_8c.html#a996496b648fba07b49039a4fdba48c30',1,'cpy_type_list(MemPool p, const Type_List src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a996496b648fba07b49039a4fdba48c30',1,'cpy_type_list(MemPool p, const Type_List src):&#160;ast_cpy.c']]],
   ['cpy_5funion_5fdef_613',['cpy_union_def',['../ast__cpy_8c.html#a18b19981dffe8863d32a89091870afe2',1,'cpy_union_def(MemPool p, const Union_Def src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a6dfd13b2be6b1af193a8eee679e3b416',1,'cpy_union_def(MemPool, Union_Def):&#160;ast_cpy.c']]],
-  ['cpy_5fvar_5fdecl_614',['cpy_var_decl',['../ast__cpy_8c.html#ad5db399208d208b7150c590378842c3a',1,'ast_cpy.c']]],
-  ['cpy_5fvar_5fdecl_5flist_615',['cpy_var_decl_list',['../ast__cpy_8c.html#a4735fda4d1609178ebd629f8c24680e1',1,'ast_cpy.c']]]
+  ['cpy_5funion_5flist_614',['cpy_union_list',['../ast__cpy_8c.html#aa2efb806222284266262bd4580a2caf9',1,'cpy_union_list(MemPool p, const Union_List src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a51c03cd6f276565eb558d91760c07c12',1,'cpy_union_list(MemPool, const Union_List):&#160;ast_cpy.c']]],
+  ['cpy_5fvar_5fdecl_615',['cpy_var_decl',['../ast__cpy_8c.html#ad5db399208d208b7150c590378842c3a',1,'ast_cpy.c']]],
+  ['cpy_5fvar_5fdecl_5flist_616',['cpy_var_decl_list',['../ast__cpy_8c.html#a4735fda4d1609178ebd629f8c24680e1',1,'ast_cpy.c']]]
 ];

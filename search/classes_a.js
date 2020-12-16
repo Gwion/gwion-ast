@@ -1,21 +1,7 @@
 var searchData=
 [
-  ['scanner_5f_508',['Scanner_',['../structScanner__.html',1,'']]],
-  ['section_5f_509',['Section_',['../structSection__.html',1,'']]],
-  ['section_5fdata_510',['section_data',['../unionSection___1_1section__data.html',1,'Section_']]],
-  ['stmt_5f_511',['Stmt_',['../structStmt__.html',1,'']]],
-  ['stmt_5fcode_5f_512',['Stmt_Code_',['../structStmt__Code__.html',1,'']]],
-  ['stmt_5fdata_513',['stmt_data',['../unionStmt___1_1stmt__data.html',1,'Stmt_']]],
-  ['stmt_5feach_5f_514',['Stmt_Each_',['../structStmt__Each__.html',1,'']]],
-  ['stmt_5fexp_5f_515',['Stmt_Exp_',['../structStmt__Exp__.html',1,'']]],
-  ['stmt_5fflow_5f_516',['Stmt_Flow_',['../structStmt__Flow__.html',1,'']]],
-  ['stmt_5ffor_5f_517',['Stmt_For_',['../structStmt__For__.html',1,'']]],
-  ['stmt_5fgoto_5fdata_518',['stmt_goto_data',['../unionStmt__Jump___1_1stmt__goto__data.html',1,'Stmt_Jump_']]],
-  ['stmt_5fif_5f_519',['Stmt_If_',['../structStmt__If__.html',1,'']]],
-  ['stmt_5fjump_5f_520',['Stmt_Jump_',['../structStmt__Jump__.html',1,'']]],
-  ['stmt_5flist_5f_521',['Stmt_List_',['../structStmt__List__.html',1,'']]],
-  ['stmt_5floop_5f_522',['Stmt_Loop_',['../structStmt__Loop__.html',1,'']]],
-  ['stmt_5fmatch_5f_523',['Stmt_Match_',['../structStmt__Match__.html',1,'']]],
-  ['stmt_5fpp_5f_524',['Stmt_PP_',['../structStmt__PP__.html',1,'']]],
-  ['stmt_5fvarloop_5f_525',['Stmt_VarLoop_',['../structStmt__VarLoop__.html',1,'']]]
+  ['tmpl_5f_526',['Tmpl_',['../structTmpl__.html',1,'']]],
+  ['type_5fdecl_5f_527',['Type_Decl_',['../structType__Decl__.html',1,'']]],
+  ['type_5fdef_5f_528',['Type_Def_',['../structType__Def__.html',1,'']]],
+  ['type_5flist_5f_529',['Type_List_',['../structType__List__.html',1,'']]]
 ];

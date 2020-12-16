@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['loc_5ft_857',['loc_t',['../loc_8h.html#aeb25fe492071a899de3694a60c17a08d',1,'loc.h']]]
+  ['macro_858',['Macro',['../macro_8h.html#a7c29a297ccf3f8c8b362ef92dcaa1e08',1,'macro.h']]],
+  ['macroarg_859',['MacroArg',['../macro_8h.html#ae1c7131eaf2eb8011c3c20863ef75576',1,'macro.h']]]
 ];

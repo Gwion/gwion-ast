@@ -109,6 +109,9 @@ $(function() {
 <li>ae_exp_t
 : <a class="el" href="absyn_8h.html#a55bdd8b85636df3f2d0a298cf1a43d95">absyn.h</a>
 </li>
+<li>ae_exp_td
+: <a class="el" href="absyn_8h.html#a55bdd8b85636df3f2d0a298cf1a43d95aa4ef30853514d422294d249bccffda26">absyn.h</a>
+</li>
 <li>ae_exp_unary
 : <a class="el" href="absyn_8h.html#a55bdd8b85636df3f2d0a298cf1a43d95a1185757e90fea5f110c84709c218a96c">absyn.h</a>
 </li>
@@ -127,20 +130,17 @@ $(function() {
 <li>ae_flag_global
 : <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a38e507e896dd5af51a82f1d53e7cce9e">flags.h</a>
 </li>
+<li>ae_flag_late
+: <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a7021d6e843fe1d7a8ad255ef4fea50d8">flags.h</a>
+</li>
 <li>ae_flag_none
 : <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a9710208e2bab09ebee05261ddcc0da3f">flags.h</a>
-</li>
-<li>ae_flag_nonnull
-: <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a66b3660302d2a90e8be7b4b52b5e2fb5">flags.h</a>
 </li>
 <li>ae_flag_private
 : <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a6314b339e30acc7ee8b2abf022cfe1be">flags.h</a>
 </li>
 <li>ae_flag_protect
 : <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a0e02737cadcc26a2f7c19321900303af">flags.h</a>
-</li>
-<li>ae_flag_ref
-: <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a1308fc4958c40c0c2e6e53cf2a103d74">flags.h</a>
 </li>
 <li>ae_flag_static
 : <a class="el" href="flags_8h.html#a8c1dfc1ccf00a08192611433ee7f17b4a31569e9c3cfad09413e202e32f6f67b3">flags.h</a>
@@ -328,53 +328,54 @@ $(function() {
 : <a class="el" href="absyn_8h.html#a936270efcb911d52e6f180e57759d03b">absyn.h</a>
 </li>
 <li>AST_FREE()
-: <a class="el" href="ast__free_8c.html#a2f9a6eef52352c00867fbdc51598a2d8">ast_free.c</a>
+: <a class="el" href="ast__free_8c.html#a70bf9f93a218be4f19bae843cb80eb68">ast_free.c</a>
 , <a class="el" href="absyn_8h.html#a2a350189ccacb930b664761ea4fda592">absyn.h</a>
 , <a class="el" href="ast__free_8c.html#a35104bac012047944858d622e6334b77">ast_free.c</a>
 </li>
 <li>AST_NEW()
-: <a class="el" href="absyn_8h.html#ac78052f0bfba1e70e116b13e799aa1da">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a35490b2986ff38ff0eb228d53643bc19">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a33f5e56e47c08f84c6dc9e3fcf46bf1d">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a29ebf6594f2d553dc1e94b9357f2a111">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a76331f130fbb198ad9bf8c0f46e4ad57">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a7ea514a6ea30573aaf65f2d13ff70395">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a55f0a36aeeb54a4ddb01596fcc3c479a">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a566e91ed9ea360fa3895a85255fb4e8b">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#aef460ad6af1d8410204b887782a311e8">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a60717a53c5780554158ffa05abef55f5">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#acb1b593e387ce345b832e38321c4e610">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a0a1b84966319de4a7526b0c0e394a66f">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#ab82c5fe862a9e0981109088b8844f2b5">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a4dd3a2748e10e757c6f27c81e974b919">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a8792b4c8e0903650aaa8c424c1099cdc">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#abe00367e9bb282fa05ff60428269af7b">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#afb0c4f7eb6c91dc5a35e8a9ff1e36f83">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#ad9b6d17ed4404e74cf01eb2c25aaed39">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a6bfb4cdbafa855542716c9fe3f3a2a5b">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a33e79c3d37fedb09f09b05d1383e0810">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a012c42cd24206a044c6ab80d4626ceca">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#ade4a81c5feb4dc57250a41b8fae89524">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a92dc25f390de0a680af8e32454ef8e53">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a3db1281b08b9f19f47f87422e5000a63">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a36bb7348f93250b77391059cbf255b7b">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a14231184eb5b255da6b5121fdb3b174a">ast_new.c</a>
+: <a class="el" href="ast__new_8c.html#a9aba51256dded94ca894caf0cc44b861">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a364a191aa07acf39b42fcd3dbab1cae9">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a08be7bfd0cb370dca9ce39ff31c374d6">ast_new.c</a>
 , <a class="el" href="absyn_8h.html#ac440f5541f8c89576b4a02e2c2a7380f">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#afca78684eea8090c781372a4aac25930">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a0fc241ea006a666f73d824429d676ab7">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a5c6b3719c2a2597c8b79ce7d05a20071">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a8c6103f7fbd07614059a863301ea82a7">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#ae44543fb8344c062ed6351b8521c460a">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#abff7de9716cf118e652b8858ebc26b61">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#ad60f3174e98a71763b9b08c8d1f5c34e">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a8190de34ab41044df53cf6361814f35b">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a9aba51256dded94ca894caf0cc44b861">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a3f47dd8d88a7c5da752bdb2f59b2594b">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#ab3851331d442f806da3b6e29f8e65a6c">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a518f9e64a992bd41cf79387ecb739d58">absyn.h</a>
 , <a class="el" href="ast__new_8c.html#aace9937729e2dbcad749a86448124e6b">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#ac4d15642d41db16fe61349a7774e391d">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#a99d86ed0d4c16d97068690b0d29b237f">ast_new.c</a>
-, <a class="el" href="absyn_8h.html#a63db178750bc109172b6723aac92a851">absyn.h</a>
-, <a class="el" href="ast__new_8c.html#afda169ec8af582c6d1274e82dcfde7e3">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a3f47dd8d88a7c5da752bdb2f59b2594b">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a8bc41636b4a31034f4c4853a23fad272">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a8c6103f7fbd07614059a863301ea82a7">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#ae27bcc97f7ac11e4ca3ded3f9b5863dc">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#aaecdb62b9e5b40fe36c16fc0439b69e3">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#abf5c42efc8567706d0aa8bf70084d255">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#abff7de9716cf118e652b8858ebc26b61">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a19095809bbcc565c2d2a82318f4121ff">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a012c42cd24206a044c6ab80d4626ceca">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#ac6b2826172b591cf6f66e91dbaf1a371">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a8792b4c8e0903650aaa8c424c1099cdc">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a08d31ca74500f6f3b24d580774a395c7">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#afb0c4f7eb6c91dc5a35e8a9ff1e36f83">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#aedbb3b836cc2273e365a5dfba3785c94">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a84b0d4354aa1cfa898feff726f0499e8">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a650001bf1cfc001fa4c523153a63d044">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#ae0f08f769c033e2468678b0d3c27494f">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#afd29c81b256f9605497a0110bc809338">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a979436acb3455b96486a8d8ded0cb154">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a14231184eb5b255da6b5121fdb3b174a">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a92dc25f390de0a680af8e32454ef8e53">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a7c6cd0ea104e449968afaf6b5888531f">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a55f0a36aeeb54a4ddb01596fcc3c479a">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a90a7bdcd76d373a71ef2e3a0fd649353">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#acb1b593e387ce345b832e38321c4e610">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#ad8ffbd5f349468ead9f12eef123b46f7">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#ab82c5fe862a9e0981109088b8844f2b5">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a3f442fc8e31e1211c54fb333d9de7b8d">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a33f5e56e47c08f84c6dc9e3fcf46bf1d">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a4d6ea3eeabddd1f76f8b98c9aca0592f">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a54530c0771876c1441d003aba92b490a">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#aac890eec0d67774a0e9049f9f72f3cca">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a0fc241ea006a666f73d824429d676ab7">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#a7a62c756061b1ec3f9cf1926969843fc">ast_new.c</a>
+, <a class="el" href="absyn_8h.html#a8190de34ab41044df53cf6361814f35b">absyn.h</a>
+, <a class="el" href="ast__new_8c.html#ac1225adfa849883d9194f5252b2dfb55">ast_new.c</a>
 </li>
 </ul>
 </div><!-- contents -->

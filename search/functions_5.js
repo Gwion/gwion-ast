@@ -1,11 +1,10 @@
 var searchData=
 [
-  ['free_5farg_5flist_628',['free_arg_list',['../absyn_8h.html#a1a2718da3a93d912587d7aa62fb4964d',1,'absyn.h']]],
-  ['free_5fargs_629',['free_args',['../macro_8c.html#a91a5ab48ddba8a1ccfbf9e9322fb84e4',1,'macro.c']]],
-  ['free_5farray_5fsub_630',['free_array_sub',['../absyn_8h.html#a1cd3c955a6567be03e4ae11097092533',1,'absyn.h']]],
-  ['free_5fast_631',['free_ast',['../absyn_8h.html#a50770f9e4aa6b4180097a7a54cbef2c5',1,'absyn.h']]],
-  ['free_5fclass_5fdef_632',['free_class_def',['../absyn_8h.html#a62cca646924e222f8164d747d0f42579',1,'absyn.h']]],
-  ['free_5fdecl_5flist_633',['free_decl_list',['../absyn_8h.html#acc11088dfc21f96a79127c4d969fe9b0',1,'absyn.h']]],
+  ['free_5farg_5flist_629',['free_arg_list',['../absyn_8h.html#a1a2718da3a93d912587d7aa62fb4964d',1,'absyn.h']]],
+  ['free_5fargs_630',['free_args',['../macro_8c.html#a91a5ab48ddba8a1ccfbf9e9322fb84e4',1,'macro.c']]],
+  ['free_5farray_5fsub_631',['free_array_sub',['../absyn_8h.html#a1cd3c955a6567be03e4ae11097092533',1,'absyn.h']]],
+  ['free_5fast_632',['free_ast',['../absyn_8h.html#a50770f9e4aa6b4180097a7a54cbef2c5',1,'absyn.h']]],
+  ['free_5fclass_5fdef_633',['free_class_def',['../absyn_8h.html#a62cca646924e222f8164d747d0f42579',1,'absyn.h']]],
   ['free_5fentry_634',['free_entry',['../macro_8c.html#a030ec795faa0b80d895276fdb900163c',1,'macro.c']]],
   ['free_5fenum_5fdef_635',['free_enum_def',['../absyn_8h.html#ab1e869b29241e405aa5236baeea15714',1,'absyn.h']]],
   ['free_5fexp_636',['free_exp',['../absyn_8h.html#ab907cd174e6a2cdceb2cd9e8bfd1bc56',1,'absyn.h']]],
@@ -22,5 +21,6 @@ var searchData=
   ['free_5ftype_5fdecl_647',['free_type_decl',['../absyn_8h.html#a72b02e225616a4edb22ca1fae49536c7',1,'absyn.h']]],
   ['free_5ftype_5fdef_648',['free_type_def',['../absyn_8h.html#aa6a90807ae1abd0395bde9c894ab1c1d',1,'absyn.h']]],
   ['free_5ftype_5flist_649',['free_type_list',['../absyn_8h.html#a2e24b514a72e7fbfcee082947bd20532',1,'absyn.h']]],
-  ['free_5funion_5fdef_650',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]]
+  ['free_5funion_5fdef_650',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]],
+  ['free_5funion_5flist_651',['free_union_list',['../absyn_8h.html#aec95baf286232ee2b9c424aa4bd3a150',1,'absyn.h']]]
 ];
