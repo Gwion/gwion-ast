@@ -15,7 +15,9 @@ void free_loc(MemPool p, loc_t loc) {
   mp_free(p, loc_t, loc);
 }
 
-#define MIN(a,b) (a < b ? a : b)
+#define _MIN(a,b) (a < b ? a : b)
+#define MIN(a,b) _MIN((ssize_t)a, b)
+
 void loc_header(const loc_t loc, const m_str filename) {
   gw_err("\033[1m%s:%u:%u:\033[0m ", filename, loc->first.line, loc->first.column);
 }
