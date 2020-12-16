@@ -399,7 +399,7 @@ ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
   a->td = cpy_type_decl(p, src->td);
   a->xid = src->xid;
   a->pos = loc_cpy(p, src->pos);
-  if(a->next)
+  if(src->next)
     a->next = cpy_union_list(p, src->next);
   return a;
 }
