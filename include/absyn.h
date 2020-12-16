@@ -27,7 +27,6 @@ typedef struct Type_List_     * Type_List;
 /** a dot expression. @code object.member @endcode */
 typedef struct {
   Exp base;
-  struct Type_ *t_base;
   struct Symbol_ *xid;
 } Exp_Dot;
 
