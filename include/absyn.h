@@ -33,7 +33,6 @@ typedef struct {
 /** a lambda expression. @code \a b { <<< a + b >>>; } @endcode */
 typedef struct {
   Func_Def def;
-  struct Type_*owner;
 } Exp_Lambda;
 ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt, const loc_t);
 
