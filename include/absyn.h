@@ -39,7 +39,6 @@ ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt, const loc
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
   Exp    exp;
-  struct Type_ *type;
   m_uint depth;
 };
 ANEW AST_NEW(Array_Sub, array_sub, const Exp);
