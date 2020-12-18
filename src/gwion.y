@@ -60,7 +60,7 @@ ANN Symbol lambda_name(const Scanner*);
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
   FUNCTION "fun" VAR "var"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
-  LOOP "repeat" FOR "for" FOREACH "foreach" GOTO "goto" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
+  LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue"
   CLASS "class" STRUCT "struct"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
@@ -102,7 +102,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt _exp_stmt where_stmt varloop_stmt
-%type<stmt> match_case_stmt label_stmt goto_stmt match_stmt stmt_pp
+%type<stmt> match_case_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<func_def> func_def op_def func_def_base abstract_fdef
@@ -262,8 +262,6 @@ stmt
   | loop_stmt
   | selection_stmt
   | code_stmt
-  | label_stmt
-  | goto_stmt
   | match_stmt
   | jump_stmt
   | stmt_pp
@@ -275,10 +273,6 @@ opt_id: ID | { $$ = NULL; };
 enum_def
   : ENUM flag opt_id LBRACE id_list RBRACE { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
     $$->flag = $2; };
-
-label_stmt: ID COLON {  $$ = new_stmt_jump(mpool(arg), $1, 1, GET_LOC(&@$)); };
-
-goto_stmt: GOTO ID SEMICOLON {  $$ = new_stmt_jump(mpool(arg), $2, 0, GET_LOC(&@$)); };
 
 when_exp: WHEN exp { $$ = $2; } | { $$ = NULL; }
 
@@ -331,14 +325,12 @@ selection_stmt
       { $$ = new_stmt_if(mpool(arg), $3, $5, GET_LOC(&@$)); $$->d.stmt_if.else_body = $7; }
   ;
 
-breaks
-  : TRETURN   { $$ = ae_stmt_return; }
-  | BREAK     { $$ = ae_stmt_break; }
-  | CONTINUE  { $$ = ae_stmt_continue; }
-  ;
+breaks: BREAK     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
   : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, GET_LOC(&@$)); }
-  | breaks SEMICOLON    { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); }
+  | TRETURN SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_return, GET_LOC(&@$)); }
+  | breaks NUM SEMICOLON  { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); $$->d.stmt_index.idx = $2; }
+  | breaks SEMICOLON      { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); $$->d.stmt_index.idx = -1; }
   ;
 
 _exp_stmt: SEMICOLON _exp_stmt { $$ = $2; } | SEMICOLON { $$ = NULL; };

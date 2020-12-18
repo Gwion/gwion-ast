@@ -273,7 +273,6 @@ ANN static double atof_space(m_str, size_t);
 "repeat"                            { adjust(yyscanner); return LOOP;}
 "for"                               { adjust(yyscanner); return FOR;}
 "foreach"                           { adjust(yyscanner); return FOREACH;}
-"goto"                              { adjust(yyscanner); return GOTO;}
 "match"                             { adjust(yyscanner); return MATCH;}
 "where"                             { adjust(yyscanner); return WHERE;}
 "when"                              { adjust(yyscanner); return WHEN;}

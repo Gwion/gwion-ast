@@ -383,13 +383,6 @@ AST_NEW(Stmt, stmt_each, struct Symbol_* sym, const Exp exp, const Stmt body, co
   return a;
 }
 
-AST_NEW(Stmt, stmt_jump, struct Symbol_* xid, const m_bool is_label, const loc_t pos) {
-  Stmt a = new_stmt(p, ae_stmt_jump, pos);
-  a->d.stmt_jump.name = xid;
-  a->d.stmt_jump.is_label = is_label;
-  return a;
-}
-
 AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body, const loc_t pos) {
   Stmt a = new_stmt(p, ae_stmt_loop, pos);
   a->d.stmt_loop.cond = cond;

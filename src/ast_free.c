@@ -270,11 +270,6 @@ ANN AST_FREE(Union_Def, union_def) {
   mp_free(p, Union_Def, a);
 }
 
-ANN static inline AST_FREE(Stmt_Jump, stmt_jump) {
-  if(a->is_label && a->data.v.ptr)
-    vector_release(&a->data.v);
-}
-
 #define free_stmt_break    (void*)dummy_func
 #define free_stmt_continue (void*)dummy_func
 #define free_stmt_return free_stmt_exp

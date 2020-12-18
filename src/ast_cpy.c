@@ -316,11 +316,6 @@ ANN static void cpy_stmt_if(MemPool p, Stmt_If a, const Stmt_If src) {
     a->else_body = cpy_stmt(p, src->else_body);
 }
 
-ANN static void cpy_stmt_jump(MemPool p NUSED, const Stmt_Jump a,const Stmt_Jump src) {
-  a->name = src->name;
-  a->is_label = src->is_label;
-}
-
 ANN static Stmt cpy_stmt_case(MemPool p, const Stmt_Match src) {
   Stmt a = mp_calloc(p, Stmt);
   a->d.stmt_match.cond = cpy_exp(p, src->cond);
@@ -444,9 +439,6 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
       break;
     case ae_stmt_if:
       cpy_stmt_if(p, &a->d.stmt_if, &src->d.stmt_if);
-      break;
-    case ae_stmt_jump:
-      cpy_stmt_jump(p, &a->d.stmt_jump, &src->d.stmt_jump);
       break;
     case ae_stmt_match:
       cpy_stmt_match(p, &a->d.stmt_match, &src->d.stmt_match);
