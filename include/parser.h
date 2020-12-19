@@ -284,7 +284,7 @@ extern int gwion_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 24 "src/gwion.y"
+#line 36 "src/gwion.y"
 
   char* sval;
   int ival;

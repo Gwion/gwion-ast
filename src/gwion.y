@@ -17,6 +17,18 @@
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
+
+#define LIST_FIRST(a)  map_set(&arg->map, (m_uint)a, (m_uint)a);
+
+#define LIST_NEXT(a, b, t, c)                      \
+  a = b;                                           \
+  const t next = c;                                \
+  const t list = (t)map_get(&arg->map, (m_uint)a); \
+  list->next = next;                               \
+  map_set(&arg->map, (m_uint) a, (m_uint)next);    \
+
+#define LIST_REM(a) map_remove(&arg->map, (m_uint)a);
+
 ANN int gwion_error(loc_t*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
 %}
@@ -100,7 +112,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt _exp_stmt where_stmt varloop_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt
 %type<stmt> match_case_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
@@ -147,16 +159,16 @@ ANN Symbol lambda_name(const Scanner*);
 %destructor  { free_ast(mpool(arg), $$); } ast
 %%
 
-prg: ast { arg->ast = $$ = $1; }
+prg: ast { arg->ast = $$ = $1; /* no need for LIST_REM here */}
   | /* empty */ { gwion_error(&@$, arg, "file is empty."); YYERROR; }
 
 ast
-  : section { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); }
-  | section ast { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, $2) : new_ast(mpool(arg), $1, $2); }
+  : section { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
+  | ast section { LIST_NEXT($$, $1, Ast, !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $2, NULL) : new_ast(mpool(arg), $2, NULL)) }
   ;
 
 section
-  : stmt_list { $$ = new_section_stmt_list(mpool(arg), $1); }
+  : stmt_list { $$ = new_section_stmt_list(mpool(arg), $1); LIST_REM($$) }
   | func_def  { $$ = new_section_func_def (mpool(arg), $1); }
   | class_def { $$ = new_section_class_def(mpool(arg), $1); }
   | enum_def  { $$ = new_section_enum_def(mpool(arg), $1); }
@@ -182,10 +194,11 @@ class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
 
 class_body : ast | { $$ = NULL; };
 
-id_list: ID { $$ = new_id_list(mpool(arg), $1); } | ID COMMA id_list  { $$ = prepend_id_list(mpool(arg), $1, $3); };
+id_list: ID { $$ = new_id_list(mpool(arg), $1); LIST_FIRST($$) }
+       | id_list COMMA ID  { LIST_NEXT($$, $1, ID_List, new_id_list(mpool(arg), $3)) };
 
-stmt_list: stmt %prec STMT_NOASSOC { $$ = new_stmt_list(mpool(arg), $1, NULL);} |
-  %prec STMT_ASSOC stmt stmt_list { $$ = new_stmt_list(mpool(arg), $1, $2); };
+stmt_list: stmt  { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) } |
+  stmt_list stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) };
 
 fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
   if($4) { $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
@@ -220,26 +233,19 @@ arg
   : type_decl arg_decl ":" binary_exp { $$ = new_arg_list(mpool(arg), $1, $2, NULL); $$->exp = $4; }
   | type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); };
 arg_list:
-     arg { $$ = $1; }
+     arg { $$ = $1; LIST_FIRST($1) }
   |  arg_list COMMA arg {
-     Arg_List last = $1;
-     while(last->next)
-       last = last->next;
-     if(last->exp && !$3->exp)
+     LIST_NEXT($$, $1, Arg_List, $3)
+     if(next->exp && !$3->exp)
         { gwion_error(&@3, arg, "missing default argument"); YYERROR;}
-     last->next = $3; $$ = $1;
    };
 
 fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
-fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list {
-  if(!$1)
-    { gwion_error(&@$, arg, "invalid function pointer argument"); YYERROR;}
-    $1->next = $3; $$ = $1;
-};
+fptr_list: fptr_arg { $$ = $1; LIST_FIRST($$) } | fptr_list COMMA fptr_arg { LIST_NEXT($$, $1, Arg_List, $3) };
 
 code_stmt
   : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, @$); }
-  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2, @$); }
+  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2, @$); LIST_REM($2) }
   ;
 
 stmt_pp
@@ -270,10 +276,13 @@ stmt
 opt_id: ID | { $$ = NULL; };
 
 enum_def
-  : ENUM flag opt_id LBRACE id_list RBRACE { $$ = new_enum_def(mpool(arg), $5, $3, @$);
-    $$->flag = $2; };
+  : ENUM flag opt_id LBRACE id_list RBRACE {
+    $$ = new_enum_def(mpool(arg), $5, $3, @$);
+    $$->flag = $2;
+    LIST_REM($5)
+  };
 
-when_exp: WHEN exp { $$ = $2; } | { $$ = NULL; }
+when_exp: WHEN exp { $$ = $2; LIST_REM($2) } | { $$ = NULL; }
 
 match_case_stmt
   : CASE exp when_exp COLON stmt_list {
@@ -281,11 +290,13 @@ match_case_stmt
     $$->d.stmt_match.cond = $2;
     $$->d.stmt_match.list = $5;
     $$->d.stmt_match.when = $3;
+    LIST_REM($2)
+    LIST_REM($5)
 };
 
 match_list
-  : match_case_stmt { $$ = new_stmt_list(mpool(arg), $1, NULL); }
-  | match_case_stmt match_list { $$ = new_stmt_list(mpool(arg), $1, $2); }
+  : match_case_stmt { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) }
+  | match_list match_case_stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) }
 
 where_stmt: WHERE stmt { $$ = $2; } | { $$ = NULL; }
 
@@ -294,6 +305,8 @@ match_stmt: MATCH exp LBRACE match_list RBRACE where_stmt {
   $$->d.stmt_match.cond  = $2;
   $$->d.stmt_match.list  = $4;
   $$->d.stmt_match.where = $6;
+  LIST_REM($2)
+  LIST_REM($4)
 };
 
 flow
@@ -302,46 +315,44 @@ flow
 
 loop_stmt
   : flow LPAREN exp RPAREN stmt
-    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, @$); }
+    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, @$); LIST_REM($3) }
   | DO stmt flow exp SEMICOLON
-    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, @$); }
+    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, @$); LIST_REM($3) }
   | FOR LPAREN exp_stmt exp_stmt RPAREN stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, @$); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
-      { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, @$); }
+      { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, @$); LIST_REM($5) }
   | FOREACH LPAREN ID COLON binary_exp RPAREN stmt
       { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
   | LOOP LPAREN exp RPAREN stmt
-      { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); }
+      { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   ;
 
 varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, @$); }
 
 selection_stmt
   : IF LPAREN exp RPAREN stmt %prec NOELSE
-      { $$ = new_stmt_if(mpool(arg), $3, $5, @$); }
+      { $$ = new_stmt_if(mpool(arg), $3, $5, @$); LIST_REM($3) }
   | IF LPAREN exp RPAREN stmt ELSE stmt
-      { $$ = new_stmt_if(mpool(arg), $3, $5, @$); $$->d.stmt_if.else_body = $7; }
+      { $$ = new_stmt_if(mpool(arg), $3, $5, @$); $$->d.stmt_if.else_body = $7; LIST_REM($3) }
   ;
 
 breaks: BREAK     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, @$); }
+  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, @$); LIST_REM($2) }
   | TRETURN SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_return, @$); }
   | breaks NUM SEMICOLON  { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = $2; }
   | breaks SEMICOLON      { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = -1; }
   ;
 
-_exp_stmt: SEMICOLON _exp_stmt { $$ = $2; } | SEMICOLON { $$ = NULL; };
-
 exp_stmt
-  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, @$); }
-  | _exp_stmt     { $$ = new_stmt(mpool(arg), ae_stmt_exp, @$); }
+  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, @$); LIST_REM($1) }
+  | SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_exp, @$); }
   ;
 
 exp:
-    binary_exp
-  | binary_exp COMMA exp { $$ = prepend_exp($1, $3); };
+    binary_exp           { $$ = $1; LIST_FIRST($$) }
+  | exp COMMA binary_exp { LIST_NEXT($$, $1, Exp, $3) };
 
 binary_exp
   : decl_exp
@@ -355,9 +366,12 @@ call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
 op: EQ | NEQ | DYNOP | OPTIONS;
 
 array_exp
-  : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2); }
-  | LBRACK exp RBRACK array_exp { if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2); }
-  | LBRACK exp RBRACK LBRACK RBRACK  { gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
+  : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
+  | LBRACK exp RBRACK array_exp {
+    LIST_REM($2)
+    if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2);
+  }
+  | LBRACK exp RBRACK LBRACK RBRACK  { LIST_REM(2) gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
@@ -367,9 +381,9 @@ array_empty
   ;
 
 range
-  : LBRACK exp COLON exp RBRACK { $$ = new_range(mpool(arg), $2, $4); }
-  | LBRACK exp COLON RBRACK     { $$ = new_range(mpool(arg), $2, NULL); }
-  | LBRACK %prec RANGE_EMPTY COLON exp RBRACK     { $$ = new_range(mpool(arg), NULL, $3); }
+  : LBRACK exp COLON exp RBRACK { $$ = new_range(mpool(arg), $2, $4); LIST_REM(2) LIST_REM($4) }
+  | LBRACK exp COLON RBRACK     { $$ = new_range(mpool(arg), $2, NULL);  LIST_REM($2) }
+  | LBRACK %prec RANGE_EMPTY COLON exp RBRACK     { $$ = new_range(mpool(arg), NULL, $3); LIST_REM($3) }
   ;
 
 array: array_exp | array_empty;
@@ -377,11 +391,11 @@ decl_exp
   : con_exp
   | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
 
-func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
-fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
+func_args: LPAREN arg_list   { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
+fptr_args: LPAREN fptr_list { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: TMPL id_list RBRACK { $$ = $2; } | { $$ = NULL; };
+decl_template: TMPL id_list RBRACK { $$ = $2; LIST_REM(2) } | { $$ = NULL; };
 
 global: GLOBAL { $$ = ae_flag_global; arg->global = 1; }
 
@@ -497,7 +511,7 @@ shift_op: SHIFT_LEFT | SHIFT_RIGHT;
 add_op: PLUS | MINUS;
 mul_op: TIMES | DIVIDE | PERCENT;
 
-opt_exp: exp | { $$ = NULL; }
+opt_exp: exp { $$ = $1; LIST_REM($1) } | { $$ = NULL; }
 con_exp: log_or_exp
   | log_or_exp QUESTION opt_exp COLON con_exp
       { $$ = new_exp_if(mpool(arg), $1, $3, $5, @$); };
@@ -542,7 +556,7 @@ type_list
   ;
 
 
-call_paren : LPAREN exp RPAREN { $$ = $2; } | LPAREN RPAREN { $$ = NULL; };
+call_paren : LPAREN exp RPAREN { $$ = $2; LIST_REM($2) } | LPAREN RPAREN { $$ = NULL; };
 
 post_op : PLUSPLUS | MINUSMINUS;
 
@@ -573,7 +587,7 @@ post_exp: prim_exp
 interp_exp
   : INTERP_END { $$ = new_prim_string(mpool(arg), $1, @$); }
   | INTERP_LIT interp_exp { $$ = new_prim_string(mpool(arg), $1, @$); $$->next = $2; }
-  | exp INTERP_EXP interp_exp { $$ = $1; $$->next = $3; }
+  | exp INTERP_EXP interp_exp { $$ = $1; $$->next = $3; LIST_REM($1) }
 
 interp: INTERP_START interp_exp { $$ = $2; }
 | interp INTERP_START interp_exp {
@@ -587,7 +601,7 @@ interp: INTERP_START interp_exp { $$ = $2; }
   $1->next = $3;
 }
 
-typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3, @$); };
+typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3, @$); LIST_REM($3) };
 
 prim_exp
   : ID                  { $$ = new_prim_id(     mpool(arg), $1, @$); }
@@ -598,8 +612,8 @@ prim_exp
   | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, @$); }
   | array               { $$ = new_prim_array(  mpool(arg), $1, @$); }
   | range               { $$ = new_prim_range(  mpool(arg), $1, @$); }
-  | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2, @$); }
-  | LPAREN exp RPAREN   { $$ = $2;                }
+  | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
+  | LPAREN exp RPAREN   { $$ = $2; LIST_REM($2) }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     @$); }
   | typeof_exp { $$ = $1; }

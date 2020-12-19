@@ -6,14 +6,15 @@
 
 typedef struct Scanner_ {
   void* scanner;
-  Ast ast;
+  struct Map_ map;
   SymTable *st;
   struct PP_* pp;
   struct PPArg_ *ppa;
+  Ast ast;
   struct pos_t pos;
-  int interp_state;
-  int error;
-  int global;
+  short int interp_state;
+  short int error;
+  short int global;
 } Scanner;
 
 #endif
