@@ -179,7 +179,6 @@ static inline m_bool tmpl_base(const Tmpl* a) {
 typedef struct {
   Exp func;
   Exp args;
-  struct Func_* m_func;
   Tmpl* tmpl;
 } Exp_Call;
 typedef struct {
@@ -199,11 +198,15 @@ typedef struct {
   Exp if_exp;
   Exp else_exp;
 } Exp_If;
+enum unary_type { unary_exp, unary_td, unary_code };
 typedef struct {
   Symbol op;
-  Exp exp;
-  Type_Decl* td;
-  Stmt code;
+  union {
+    Exp exp;
+    Type_Decl* td;
+    Stmt code;
+  };
+  enum unary_type unary_type;
 } Exp_Unary;
 
 enum exp_state {
@@ -214,7 +217,6 @@ enum exp_state {
 };
 
 struct ExpInfo_ {
-  struct Type_ *type;
   struct Nspc_* nspc;
   struct Type_* cast_to;
 };
@@ -235,6 +237,7 @@ struct Exp_ {
     Exp_Lambda    exp_lambda;
     Type_Decl*    exp_td;
   } d;
+  struct Type_ *type;
   struct ExpInfo_ *info;
   Exp next;
   struct loc_t_ pos;                  ///< position

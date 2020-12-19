@@ -226,6 +226,7 @@ AST_NEW(Exp, exp_unary, const Symbol oper, const Exp exp, const struct loc_t_ po
   Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, exp_getmeta(exp));
   a->d.exp_unary.exp = exp;
+  a->d.exp_unary.unary_type = unary_exp;
   return a;
 }
 
@@ -233,6 +234,7 @@ AST_NEW(Exp, exp_unary2, const Symbol oper, Type_Decl* td, const struct loc_t_ p
   Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
   a->d.exp_unary.td = td;
+  a->d.exp_unary.unary_type = unary_td;
   return a;
 }
 
@@ -240,6 +242,7 @@ AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt code, const struct loc_t_
   Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
   a->d.exp_unary.code = code;
+  a->d.exp_unary.unary_type = unary_code;
   return a;
 }
 

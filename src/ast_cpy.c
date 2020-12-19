@@ -189,12 +189,17 @@ ANN static void cpy_exp_if(MemPool p, Exp_If *a, const Exp_If *src) {
 // TODO check me
 ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
   a->op = src->op;
-  if(src->exp)
-    a->exp = cpy_exp(p, src->exp);
-  if(src->td)
-    a->td = cpy_type_decl(p, src->td);
-  if(src->code)
-    a->code = cpy_stmt(p, src->code);
+  switch((a->unary_type = src->unary_type)) {
+    case unary_exp:
+      a->exp = cpy_exp(p, src->exp);
+      break;
+    case unary_td:
+      a->td = cpy_type_decl(p, src->td);
+      break;
+    case unary_code:
+      a->code = cpy_stmt(p, src->code);
+      break;
+  }
 }
 
 ANN static struct ExpInfo_* cpy_expinfo(MemPool p, const struct ExpInfo_ *src) {

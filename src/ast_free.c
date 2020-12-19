@@ -83,12 +83,20 @@ ANN static inline AST_FREE(Exp_Postfix*, exp_post) {
 }
 
 ANN static AST_FREE(Exp_Unary*, exp_unary) {
-  if(a->exp)
-    free_exp(p, a->exp);
-  if(a->td)
-    free_type_decl(p, a->td);
-  if(a->code)
-    free_stmt(p, a->code);
+  switch(a->unary_type) {
+    case unary_exp:
+      if(a->exp)
+        free_exp(p, a->exp);
+      break;
+    case unary_td:
+      if(a->td)
+        free_type_decl(p, a->td);
+      break;
+    case unary_code:
+      if(a->code)
+        free_stmt(p, a->code);
+      break;
+  }
 }
 
 ANN static AST_FREE(Exp_If*, exp_if) {
