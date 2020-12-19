@@ -35,7 +35,7 @@ typedef struct {
   Func_Def def;
   struct Type_*owner;
 } Exp_Lambda;
-ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt, const loc_t);
+ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt, const struct loc_t_);
 
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
@@ -52,7 +52,7 @@ typedef struct {
   Exp       base;
   Array_Sub array;
 } Exp_Array;
-ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub, const loc_t pos);
+ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub, const struct loc_t_ pos);
 
 /** range. @code [12:12] @endcode or @code [1:] @endcode or @code [:12] @endcode*/
 typedef struct Range_ {
@@ -66,16 +66,16 @@ typedef struct {
   Exp    base;
   Range *range;
 } Exp_Slice;
-ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range*, const loc_t pos);
+ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range*, const struct loc_t_ pos);
 
 /** variable declaration **/
 struct Var_Decl_ {
   struct Symbol_* xid;   ///< variable name
   struct Value_ * value; ///< corresponding value
   Array_Sub array;       ///< array subscript, if any
-  loc_t pos;             ///< position
+  struct loc_t_ pos;             ///< position
 };
-ANN2(1) ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_*, const Array_Sub, const loc_t);
+ANN2(1) ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_*, const Array_Sub, const struct loc_t_);
 
 /** a list of \ref Var_Decl_ */
 struct Var_Decl_List_ {
@@ -89,14 +89,14 @@ typedef struct Type_Decl_ {
   Exp exp;
   Array_Sub array;
   Type_List types;
-  loc_t pos;               ///< position
+  struct loc_t_ pos;               ///< position
   struct Type_Decl_* next;
   m_uint option;
   ae_flag flag;
 } Type_Decl;
 
-ANEW ANN AST_NEW(Type_Decl*, type_decl, const Symbol, const loc_t pos);
-ANEW ANN AST_NEW(Type_Decl*, type_decl2, const Exp, const loc_t pos);
+ANEW ANN AST_NEW(Type_Decl*, type_decl, const Symbol, const struct loc_t_ pos);
+ANEW ANN AST_NEW(Type_Decl*, type_decl2, const Exp, const struct loc_t_ pos);
 ANN void free_type_decl(MemPool p, Type_Decl*);
 ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 
@@ -237,14 +237,11 @@ struct Exp_ {
   } d;
   struct ExpInfo_ *info;
   Exp next;
-  loc_t pos;                  ///< position
+  struct loc_t_ pos;                  ///< position
   ae_exp_t exp_type;
 //  enum exp_state emit_var;
   int emit_var;
 };
-
-// TODO remove me
-ANN static inline loc_t td_pos(const Type_Decl *td) { return td->pos; }
 
 ANN static inline int exp_getvar(const Exp e) {
   return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
@@ -311,28 +308,28 @@ static inline loc_t prim_pos(const void *data) {
   return e->pos;
 }
 
-ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_*, const loc_t);
-ANEW AST_NEW(Exp, prim_int, const unsigned long, const loc_t);
-ANEW AST_NEW(Exp, prim_float, const m_float, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_string, const m_str, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_range, Range*, const loc_t);
-ANEW AST_NEW(Exp, prim_hack, const Exp, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);
-ANEW AST_NEW(Exp, prim_nil, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_typeof, const Exp exp, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol, const loc_t);
-ANN2(1,2) ANEW AST_NEW(Exp, exp_call, const Exp, const Exp args, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_cast, Type_Decl*, const Exp, const loc_t);
-ANN2(1,2,4) ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_*, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_td, Type_Decl*, const loc_t);
+ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_*, const struct loc_t_);
+ANEW AST_NEW(Exp, prim_int, const unsigned long, const struct loc_t_);
+ANEW AST_NEW(Exp, prim_float, const m_float, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_string, const m_str, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_range, Range*, const struct loc_t_);
+ANEW AST_NEW(Exp, prim_hack, const Exp, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_char, const m_str, const struct loc_t_);
+ANEW AST_NEW(Exp, prim_nil, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_typeof, const Exp exp, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol, const struct loc_t_);
+ANN2(1,2) ANEW AST_NEW(Exp, exp_call, const Exp, const Exp args, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_cast, Type_Decl*, const Exp, const struct loc_t_);
+ANN2(1,2,4) ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_*, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, exp_td, Type_Decl*, const struct loc_t_);
 ANEW ANN Exp prepend_exp(const Exp, const Exp);
 
 static inline Exp take_exp(const Exp exp, const m_uint n) {
@@ -425,10 +422,10 @@ struct Enum_Def_ {
   struct Symbol_* xid;
   struct Type_* t;
   struct Vector_ values;
-  loc_t pos;             ///< position
+  struct loc_t_ pos;             ///< position
   ae_flag flag;
 };
-ANN2(1,2,4) ANEW AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_*, const loc_t);
+ANN2(1,2) ANEW AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_*, const struct loc_t_);
 ANN void free_enum_def(MemPool p, Enum_Def);
 
 enum fbflag {
@@ -480,9 +477,9 @@ typedef struct Union_List_ {
   Type_Decl *td;
   Symbol xid;
   struct Union_List_ *next;
-  loc_t pos;
+  struct loc_t_ pos;
 } *Union_List;
-ANEW ANN AST_NEW(Union_List, union_list, Type_Decl*, const Symbol, const loc_t);
+ANEW ANN AST_NEW(Union_List, union_list, Type_Decl*, const Symbol, const struct loc_t_);
 ANN void free_union_list(MemPool p, Union_List);
 
 typedef struct Union_Def_ {
@@ -490,10 +487,10 @@ typedef struct Union_Def_ {
   struct Symbol_* xid;
   struct Type_* type;
   Tmpl *tmpl;
-  loc_t pos;                ///< position
+  struct loc_t_ pos;                ///< position
   ae_flag flag;
 } *Union_Def;
-ANEW ANN AST_NEW(Union_Def, union_def, const Union_List, const loc_t);
+ANEW ANN AST_NEW(Union_Def, union_def, const Union_List, const struct loc_t_);
 ANN void free_union_def(MemPool p, Union_Def);
 
 enum ae_pp_type {
@@ -529,7 +526,7 @@ struct Stmt_ {
     struct Stmt_Index_      stmt_index;
     struct Stmt_PP_    stmt_pp;
   } d;
-  loc_t pos;                                ///< position
+  struct loc_t_ pos;     ///< position
   ae_stmt_t stmt_type;
 };
 
@@ -537,16 +534,16 @@ static inline Stmt stmt_self(const void *data) {
   return container_of((char*)data, struct Stmt_, d);
 }
 
-ANEW AST_NEW(Stmt, stmt, const ae_stmt_t, const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp, const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List, const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt, const loc_t);
-ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt, const loc_t);
-ANEW ANN2(1,3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str, const loc_t);
+ANEW AST_NEW(Stmt, stmt, const ae_stmt_t, const struct loc_t_);
+ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp, const struct loc_t_);
+ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List, const struct loc_t_);
+ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt, const struct loc_t_);
+ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool, const struct loc_t_);
+ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt, const struct loc_t_);
+ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt, const struct loc_t_);
+ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt, const struct loc_t_);
+ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt, const struct loc_t_);
+ANEW ANN2(1,3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str, const struct loc_t_);
 
 ANN void free_stmt(MemPool p, Stmt);
 struct Stmt_List_ {
@@ -563,10 +560,10 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
-  loc_t pos;           ///< position
+  struct loc_t_ pos;           ///< position
 };
 
-ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt, const loc_t);
+ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt, const struct loc_t_);
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def);
 
@@ -600,7 +597,7 @@ enum cflag {
 struct Class_Def_ {
   struct Type_Def_ base;
   Ast body;
-  loc_t pos;            ///< position
+  struct loc_t_ pos;            ///< position
   enum cflag cflag;
   ae_flag flag;
 };
@@ -610,7 +607,7 @@ ANN static inline int cflag(const Class_Def c, const enum cflag flag) {
 }
 
 ANN2(1, 3) ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,
-                        Type_Decl*, const Ast, const loc_t);
+                        Type_Decl*, const Ast, const struct loc_t_);
 ANN void free_class_def(MemPool p, Class_Def);
 
 struct Ast_ {

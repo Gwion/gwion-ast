@@ -4,7 +4,6 @@
 ANN AST_FREE(Var_Decl, var_decl) {
   if(a->array)
     free_array_sub(p, a->array);
-  free_loc(p, a->pos);
   mp_free(p, Var_Decl, a);
 }
 
@@ -120,7 +119,6 @@ AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
   if(a->d.code)
     free_stmt(p, a->d.code);
-  free_loc(p, a->pos);
   mp_free(p, Func_Def, a);
 }
 
@@ -165,7 +163,6 @@ DECL_EXP_FUNC(free, void, MemPool)
 AST_FREE(Exp, exp) {
   mp_free(p, ExpInfo, a->info);
   free_exp_func[a->exp_type](p, &a->d);
-  free_loc(p, a->pos);
   const Exp next = a->next;
   mp_free(p, Exp, a);
   if(next)
@@ -247,7 +244,6 @@ ANN static AST_FREE(Stmt_If, stmt_if) {
 
 ANN AST_FREE(Enum_Def, enum_def) {
   free_id_list(p, a->list);
-  free_loc(p, a->pos); // ??
   mp_free(p, Enum_Def, a);
 }
 
@@ -258,7 +254,6 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
 
 ANN AST_FREE(Union_List, union_list) {
   free_type_decl(p, a->td);
-  free_loc(p, a->pos); // ??
   if(a->next)
     free_union_list(p, a->next);
   mp_free(p, Union_List, a);
@@ -266,7 +261,6 @@ ANN AST_FREE(Union_List, union_list) {
 
 ANN AST_FREE(Union_Def, union_def) {
   free_union_list(p, a->l);
-  free_loc(p, a->pos); // ??
   mp_free(p, Union_Def, a);
 }
 
@@ -279,7 +273,6 @@ ANN AST_FREE(Union_Def, union_def) {
 DECL_STMT_FUNC(free, void, MemPool);
 AST_FREE(Stmt, stmt) {
   free_stmt_func[a->stmt_type](p, &a->d);
-  free_loc(p, a->pos);
   mp_free(p, Stmt, a);
 }
 
@@ -298,7 +291,6 @@ AST_FREE(Class_Def, class_def) {
     free_tmpl(p, a->base.tmpl);
   if(a->body)
     free_ast(p, a->body);
-  free_loc(p, a->pos);
   mp_free(p, Class_Def, a);
 }
 

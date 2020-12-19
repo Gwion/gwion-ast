@@ -30,7 +30,7 @@ ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
-ANN int gwion_error(loc_t, Scanner*, const char *);
+ANN int gwion_error(loc_t*, Scanner*, const char *);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(const m_str line);
 ANN static m_str get_current_filename(void*);
@@ -453,7 +453,7 @@ static void adjust(void* data) {
   scan->pos.column += (uint)gwion_get_leng((void*)data);
 }
 
-ANN int gwion_error(loc_t loc, Scanner* scan, const char* s) {
+ANN int gwion_error(loc_t *loc, Scanner* scan, const char* s) {
   if(scan->error++)
     return 0;
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
@@ -473,9 +473,9 @@ ANN int gwion_error(loc_t loc, Scanner* scan, const char* s) {
     const struct PPState_ *ppstate = (struct PPState_*)vector_front(&scan->pp->filename);
     filename = ppstate->filename;
   }
-  loc_header(loc, filename);
+  loc_header(*loc, filename);
   gw_err("%s\n", s);
-  loc_err(loc, filename);
+  loc_err(*loc, filename);
   return 0;
 }
 

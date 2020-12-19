@@ -17,8 +17,7 @@
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
-#define GET_LOC(a) loc_cpy(mpool(arg), a)
-ANN int gwion_error(loc_t, const Scanner*, const char *);
+ANN int gwion_error(loc_t*, const Scanner*, const char *);
 ANN Symbol lambda_name(const Scanner*);
 %}
 
@@ -172,7 +171,7 @@ class_def
     {
       if($1 == cflag_struct && $6)
         { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
-      $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, GET_LOC(&@$));
+      $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, @$);
       if($5)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $5);
       if($1)
@@ -239,22 +238,22 @@ fptr_list: fptr_arg { $$ = $1; } | fptr_arg COMMA fptr_list {
 };
 
 code_stmt
-  : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, GET_LOC(&@$)); }
-  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2, GET_LOC(&@$)); }
+  : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, @$); }
+  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2, @$); }
   ;
 
 stmt_pp
-  : PP_COMMENT { $$ = new_stmt_pp(mpool(arg), ae_pp_comment, $1, GET_LOC(&@$)); }
-  | PP_INCLUDE { $$ = new_stmt_pp(mpool(arg), ae_pp_include, $1, GET_LOC(&@$)); }
-  | PP_DEFINE  { $$ = new_stmt_pp(mpool(arg), ae_pp_define,  $1, GET_LOC(&@$)); }
-  | PP_PRAGMA  { $$ = new_stmt_pp(mpool(arg), ae_pp_pragma,  $1, GET_LOC(&@$)); }
-  | PP_UNDEF   { $$ = new_stmt_pp(mpool(arg), ae_pp_undef,   $1, GET_LOC(&@$)); }
-  | PP_IFDEF   { $$ = new_stmt_pp(mpool(arg), ae_pp_ifdef,   $1, GET_LOC(&@$)); }
-  | PP_IFNDEF  { $$ = new_stmt_pp(mpool(arg), ae_pp_ifndef,  $1, GET_LOC(&@$)); }
-  | PP_ELSE    { $$ = new_stmt_pp(mpool(arg), ae_pp_else,    $1, GET_LOC(&@$)); }
-  | PP_ENDIF   { $$ = new_stmt_pp(mpool(arg), ae_pp_endif,   $1, GET_LOC(&@$)); }
-  | PP_NL      { $$ = new_stmt_pp(mpool(arg), ae_pp_nl,      $1, GET_LOC(&@$)); }
-  | PP_REQUIRE { $$ = new_stmt_pp(mpool(arg), ae_pp_require, $1, GET_LOC(&@$)); }
+  : PP_COMMENT { $$ = new_stmt_pp(mpool(arg), ae_pp_comment, $1, @$); }
+  | PP_INCLUDE { $$ = new_stmt_pp(mpool(arg), ae_pp_include, $1, @$); }
+  | PP_DEFINE  { $$ = new_stmt_pp(mpool(arg), ae_pp_define,  $1, @$); }
+  | PP_PRAGMA  { $$ = new_stmt_pp(mpool(arg), ae_pp_pragma,  $1, @$); }
+  | PP_UNDEF   { $$ = new_stmt_pp(mpool(arg), ae_pp_undef,   $1, @$); }
+  | PP_IFDEF   { $$ = new_stmt_pp(mpool(arg), ae_pp_ifdef,   $1, @$); }
+  | PP_IFNDEF  { $$ = new_stmt_pp(mpool(arg), ae_pp_ifndef,  $1, @$); }
+  | PP_ELSE    { $$ = new_stmt_pp(mpool(arg), ae_pp_else,    $1, @$); }
+  | PP_ENDIF   { $$ = new_stmt_pp(mpool(arg), ae_pp_endif,   $1, @$); }
+  | PP_NL      { $$ = new_stmt_pp(mpool(arg), ae_pp_nl,      $1, @$); }
+  | PP_REQUIRE { $$ = new_stmt_pp(mpool(arg), ae_pp_require, $1, @$); }
   ;
 
 stmt
@@ -271,14 +270,14 @@ stmt
 opt_id: ID | { $$ = NULL; };
 
 enum_def
-  : ENUM flag opt_id LBRACE id_list RBRACE { $$ = new_enum_def(mpool(arg), $5, $3, GET_LOC(&@$));
+  : ENUM flag opt_id LBRACE id_list RBRACE { $$ = new_enum_def(mpool(arg), $5, $3, @$);
     $$->flag = $2; };
 
 when_exp: WHEN exp { $$ = $2; } | { $$ = NULL; }
 
 match_case_stmt
   : CASE exp when_exp COLON stmt_list {
-    $$ = new_stmt(mpool(arg), 0, GET_LOC(&@$));
+    $$ = new_stmt(mpool(arg), 0, @$);
     $$->d.stmt_match.cond = $2;
     $$->d.stmt_match.list = $5;
     $$->d.stmt_match.when = $3;
@@ -291,7 +290,7 @@ match_list
 where_stmt: WHERE stmt { $$ = $2; } | { $$ = NULL; }
 
 match_stmt: MATCH exp LBRACE match_list RBRACE where_stmt {
-  $$ = new_stmt(mpool(arg), ae_stmt_match, GET_LOC(&@$));
+  $$ = new_stmt(mpool(arg), ae_stmt_match, @$);
   $$->d.stmt_match.cond  = $2;
   $$->d.stmt_match.list  = $4;
   $$->d.stmt_match.where = $6;
@@ -303,41 +302,41 @@ flow
 
 loop_stmt
   : flow LPAREN exp RPAREN stmt
-    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, GET_LOC(&@$)); }
+    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, @$); }
   | DO stmt flow exp SEMICOLON
-    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, GET_LOC(&@$)); }
+    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, @$); }
   | FOR LPAREN exp_stmt exp_stmt RPAREN stmt
-      { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, GET_LOC(&@$)); }
+      { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, @$); }
   | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
-      { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, GET_LOC(&@$)); }
+      { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, @$); }
   | FOREACH LPAREN ID COLON binary_exp RPAREN stmt
-      { $$ = new_stmt_each(mpool(arg), $3, $5, $7, GET_LOC(&@$)); }
+      { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
   | LOOP LPAREN exp RPAREN stmt
-      { $$ = new_stmt_loop(mpool(arg), $3, $5, GET_LOC(&@$)); }
+      { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); }
   ;
 
-varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, GET_LOC(&@$)); }
+varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, @$); }
 
 selection_stmt
   : IF LPAREN exp RPAREN stmt %prec NOELSE
-      { $$ = new_stmt_if(mpool(arg), $3, $5, GET_LOC(&@$)); }
+      { $$ = new_stmt_if(mpool(arg), $3, $5, @$); }
   | IF LPAREN exp RPAREN stmt ELSE stmt
-      { $$ = new_stmt_if(mpool(arg), $3, $5, GET_LOC(&@$)); $$->d.stmt_if.else_body = $7; }
+      { $$ = new_stmt_if(mpool(arg), $3, $5, @$); $$->d.stmt_if.else_body = $7; }
   ;
 
 breaks: BREAK     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, GET_LOC(&@$)); }
-  | TRETURN SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_return, GET_LOC(&@$)); }
-  | breaks NUM SEMICOLON  { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); $$->d.stmt_index.idx = $2; }
-  | breaks SEMICOLON      { $$ = new_stmt(mpool(arg), $1, GET_LOC(&@$)); $$->d.stmt_index.idx = -1; }
+  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, @$); }
+  | TRETURN SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_return, @$); }
+  | breaks NUM SEMICOLON  { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = $2; }
+  | breaks SEMICOLON      { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = -1; }
   ;
 
 _exp_stmt: SEMICOLON _exp_stmt { $$ = $2; } | SEMICOLON { $$ = NULL; };
 
 exp_stmt
-  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, GET_LOC(&@$)); }
-  | _exp_stmt     { $$ = new_stmt(mpool(arg), ae_stmt_exp, GET_LOC(&@$)); }
+  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, @$); }
+  | _exp_stmt     { $$ = new_stmt(mpool(arg), ae_stmt_exp, @$); }
   ;
 
 exp:
@@ -346,9 +345,9 @@ exp:
 
 binary_exp
   : decl_exp
-  | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); }
-  | binary_exp DYNOP decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-  | binary_exp OPTIONS decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
+  | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp DYNOP decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+  | binary_exp OPTIONS decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
 
 call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
@@ -376,7 +375,7 @@ range
 array: array_exp | array_empty;
 decl_exp
   : con_exp
-  | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, GET_LOC(&@$)); $$->d.exp_decl.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
 
 func_args: LPAREN arg_list { $$ = $2; } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; } | LPAREN { $$ = NULL; };
@@ -406,7 +405,7 @@ func_def_base
   : FUNCTION func_base func_args arg_type code_stmt {
     $2->args = $3;
     $2->fbflag |= $4;
-    $$ = new_func_def(mpool(arg), $2, $5, GET_LOC(&@$));
+    $$ = new_func_def(mpool(arg), $2, $5, @$);
   };
 
 abstract_fdef
@@ -416,7 +415,7 @@ abstract_fdef
         base->tmpl = new_tmpl_base(mpool(arg), $6);
       base->args = $7;
       base->fbflag |= $8;
-      $$ = new_func_def(mpool(arg), base, NULL, GET_LOC(&@$));
+      $$ = new_func_def(mpool(arg), base, NULL, @$);
     };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
@@ -438,12 +437,12 @@ op_base
 
 operator: OPERATOR { $$ = ae_flag_none; } | OPERATOR global { $$ = ae_flag_global; };
 op_def:  operator op_base code_stmt
-{ $$ = new_func_def(mpool(arg), $2, $3, GET_LOC(&@$)); $2->fbflag |= fbflag_op; $2->flag |= $1; };
+{ $$ = new_func_def(mpool(arg), $2, $3, @$); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
 type_decl_tmpl
-  : ID call_template { $$ = new_type_decl(mpool(arg), $1, GET_LOC(&@$)); $$->types = $2; }
+  : ID call_template { $$ = new_type_decl(mpool(arg), $1, @$); $$->types = $2; }
   ;
 
 type_decl_next
@@ -453,7 +452,7 @@ type_decl_next
 
 type_decl_noflag
   : type_decl_next { $$ = $1; }
-  | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, GET_LOC(&@$)); }
+  | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, @$); }
   ;
 
 option: "?" { $$ = 1; } | OPTIONS { $$ = strlen(s_name($1)); } | { $$ = 0; };
@@ -466,12 +465,12 @@ type_decl_flag
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-union_list: type_decl_empty ID ";" { $$ = new_union_list(mpool(arg), $1, $2, GET_LOC(&@$)); }
-  | type_decl_empty ID ";" union_list { $$ = new_union_list(mpool(arg), $1, $2, GET_LOC(&@$)); $$->next = $4; };
+union_list: type_decl_empty ID ";" { $$ = new_union_list(mpool(arg), $1, $2, @$); }
+  | type_decl_empty ID ";" union_list { $$ = new_union_list(mpool(arg), $1, $2, @$); $$->next = $4; };
 
 union_def
   : UNION flag ID decl_template LBRACE union_list RBRACE {
-      $$ = new_union_def(mpool(arg), $6, GET_LOC(&@$));
+      $$ = new_union_def(mpool(arg), $6, @$);
       $$->xid = $3;
       $$->flag = $2;
       if($4)
@@ -484,13 +483,13 @@ var_decl_list
   | var_decl { $$ = new_var_decl_list(mpool(arg), $1, NULL); }
   ;
 
-var_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
-  | ID array   { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); };
+var_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @$); }
+  | ID array   { $$ = new_var_decl(mpool(arg), $1,   $2, @$); };
 
-arg_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)); }
-  | ID array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, GET_LOC(&@$)); }
+arg_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @$); }
+  | ID array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, @$); }
   | ID array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
-fptr_arg_decl: arg_decl | { $$ = new_var_decl(mpool(arg), NULL, NULL, GET_LOC(&@$)); }
+fptr_arg_decl: arg_decl | { $$ = new_var_decl(mpool(arg), NULL, NULL, @$); }
 
 eq_op : EQ | NEQ;
 rel_op: LT | GT | LE | GE;
@@ -501,40 +500,40 @@ mul_op: TIMES | DIVIDE | PERCENT;
 opt_exp: exp | { $$ = NULL; }
 con_exp: log_or_exp
   | log_or_exp QUESTION opt_exp COLON con_exp
-      { $$ = new_exp_if(mpool(arg), $1, $3, $5, GET_LOC(&@$)); };
+      { $$ = new_exp_if(mpool(arg), $1, $3, $5, @$); };
   | log_or_exp QUESTIONCOLON con_exp
-      { $$ = new_exp_if(mpool(arg), $1, NULL, $3, GET_LOC(&@$)); };
+      { $$ = new_exp_if(mpool(arg), $1, NULL, $3, @$); };
 
-log_or_exp: log_and_exp | log_or_exp OR log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-log_and_exp: inc_or_exp | log_and_exp AND inc_or_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-inc_or_exp: exc_or_exp | inc_or_exp S_OR exc_or_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-exc_or_exp: and_exp | exc_or_exp S_XOR and_exp       { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-and_exp: eq_exp | and_exp S_AND eq_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-mul_exp: dur_exp | mul_exp mul_op dur_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
-dur_exp: cast_exp | dur_exp "::" cast_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, GET_LOC(&@$)); };
+log_or_exp: log_and_exp | log_or_exp OR log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+log_and_exp: inc_or_exp | log_and_exp AND inc_or_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+inc_or_exp: exc_or_exp | inc_or_exp S_OR exc_or_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+exc_or_exp: and_exp | exc_or_exp S_XOR and_exp       { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+and_exp: eq_exp | and_exp S_AND eq_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+mul_exp: dur_exp | mul_exp mul_op dur_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+dur_exp: cast_exp | dur_exp "::" cast_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
 cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
-    { $$ = new_exp_cast(mpool(arg), $3, $1, GET_LOC(&@$)); };
+    { $$ = new_exp_cast(mpool(arg), $3, $1, @$); };
 
 unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
   | EXCLAMATION | SPORK | FORK | TILDA
   ;
 
 unary_exp : post_exp
-  | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, GET_LOC(&@$)); }
-  | LPAREN OPID_E RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4, GET_LOC(&@$)); }
-  | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, GET_LOC(&@$)); }
-  | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, GET_LOC(&@$)); };
-  | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, GET_LOC(&@$)); };
-  | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, GET_LOC(&@$)); };
+  | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
+  | LPAREN OPID_E RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4, @$); }
+  | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, @$); }
+  | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
+  | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
+  | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @$); };
 
 lambda_list:
- ID { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), NULL); }
-|    ID lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, GET_LOC(&@$)), $2); }
+ ID { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, @$), NULL); }
+|    ID lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, @$), $2); }
 lambda_arg: BACKSLASH lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 type_list
@@ -553,27 +552,27 @@ dot_exp: post_exp DOT ID {
       " in dot member base expression");
     YYERROR;
   };
-  $$ = new_exp_dot(mpool(arg), $1, $3, GET_LOC(&@$));
+  $$ = new_exp_dot(mpool(arg), $1, $3, @$);
 };
 
 post_exp: prim_exp
   | post_exp array_exp
-    { $$ = new_exp_array(mpool(arg), $1, $2, GET_LOC(&@$)); }
+    { $$ = new_exp_array(mpool(arg), $1, $2, @$); }
   | post_exp range
-    { $$ = new_exp_slice(mpool(arg), $1, $2, GET_LOC(&@$)); }
+    { $$ = new_exp_slice(mpool(arg), $1, $2, @$); }
   | post_exp call_template call_paren
-    { $$ = new_exp_call(mpool(arg), $1, $3, GET_LOC(&@$));
+    { $$ = new_exp_call(mpool(arg), $1, $3, @$);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
   | post_exp post_op
-    { $$ = new_exp_post(mpool(arg), $1, $2, GET_LOC(&@$)); }
+    { $$ = new_exp_post(mpool(arg), $1, $2, @$); }
   | post_exp OPID_E
-    { $$ = new_exp_post(mpool(arg), $1, $2, GET_LOC(&@$)); }
+    { $$ = new_exp_post(mpool(arg), $1, $2, @$); }
   | dot_exp { $$ = $1; }
   ;
 
 interp_exp
-  : INTERP_END { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); }
-  | INTERP_LIT interp_exp { $$ = new_prim_string(mpool(arg), $1, GET_LOC(&@$)); $$->next = $2; }
+  : INTERP_END { $$ = new_prim_string(mpool(arg), $1, @$); }
+  | INTERP_LIT interp_exp { $$ = new_prim_string(mpool(arg), $1, @$); $$->next = $2; }
   | exp INTERP_EXP interp_exp { $$ = $1; $$->next = $3; }
 
 interp: INTERP_START interp_exp { $$ = $2; }
@@ -582,27 +581,27 @@ interp: INTERP_START interp_exp { $$ = $2; }
     char c[strlen($1->d.prim.d.str) + strlen($3->d.prim.d.str) + 1];
     sprintf(c, "%s%s\n", $1->d.prim.d.str, $3->d.prim.d.str);
     $1->d.prim.d.str = s_name(insert_symbol(c));
-    $1->pos->last = $3->pos->last;
+    $1->pos.last = $3->pos.last;
     free_exp(mpool(arg), $3);
   } else
   $1->next = $3;
 }
 
-typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3, GET_LOC(&@$)); };
+typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3, @$); };
 
 prim_exp
-  : ID                  { $$ = new_prim_id(     mpool(arg), $1, GET_LOC(&@$)); }
-  | NUM                 { $$ = new_prim_int(    mpool(arg), $1, GET_LOC(&@$)); }
-  | FLOATT              { $$ = new_prim_float(  mpool(arg), $1, GET_LOC(&@$)); }
-  | interp              { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, GET_LOC(&@$)); }
-  | STRING_LIT          { $$ = new_prim_string( mpool(arg), $1, GET_LOC(&@$)); }
-  | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, GET_LOC(&@$)); }
-  | array               { $$ = new_prim_array(  mpool(arg), $1, GET_LOC(&@$)); }
-  | range               { $$ = new_prim_range(  mpool(arg), $1, GET_LOC(&@$)); }
-  | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2, GET_LOC(&@$)); }
+  : ID                  { $$ = new_prim_id(     mpool(arg), $1, @$); }
+  | NUM                 { $$ = new_prim_int(    mpool(arg), $1, @$); }
+  | FLOATT              { $$ = new_prim_float(  mpool(arg), $1, @$); }
+  | interp              { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
+  | STRING_LIT          { $$ = new_prim_string( mpool(arg), $1, @$); }
+  | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, @$); }
+  | array               { $$ = new_prim_array(  mpool(arg), $1, @$); }
+  | range               { $$ = new_prim_range(  mpool(arg), $1, @$); }
+  | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2, @$); }
   | LPAREN exp RPAREN   { $$ = $2;                }
-  | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, GET_LOC(&@$)); };
-  | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     GET_LOC(&@$)); }
+  | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
+  | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     @$); }
   | typeof_exp { $$ = $1; }
   ;
 %%

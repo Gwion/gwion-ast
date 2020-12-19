@@ -49,7 +49,7 @@ ANN /*static */Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
   a->xid = src->xid; // 1 
   if(src->array)
     a->array = cpy_array_sub(p, src->array); // 1 
-  a->pos = loc_cpy(p, src->pos); // 1 
+  a->pos = src->pos; // 1 
   return a;
 }
 
@@ -70,7 +70,7 @@ ANN Type_Decl* cpy_type_decl(MemPool p, const Type_Decl* src) {
     a->array = cpy_array_sub(p, src->array); // 1 
   if(src->types)
     a->types = cpy_type_list(p, src->types); // 1 
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   a->flag = src->flag; // 1 
   if(src->next)
     a->next = cpy_type_decl(p, src->next);
@@ -252,7 +252,7 @@ ANN Exp cpy_exp(MemPool p, const Exp src) {
   a->exp_type = src->exp_type;
   a->emit_var = src->emit_var;
 //  a->meta = src->meta;// maybe meta shoyuld be set as in constructors
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   return a;
 }
 
@@ -349,7 +349,7 @@ ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
   Enum_Def a = mp_calloc(p, Enum_Def);
   a->list = cpy_id_list(p, src->list);
   a->xid = src->xid;
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   a->flag = src->flag;
   return a;
 }
@@ -393,7 +393,7 @@ ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
   Union_List a = mp_calloc(p, Union_List);
   a->td = cpy_type_decl(p, src->td);
   a->xid = src->xid;
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   if(src->next)
     a->next = cpy_union_list(p, src->next);
   return a;
@@ -406,7 +406,7 @@ ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
     a->xid = src->xid; // 1 
   if(src->tmpl)
     a->tmpl = cpy_tmpl(p, src->tmpl); // 1 
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   a->flag = src->flag; // 1 
   return a;
 }
@@ -451,7 +451,7 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
         break;
     }
   a->stmt_type = src->stmt_type;
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   return a;
 }
 
@@ -460,7 +460,7 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   a->base = cpy_func_base(p, src->base);
   if(src->d.code)
       a->d.code = cpy_stmt(p, src->d.code);
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   return a;
 }
 
@@ -507,7 +507,7 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   if(src->body)
       a->body = cpy_ast(p, src->body);
   a->flag = src->flag;
-  a->pos = loc_cpy(p, src->pos);
+  a->pos = src->pos;
   return a;
 }
 
