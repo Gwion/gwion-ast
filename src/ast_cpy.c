@@ -202,12 +202,6 @@ ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
   }
 }
 
-ANN static struct ExpInfo_* cpy_expinfo(MemPool p, const struct ExpInfo_ *src) {
-  struct ExpInfo_ *a = mp_calloc(p, ExpInfo);
-  memcpy(a, src, sizeof(struct ExpInfo_));
-  return a;
-}
-
 ANN Exp cpy_exp(MemPool p, const Exp src) {
   Exp a = mp_calloc(p, Exp);
   if(src->next)
@@ -253,7 +247,6 @@ ANN Exp cpy_exp(MemPool p, const Exp src) {
       a->d.exp_td = cpy_type_decl(p, src->d.exp_td);
       break;
   }
-  a->info = cpy_expinfo(p, src->info);
   a->exp_type = src->exp_type;
   a->emit_var = src->emit_var;
 //  a->meta = src->meta;// maybe meta shoyuld be set as in constructors

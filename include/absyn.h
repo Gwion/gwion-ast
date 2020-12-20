@@ -216,11 +216,6 @@ enum exp_state {
   exp_state_null,
 };
 
-struct ExpInfo_ {
-  struct Nspc_* nspc;
-  struct Type_* cast_to;
-};
-
 struct Exp_ {
   union exp_data {
     Exp_Postfix   exp_post;
@@ -238,7 +233,7 @@ struct Exp_ {
     Type_Decl*    exp_td;
   } d;
   struct Type_ *type;
-  struct ExpInfo_ *info;
+  struct Type_* cast_to;
   Exp next;
   struct loc_t_ pos;                  ///< position
   ae_exp_t exp_type;
