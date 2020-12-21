@@ -89,12 +89,6 @@ AST_NEW(ID_List, id_list, struct Symbol_* xid) {
   return a;
 }
 
-ID_List prepend_id_list(MemPool p, struct Symbol_* xid, const ID_List list) {
-  ID_List a = new_id_list(p, xid);
-  a->next = list;
-  return a;
-}
-
 AST_NEW(Exp, exp_decl, Type_Decl* td, const Var_Decl_List list, const struct loc_t_ pos) {
   Exp a = new_exp(p, ae_exp_decl, pos);
   a->d.exp_decl.td = td;
@@ -317,11 +311,6 @@ AST_NEW(Exp, exp_dot, const Exp base, struct Symbol_* xid, const struct loc_t_ p
   a->d.exp_dot.base = base;
   a->d.exp_dot.xid = xid;
   return a;
-}
-
-Exp prepend_exp(const restrict Exp exp, const restrict Exp next) {
-  exp->next = next;
-  return exp;
 }
 
 AST_NEW(Arg_List, arg_list, Type_Decl* td, const Var_Decl var_decl, const Arg_List arg_list) {

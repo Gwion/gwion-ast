@@ -106,7 +106,6 @@ struct ID_List_    {
 };
 
 ANEW ANN AST_NEW(ID_List, id_list, struct Symbol_*);
-ANEW ANN2(1, 2) ID_List prepend_id_list(MemPool p, struct Symbol_*, ID_List);
 ANN void free_id_list(MemPool p, ID_List);
 
 struct Type_List_  {
@@ -328,7 +327,6 @@ ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl*, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_td, Type_Decl*, const struct loc_t_);
-ANEW ANN Exp prepend_exp(const Exp, const Exp);
 
 static inline Exp take_exp(const Exp exp, const m_uint n) {
   Exp e = exp;

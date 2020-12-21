@@ -127,7 +127,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<ast> class_body
 %type<id_list> id_list decl_template
 %type<type_list> type_list call_template
-%type<union_list> union_list
+%type<union_list> union_decl union_list
 %type<ast> ast prg
 
 %start prg
@@ -163,8 +163,8 @@ prg: ast { arg->ast = $$ = $1; /* no need for LIST_REM here */}
   | /* empty */ { gwion_error(&@$, arg, "file is empty."); YYERROR; }
 
 ast
-  : section { $$ = !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
-  | ast section { LIST_NEXT($$, $1, Ast, !((Scanner*)arg)->ppa->lint ? new_ast_expand(mpool(arg), $2, NULL) : new_ast(mpool(arg), $2, NULL)) }
+  : section { $$ = !arg->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
+  | ast section { LIST_NEXT($$, $1, Ast, !arg->ppa->lint ? new_ast_expand(mpool(arg), $2, NULL) : new_ast(mpool(arg), $2, NULL)) }
   ;
 
 section
@@ -479,8 +479,15 @@ type_decl_flag
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-union_list: type_decl_empty ID ";" { $$ = new_union_list(mpool(arg), $1, $2, @$); }
-  | type_decl_empty ID ";" union_list { $$ = new_union_list(mpool(arg), $1, $2, @$); $$->next = $4; };
+union_decl:
+            ID ";" {
+  Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("None"), @$);
+  $$ = new_union_list(mpool(arg), td, $1, @$);
+}
+| type_decl_empty ID ";" { $$ = new_union_list(mpool(arg), $1, $2, @$); }
+
+union_list: union_decl
+  | union_decl union_list { $$ = $1; $$->next = $2; };
 
 union_def
   : UNION flag ID decl_template LBRACE union_list RBRACE {
