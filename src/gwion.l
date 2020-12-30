@@ -324,7 +324,7 @@ ANN static double atof_space(m_str, size_t);
 {NUM}+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll_space(yytext, yyleng);  return NUM;    }
 ({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+) { adjust(yyscanner); yylval->fval = (m_float)atof_space(yytext, yyleng);  return FLOATT; }
 @{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
-&{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_E; }
+\(&{LEX_ID}\)                           { adjust(yyscanner); yytext[yyleng - 1] = '\0'; yylval->sym  = alloc_sym(yyscanner, yytext + 1); return OPID_E; }
 {LEX_ID}                            {
   adjust(yyscanner);
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);

@@ -546,7 +546,7 @@ unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
-  | LPAREN OPID_E RPAREN unary_exp { $$ = new_exp_unary(mpool(arg), $2, $4, @$); }
+  | OPID_E unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
   | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, @$); }
   | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
   | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
