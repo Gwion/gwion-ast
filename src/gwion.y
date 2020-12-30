@@ -436,7 +436,7 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
   :  type_decl_empty op_op LPAREN arg COMMA arg RPAREN
     { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none); $4->next = $6;}
-  |  type_decl_empty post_op LPAREN arg RPAREN code_stmt
+  |  type_decl_empty post_op LPAREN arg RPAREN
     { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none); }
   |  unary_op type_decl_empty LPAREN arg RPAREN
     {

@@ -235,9 +235,10 @@ struct Exp_ {
   struct Type_* cast_to;
   Exp next;
   struct loc_t_ pos;                  ///< position
-  ae_exp_t exp_type;
 //  enum exp_state emit_var;
-  int emit_var;
+  ae_exp_t exp_type;
+  int16_t emit_var;
+  int16_t acquire;
 };
 
 ANN static inline int exp_getvar(const Exp e) {
