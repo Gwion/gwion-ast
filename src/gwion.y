@@ -91,7 +91,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_E "&<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" OPTIONS COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
-  NEW "new" SPORK "spork" FORK "fork" TYPEOF "typeof"
+  NEW "new" SPORK "spork" FORK "fork"
   L_HACK "<<<" R_HACK ">>>"
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
@@ -105,10 +105,10 @@ ANN Symbol lambda_name(const Scanner*);
 %type<sym>opt_id
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl_next type_decl type_decl_array type_decl_empty type_decl_exp class_ext
+%type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp typeof_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
@@ -459,14 +459,9 @@ type_decl_tmpl
   : ID call_template { $$ = new_type_decl(mpool(arg), $1, @$); $$->types = $2; }
   ;
 
-type_decl_next
-  : type_decl_tmpl
-  | type_decl_tmpl "." type_decl_next { $1->next = $3; }
-  ;
-
 type_decl_noflag
-  : type_decl_next { $$ = $1; }
-  | typeof_exp { $$ = new_type_decl2(mpool(arg), $1, @$); }
+  : type_decl_tmpl
+  | type_decl_tmpl "." type_decl_noflag { $1->next = $3; }
   ;
 
 option: "?" { $$ = 1; } | OPTIONS { $$ = strlen(s_name($1)); } | { $$ = 0; };
@@ -608,8 +603,6 @@ interp: INTERP_START interp_exp { $$ = $2; }
   $1->next = $3;
 }
 
-typeof_exp: TYPEOF LPAREN exp RPAREN { $$ = new_prim_typeof(mpool(arg), $3, @$); LIST_REM($3) };
-
 prim_exp
   : ID                  { $$ = new_prim_id(     mpool(arg), $1, @$); }
   | NUM                 { $$ = new_prim_int(    mpool(arg), $1, @$); }
@@ -623,6 +616,5 @@ prim_exp
   | LPAREN exp RPAREN   { $$ = $2; LIST_REM($2) }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     @$); }
-  | typeof_exp { $$ = $1; }
   ;
 %%

@@ -55,8 +55,6 @@ AST_FREE(Type_Decl*, type_decl) {
     free_type_list(p, a->types);
   if(a->array)
     free_array_sub(p, a->array);
-  if(a->exp)
-    free_exp(p, a->exp);
   Type_Decl *next = a->next;
   mp_free(p, Type_Decl, a);
   if(next)

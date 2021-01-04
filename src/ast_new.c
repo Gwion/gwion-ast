@@ -23,13 +23,6 @@ AST_NEW(Type_Decl*, type_decl, const Symbol xid, const struct loc_t_ pos) {
   return a;
 }
 
-AST_NEW(Type_Decl*, type_decl2, const Exp exp, const struct loc_t_ pos) {
-  Type_Decl* a = mp_calloc(p, Type_Decl);
-  a->exp = exp;
-  a->pos = pos;
-  return a;
-}
-
 AST_NEW(Array_Sub, array_sub, const Exp exp) {
   Array_Sub a = mp_calloc(p, Array_Sub);
   a->exp = exp;

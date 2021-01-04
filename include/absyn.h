@@ -86,17 +86,15 @@ ANN2(1, 2) ANEW AST_NEW(Var_Decl_List, var_decl_list, const Var_Decl, const Var_
 
 typedef struct Type_Decl_ {
   Symbol xid;
-  Exp exp;
   Array_Sub array;
   Type_List types;
-  struct loc_t_ pos;               ///< position
   struct Type_Decl_* next;
   m_uint option;
+  struct loc_t_ pos;               ///< position
   ae_flag flag;
 } Type_Decl;
 
 ANEW ANN AST_NEW(Type_Decl*, type_decl, const Symbol, const struct loc_t_ pos);
-ANEW ANN AST_NEW(Type_Decl*, type_decl2, const Exp, const struct loc_t_ pos);
 ANN void free_type_decl(MemPool p, Type_Decl*);
 ANN Type_Decl* add_type_decl_array(Type_Decl*, const Array_Sub);
 

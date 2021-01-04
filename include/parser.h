@@ -138,31 +138,30 @@ extern int gwion_debug;
     NEW = 341,                     /* "new"  */
     SPORK = 342,                   /* "spork"  */
     FORK = 343,                    /* "fork"  */
-    TYPEOF = 344,                  /* "typeof"  */
-    L_HACK = 345,                  /* "<<<"  */
-    R_HACK = 346,                  /* ">>>"  */
-    AND = 347,                     /* "&&"  */
-    EQ = 348,                      /* "=="  */
-    GE = 349,                      /* ">="  */
-    GT = 350,                      /* ">"  */
-    LE = 351,                      /* "<="  */
-    LT = 352,                      /* "<"  */
-    NEQ = 353,                     /* "!="  */
-    SHIFT_LEFT = 354,              /* "<<"  */
-    SHIFT_RIGHT = 355,             /* ">>"  */
-    S_AND = 356,                   /* "&"  */
-    S_OR = 357,                    /* "|"  */
-    S_XOR = 358,                   /* "^"  */
-    OR = 359,                      /* "||"  */
-    TMPL = 360,                    /* ":["  */
-    TILDA = 361,                   /* "~"  */
-    EXCLAMATION = 362,             /* "!"  */
-    DYNOP = 363,                   /* "<dynamic_operator>"  */
-    RANGE_EMPTY = 364,             /* RANGE_EMPTY  */
-    UMINUS = 365,                  /* UMINUS  */
-    UTIMES = 366,                  /* UTIMES  */
-    STMT_ASSOC = 368,              /* STMT_ASSOC  */
-    STMT_NOASSOC = 369             /* STMT_NOASSOC  */
+    L_HACK = 344,                  /* "<<<"  */
+    R_HACK = 345,                  /* ">>>"  */
+    AND = 346,                     /* "&&"  */
+    EQ = 347,                      /* "=="  */
+    GE = 348,                      /* ">="  */
+    GT = 349,                      /* ">"  */
+    LE = 350,                      /* "<="  */
+    LT = 351,                      /* "<"  */
+    NEQ = 352,                     /* "!="  */
+    SHIFT_LEFT = 353,              /* "<<"  */
+    SHIFT_RIGHT = 354,             /* ">>"  */
+    S_AND = 355,                   /* "&"  */
+    S_OR = 356,                    /* "|"  */
+    S_XOR = 357,                   /* "^"  */
+    OR = 358,                      /* "||"  */
+    TMPL = 359,                    /* ":["  */
+    TILDA = 360,                   /* "~"  */
+    EXCLAMATION = 361,             /* "!"  */
+    DYNOP = 362,                   /* "<dynamic_operator>"  */
+    RANGE_EMPTY = 363,             /* RANGE_EMPTY  */
+    UMINUS = 364,                  /* UMINUS  */
+    UTIMES = 365,                  /* UTIMES  */
+    STMT_ASSOC = 367,              /* STMT_ASSOC  */
+    STMT_NOASSOC = 368             /* STMT_NOASSOC  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -254,31 +253,30 @@ extern int gwion_debug;
 #define NEW 341
 #define SPORK 342
 #define FORK 343
-#define TYPEOF 344
-#define L_HACK 345
-#define R_HACK 346
-#define AND 347
-#define EQ 348
-#define GE 349
-#define GT 350
-#define LE 351
-#define LT 352
-#define NEQ 353
-#define SHIFT_LEFT 354
-#define SHIFT_RIGHT 355
-#define S_AND 356
-#define S_OR 357
-#define S_XOR 358
-#define OR 359
-#define TMPL 360
-#define TILDA 361
-#define EXCLAMATION 362
-#define DYNOP 363
-#define RANGE_EMPTY 364
-#define UMINUS 365
-#define UTIMES 366
-#define STMT_ASSOC 368
-#define STMT_NOASSOC 369
+#define L_HACK 344
+#define R_HACK 345
+#define AND 346
+#define EQ 347
+#define GE 348
+#define GT 349
+#define LE 350
+#define LT 351
+#define NEQ 352
+#define SHIFT_LEFT 353
+#define SHIFT_RIGHT 354
+#define S_AND 355
+#define S_OR 356
+#define S_XOR 357
+#define OR 358
+#define TMPL 359
+#define TILDA 360
+#define EXCLAMATION 361
+#define DYNOP 362
+#define RANGE_EMPTY 363
+#define UMINUS 364
+#define UTIMES 365
+#define STMT_ASSOC 367
+#define STMT_NOASSOC 368
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -317,7 +315,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 321 "include/parser.h"
+#line 319 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
