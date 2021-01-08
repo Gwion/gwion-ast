@@ -167,13 +167,6 @@ AST_NEW(Exp, prim_hack, const Exp exp, const struct loc_t_ pos) {
   return a;
 }
 
-AST_NEW(Exp, prim_typeof, Exp exp, const struct loc_t_ pos) {
-  Exp a = new_prim(p, pos);
-  a->d.prim.prim_type = ae_prim_typeof;
-  a->d.prim.d.exp = exp;
-  return a;
-}
-
 AST_NEW(Exp, prim_interp, Exp exp, const struct loc_t_ pos) {
   Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_interp;

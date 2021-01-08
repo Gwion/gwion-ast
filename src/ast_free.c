@@ -153,7 +153,7 @@ ANN static AST_FREE(Exp_Dot*, exp_dot) {
 
 ANN static AST_FREE(Exp_Primary*, prim) {
   const ae_prim_t t = a->prim_type;
-  if(t == ae_prim_hack || t == ae_prim_typeof || t == ae_prim_interp)
+  if(t == ae_prim_hack || t == ae_prim_interp)
     free_exp(p, a->d.exp);
   else if(t == ae_prim_array)
     free_array_sub(p, a->d.array);

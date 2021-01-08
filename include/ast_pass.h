@@ -13,9 +13,8 @@ const _##prefix##_prim_func prefix##_prim_func[] = {                            
   (_##prefix##_prim_func)prefix##_prim_id,     (_##prefix##_prim_func)prefix##_prim_num,        \
   (_##prefix##_prim_func)prefix##_prim_float,  (_##prefix##_prim_func)prefix##_prim_str,        \
   (_##prefix##_prim_func)prefix##_prim_array,  (_##prefix##_prim_func)prefix##_prim_range,      \
-  (_##prefix##_prim_func)prefix##_prim_hack,   \
-  (_##prefix##_prim_func)prefix##_prim_char,   (_##prefix##_prim_func)prefix##_prim_nil,        \
-  (_##prefix##_prim_func)prefix##_prim_typeof, (_##prefix##_prim_func)prefix##_prim_interp      \
+  (_##prefix##_prim_func)prefix##_prim_hack,   (_##prefix##_prim_func)prefix##_prim_char,       \
+  (_##prefix##_prim_func)prefix##_prim_nil,    (_##prefix##_prim_func)prefix##_prim_interp      \
 };
 
 #define DECL_EXP_FUNC(prefix, type, arg)                                                        \

@@ -132,7 +132,7 @@ typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
                ae_prim_str, ae_prim_array, ae_prim_range,
                ae_prim_hack, ae_prim_char, ae_prim_nil,
-               ae_prim_typeof, ae_prim_interp
+               ae_prim_interp
              } ae_prim_t;
 
 typedef struct {
@@ -313,7 +313,6 @@ ANEW ANN AST_NEW(Exp, prim_range, Range*, const struct loc_t_);
 ANEW AST_NEW(Exp, prim_hack, const Exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_char, const m_str, const struct loc_t_);
 ANEW AST_NEW(Exp, prim_nil, const struct loc_t_);
-ANEW ANN AST_NEW(Exp, prim_typeof, const Exp exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl*, const Var_Decl_List, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp, const struct loc_t_);
