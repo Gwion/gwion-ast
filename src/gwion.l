@@ -162,7 +162,7 @@ ANN static double atof_space(m_str, size_t);
 ^#include{SPACE} { BEGIN(include_start); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start><{FILENAME}> { GWYY_INCLUDE; BEGIN(include_end); }
 
-<require>{LEX_ID} { BEGIN(require_end); yylval->sval = strdup(yytext); return PP_REQUIRE; }
+<require>{LEX_ID}(":["{LEX_ID}"]"){0,1} { BEGIN(require_end); yylval->sval = strdup(yytext); return PP_REQUIRE; }
 <require_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
 ^#require{SPACE}+ { BEGIN(require); }
 
