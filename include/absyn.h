@@ -210,7 +210,8 @@ enum exp_state {
   exp_state_meta, // ae_meta_value
   exp_state_prot, // ae_meta_protect
   exp_state_addr,
-  exp_state_null,
+  exp_state_use,
+  exp_state_null, // still in use?
 };
 
 struct Exp_ {
@@ -238,6 +239,17 @@ struct Exp_ {
   int16_t emit_var;
   int16_t acquire;
 };
+
+ANN static inline int exp_getuse(const Exp e) {
+  return (e->emit_var & (1 << exp_state_use)) == (1 << exp_state_use);
+}
+
+ANN static inline void exp_setuse(const Exp e, const uint val) {
+  if(val)
+    e->emit_var |= 1 << exp_state_use;
+  else
+    e->emit_var &= ~(1 << exp_state_use);
+}
 
 ANN static inline int exp_getvar(const Exp e) {
   return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
