@@ -230,8 +230,8 @@ type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
   $$ = $1; }
 
 arg
-  : type_decl arg_decl ":" binary_exp { $$ = new_arg_list(mpool(arg), $1, $2, NULL); $$->exp = $4; }
-  | type_decl arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); };
+  : type_decl_array arg_decl ":" binary_exp { $$ = new_arg_list(mpool(arg), $1, $2, NULL); $$->exp = $4; }
+  | type_decl_array arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); };
 arg_list:
      arg { $$ = $1; LIST_FIRST($1) }
   |  arg_list COMMA arg {
@@ -240,7 +240,7 @@ arg_list:
         { gwion_error(&@3, arg, "missing default argument"); YYERROR;}
    };
 
-fptr_arg: type_decl fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
+fptr_arg: type_decl_array fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
 fptr_list: fptr_arg { $$ = $1; LIST_FIRST($$) } | fptr_list COMMA fptr_arg { LIST_NEXT($$, $1, Arg_List, $3) };
 
 code_stmt
