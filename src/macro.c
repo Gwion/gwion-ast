@@ -4,9 +4,9 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-MacroArg new_macroarg(MemPool p, const char* name) {
+MacroArg new_macroarg(MemPool p, const m_str name) {
   const MacroArg a = mp_calloc(p, MacroArg);
-  a->name = strdup(name);
+  a->name = mstrdup(p, name);
   a->text.mp = p;
   return a;
 }
@@ -21,7 +21,7 @@ static void free_args(MemPool p, const MacroArg a) {
   if(a->next)
     free_args(p, a->next);
   text_release(&a->text);
-  xfree(a->name);
+  free_mstr(p, a->name);
   mp_free(p, MacroArg, a);
 }
 
@@ -29,7 +29,7 @@ void free_entry(MemPool p, void *data) {
   const Macro s = (Macro)data;
   if(s->next)
     free_entry(p, s->next);
-  xfree(s->name);
+  free_mstr(p, s->name);
   text_release(s->text);
   mp_free(p, GwText, s->text);
   if(s->base)
@@ -37,9 +37,9 @@ void free_entry(MemPool p, void *data) {
   mp_free(p, Macro, s);
 }
 
-static inline Macro mkentry(MemPool p, const char* name, const Macro next) {
+static inline Macro mkentry(MemPool p, const m_str name, const Macro next) {
   const Macro s = mp_calloc(p, Macro);
-  s->name = strdup(name);
+  s->name = mstrdup(p, name);
   s->next = next;
   s->text = mp_calloc(p, GwText);
   s->text->mp = p;

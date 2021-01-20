@@ -15,7 +15,7 @@ struct MacroArg_ {
   struct pos_t pos;
 };
 
-MacroArg new_macroarg(MemPool p, const char*);
+MacroArg new_macroarg(MemPool p, const m_str);
 void clean_macroarg(const MacroArg);
 
 struct Macro_ {
