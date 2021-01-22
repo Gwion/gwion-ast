@@ -405,9 +405,11 @@ struct Stmt_For_ {
 
 struct Stmt_Each_ {
   struct Symbol_* sym;
+  struct Symbol_* idx;
   Exp exp;
   Stmt body;
   struct Value_* v;
+  struct Value_* vidx;
 };
 
 struct Stmt_Loop_ {

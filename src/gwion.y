@@ -324,6 +324,8 @@ loop_stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, @$); LIST_REM($5) }
   | FOREACH LPAREN ID COLON binary_exp RPAREN stmt
       { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
+  | FOREACH LPAREN ID "," ID COLON binary_exp RPAREN stmt
+      { $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$); $$->d.stmt_each.idx = $3; }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   ;
