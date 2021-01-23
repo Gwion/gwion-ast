@@ -145,7 +145,7 @@ typedef struct {
   struct Value_ * value;
   union prim_data {
     struct Symbol_* var;
-    unsigned long num;
+    m_int num;
     m_float fnum;
     m_str chr;
     m_str str;
