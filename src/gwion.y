@@ -1,4 +1,5 @@
 %define api.pure full
+%define parse.error detailed
 %parse-param { Scanner* arg }
 %lex-param  { void* scan }
 %name-prefix "gwion_"
