@@ -1,4 +1,4 @@
-GWION_PACKAGE=gwion_ast
+GWION_PACKAGE=gwion-ast
 
 ifeq (,$(wildcard config.mk))
 $(shell cp config.mk.orig config.mk)
