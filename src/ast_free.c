@@ -257,6 +257,10 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
     xfree(a->data);
 }
 
+ANN static AST_FREE(Stmt_Defer, stmt_defer) {
+  free_stmt(p, a->stmt);
+}
+
 ANN AST_FREE(Union_List, union_list) {
   free_type_decl(p, a->td);
   if(a->next)

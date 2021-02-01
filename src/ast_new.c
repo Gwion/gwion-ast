@@ -405,6 +405,12 @@ AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str data, const struc
   return a;
 }
 
+AST_NEW(Stmt, stmt_defer, const Stmt stmt, const struct loc_t_ pos) {
+  Stmt a = new_stmt(p, ae_stmt_defer, pos);
+  a->d.stmt_defer.stmt = stmt;
+  return a;
+}
+
 AST_NEW(Stmt_List, stmt_list, Stmt stmt, Stmt_List next) {
   Stmt_List list = mp_calloc(p, Stmt_List);
   list->stmt = stmt;

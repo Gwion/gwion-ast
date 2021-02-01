@@ -257,7 +257,7 @@ ANN static void cpy_stmt_exp(MemPool p, const Stmt_Exp a, const Stmt_Exp src) {
     a->val = cpy_exp(p, src->val);
 }
 
-ANN static void cpy_stmt_flow(MemPool p, Stmt_Flow a,const Stmt_Flow src) {
+ANN static void cpy_stmt_flow(MemPool p, Stmt_Flow a, const Stmt_Flow src) {
   if(src->cond)
     a->cond = cpy_exp(p, src->cond);
   if(src->body)
@@ -265,10 +265,14 @@ ANN static void cpy_stmt_flow(MemPool p, Stmt_Flow a,const Stmt_Flow src) {
   a->is_do = src->is_do;
 }
 
-ANN static void cpy_stmt_varloop(MemPool p, Stmt_VarLoop a,const Stmt_VarLoop src) {
+ANN static void cpy_stmt_varloop(MemPool p, Stmt_VarLoop a, const Stmt_VarLoop src) {
   a->exp = cpy_exp(p, src->exp);
   if(src->body)
     a->body = cpy_stmt(p, src->body);
+}
+
+ANN static void cpy_stmt_defer(MemPool p, Stmt_Defer a, const Stmt_Defer src) {
+  a->stmt = cpy_stmt(p, src->stmt);
 }
 
 ANN static void cpy_stmt_code(MemPool p, Stmt_Code a, const Stmt_Code src) {
@@ -441,6 +445,9 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
       break;
     case ae_stmt_pp:
       cpy_stmt_pp(p, &a->d.stmt_pp, &src->d.stmt_pp);
+      break;
+    case ae_stmt_defer:
+      cpy_stmt_defer(p, &a->d.stmt_defer, &src->d.stmt_defer);
       break;
       case ae_stmt_break:
       case ae_stmt_continue:

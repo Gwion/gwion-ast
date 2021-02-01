@@ -349,7 +349,7 @@ ANN void free_exp(MemPool p, Exp);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_each, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_varloop, ae_stmt_break,
-               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_pp
+               ae_stmt_continue, ae_stmt_return, ae_stmt_match, ae_stmt_pp, ae_stmt_defer
              } ae_stmt_t;
 
 typedef struct Stmt_Exp_     * Stmt_Exp;
@@ -363,6 +363,7 @@ typedef struct Stmt_If_      * Stmt_If;
 typedef struct Stmt_Match_   * Stmt_Match;
 typedef struct Stmt_Index_   * Stmt_Index;
 typedef struct Stmt_PP_      * Stmt_PP;
+typedef struct Stmt_Defer_   * Stmt_Defer;
 
 struct Stmt_Exp_ {
   Exp val;
@@ -520,19 +521,24 @@ struct Stmt_PP_ {
   enum ae_pp_type pp_type;
 };
 
+struct Stmt_Defer_ {
+  Stmt stmt;
+};
+
 struct Stmt_ {
   union stmt_data {
-    struct Stmt_Exp_        stmt_exp;
-    struct Stmt_Code_       stmt_code;
-    struct Stmt_Flow_       stmt_flow;
-    struct Stmt_VarLoop_    stmt_varloop;
-    struct Stmt_Loop_       stmt_loop;
-    struct Stmt_For_        stmt_for;
-    struct Stmt_Each_       stmt_each;
-    struct Stmt_If_         stmt_if;
-    struct Stmt_Match_      stmt_match;
-    struct Stmt_Index_      stmt_index;
-    struct Stmt_PP_    stmt_pp;
+    struct Stmt_Exp_     stmt_exp;
+    struct Stmt_Code_    stmt_code;
+    struct Stmt_Flow_    stmt_flow;
+    struct Stmt_VarLoop_ stmt_varloop;
+    struct Stmt_Loop_    stmt_loop;
+    struct Stmt_For_     stmt_for;
+    struct Stmt_Each_    stmt_each;
+    struct Stmt_If_      stmt_if;
+    struct Stmt_Match_   stmt_match;
+    struct Stmt_Index_   stmt_index;
+    struct Stmt_PP_      stmt_pp;
+    struct Stmt_Defer_   stmt_defer;
   } d;
   struct loc_t_ pos;     ///< position
   ae_stmt_t stmt_type;
@@ -552,6 +558,7 @@ ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, co
 ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt, const struct loc_t_);
 ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt, const struct loc_t_);
 ANEW ANN2(1,3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str, const struct loc_t_);
+ANEW ANN AST_NEW(Stmt, stmt_defer, const Stmt, const struct loc_t_);
 
 ANN void free_stmt(MemPool p, Stmt);
 struct Stmt_List_ {

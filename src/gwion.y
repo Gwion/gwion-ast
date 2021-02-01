@@ -79,7 +79,7 @@ ANN Symbol lambda_name(const Scanner*);
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
   TYPEDEF "typedef" FUNCDEF "funcdef"
-  NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop"
+  NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
   BACKSLASH "\\" OPID_A OPID_E
   LATE "LATE"
 
@@ -113,7 +113,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt
 %type<stmt> match_case_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
@@ -272,6 +272,7 @@ stmt
   | jump_stmt
   | stmt_pp
   | varloop_stmt
+  | defer_stmt
   ;
 
 opt_id: ID | { $$ = NULL; };
@@ -332,6 +333,8 @@ loop_stmt
   ;
 
 varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, @$); }
+
+defer_stmt: "defer" stmt { $$ = new_stmt_defer(mpool(arg), $2, @$); }
 
 selection_stmt
   : IF LPAREN exp RPAREN stmt %prec NOELSE

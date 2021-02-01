@@ -279,6 +279,7 @@ ANN static double atof_space(m_str, size_t);
 "case"                              { adjust(yyscanner); return CASE;}
 "enum"                              { adjust(yyscanner); return ENUM;}
 "varloop"                           { adjust(yyscanner); return VARLOOP;}
+"defer"                             { adjust(yyscanner); return DEFER;}
 {LEX_ID}{SPACE}*("##"{SPACE}*{LEX_ID})*{SPACE}*"##"{SPACE}*{LEX_ID} {
   adjust(yyscanner);
   char c[yyleng], *buf = c;

@@ -38,7 +38,8 @@ const _##prefix##_stmt_func prefix##_stmt_func[] = {                            
   (_##prefix##_stmt_func)prefix##_stmt_if,       (_##prefix##_stmt_func)prefix##_stmt_code,     \
   (_##prefix##_stmt_func)prefix##_stmt_varloop,  (_##prefix##_stmt_func)prefix##_stmt_break,    \
   (_##prefix##_stmt_func)prefix##_stmt_continue, (_##prefix##_stmt_func)prefix##_stmt_return,   \
-  (_##prefix##_stmt_func)prefix##_stmt_match,    (_##prefix##_stmt_func)prefix##_stmt_pp        \
+  (_##prefix##_stmt_func)prefix##_stmt_match,    (_##prefix##_stmt_func)prefix##_stmt_pp,       \
+  (_##prefix##_stmt_func)prefix##_stmt_defer                                                    \
 };
 
 #define DECL_SECTION_FUNC(prefix, type, arg)                                                    \
