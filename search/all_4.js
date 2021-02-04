@@ -8,8 +8,9 @@ var searchData=
   ['decl_5fstmt_5ffunc_180',['DECL_STMT_FUNC',['../ast__pass_8h.html#ac2042ebc89a1389e080ea8c97705f97c',1,'DECL_STMT_FUNC():&#160;ast_pass.h'],['../ast__free_8c.html#ab5884c90fbbfcf7e542b19aacda1e9c0',1,'DECL_STMT_FUNC(free, void, MemPool):&#160;ast_free.c']]],
   ['def_181',['def',['../structPP__.html#ac1b53c35341e6c3d425fa9c9f51704d1',1,'PP_::def()'],['../structExp__Lambda.html#ac9e50eb9b975ca96d320ef3d7d76b723',1,'Exp_Lambda::def()']]],
   ['depth_182',['depth',['../structArray__Sub__.html#a7417e1285fa91de655934ffa99dde08f',1,'Array_Sub_']]],
-  ['dl_5ffunc_5fptr_183',['dl_func_ptr',['../unionFunc__Def___1_1func__def__data.html#a5fbe01f1e8d053f1fd1a5fad1f872de9',1,'Func_Def_::func_def_data']]],
-  ['dummy_5ffunc_184',['dummy_func',['../ast__pass_8h.html#a365b68090fe7fc2a0aae68b15d96baaa',1,'ast_pass.h']]],
-  ['dynop_2ec_185',['dynop.c',['../dynop_8c.html',1,'']]],
-  ['dynop_2eh_186',['dynop.h',['../dynop_8h.html',1,'']]]
+  ['distinct_183',['distinct',['../structType__Def__.html#a42b6c01300622610350ca8f0352d7ee9',1,'Type_Def_']]],
+  ['dl_5ffunc_5fptr_184',['dl_func_ptr',['../unionFunc__Def___1_1func__def__data.html#a5fbe01f1e8d053f1fd1a5fad1f872de9',1,'Func_Def_::func_def_data']]],
+  ['dummy_5ffunc_185',['dummy_func',['../ast__pass_8h.html#a365b68090fe7fc2a0aae68b15d96baaa',1,'ast_pass.h']]],
+  ['dynop_2ec_186',['dynop.c',['../dynop_8c.html',1,'']]],
+  ['dynop_2eh_187',['dynop.h',['../dynop_8h.html',1,'']]]
 ];
