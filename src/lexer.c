@@ -2319,7 +2319,7 @@ YY_RULE_SETUP
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
-    gw_err(_("can't stringify non argument token '%s'\n"), yytext + 1);
+    gw_err(_("can't stringify non argument token '%s'\n"), yytext);
     return 1;
   }
 }

@@ -313,7 +313,7 @@ ANN static double atof_space(m_str, size_t);
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
-    gw_err(_("can't stringify non argument token '%s'\n"), yytext + 1);
+    gw_err(_("can't stringify non argument token '%s'\n"), yytext);
     return 1;
   }
 }
