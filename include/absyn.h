@@ -478,6 +478,7 @@ struct Type_Def_ {
   struct Type_*       type;
   struct Symbol_*     xid;
   Tmpl*  tmpl;
+  m_bool distinct;
 };
 ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl*, struct Symbol_*);
 ANN void free_type_def(MemPool p, Type_Def);

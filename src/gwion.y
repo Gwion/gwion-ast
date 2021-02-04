@@ -78,13 +78,13 @@ ANN Symbol lambda_name(const Scanner*);
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
-  TYPEDEF "typedef" FUNCDEF "funcdef"
+  TYPEDEF "typedef" DISTINCT "distinct" FUNCDEF "funcdef"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
   BACKSLASH "\\" OPID_A OPID_E
   LATE "LATE"
 
 %token<lval> NUM "<integer>"
-%type<ival> flow breaks
+%type<ival> flow breaks type_def_type
 %token<fval> FLOATT
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
@@ -213,11 +213,13 @@ fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
   $$ = new_fptr_def(mpool(arg), $2);
 };
 
-type_def: TYPEDEF flag type_decl_array ID decl_template SEMICOLON {
+type_def_type: "typedef" { $$ = 0; } | "distinct" { $$ = 1; };
+type_def: type_def_type flag type_decl_array ID decl_template SEMICOLON {
   $$ = new_type_def(mpool(arg), $3, $4);
   $3->flag |= $2;
   if($5)
     $$->tmpl = new_tmpl_base(mpool(arg), $5);
+  $$->distinct = $1;
 };
 
 type_decl_array: type_decl array { $1->array = $2; } | type_decl

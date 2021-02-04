@@ -219,6 +219,7 @@ ANN static double atof_space(m_str, size_t);
 ","                                 { adjust(yyscanner); return COMMA;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
+"distinct"                          { adjust(yyscanner); return DISTINCT;}
 "funcdef"                           { adjust(yyscanner); return FUNCDEF;}
 "var"                               { adjust(yyscanner); return VAR; }
 "new"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
