@@ -192,6 +192,12 @@ ANN static double atof_space(m_str, size_t);
   BEGIN(interp);
   return INTERP_START;
 }
+<interp>\\\" {
+  adjust(yyscanner);
+  yymore();
+  continue;
+}
+
 <interp>"\\${" {
   unput('{');
   unput('$');
