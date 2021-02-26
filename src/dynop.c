@@ -17,7 +17,7 @@ ANN enum yytokentype op1(const m_str str) {
     case '>': return GT;       break;
     case '^': return S_XOR;    break;
     case '|': return OR;       break;
-    case '&': return AND;      break;
+    case '&': return S_AND;      break;
     case '!': return EXCLAMATION; break;
   }
   return DYNOP;
