@@ -465,6 +465,7 @@ func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= 
 
 type_decl_tmpl
   : ID call_template { $$ = new_type_decl(mpool(arg), $1, @$); $$->types = $2; }
+  | "&" ID call_template { $$ = new_type_decl(mpool(arg), $2, @$); $$->ref = 1; $$->types = $3; }
   ;
 
 type_decl_noflag
