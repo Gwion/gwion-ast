@@ -4,6 +4,7 @@ var searchData=
   ['range_395',['Range',['../absyn_8h.html#a603403ec9496c85e7686252c0eeda36b',1,'absyn.h']]],
   ['range_5f_396',['Range_',['../structRange__.html',1,'']]],
   ['readme_2emd_397',['README.md',['../README_8md.html',1,'']]],
-  ['ret_5ftype_398',['ret_type',['../structFunc__Base__.html#a0ec563f380da52c6f66b56dd1a8f13fd',1,'Func_Base_']]],
-  ['rhs_399',['rhs',['../structExp__Binary.html#a3b94bdf2e5075a9a8652c3ccbab995cb',1,'Exp_Binary']]]
+  ['ref_398',['ref',['../structType__Decl__.html#a3a87cae044bd55341a20c2c5ff0ecdc5',1,'Type_Decl_']]],
+  ['ret_5ftype_399',['ret_type',['../structFunc__Base__.html#a0ec563f380da52c6f66b56dd1a8f13fd',1,'Func_Base_']]],
+  ['rhs_400',['rhs',['../structExp__Binary.html#a3b94bdf2e5075a9a8652c3ccbab995cb',1,'Exp_Binary']]]
 ];
