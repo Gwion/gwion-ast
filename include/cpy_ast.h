@@ -6,6 +6,7 @@
 #define __CPY_AST
 ANN Exp cpy_exp(MemPool, Exp);
 ANN Array_Sub cpy_array_sub(MemPool, Array_Sub);
+ANN Arg_List cpy_arg_list(MemPool, Arg_List);
 ANN Type_Decl* cpy_type_decl(MemPool, const Type_Decl*);
 ANN Union_List cpy_union_list(MemPool, const Union_List);
 ANN Func_Def cpy_func_def(MemPool, const Func_Def);
