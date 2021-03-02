@@ -98,22 +98,28 @@ ANN static double atof_space(m_str, size_t);
 %x define define_arg_start define_arg skip get_arg pragma interp include_start include_end require require_end
 %%
 
-#\" { 
+#+\" { 
   Scanner *scan = yyget_extra(yyscanner);
   scan->hashes = yyleng;
   BEGIN(raw_string);
 }
 
-<raw_string>#\" {
+<raw_string>\"#+ {
   Scanner *scan = yyget_extra(yyscanner);
-  if(yyleng == scan->hashes) {
+  size_t len = yyleng;
+  short unsigned int hashes = 1;
+  while(yytext[--len] == '#')hashes++;
+  if(hashes == scan->hashes) {
     BEGIN(INITIAL);
     scan->hashes = 0;
+    yytext[len] = '\0';
     yylval->sval = alloc_str(yyscanner, yytext);
     return STRING_LIT;
   } else
     yymore();
 }
+<raw_string>\n { yymore(); }
+<raw_string>. { yymore(); }
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
