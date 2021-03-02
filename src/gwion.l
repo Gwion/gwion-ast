@@ -94,9 +94,26 @@ ANN static double atof_space(m_str, size_t);
 %option yymore
 %option never-interactive batch
 %option nobackup nodebug
-%x comment
+%x comment raw_string
 %x define define_arg_start define_arg skip get_arg pragma interp include_start include_end require require_end
 %%
+
+#\" { 
+  Scanner *scan = yyget_extra(yyscanner);
+  scan->hashes = yyleng;
+  BEGIN(raw_string);
+}
+
+<raw_string>#\" {
+  Scanner *scan = yyget_extra(yyscanner);
+  if(yyleng == scan->hashes) {
+    BEGIN(INITIAL);
+    scan->hashes = 0;
+    yylval->sval = alloc_str(yyscanner, yytext);
+    return STRING_LIT;
+  } else
+    yymore();
+}
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
