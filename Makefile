@@ -12,7 +12,6 @@ ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
 CFLAGS += -DYY_NO_UNISTD_H
 endif
-lib += libprettyerr/libprettyerr.a
 endif
 
 obj    := $(src:.c=.o)
@@ -29,7 +28,7 @@ all: options-show generated libgwion_ast.a
 options-show:
 	@$(call _options)
 
-libgwion_ast.a: ${obj} ${lib}
+libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
 
