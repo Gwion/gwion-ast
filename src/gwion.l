@@ -530,10 +530,8 @@ static Macro add_macro(void* data, const m_str line) {
     return NULL;
   }
 //  YY_USER_ACTION;
-loc_t *loc = yyget_lloc(data);
-loc->first.column += i;
-printf("add %u:%u\n", loc->first.line, loc->first.column);
-printf("add %u:%u\n", loc->last.line, loc->last.column);
+  loc_t *loc = yyget_lloc(data);
+  loc->first.column += i;
 
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   scan->pp->entry->file = ppstate->filename;
@@ -911,13 +909,9 @@ static m_bool handle_comma(void* data) {
   const MacroArg a = scan->pp->entry->args;
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next)) {
-loc_t *loc = yyget_lloc(data);
-printf("%u:%u\n", scan->pos.line, scan->pos.column);
-//printf("%u:%u\n", loc.last.line, loc.last.column);
-printf("%u:%u\n", loc->first.line, loc->first.column);
-printf("%u:%u\n", loc->last.line, loc->last.column);
-    const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
-    *loc = ppstate->pos;
+      loc_t *loc = yyget_lloc(data);
+      const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+      *loc = ppstate->pos;
       gwlex_error(data, "too many arguments");
       return GW_ERROR;
     }
