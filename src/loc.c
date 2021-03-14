@@ -57,6 +57,17 @@ ANN static char* get_src(const char *filename, const loc_t loc) {
   return line;
 }
 
+static inline const char* get_filename(const char *filename) {
+#ifndef BUILD_ON_WINDOWS
+  const char *pwd = getenv("PWD");
+#else
+  const char *pwd = GetCurrentDirectory();
+#endif
+  size_t sz = strlen(pwd);
+  return !strncmp(pwd, filename, sz - 1) ?
+    filename + sz + 1 : filename;
+}
+
 void gwerr_basic(const char *main, const char *explain, const char *fix,
             const char *filename, const loc_t loc, const uint error_code) {
   char * line = get_src(filename, loc);
@@ -64,7 +75,6 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
     gw_err("%s\n", main);
     return;
   }
-//exit(4);
 
   perr_printer_t printer;
   perr_printer_init(
@@ -78,7 +88,7 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
           PERR_ERROR /* error */,
             PERR_Str(loc.first.line, line) /* location of error */,
             PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column) /* occurs at src[15] through src[19] */,
-            main, explain, fix, error_code, filename
+            main, explain, fix, error_code, get_filename(filename)
         );
   perr_print_error(&printer, &err);
   xfree(line);
@@ -104,7 +114,7 @@ ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc
           PERR_WARNING /* error */,
             PERR_Str(loc.first.line, line) /* location of error */,
             PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column) /* occurs at src[15] through src[19] */,
-            main, filename
+            main, get_filename(filename)
         );
   perr_print_error(&printer, &err);
   xfree(line);
