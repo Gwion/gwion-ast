@@ -11,6 +11,7 @@ src := $(wildcard src/*.c)
 ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
 CFLAGS += -DYY_NO_UNISTD_H
+LDFLAGS += libprettyerr/libprettyerr.a
 endif
 endif
 
