@@ -508,11 +508,7 @@ ANN int gwion_error(loc_t *loc, Scanner* scan, const char* s) {
   if(scan->error++)
     return 0;
   const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
-//  const m_str name = ppstate->filename;
-  m_str filename = get_filename(scan, ppstate);
-//  loc_header(*loc, filename);
-//  gw_err("%s\n", s);
-//  loc_err(*loc, filename);
+  const m_str filename = get_filename(scan, ppstate);
   gwerr_basic(s, NULL, NULL, filename, *loc, 0);
   return 0;
 }
@@ -758,9 +754,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
       memcpy(c, ppstate->filename + 8, strlen(ppstate->filename + 8) - 1);
       c[strlen(ppstate->filename + 8) - 1] = '\0';
       if(!strcmp(s, c)) {
-//        gwlex_error(data, "recursive macro use detected");
         yywrap(data);
-//        gwion_error(yyget_lloc(data), data, "recursive macro use detected");
         gwlex_error(data, "recursive macro use detected");
         return GW_ERROR;
       }
@@ -781,8 +775,6 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
               const m_str str = concat("@argument", arg->name);
               gwpp_stack(scan, handle, arg->orig, str, pptype_handle);// should be reference
               scan->pos = arg->pos;
-//loc_t *loc = yyget_lloc(data);
-//              loc->first.column++;
               yy_scan_string(arg->text.str, data);
               return 1;
             }
@@ -837,7 +829,6 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     const m_str str = concat("@argument", "__VA_ARGS__");
     gwpp_stack(scan, handle, NULL, str, pptype_handle);
     scan->pos = e->pos;
-//    scan->pos.column++;
     yy_scan_string(e->base->text.str, data);
     return 1;
   }
