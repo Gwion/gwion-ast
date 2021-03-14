@@ -130,6 +130,11 @@ AST_FREE(Func_Def, func_def) {
 
 ANN AST_FREE(Type_Def, type_def){
   free_type_decl(p, a->ext);
+  if(a->when) {
+    free_exp(p, a->when);
+    if(a->when_def)
+      free_func_def(p, a->when_def);
+  }
   mp_free(p, Type_Def, a);
 }
 

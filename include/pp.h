@@ -5,6 +5,12 @@
 #ifndef __PP
 #define __PP
 
+enum pptype {
+  pptype_file,
+  pptype_arg,
+  pptype_handle,
+};
+
 struct PPState_ {
   void *state;
   union {
@@ -13,7 +19,8 @@ struct PPState_ {
     void *data;
   };
   m_str filename;
-  struct pos_t pos;
+  loc_t pos;
+  enum pptype type;
 };
 
 struct pp_info {

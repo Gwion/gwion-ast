@@ -22,4 +22,8 @@ typedef struct loc_t_ loc_t;
 void loc_header(const loc_t , const m_str filename);
 void loc_err(const loc_t, const m_str filename);
 
+
+void gwerr_basic(const char *main, const char *explain, const char *fix,
+            const char *filename, const loc_t loc, const uint error_code);
+ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc);
 #endif

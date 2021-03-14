@@ -12,6 +12,7 @@ struct MacroArg_ {
   char* name;
   GwText text;
   MacroArg next;
+  Macro orig;
   struct pos_t pos;
 };
 

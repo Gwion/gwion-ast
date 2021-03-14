@@ -1,0 +1,3 @@
+[submodule "libprettyerr"]
+	path = libprettyerr
+	url = https://github.com/fennecdjay/libprettyerr

@@ -110,7 +110,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp
-%type<exp> post_exp dot_exp cast_exp exp when_exp
+%type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt
@@ -161,7 +161,7 @@ ANN Symbol lambda_name(const Scanner*);
 %%
 
 prg: ast { arg->ast = $$ = $1; /* no need for LIST_REM here */}
-  | /* empty */ { gwion_error(&@$, arg, "file is empty."); YYERROR; }
+  | /* empty */ { loc_t loc = { {1, 1}, {1,1} }; gwion_error(&loc, arg, "file is empty."); YYERROR; }
 
 ast
   : section { $$ = !arg->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
@@ -183,8 +183,8 @@ class_def
   : class_type flag modifier ID decl_template class_ext LBRACE class_body RBRACE
     {
       if($1 == cflag_struct && $6)
-        { gwion_error(&@$, arg, "'struct' inherit other types"); YYERROR; }
-      $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, @$);
+        { gwion_error(&@1, arg, "'struct' inherit other types"); YYERROR; }
+      $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, @3);
       if($5)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $5);
       if($1)
@@ -213,10 +213,13 @@ fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
   $$ = new_fptr_def(mpool(arg), $2);
 };
 
+//typedef_when: { $$ = NULL;} | "when" "{" binary_exp ";" "}" { $$ = $3; }
+typedef_when: { $$ = NULL;} | "when" binary_exp { $$ = $2; }
 type_def_type: "typedef" { $$ = 0; } | "distinct" { $$ = 1; };
-type_def: type_def_type flag type_decl_array ID decl_template SEMICOLON {
-  $$ = new_type_def(mpool(arg), $3, $4);
+type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
+  $$ = new_type_def(mpool(arg), $3, $4, @4);
   $3->flag |= $2;
+  $$->when = $6;
   if($5)
     $$->tmpl = new_tmpl_base(mpool(arg), $5);
   $$->distinct = $1;
@@ -377,15 +380,15 @@ array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
   | LBRACK exp RBRACK array_exp {
     LIST_REM($2)
-    if($2->next){ gwion_error(&@$, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2);
+    if($2->next){ gwion_error(&@2, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2);
   }
-  | LBRACK exp RBRACK LBRACK RBRACK  { LIST_REM(2) gwion_error(&@$, arg, "partially empty array init [...][]..."); YYERROR; }
+  | LBRACK exp RBRACK LBRACK RBRACK  { LIST_REM(2) gwion_error(&@3, arg, "partially empty array init [...][]..."); YYERROR; }
   ;
 
 array_empty
   : LBRACK RBRACK             { $$ = new_array_sub(mpool(arg), NULL); }
   | array_empty LBRACK RBRACK { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp     { gwion_error(&@$, arg, "partially empty array init [][...]"); YYERROR; }
+  | array_empty array_exp     { gwion_error(&@1, arg, "partially empty array init [][...]"); YYERROR; }
   ;
 
 range
@@ -427,7 +430,7 @@ func_def_base
   : FUNCTION func_base func_args arg_type code_stmt {
     $2->args = $3;
     $2->fbflag |= $4;
-    $$ = new_func_def(mpool(arg), $2, $5, @$);
+    $$ = new_func_def(mpool(arg), $2, $5, @2);
   };
 
 abstract_fdef
@@ -437,7 +440,7 @@ abstract_fdef
         base->tmpl = new_tmpl_base(mpool(arg), $6);
       base->args = $7;
       base->fbflag |= $8;
-      $$ = new_func_def(mpool(arg), base, NULL, @$);
+      $$ = new_func_def(mpool(arg), base, NULL, @6);
     };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
@@ -459,7 +462,7 @@ op_base
 
 operator: OPERATOR { $$ = ae_flag_none; } | OPERATOR global { $$ = ae_flag_global; };
 op_def:  operator op_base code_stmt
-{ $$ = new_func_def(mpool(arg), $2, $3, @$); $2->fbflag |= fbflag_op; $2->flag |= $1; };
+{ $$ = new_func_def(mpool(arg), $2, $3, @2); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
@@ -485,8 +488,8 @@ type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
 union_decl:
             ID ";" {
-  Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("None"), @$);
-  $$ = new_union_list(mpool(arg), td, $1, @$);
+  Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("None"), @1);
+  $$ = new_union_list(mpool(arg), td, $1, @1);
 }
 | type_decl_empty ID ";" { $$ = new_union_list(mpool(arg), $1, $2, @$); }
 
@@ -495,7 +498,7 @@ union_list: union_decl
 
 union_def
   : UNION flag ID decl_template LBRACE union_list RBRACE {
-      $$ = new_union_def(mpool(arg), $6, @$);
+      $$ = new_union_def(mpool(arg), $6, @3);
       $$->xid = $3;
       $$->flag = $2;
       if($4)
@@ -508,12 +511,12 @@ var_decl_list
   | var_decl { $$ = new_var_decl_list(mpool(arg), $1, NULL); }
   ;
 
-var_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @$); }
+var_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @1); }
   | ID array   { $$ = new_var_decl(mpool(arg), $1,   $2, @$); };
 
 arg_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @$); }
   | ID array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, @$); }
-  | ID array_exp { gwion_error(&@$, arg, "argument/union must be defined with empty []'s"); YYERROR; };
+  | ID array_exp { gwion_error(&@2, arg, "argument/union must be defined with empty []'s"); YYERROR; };
 fptr_arg_decl: arg_decl | { $$ = new_var_decl(mpool(arg), NULL, NULL, @$); }
 
 eq_op : EQ | NEQ;
@@ -573,7 +576,7 @@ post_op : PLUSPLUS | MINUSMINUS;
 
 dot_exp: post_exp DOT ID {
   if($1->next) {
-    gwion_error(&@$, arg, "can't use multiple expression"
+    gwion_error(&@1, arg, "can't use multiple expression"
       " in dot member base expression");
     YYERROR;
   };

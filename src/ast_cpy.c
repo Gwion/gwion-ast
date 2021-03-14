@@ -379,6 +379,8 @@ ANN static void cpy_type_def2(MemPool p, Type_Def a, const Type_Def src) {
   if(src->ext)
     a->ext = cpy_type_decl(p, src->ext);
   a->xid = src->xid;
+  if(src->when)
+    a->when = cpy_exp(p, src->when);
   if(src->tmpl)
     a->tmpl = cpy_tmpl(p, src->tmpl);
 }

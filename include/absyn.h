@@ -479,9 +479,12 @@ struct Type_Def_ {
   struct Type_*       type;
   struct Symbol_*     xid;
   Tmpl*  tmpl;
+  Exp when;
+  Func_Def when_def;
+  loc_t pos;
   m_bool distinct;
 };
-ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl*, struct Symbol_*);
+ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl*, const Symbol, const loc_t);
 ANN void free_type_def(MemPool p, Type_Def);
 
 typedef struct Union_List_ {

@@ -271,10 +271,11 @@ AST_NEW(Fptr_Def, fptr_def, Func_Base *base) {
   return a;
 }
 
-AST_NEW(Type_Def, type_def, Type_Decl* ext, struct Symbol_ *xid) {
+AST_NEW(Type_Def, type_def, Type_Decl* ext, const Symbol xid, const loc_t pos) {
   Type_Def a = mp_calloc(p, Type_Def);
   a->ext = ext;
   a->xid = xid;
+  a->pos = pos;
   return a;
 }
 
