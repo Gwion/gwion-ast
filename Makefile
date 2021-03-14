@@ -11,7 +11,7 @@ src := $(wildcard src/*.c)
 ifeq (${BUILD_ON_WINDOWS}, 1)
 ifeq (${CC}, clang)
 CFLAGS += -DYY_NO_UNISTD_H
-LDFLAGS += libprettyerr/libprettyerr.a
+lib += libprettyerr/libprettyerr.a
 endif
 endif
 
@@ -29,7 +29,7 @@ all: options-show generated libgwion_ast.a
 options-show:
 	@$(call _options)
 
-libgwion_ast.a: ${obj}
+libgwion_ast.a: ${obj} ${lib}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
 
