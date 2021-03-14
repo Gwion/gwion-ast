@@ -1,5 +1,10 @@
 var searchData=
 [
-  ['loc_5ferr_715',['loc_err',['../loc_8c.html#aa4124feedffc34fcfa3bc0fd474d79c8',1,'loc_err(const loc_t loc, const m_str filename):&#160;loc.c'],['../loc_8h.html#aa9e1b6a0fd28ab80f194b95b8f79d15f',1,'loc_err(const loc_t, const m_str filename):&#160;loc.c']]],
-  ['loc_5fheader_716',['loc_header',['../loc_8c.html#a4bef4c3a10b168cc8d4b11f95dab68bb',1,'loc_header(const loc_t loc, const m_str filename):&#160;loc.c'],['../loc_8h.html#a4e811bcbf191bb3513212154d8bd533c',1,'loc_header(const loc_t, const m_str filename):&#160;loc.c']]]
+  ['macro_5fadd_710',['macro_add',['../macro_8h.html#aad3af11bc842c6e36c8caf563e113f50',1,'macro.h']]],
+  ['macro_5fdel_711',['macro_del',['../macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976',1,'macro.h']]],
+  ['macro_5fhas_712',['macro_has',['../macro_8h.html#a2865d931ded6ab60a78d90fbc1a25113',1,'macro.h']]],
+  ['macro_5frem_713',['macro_rem',['../macro_8h.html#ac3c25e3c90680b750a15c71624b420df',1,'macro.h']]],
+  ['match_714',['match',['../dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089',1,'dynop.c']]],
+  ['mk_5fsection_715',['mk_section',['../ast__new_8c.html#a1e0322a4a442ec653626d65c9d5c1856',1,'ast_new.c']]],
+  ['mkentry_716',['mkentry',['../macro_8c.html#a8a3bcbd90c28df70814d197676694489',1,'macro.c']]]
 ];
