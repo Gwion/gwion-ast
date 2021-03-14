@@ -4,24 +4,19 @@
 #ifndef __LOC
 #define __LOC
 
-struct pos_t {
+typedef struct pos_t {
   short unsigned int line;
   short unsigned int column;
-};
+} pos_t;
 
-static inline void pos_ini(struct pos_t *pos) {
+static inline void pos_ini(pos_t *pos) {
   pos->line = pos->column = 1;
 }
 
-struct loc_t_ {
+typedef struct loc_t_ {
   struct pos_t first;
   struct pos_t last;
-};
-
-typedef struct loc_t_ loc_t;
-void loc_header(const loc_t , const m_str filename);
-void loc_err(const loc_t, const m_str filename);
-
+} loc_t;
 
 void gwerr_basic(const char *main, const char *explain, const char *fix,
             const char *filename, const loc_t loc, const uint error_code);
