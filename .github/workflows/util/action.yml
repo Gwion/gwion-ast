@@ -5,6 +5,9 @@ runs:
   - run: git clone --depth=1 https://github.com/Gwion/gwion-util
     shell: bash
 
+  - run: cd gwion-util && git submodule update --init
+    shell: bash
+
   - run: make -C gwion-util
     shell: bash
 
