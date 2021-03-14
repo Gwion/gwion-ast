@@ -72,7 +72,8 @@ $(function() {
 <div class="title">loc.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;gwion_util.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;prettyerr.h&quot;</code><br />
+<code>#include &quot;gwion_util.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="gwion__ast_8h_source.html">gwion_ast.h</a>&quot;</code><br />
 <code>#include &quot;parser.h&quot;</code><br />
 </div>
@@ -91,6 +92,12 @@ Functions</h2></td></tr>
 <tr class="separator:a4bef4c3a10b168cc8d4b11f95dab68bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4124feedffc34fcfa3bc0fd474d79c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="loc_8c.html#aa4124feedffc34fcfa3bc0fd474d79c8">loc_err</a> (const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a> loc, const m_str filename)</td></tr>
 <tr class="separator:aa4124feedffc34fcfa3bc0fd474d79c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f66ec45a2c40598c622df7bba6aaf0f"><td class="memItemLeft" align="right" valign="top">static ANN char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a> (const char *filename, const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a> loc)</td></tr>
+<tr class="separator:a4f66ec45a2c40598c622df7bba6aaf0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1282b97059964476298bbe0ec17a173"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a> (const char *main, const char *explain, const char *fix, const char *filename, const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a> loc, const uint error_code)</td></tr>
+<tr class="separator:af1282b97059964476298bbe0ec17a173"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac61492d32908071a1d549f0a9c220696"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a> (const char *main, const char *filename, const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a> loc)</td></tr>
+<tr class="separator:ac61492d32908071a1d549f0a9c220696"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a89279935d2e2d0bcdc26cdf9e2ba5b1e"></a>
@@ -119,7 +126,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00005">5</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00006">6</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
 
 </div>
 </div>
@@ -149,11 +156,207 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00006">6</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00007">7</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a4f66ec45a2c40598c622df7bba6aaf0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f66ec45a2c40598c622df7bba6aaf0f">&#9670;&nbsp;</a></span>get_src()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static ANN char* get_src </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a>&#160;</td>
+          <td class="paramname"><em>loc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00047">47</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                                                {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordtype">char</span> *line = <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keywordtype">size_t</span> len = 0;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  uint i = 0;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  FILE *f = fopen(filename, <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordflow">if</span>(!f)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  fseek(f, SEEK_SET, 0);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordflow">while</span> (getline(&amp;line, &amp;len, f) != -1 &amp;&amp; ++i &lt; loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  fclose(f);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordflow">return</span> line;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
+<div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition:</b> <a href="macro_8c_source.html#l00050">macro.c:50</a></div></div>
+<div class="ttc" id="astructloc__t___html_ac3836867620bbe7074f7d04c78e75f26"><div class="ttname"><a href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">loc_t_::first</a></div><div class="ttdeci">struct pos_t first</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:17</a></div></div>
+<div class="ttc" id="astructpos__t_html_ab51255fd45533a2412b08649ec3629de"><div class="ttname"><a href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">pos_t::line</a></div><div class="ttdeci">short unsigned int line</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00008">loc.h:8</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="af1282b97059964476298bbe0ec17a173"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1282b97059964476298bbe0ec17a173">&#9670;&nbsp;</a></span>gwerr_basic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gwerr_basic </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>main</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>explain</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a>&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint&#160;</td>
+          <td class="paramname"><em>error_code</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00060">60</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                                                                          {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keywordtype">char</span> * line = <a class="code" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a>(filename, loc);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordflow">if</span>(!line) {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, main);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">//exit(4);</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  perr_printer_t printer;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  perr_printer_init(</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    &amp;printer, stderr, line,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    perr_runner_basic_style</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    );</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="comment">// Create a faux error</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="keyword">const</span> perr_t err = PERR_Error(</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;          PERR_ERROR <span class="comment">/* error */</span>,</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            PERR_Str(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line) <span class="comment">/* location of error */</span>,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            PERR_Pos(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>-1, loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) <span class="comment">/* occurs at src[15] through src[19] */</span>,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            main, explain, fix, error_code, filename</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        );</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  perr_print_error(&amp;printer, &amp;err);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  xfree(line);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
+<div class="ttc" id="aloc_8c_html_a4f66ec45a2c40598c622df7bba6aaf0f"><div class="ttname"><a href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a></div><div class="ttdeci">static ANN char * get_src(const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00047">loc.c:47</a></div></div>
+<div class="ttc" id="astructloc__t___html_a6661658c024ee942da7441d0afffea1b"><div class="ttname"><a href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">loc_t_::last</a></div><div class="ttdeci">struct pos_t last</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:18</a></div></div>
+<div class="ttc" id="astructpos__t_html_aa5910ccb9c6e11dcdf071751b3053964"><div class="ttname"><a href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">pos_t::column</a></div><div class="ttdeci">short unsigned int column</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:9</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ac61492d32908071a1d549f0a9c220696"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac61492d32908071a1d549f0a9c220696">&#9670;&nbsp;</a></span>gwerr_secondary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ANN void gwerr_secondary </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>main</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49">loc_t</a>&#160;</td>
+          <td class="paramname"><em>loc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00087">87</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                                                                                  {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordtype">char</span> * line = <a class="code" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a>(filename, loc);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="keywordflow">if</span>(!line) {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, main);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">//exit(4);</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  perr_printer_t printer;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  perr_printer_init(</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    &amp;printer, stderr, line,</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    perr_runner_secondary_style</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    );</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="comment">// Create a faux error</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keyword">const</span> perr_t err = PERR_Secondary(</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;          PERR_WARNING <span class="comment">/* error */</span>,</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            PERR_Str(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line) <span class="comment">/* location of error */</span>,</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            PERR_Pos(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>-1, loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) <span class="comment">/* occurs at src[15] through src[19] */</span>,</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            main, filename</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        );</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  perr_print_error(&amp;printer, &amp;err);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  xfree(line);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="aa4124feedffc34fcfa3bc0fd474d79c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa4124feedffc34fcfa3bc0fd474d79c8">&#9670;&nbsp;</a></span>loc_err()</h2>
 
@@ -180,46 +383,41 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00012">12</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                                                    {</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  uint n = 1;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  <span class="keywordtype">size_t</span> len = 0;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  FILE* f = fopen(filename, <span class="stringliteral">&quot;r&quot;</span>);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  <span class="keywordflow">if</span>(!f)</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  fseek(f, 0, SEEK_SET);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  m_str line = <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  ssize_t sz;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keywordflow">while</span>((sz = getline(&amp;line, &amp;len, f)) != -1) {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordflow">if</span>(n &gt; loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>)</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">if</span>(n &gt;= loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>) {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;      <span class="keywordtype">int</span> pos = 0;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      <span class="keywordflow">if</span>(n == loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>) {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordflow">while</span>(pos &lt; (<a class="code" href="loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a>(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>, sz) -1))</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;          gw_err(<span class="stringliteral">&quot;%c&quot;</span>, line[pos++]);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        gw_err(<span class="stringliteral">&quot;\033[4m&quot;</span>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      }</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      <span class="keywordflow">if</span>(n == loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>) {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">do</span> gw_err(<span class="stringliteral">&quot;%c&quot;</span>, line[pos]);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">while</span>(++pos &lt; (<a class="code" href="loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a>(loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>,sz) - 1));</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        gw_err(<span class="stringliteral">&quot;\033[0m&quot;</span>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      <span class="keywordflow">do</span> gw_err(<span class="stringliteral">&quot;%c&quot;</span>, line[pos]);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      <span class="keywordflow">while</span>(++pos &lt;= sz);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    n++;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  gw_err(<span class="stringliteral">&quot;\033[0m&quot;</span>);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  fclose(f);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  free(line);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
-<div class="ttc" id="aloc_8c_html_a3acffbd305ee72dcd4593c0d8af64a4f"><div class="ttname"><a href="loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a></div><div class="ttdeci">#define MIN(a, b)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00006">loc.c:6</a></div></div>
-<div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition:</b> <a href="macro_8c_source.html#l00050">macro.c:50</a></div></div>
-<div class="ttc" id="astructloc__t___html_a6661658c024ee942da7441d0afffea1b"><div class="ttname"><a href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">loc_t_::last</a></div><div class="ttdeci">struct pos_t last</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:18</a></div></div>
-<div class="ttc" id="astructloc__t___html_ac3836867620bbe7074f7d04c78e75f26"><div class="ttname"><a href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">loc_t_::first</a></div><div class="ttdeci">struct pos_t first</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:17</a></div></div>
-<div class="ttc" id="astructpos__t_html_aa5910ccb9c6e11dcdf071751b3053964"><div class="ttname"><a href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">pos_t::column</a></div><div class="ttdeci">short unsigned int column</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:9</a></div></div>
-<div class="ttc" id="astructpos__t_html_ab51255fd45533a2412b08649ec3629de"><div class="ttname"><a href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">pos_t::line</a></div><div class="ttdeci">short unsigned int line</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00008">loc.h:8</a></div></div>
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00013">13</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                                                    {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  uint n = 1;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  <span class="keywordtype">size_t</span> len = 0;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  FILE* f = fopen(filename, <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  <span class="keywordflow">if</span>(!f)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  fseek(f, 0, SEEK_SET);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  m_str line = <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  ssize_t sz;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keywordflow">while</span>((sz = getline(&amp;line, &amp;len, f)) != -1) {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">if</span>(n &gt; loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordflow">if</span>(n &gt;= loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>) {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      <span class="keywordtype">int</span> pos = 0;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      <span class="keywordflow">if</span>(n == loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">while</span>(pos &lt; (<a class="code" href="loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a>(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>, sz) -1))</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;          gw_err(<span class="stringliteral">&quot;%c&quot;</span>, line[pos++]);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        gw_err(<span class="stringliteral">&quot;\033[4m&quot;</span>);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      }</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      <span class="keywordflow">if</span>(n == loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">do</span> gw_err(<span class="stringliteral">&quot;%c&quot;</span>, line[pos]);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">while</span>(++pos &lt; (<a class="code" href="loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a>(loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>,sz) - 1));</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        gw_err(<span class="stringliteral">&quot;\033[0m&quot;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      }</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      <span class="keywordflow">do</span> gw_err(<span class="stringliteral">&quot;%c&quot;</span>, line[pos]);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      <span class="keywordflow">while</span>(++pos &lt;= sz);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    n++;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  gw_err(<span class="stringliteral">&quot;\033[0m&quot;</span>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  fclose(f);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  free(line);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
+<div class="ttc" id="aloc_8c_html_a3acffbd305ee72dcd4593c0d8af64a4f"><div class="ttname"><a href="loc_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a></div><div class="ttdeci">#define MIN(a, b)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00007">loc.c:7</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -249,10 +447,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00008">8</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                                                       {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  gw_err(<span class="stringliteral">&quot;\033[1m%s:%u:%u:\033[0m &quot;</span>, filename, loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>);</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="loc_8c_source.html#l00009">9</a> of file <a class="el" href="loc_8c_source.html">loc.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                                                       {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  gw_err(<span class="stringliteral">&quot;\033[1m%s:%u:%u:\033[0m &quot;</span>, filename, loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
 </div><!-- fragment -->
 </div>
 </div>
