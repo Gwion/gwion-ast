@@ -26,6 +26,8 @@ jobs:
       uses: ./.github/workflows/util
 
     - name: Build
-      run: make
+      run: |
+        git submodule update --init
+        make
       env:
          UTIL_DIR: ./gwion-util

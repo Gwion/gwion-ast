@@ -55,7 +55,9 @@ jobs:
       uses: ./.github/workflows/util
       
     - name: Build
-      run: make UTIL_DIR=./gwion-util
+      run: |
+        git submodule update --init
+        make UTIL_DIR=./gwion-util
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
