@@ -92,7 +92,7 @@ $(function() {
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *pwd = getenv(<span class="stringliteral">&quot;PWD&quot;</span>);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  TCHAR pwd[MAX_PATH];</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  GetCurrentDirectory(MAX_PATH, NPath);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  GetCurrentDirectory(MAX_PATH, pwd);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordtype">size_t</span> sz = strlen(pwd);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">return</span> !strncmp(pwd, filename, sz - 1) ?</div>
