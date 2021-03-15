@@ -455,18 +455,17 @@ void yyfree ( void * , yyscan_t yyscanner );
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
 #define INITIAL 0
 #define comment 1
-#define raw_string 2
-#define define 3
-#define define_arg_start 4
-#define define_arg 5
-#define skip 6
-#define get_arg 7
-#define pragma 8
-#define interp 9
-#define include_start 10
-#define include_end 11
-#define require 12
-#define require_end 13
+#define define 2
+#define define_arg_start 3
+#define define_arg 4
+#define skip 5
+#define get_arg 6
+#define pragma 7
+#define interp 8
+#define include_start 9
+#define include_end 10
+#define require 11
+#define require_end 12
 
 #endif
 
@@ -718,9 +717,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 375 "src/gwion.l"
+#line 358 "src/gwion.l"
 
 
-#line 724 "include/lexer.h"
+#line 723 "include/lexer.h"
 #undef gwion_IN_HEADER
 #endif /* gwion_HEADER_H */

@@ -10,7 +10,7 @@ ANN struct PPState_* new_ppstate(MemPool p, const m_str filename) {
 
 ANEW PP* new_pp(MemPool p, const uint size, const m_str name) {
   PP* pp = (PP*)mp_calloc(p, PP);
-  pp->def = (struct pp_info*)mp_calloc2(p, sizeof(struct pp_info));// watchme
+  vector_init(&pp->data);
   pp->macros = (Hash)mp_calloc(p, Hash);
   hini(pp->macros, size);
   pp->macros->p = p; // in ctor ?
@@ -38,6 +38,6 @@ ANN void free_pp(MemPool p, PP* pp, void* data) {
   vector_release(&pp->global_undef);
   hend(pp->macros);
   mp_free(p, Hash, pp->macros);
-  mp_free2(p, sizeof(struct pp_info), pp->def); // watch me
+  vector_release(&pp->data);
   mp_free(p, PP, pp);
 }

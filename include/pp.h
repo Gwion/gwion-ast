@@ -23,17 +23,12 @@ struct PPState_ {
   enum pptype type;
 };
 
-struct pp_info {
-  m_bit data[60];
-  int idx;
-};
-
 typedef struct PP_ {
   struct Vector_ filename;
   struct Hash_* macros;
   struct Vector_ global_undef;
   struct Macro_* entry;
-  struct pp_info* def;
+  struct Vector_ data;
   int npar;
 } PP;
 

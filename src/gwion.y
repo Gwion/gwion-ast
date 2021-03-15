@@ -15,6 +15,7 @@
 
 #define YYERROR_VERBOSE
 #define YYMALLOC xmalloc
+#define gwion_error(a,b,c) parser_error(a,b,c, 0200)
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
@@ -30,7 +31,7 @@
 
 #define LIST_REM(a) map_remove(&arg->map, (m_uint)a);
 
-ANN int gwion_error(loc_t*, const Scanner*, const char *);
+ANN static int parser_error(loc_t*, Scanner*const, const char *, const uint);
 ANN Symbol lambda_name(const Scanner*);
 %}
 
@@ -161,7 +162,7 @@ ANN Symbol lambda_name(const Scanner*);
 %%
 
 prg: ast { arg->ast = $$ = $1; /* no need for LIST_REM here */}
-  | /* empty */ { loc_t loc = { {1, 1}, {1,1} }; gwion_error(&loc, arg, "file is empty."); YYERROR; }
+  | /* empty */ { loc_t loc = { {1, 1}, {1,1} }; parser_error(&loc, arg, "file is empty.", 0201); YYERROR; }
 
 ast
   : section { $$ = !arg->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
@@ -183,7 +184,7 @@ class_def
   : class_type flag modifier ID decl_template class_ext LBRACE class_body RBRACE
     {
       if($1 == cflag_struct && $6)
-        { gwion_error(&@1, arg, "'struct' inherit other types"); YYERROR; }
+        { parser_error(&@1, arg, "'struct' can't from inherit other types", 202); YYERROR; }
       $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, @3);
       if($5)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $5);
@@ -228,11 +229,11 @@ type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
 type_decl_array: type_decl array { $1->array = $2; } | type_decl
 
 type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
-    { gwion_error(&@$, arg, "can't instantiate with empty '[]'"); YYERROR;}
+    { parser_error(&@$, arg, "can't instantiate with empty '[]'", 0203); YYERROR;}
   $$ = $1; }
 
 type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
-    { gwion_error(&@$, arg, "type must be defined with empty []'s"); YYERROR;}
+    { parser_error(&@$, arg, "type must be defined with empty []'s", 0204); YYERROR;}
   $$ = $1; }
 
 arg
@@ -243,7 +244,7 @@ arg_list:
   |  arg_list COMMA arg {
      LIST_NEXT($$, $1, Arg_List, $3)
      if(next->exp && !$3->exp)
-        { gwion_error(&@3, arg, "missing default argument"); YYERROR;}
+        { parser_error(&@3, arg, "missing default argument", 0205); YYERROR;}
    };
 
 fptr_arg: type_decl_array fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
@@ -380,15 +381,15 @@ array_exp
   : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
   | LBRACK exp RBRACK array_exp {
     LIST_REM($2)
-    if($2->next){ gwion_error(&@2, arg, "invalid format for array init [...][...]..."); YYERROR; } $$ = prepend_array_sub($4, $2);
+    if($2->next){ parser_error(&@2, arg, "invalid format for array init [...][...]...", 0207); YYERROR; } $$ = prepend_array_sub($4, $2);
   }
-  | LBRACK exp RBRACK LBRACK RBRACK  { LIST_REM(2) gwion_error(&@3, arg, "partially empty array init [...][]..."); YYERROR; }
+  | LBRACK exp RBRACK LBRACK RBRACK  { LIST_REM(2) parser_error(&@3, arg, "partially empty array init [...][]...", 0x0208); YYERROR; }
   ;
 
 array_empty
   : LBRACK RBRACK             { $$ = new_array_sub(mpool(arg), NULL); }
   | array_empty LBRACK RBRACK { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp     { gwion_error(&@1, arg, "partially empty array init [][...]"); YYERROR; }
+  | array_empty array_exp     { parser_error(&@1, arg, "partially empty array init [][...]", 0x0209); YYERROR; }
   ;
 
 range
@@ -516,7 +517,7 @@ var_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @1); }
 
 arg_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @$); }
   | ID array_empty { $$ = new_var_decl(mpool(arg), $1,   $2, @$); }
-  | ID array_exp { gwion_error(&@2, arg, "argument/union must be defined with empty []'s"); YYERROR; };
+  | ID array_exp { parser_error(&@2, arg, "argument/union must be defined with empty []'s", 0210); YYERROR; };
 fptr_arg_decl: arg_decl | { $$ = new_var_decl(mpool(arg), NULL, NULL, @$); }
 
 eq_op : EQ | NEQ;
@@ -576,8 +577,8 @@ post_op : PLUSPLUS | MINUSMINUS;
 
 dot_exp: post_exp DOT ID {
   if($1->next) {
-    gwion_error(&@1, arg, "can't use multiple expression"
-      " in dot member base expression");
+    parser_error(&@1, arg, "can't use multiple expression"
+      " in dot member base expression", 0211);
     YYERROR;
   };
   $$ = new_exp_dot(mpool(arg), $1, $3, @$);
@@ -630,3 +631,21 @@ prim_exp
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     @$); }
   ;
 %%
+#undef scan
+ANN static int parser_error(loc_t *loc, Scanner *const scan, const char* diagnostic, const uint error_code) {
+  char main[strlen(diagnostic) + 1];
+  strcpy(main, diagnostic);
+  char *explain = strchr(main, ','),
+       *fix = NULL;
+  if(explain) {
+    main[explain-main] = '\0';
+    explain += 2;
+    fix = strchr(explain, ',');
+    if(fix) {
+      explain[fix-explain] = '\0';
+      fix += 2;
+    }
+  }
+  scanner_error(scan, main, explain, fix, *loc, error_code);
+  return 0;
+}

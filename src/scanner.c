@@ -41,3 +41,33 @@ Ast parse(struct AstGetter_ *const arg) {
   free_scanner(s);
   return ast;
 }
+
+ANN static char* get_filename(Scanner* scan, const struct PPState_ *ppstate) {
+  const m_str name = ppstate->filename;
+  m_str filename = name;
+  if(!scan->pp->npar) {
+    m_uint i = vector_size(&scan->pp->filename) - 1;
+    if(*filename == '@') {
+      while(*filename == '@') {
+        --i;
+        const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i);
+        filename = ppstate->filename;
+      }
+    }
+  } else {
+    const struct PPState_ *ppstate = (struct PPState_*)vector_front(&scan->pp->filename);
+    filename = ppstate->filename;
+  }
+  return filename;
+}
+
+ANN2(1,2) int scanner_error(Scanner* scan, const char *main,
+          const char *explain, const char *fix, const loc_t pos, const uint error_code) {
+  if(scan->error++)
+    return 0;
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  const m_str filename = get_filename(scan, ppstate);
+  gwerr_basic(main, explain, fix, filename, pos, error_code);
+  // here add secondary errors
+  return 0;
+}
