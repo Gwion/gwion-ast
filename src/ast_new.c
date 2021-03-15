@@ -56,9 +56,9 @@ ANN static AST_NEW(Exp, exp, const ae_exp_t type, const struct loc_t_ pos) {
 AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args,
       const Stmt code, const struct loc_t_ pos) {
   Exp a = new_exp(p, ae_exp_lambda, pos);
-  Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none);
+  Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, pos);
   base->fbflag |= fbflag_lambda;
-  a->d.exp_lambda.def = new_func_def(p, base, code, a->pos);
+  a->d.exp_lambda.def = new_func_def(p, base, code);
   return a;
 }
 
@@ -248,20 +248,21 @@ AST_NEW(Tmpl*, tmpl_base, const ID_List list) {
   return new_tmpl(p, list, -1);
 }
 
-Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code, const struct loc_t_ pos) {
+Func_Def new_func_def(MemPool p, Func_Base *base,const Stmt code) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base = base;
   a->d.code = code;
-  a->pos = pos;
   return a;
 }
 
-AST_NEW(Func_Base*, func_base, Type_Decl* td, const Symbol xid, const Arg_List args, const ae_flag flag) {
+AST_NEW(Func_Base*, func_base, Type_Decl* td, const Symbol xid,
+     const Arg_List args, const ae_flag flag, const loc_t pos) {
   Func_Base *a = (Func_Base*)mp_calloc(p, Func_Base);
   a->td = td;
   a->xid = xid;
   a->args = args;
   a->flag = flag;
+  a->pos = pos;
   return a;
 }
 
@@ -477,16 +478,18 @@ AST_NEW(Ast, ast_expand, Section* section, const Ast next) {
       if(!base_arg->next && base_arg->exp) {
         if(former)
           former->next = NULL;
+        // use cpy_func_base?
         Func_Base *base = new_func_base(p, cpy_type_decl(p, base_fdef->base->td),
-          base_fdef->base->xid, former ? cpy_arg_list(p, base_fdef->base->args) : NULL, base_fdef->base->flag);
-        const Exp efunc = new_prim_id(p, base_fdef->base->xid, base_fdef->pos);
+          base_fdef->base->xid, former ? cpy_arg_list(p, base_fdef->base->args) : NULL,
+          base_fdef->base->flag, base_fdef->base->pos);
+        const Exp efunc = new_prim_id(p, base_fdef->base->xid, base_fdef->base->pos);
         Exp arg_exp = former ? arglist2exp(p, base_fdef->base->args, base_arg->exp) :
         cpy_exp(p, base_arg->exp);
-        const Exp ecall = new_exp_call(p, efunc, arg_exp, base_fdef->pos);
-        const Stmt code = new_stmt_exp(p, ae_stmt_return, ecall, base_fdef->pos);
+        const Exp ecall = new_exp_call(p, efunc, arg_exp, base_fdef->base->pos);
+        const Stmt code = new_stmt_exp(p, ae_stmt_return, ecall, base_fdef->base->pos);
         const Stmt_List slist = new_stmt_list(p, code, NULL);
-        const Stmt body = new_stmt_code(p, slist, base_fdef->pos);
-        const Func_Def fdef = new_func_def(p, base, body, base_fdef->pos);
+        const Stmt body = new_stmt_code(p, slist, base_fdef->base->pos);
+        const Func_Def fdef = new_func_def(p, base, body);
         Section *new_section = new_section_func_def(p, fdef);
         if(former)
           former->next = base_arg;

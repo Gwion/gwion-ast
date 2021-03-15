@@ -366,6 +366,7 @@ ANN Func_Base* cpy_func_base(MemPool p, const Func_Base* src) {
     a->tmpl = cpy_tmpl(p, src->tmpl); // 1 
   a->flag = src->flag;
   a->fbflag = src->fbflag;
+  a->pos = src->pos;
   return a;
 }
 
@@ -465,7 +466,6 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   a->base = cpy_func_base(p, src->base);
   if(src->d.code)
       a->d.code = cpy_stmt(p, src->d.code);
-  a->pos = src->pos;
   return a;
 }
 

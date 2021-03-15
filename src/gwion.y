@@ -202,10 +202,10 @@ id_list: ID { $$ = new_id_list(mpool(arg), $1); LIST_FIRST($$) }
 stmt_list: stmt  { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) } |
   stmt_list stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) };
 
-fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1);
+fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
   if($4) { $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
 
-func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2);
+func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
   if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
 
 fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
@@ -431,39 +431,39 @@ func_def_base
   : FUNCTION func_base func_args arg_type code_stmt {
     $2->args = $3;
     $2->fbflag |= $4;
-    $$ = new_func_def(mpool(arg), $2, $5, @2);
+    $$ = new_func_def(mpool(arg), $2, $5);
   };
 
 abstract_fdef
   : FUNCTION flag ABSTRACT type_decl_empty ID decl_template fptr_args arg_type ";"
-    { Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract);
+    { Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
         base->tmpl = new_tmpl_base(mpool(arg), $6);
       base->args = $7;
       base->fbflag |= $8;
-      $$ = new_func_def(mpool(arg), base, NULL, @6);
+      $$ = new_func_def(mpool(arg), base, NULL);
     };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
   :  type_decl_empty op_op LPAREN arg COMMA arg RPAREN
-    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none); $4->next = $6;}
+    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none, @2); $4->next = $6;}
   |  type_decl_empty post_op LPAREN arg RPAREN
-    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none); }
+    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none, @2); }
   |  unary_op type_decl_empty LPAREN arg RPAREN
     {
-      $$ = new_func_base(mpool(arg), $2, $1, $4, ae_flag_none);
+      $$ = new_func_base(mpool(arg), $2, $1, $4, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
     }
   | type_decl_empty OPID_A func_args RPAREN
     {
-      $$ = new_func_base(mpool(arg), $1, $2, $3, ae_flag_none);
+      $$ = new_func_base(mpool(arg), $1, $2, $3, ae_flag_none, @2);
       $$->fbflag |= fbflag_internal;
     };
 
 operator: OPERATOR { $$ = ae_flag_none; } | OPERATOR global { $$ = ae_flag_global; };
 op_def:  operator op_base code_stmt
-{ $$ = new_func_def(mpool(arg), $2, $3, @2); $2->fbflag |= fbflag_op; $2->flag |= $1; };
+{ $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 

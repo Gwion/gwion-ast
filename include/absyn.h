@@ -458,11 +458,12 @@ typedef struct Func_Base_ {
   Scope values;
   ae_flag flag;
   enum fbflag fbflag;
+  loc_t pos;
 } Func_Base;
 
 FLAG_FUNC(Func_Base*, fb)
 
-ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List, const ae_flag flag);
+ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List, const ae_flag flag, const loc_t);
 
 typedef struct Fptr_Def_* Fptr_Def;
 struct Fptr_Def_ {
@@ -580,10 +581,9 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
-  struct loc_t_ pos;           ///< position
 };
 
-ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt, const struct loc_t_);
+ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt);
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def);
 
