@@ -21,7 +21,7 @@ static inline const char* get_filename(const char *filename) {
   const char *pwd = getenv("PWD");
 #else
   TCHAR pwd[MAX_PATH];
-  GetCurrentDirectory(MAX_PATH, NPath);
+  GetCurrentDirectory(MAX_PATH, pwd);
 #endif
   size_t sz = strlen(pwd);
   return !strncmp(pwd, filename, sz - 1) ?
