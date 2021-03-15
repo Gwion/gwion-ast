@@ -853,6 +853,8 @@ static m_bool handle_comma(void* data) {
       loc_t *loc = yyget_lloc(data);
       const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
       *loc = ppstate->pos;
+      loc->first.column++;
+      loc->last.column++;
       lexer_error(data, "Too many arguments", ERRORCODE(108));
       return GW_ERROR;
     }

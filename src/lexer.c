@@ -3843,7 +3843,6 @@ static void macro_arg(void* data, const m_str id) {
   const m_str str = strip_comment(scan, id);
   const MacroArg arg = new_macroarg(scan->st->p, str);
   arg->pos = scan->pos;
-  arg->pos.column++;
   xfree(str);
   if(scan->pp->entry->base) {
     MacroArg a = scan->pp->entry->base;
@@ -4028,6 +4027,8 @@ static m_bool handle_comma(void* data) {
       loc_t *loc = yyget_lloc(data);
       const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
       *loc = ppstate->pos;
+      loc->first.column++;
+      loc->last.column++;
       lexer_error(data, "Too many arguments", ERRORCODE(108));
       return GW_ERROR;
     }
