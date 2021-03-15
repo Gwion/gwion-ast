@@ -91,69 +91,70 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#ifndef BUILD_ON_WINDOWS</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *pwd = getenv(<span class="stringliteral">&quot;PWD&quot;</span>);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *pwd = GetCurrentDirectory();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keywordtype">size_t</span> sz = strlen(pwd);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordflow">return</span> !strncmp(pwd, filename, sz - 1) ?</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    filename + sz + 1 : filename;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">   30</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a>,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keyword">const</span> <a class="code" href="structloc__t__.html">loc_t</a> loc, <span class="keyword">const</span> uint <a class="code" href="scanner_8h.html#a49870b9ed03182e21609b56c83d9504a">error_code</a>) {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordtype">char</span> * line = <a class="code" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a>(filename, loc);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordflow">if</span>(!line) {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  perr_printer_t printer;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  perr_printer_init(</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    &amp;printer, stderr, line,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    perr_runner_basic_style</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    );</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="comment">// Create a faux error</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="keyword">const</span> perr_t err = PERR_Error(</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;          PERR_ERROR <span class="comment">/* error */</span>,</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            PERR_Str(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line) <span class="comment">/* location of error */</span>,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            PERR_Pos(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>-1, loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) <span class="comment">/* occurs at src[15] through src[19] */</span>,</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <a class="code" href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a>, <a class="code" href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a>, <a class="code" href="scanner_8h.html#a49870b9ed03182e21609b56c83d9504a">error_code</a>, <a class="code" href="loc_8c.html#aa7790b3af082731350de975a90156b82">get_filename</a>(filename)</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        );</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  perr_print_error(&amp;printer, &amp;err);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  xfree(line);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">   56</a></span>&#160;ANN <span class="keywordtype">void</span> <a class="code" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keyword">const</span> <a class="code" href="structloc__t__.html">loc_t</a> loc) {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">char</span> * line = <a class="code" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a>(filename, loc);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordflow">if</span>(!line) {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  }</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">//exit(4);</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  perr_printer_t printer;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  perr_printer_init(</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    &amp;printer, stderr, line,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    perr_runner_secondary_style</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    );</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="comment">// Create a faux error</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keyword">const</span> perr_t err = PERR_Secondary(</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;          PERR_WARNING <span class="comment">/* error */</span>,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            PERR_Str(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line) <span class="comment">/* location of error */</span>,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            PERR_Pos(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>-1, loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) <span class="comment">/* occurs at src[15] through src[19] */</span>,</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <a class="code" href="loc_8c.html#aa7790b3af082731350de975a90156b82">get_filename</a>(filename)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        );</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  perr_print_error(&amp;printer, &amp;err);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  xfree(line);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  TCHAR pwd[MAX_PATH];</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  GetCurrentDirectory(MAX_PATH, NPath);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordtype">size_t</span> sz = strlen(pwd);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">return</span> !strncmp(pwd, filename, sz - 1) ?</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    filename + sz + 1 : filename;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">   31</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a>,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keyword">const</span> <a class="code" href="structloc__t__.html">loc_t</a> loc, <span class="keyword">const</span> uint <a class="code" href="scanner_8h.html#a49870b9ed03182e21609b56c83d9504a">error_code</a>) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordtype">char</span> * line = <a class="code" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a>(filename, loc);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keywordflow">if</span>(!line) {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  perr_printer_t printer;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  perr_printer_init(</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    &amp;printer, stderr, line,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    perr_runner_basic_style</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    );</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="comment">// Create a faux error</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keyword">const</span> perr_t err = PERR_Error(</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;          PERR_ERROR <span class="comment">/* error */</span>,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            PERR_Str(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line) <span class="comment">/* location of error */</span>,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            PERR_Pos(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>-1, loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) <span class="comment">/* occurs at src[15] through src[19] */</span>,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <a class="code" href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a>, <a class="code" href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a>, <a class="code" href="scanner_8h.html#a49870b9ed03182e21609b56c83d9504a">error_code</a>, <a class="code" href="loc_8c.html#aa7790b3af082731350de975a90156b82">get_filename</a>(filename)</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        );</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  perr_print_error(&amp;printer, &amp;err);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  xfree(line);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">   57</a></span>&#160;ANN <span class="keywordtype">void</span> <a class="code" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keyword">const</span> <a class="code" href="structloc__t__.html">loc_t</a> loc) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordtype">char</span> * line = <a class="code" href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a>(filename, loc);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordflow">if</span>(!line) {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">//exit(4);</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  perr_printer_t printer;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  perr_printer_init(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    &amp;printer, stderr, line,</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    perr_runner_secondary_style</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    );</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="comment">// Create a faux error</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keyword">const</span> perr_t err = PERR_Secondary(</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;          PERR_WARNING <span class="comment">/* error */</span>,</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            PERR_Str(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line) <span class="comment">/* location of error */</span>,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            PERR_Pos(loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>-1, loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) <span class="comment">/* occurs at src[15] through src[19] */</span>,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <a class="code" href="loc_8c.html#aa7790b3af082731350de975a90156b82">get_filename</a>(filename)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        );</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  perr_print_error(&amp;printer, &amp;err);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  xfree(line);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
 <div class="ttc" id="agwion__ast_8h_html"><div class="ttname"><a href="gwion__ast_8h.html">gwion_ast.h</a></div><div class="ttdoc">include this file to use gwion-ast library</div></div>
 <div class="ttc" id="aloc_8c_html_a4f66ec45a2c40598c622df7bba6aaf0f"><div class="ttname"><a href="loc_8c.html#a4f66ec45a2c40598c622df7bba6aaf0f">get_src</a></div><div class="ttdeci">static ANN char * get_src(const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00006">loc.c:6</a></div></div>
 <div class="ttc" id="aloc_8c_html_aa7790b3af082731350de975a90156b82"><div class="ttname"><a href="loc_8c.html#aa7790b3af082731350de975a90156b82">get_filename</a></div><div class="ttdeci">static const char * get_filename(const char *filename)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00019">loc.c:19</a></div></div>
-<div class="ttc" id="aloc_8c_html_ac61492d32908071a1d549f0a9c220696"><div class="ttname"><a href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a></div><div class="ttdeci">ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00056">loc.c:56</a></div></div>
-<div class="ttc" id="aloc_8c_html_af1282b97059964476298bbe0ec17a173"><div class="ttname"><a href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a></div><div class="ttdeci">void gwerr_basic(const char *main, const char *explain, const char *fix, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00030">loc.c:30</a></div></div>
+<div class="ttc" id="aloc_8c_html_ac61492d32908071a1d549f0a9c220696"><div class="ttname"><a href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a></div><div class="ttdeci">ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00057">loc.c:57</a></div></div>
+<div class="ttc" id="aloc_8c_html_af1282b97059964476298bbe0ec17a173"><div class="ttname"><a href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a></div><div class="ttdeci">void gwerr_basic(const char *main, const char *explain, const char *fix, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00031">loc.c:31</a></div></div>
 <div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition:</b> <a href="macro_8c_source.html#l00050">macro.c:50</a></div></div>
 <div class="ttc" id="ascanner_8h_html_a2ceb7831d47fd81ffd5041e91f6fccd2"><div class="ttname"><a href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a></div><div class="ttdeci">const char const char * explain</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8h_source.html#l00022">scanner.h:22</a></div></div>
 <div class="ttc" id="ascanner_8h_html_a3193fd195bf6cb340d672b3cdcc06fde"><div class="ttname"><a href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a></div><div class="ttdeci">const char const char const char * fix</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8h_source.html#l00022">scanner.h:22</a></div></div>

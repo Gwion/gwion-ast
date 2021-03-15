@@ -97,6 +97,8 @@ Functions</h2></td></tr>
 <tr class="separator:aa11af607117480fb21df89853ef715e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9b591f0b290323318bc82d4be6ca610"><td class="memItemLeft" align="right" valign="top">static ANN char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scanner_8c.html#af9b591f0b290323318bc82d4be6ca610">get_filename</a> (<a class="el" href="scanner_8h.html#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan, const struct <a class="el" href="structPPState__.html">PPState_</a> *ppstate)</td></tr>
 <tr class="separator:af9b591f0b290323318bc82d4be6ca610"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3993e1e5ca9f4a83c324cdb6b8e87a7"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a> (<a class="el" href="scanner_8h.html#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan)</td></tr>
+<tr class="separator:ae3993e1e5ca9f4a83c324cdb6b8e87a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50fbc04bac80b3dc18fee07bb26a537f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scanner_8c.html#a50fbc04bac80b3dc18fee07bb26a537f">ANN2</a> (1, 2)</td></tr>
 <tr class="separator:a50fbc04bac80b3dc18fee07bb26a537f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -144,17 +146,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00064">64</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                                                                                        {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordflow">if</span>(scan-&gt;error++)</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keyword">const</span> <span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a> *ppstate = (<span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a>*)vector_back(&amp;scan-&gt;pp-&gt;filename);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">const</span> m_str <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a> = <a class="code" href="scanner_8c.html#af9b591f0b290323318bc82d4be6ca610">get_filename</a>(scan, ppstate);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <a class="code" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a>(<a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <a class="code" href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a>, <a class="code" href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a>, <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a>, <a class="code" href="scanner_8h.html#a8a9d87af9605dbbbf4ebae77c1dda3f9">pos</a>, <a class="code" href="scanner_8h.html#a49870b9ed03182e21609b56c83d9504a">error_code</a>);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="comment">// here add secondary errors</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
-<div class="ttc" id="aloc_8c_html_af1282b97059964476298bbe0ec17a173"><div class="ttname"><a href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a></div><div class="ttdeci">void gwerr_basic(const char *main, const char *explain, const char *fix, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00030">loc.c:30</a></div></div>
+<p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00074">74</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                                                                                        {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keywordflow">if</span>(scan-&gt;error++)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keyword">const</span> <span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a> *ppstate = (<span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a>*)vector_back(&amp;scan-&gt;pp-&gt;filename);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keyword">const</span> m_str <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a> = <a class="code" href="scanner_8c.html#af9b591f0b290323318bc82d4be6ca610">get_filename</a>(scan, ppstate);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <a class="code" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a>(<a class="code" href="scanner_8h.html#acd5e2163ad6f0135f9731a861b615dd8">main</a>, <a class="code" href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a>, <a class="code" href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a>, <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a>, <a class="code" href="scanner_8h.html#a8a9d87af9605dbbbf4ebae77c1dda3f9">pos</a>, <a class="code" href="scanner_8h.html#a49870b9ed03182e21609b56c83d9504a">error_code</a>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <a class="code" href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a>(scan);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
+<div class="ttc" id="aloc_8c_html_af1282b97059964476298bbe0ec17a173"><div class="ttname"><a href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a></div><div class="ttdeci">void gwerr_basic(const char *main, const char *explain, const char *fix, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00031">loc.c:31</a></div></div>
+<div class="ttc" id="ascanner_8c_html_ae3993e1e5ca9f4a83c324cdb6b8e87a7"><div class="ttname"><a href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a></div><div class="ttdeci">static ANN void secondary(Scanner *scan)</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8c_source.html#l00064">scanner.c:64</a></div></div>
 <div class="ttc" id="ascanner_8c_html_af9b591f0b290323318bc82d4be6ca610"><div class="ttname"><a href="scanner_8c.html#af9b591f0b290323318bc82d4be6ca610">get_filename</a></div><div class="ttdeci">static ANN char * get_filename(Scanner *scan, const struct PPState_ *ppstate)</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8c_source.html#l00045">scanner.c:45</a></div></div>
 <div class="ttc" id="ascanner_8h_html_a2ceb7831d47fd81ffd5041e91f6fccd2"><div class="ttname"><a href="scanner_8h.html#a2ceb7831d47fd81ffd5041e91f6fccd2">explain</a></div><div class="ttdeci">const char const char * explain</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8h_source.html#l00022">scanner.h:22</a></div></div>
 <div class="ttc" id="ascanner_8h_html_a3193fd195bf6cb340d672b3cdcc06fde"><div class="ttname"><a href="scanner_8h.html#a3193fd195bf6cb340d672b3cdcc06fde">fix</a></div><div class="ttdeci">const char const char const char * fix</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8h_source.html#l00022">scanner.h:22</a></div></div>
@@ -393,6 +396,49 @@ Functions</h2></td></tr>
 <div class="ttc" id="astructAst___html"><div class="ttname"><a href="structAst__.html">Ast_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00633">absyn.h:633</a></div></div>
 <div class="ttc" id="astructPPArg___html_a5078c0c7fd6b24935505582faa0ce989"><div class="ttname"><a href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">PPArg_::hash</a></div><div class="ttdeci">struct Hash_ hash</div><div class="ttdef"><b>Definition:</b> <a href="pparg_8h_source.html#l00035">pparg.h:9</a></div></div>
 <div class="ttc" id="astructScanner___html_abce8c064df64b504271f6df927fccece"><div class="ttname"><a href="structScanner__.html#abce8c064df64b504271f6df927fccece">Scanner_::global</a></div><div class="ttdeci">short unsigned int global</div><div class="ttdef"><b>Definition:</b> <a href="scanner_8h_source.html#l00017">scanner.h:17</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ae3993e1e5ca9f4a83c324cdb6b8e87a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3993e1e5ca9f4a83c324cdb6b8e87a7">&#9670;&nbsp;</a></span>secondary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static ANN void secondary </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="scanner_8h.html#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *&#160;</td>
+          <td class="paramname"><em>scan</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00064">64</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                         {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keywordflow">for</span>(m_uint i = 0; i &lt; vector_size(&amp;scan-&gt;<a class="code" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>) -1; i++) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a> *pp = (<span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a>*)vector_at(&amp;scan-&gt;<a class="code" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>, i);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="structloc__t__.html">loc_t</a> loc = pp-&gt;<a class="code" href="structPPState__.html#a97d5137f542875631365702d26291554">pos</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    loc.<a class="code" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>++;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    loc.<a class="code" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>++;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a>(<span class="stringliteral">&quot;expanded from here&quot;</span>, <a class="code" href="scanner_8c.html#af9b591f0b290323318bc82d4be6ca610">get_filename</a>(scan, pp), loc);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="ttc" id="aloc_8c_html_ac61492d32908071a1d549f0a9c220696"><div class="ttname"><a href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a></div><div class="ttdeci">ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition:</b> <a href="loc_8c_source.html#l00057">loc.c:57</a></div></div>
+<div class="ttc" id="astructPPState___html_a97d5137f542875631365702d26291554"><div class="ttname"><a href="structPPState__.html#a97d5137f542875631365702d26291554">PPState_::pos</a></div><div class="ttdeci">loc_t pos</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00022">pp.h:22</a></div></div>
+<div class="ttc" id="astructloc__t___html"><div class="ttname"><a href="structloc__t__.html">loc_t_</a></div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00016">loc.h:16</a></div></div>
+<div class="ttc" id="astructloc__t___html_a6661658c024ee942da7441d0afffea1b"><div class="ttname"><a href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">loc_t_::last</a></div><div class="ttdeci">struct pos_t last</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:18</a></div></div>
+<div class="ttc" id="astructloc__t___html_ac3836867620bbe7074f7d04c78e75f26"><div class="ttname"><a href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">loc_t_::first</a></div><div class="ttdeci">struct pos_t first</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:17</a></div></div>
+<div class="ttc" id="astructpos__t_html_aa5910ccb9c6e11dcdf071751b3053964"><div class="ttname"><a href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">pos_t::column</a></div><div class="ttdeci">short unsigned int column</div><div class="ttdef"><b>Definition:</b> <a href="loc_8h_source.html#l00009">loc.h:9</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
