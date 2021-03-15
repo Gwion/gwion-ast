@@ -6,5 +6,6 @@ var searchData=
   ['line_829',['line',['../structpos__t.html#ab51255fd45533a2412b08649ec3629de',1,'pos_t']]],
   ['lint_830',['lint',['../structPPArg__.html#a230273ebd5fd958001be31a1b7b3db8d',1,'PPArg_']]],
   ['list_831',['list',['../structExp__Decl.html#ab80de61cd5c3e1b24ffa1eafe803ab0f',1,'Exp_Decl::list()'],['../structTmpl__.html#acc4bf599a709ba29e7f32ac00ae4c955',1,'Tmpl_::list()'],['../structStmt__Match__.html#ac6101277dff8f41ea7763cede7f10c2b',1,'Stmt_Match_::list()'],['../structEnum__Def__.html#a138364f37015361e82d5f68bbe47266a',1,'Enum_Def_::list()']]],
-  ['loc_5ft_5f_832',['loc_t_',['../absyn_8h.html#a6c468ce18e5dade2e2cc27b916e74bbd',1,'absyn.h']]]
+  ['loc_5ft_832',['loc_t',['../absyn_8h.html#aafb7dcea328eebc751f42b2a07551f22',1,'absyn.h']]],
+  ['loc_5ft_5f_833',['loc_t_',['../absyn_8h.html#a6c468ce18e5dade2e2cc27b916e74bbd',1,'absyn.h']]]
 ];

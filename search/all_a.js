@@ -9,6 +9,6 @@ var searchData=
   ['list_328',['list',['../structExp__Decl.html#ab80de61cd5c3e1b24ffa1eafe803ab0f',1,'Exp_Decl::list()'],['../structTmpl__.html#acc4bf599a709ba29e7f32ac00ae4c955',1,'Tmpl_::list()'],['../structStmt__Match__.html#ac6101277dff8f41ea7763cede7f10c2b',1,'Stmt_Match_::list()'],['../structEnum__Def__.html#a138364f37015361e82d5f68bbe47266a',1,'Enum_Def_::list()']]],
   ['loc_2ec_329',['loc.c',['../loc_8c.html',1,'']]],
   ['loc_2eh_330',['loc.h',['../loc_8h.html',1,'']]],
-  ['loc_5ft_331',['loc_t',['../loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49',1,'loc.h']]],
+  ['loc_5ft_331',['loc_t',['../loc_8h.html#adac7c4e2d3fe572e5759e7e9e2574c49',1,'loc_t():&#160;loc.h'],['../absyn_8h.html#aafb7dcea328eebc751f42b2a07551f22',1,'loc_t():&#160;absyn.h']]],
   ['loc_5ft_5f_332',['loc_t_',['../structloc__t__.html',1,'loc_t_'],['../absyn_8h.html#a6c468ce18e5dade2e2cc27b916e74bbd',1,'loc_t_():&#160;absyn.h']]]
 ];
