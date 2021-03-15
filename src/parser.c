@@ -3826,19 +3826,19 @@ yyreturn:
 
 #undef scan
 ANN static int parser_error(loc_t *loc, Scanner *const scan, const char* diagnostic, const uint error_code) {
-  char main[strlen(diagnostic) + 1];
-  strcpy(main, diagnostic);
-  char *explain = strchr(main, ','),
-       *fix = NULL;
-  if(explain) {
-    main[explain-main] = '\0';
-    explain += 2;
-    fix = strchr(explain, ',');
-    if(fix) {
-      explain[fix-explain] = '\0';
-      fix += 2;
+  char _main[strlen(diagnostic) + 1];
+  strcpy(_main, diagnostic);
+  char *_explain = strchr(_main, ','),
+       *_fix = NULL;
+  if(_explain) {
+    _main[_explain - _main] = '\0';
+    _explain += 2;
+    _fix = strchr(_explain, ',');
+    if(_fix) {
+      _explain[_fix - _explain] = '\0';
+      _fix += 2;
     }
   }
-  scanner_error(scan, main, explain, fix, *loc, error_code);
+  scanner_error(scan, _main, _explain, _fix, *loc, error_code);
   return 0;
 }

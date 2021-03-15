@@ -2018,7 +2018,7 @@ YY_RULE_SETUP
 case 45:
 YY_RULE_SETUP
 #line 222 "src/gwion.l"
-{ GWYY_COMMENT;  }
+{ adjust(yyscanner); GWYY_COMMENT;  }
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
@@ -3561,12 +3561,6 @@ ANN Symbol lambda_name(const Scanner *scan) {
   char c[6 + 1 + num_digit(scan->pos.line) + num_digit(scan->pos.column) + 2];
   sprintf(c, "lambda:%u:%u", scan->pos.line, scan->pos.column);
   return insert_symbol(scan->st, c);
-}
-
-static inline void header(const Scanner *scan, const char *msg) {
-  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
-  gw_err("\033[1m%s:%u:%u:\033[0m\n  %s\n", ppstate->filename,
-    scan->pos.line, scan->pos.column, msg);
 }
 
 ANN void lexer_error(yyscan_t yyscanner, const char *msg, const uint error_code) {

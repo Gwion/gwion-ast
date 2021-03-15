@@ -20,7 +20,8 @@ static inline const char* get_filename(const char *filename) {
 #ifndef BUILD_ON_WINDOWS
   const char *pwd = getenv("PWD");
 #else
-  const char *pwd = GetCurrentDirectory();
+  TCHAR pwd[MAX_PATH];
+  GetCurrentDirectory(MAX_PATH, NPath);
 #endif
   size_t sz = strlen(pwd);
   return !strncmp(pwd, filename, sz - 1) ?
