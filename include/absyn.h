@@ -405,13 +405,19 @@ struct Stmt_For_ {
   Stmt body;
 };
 
+struct EachIdx_ {
+  struct Symbol_* sym;
+  struct Value_*  v;
+  loc_t           pos;
+};
+
 struct Stmt_Each_ {
   struct Symbol_* sym;
-  struct Symbol_* idx;
   Exp exp;
   Stmt body;
+  struct EachIdx_ *idx;
   struct Value_* v;
-  struct Value_* vidx;
+  loc_t vpos;
 };
 
 struct Stmt_Loop_ {

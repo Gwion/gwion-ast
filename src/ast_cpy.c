@@ -72,6 +72,8 @@ ANN Type_Decl* cpy_type_decl(MemPool p, const Type_Decl* src) {
   a->flag = src->flag; // 1 
   if(src->next)
     a->next = cpy_type_decl(p, src->next);
+  a->option = src->option;
+  a->ref = src->ref;
   return a;
 }
 
@@ -85,8 +87,7 @@ ANN ID_List cpy_id_list(MemPool p, const ID_List src) {
 
 ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
   Type_List a = mp_calloc(p, Type_List);
-  if(src->td)
-    a->td = cpy_type_decl(p, src->td); // 1 
+  a->td = cpy_type_decl(p, src->td); // 1 
   if(src->next)
     a->next = cpy_type_list(p, src->next); // 1 
   return a;
@@ -298,6 +299,11 @@ ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
     a->exp = cpy_exp(p, src->exp);
   if(src->body)
     a->body = cpy_stmt(p, src->body);
+  if(src->idx) {
+    a->idx = mp_malloc(p, EachIdx);
+    a->idx->sym = src->idx->sym;
+    a->idx->pos = src->idx->pos;
+  }
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {

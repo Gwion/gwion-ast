@@ -333,7 +333,11 @@ loop_stmt
   | FOREACH LPAREN ID COLON binary_exp RPAREN stmt
       { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
   | FOREACH LPAREN ID "," ID COLON binary_exp RPAREN stmt
-      { $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$); $$->d.stmt_each.idx = $3; }
+      { $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$);
+        $$->d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
+        $$->d.stmt_each.idx->sym = $3;
+        $$->d.stmt_each.idx->pos = @3;
+    }
   | LOOP LPAREN exp RPAREN stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   ;
