@@ -43,6 +43,8 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
     perr_runner_basic_style
     );
 
+  printer.rounded = true;
+
   // Create a faux error
   const perr_t err = PERR_Error(
           PERR_ERROR /* error */,
@@ -60,7 +62,6 @@ ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc
     gw_err("%s\n", main);
     return;
   }
-//exit(4);
 
   perr_printer_t printer;
   perr_printer_init(
@@ -69,12 +70,14 @@ ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc
     perr_runner_secondary_style
     );
 
+  printer.rounded = true;
+
   // Create a faux error
   const perr_t err = PERR_Secondary(
           PERR_WARNING /* error */,
             PERR_Str(loc.first.line, line) /* location of error */,
             PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column) /* occurs at src[15] through src[19] */,
-            main, get_filename(filename)
+            main, NULL, get_filename(filename)
         );
   perr_print_error(&printer, &err);
   xfree(line);
