@@ -258,6 +258,7 @@ ANN static double atof_space(m_str, size_t);
 
 "class"                             { adjust(yyscanner); return CLASS;}
 "struct"                            { adjust(yyscanner); return STRUCT;}
+"trait"                             { adjust(yyscanner); return TRAIT;}
 "operator"                          { adjust(yyscanner); return OPERATOR;}
 "extends"                           { adjust(yyscanner); return EXTENDS;}
 "..."|,{SPACE}*"..."                { adjust(yyscanner); return ELLIPSE;}

@@ -75,7 +75,7 @@ ANN Symbol lambda_name(const Scanner*);
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue"
-  CLASS "class" STRUCT "struct"
+  CLASS "class" STRUCT "struct" TRAIT "trait"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
@@ -100,11 +100,10 @@ ANN Symbol lambda_name(const Scanner*);
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
 %type<uval> option
-%type<flag> flag final modifier operator
+%type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
-%type<cflag> class_type
-%type<sym>opt_id
+%type<sym>opt_id func_trait
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
@@ -114,7 +113,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt func_code
 %type<stmt> match_case_stmt match_stmt stmt_pp
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
@@ -125,9 +124,9 @@ ANN Symbol lambda_name(const Scanner*);
 %type<fptr_def> fptr_def
 %type<type_def> type_def
 %type<section> section
-%type<class_def> class_def
-%type<ast> class_body
-%type<id_list> id_list decl_template
+%type<class_def> class_def extend_def
+%type<ast> class_body extend_body
+%type<id_list> id_list decl_template traits
 %type<type_list> type_list call_template
 %type<union_list> union_decl union_list
 %type<ast> ast prg
@@ -170,29 +169,66 @@ ast
   ;
 
 section
-  : stmt_list { $$ = new_section_stmt_list(mpool(arg), $1); LIST_REM($$) }
-  | func_def  { $$ = new_section_func_def (mpool(arg), $1); }
-  | class_def { $$ = new_section_class_def(mpool(arg), $1); }
-  | enum_def  { $$ = new_section_enum_def(mpool(arg), $1); }
-  | union_def { $$ = new_section_union_def(mpool(arg), $1); }
-  | fptr_def  { $$ = new_section_fptr_def(mpool(arg), $1); }
-  | type_def  { $$ = new_section_type_def(mpool(arg), $1); }
+  : stmt_list    { $$ = new_section_stmt_list(mpool(arg), $1); LIST_REM($$) }
+  | func_def     { $$ = new_section_func_def (mpool(arg), $1); }
+  | class_def    { $$ = new_section_class_def(mpool(arg), $1); }
+  | extend_def   { $$ = new_section_extend(mpool(arg), $1); }
+  | enum_def     { $$ = new_section_enum_def(mpool(arg), $1); }
+  | union_def    { $$ = new_section_union_def(mpool(arg), $1); }
+  | fptr_def     { $$ = new_section_fptr_def(mpool(arg), $1); }
+  | type_def     { $$ = new_section_type_def(mpool(arg), $1); }
   ;
 
-class_type: CLASS { $$ = cflag_none; } | STRUCT { $$ = cflag_struct; }
+class_flag: flag modifier { $$ = $1 | $2; }
 class_def
-  : class_type flag modifier ID decl_template class_ext LBRACE class_body RBRACE
+  : "class" class_flag ID decl_template class_ext traits "{" class_body "}"
     {
-      if($1 == cflag_struct && $6)
-        { parser_error(&@1, arg, "'struct' can't from inherit other types", 202); YYERROR; }
-      $$ = new_class_def(mpool(arg), $1 | $2 | $3, $4, $6, $8, @3);
-      if($5)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $5);
-      if($1)
-        $$->cflag |= cflag_struct;
-  };
+      $$ = new_class_def(mpool(arg), $2, $3, $5, $8, @3);
+      if($4)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+      $$->traits = $6;
+    }
+  | "union" class_flag ID decl_template traits "{" class_body "}"
+    {
+      $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
+      if($4)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+      $$->cflag |= cflag_struct;
+      $$->traits = $5;
+    }
+  | "trait" class_flag ID decl_template traits "{" class_body "}"
+    {
+      $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
+      if($4)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+      $$->cflag |= cflag_trait;
+      $$->traits = $5;
+      if(GET_FLAG($$, abstract)) {
+        { scanner_secondary(arg, "abstract should not be used on ${/+trait{0} declaration", @2); }
+        UNSET_FLAG($$, abstract);
+      }
+    };
 
-class_ext : EXTENDS type_decl_exp { $$ = $2; } | { $$ = NULL; };
+class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
+traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
+extend_body
+  : func_def {
+    Section * section= new_section_func_def (mpool(arg), $1);
+    $$ = !arg->ppa->lint ? new_ast_expand(mpool(arg), section, NULL) : new_ast(mpool(arg), section, NULL); LIST_FIRST($$)
+  }
+  | extend_body func_def {
+    Section * section = new_section_func_def (mpool(arg), $2);
+    LIST_NEXT($$, $1, Ast, !arg->ppa->lint ? new_ast_expand(mpool(arg), section, NULL) : new_ast(mpool(arg), section, NULL))
+  }
+  ;
+
+extend_def: "extends" type_decl traits "{" extend_body "}" {
+  if($3 && $3->next)
+    { parser_error(&@$, arg, "extensions must define at most trait", 0211); YYERROR;}
+  $$ = new_class_def(mpool(arg), ae_flag_none, $2->xid, $2, $5, @2);
+  $$->traits = $3;
+}
+
 
 class_body : ast | { $$ = NULL; };
 
@@ -208,13 +244,12 @@ fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg)
 func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
   if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
 
-fptr_def: FUNCDEF fptr_base fptr_args arg_type SEMICOLON {
+fptr_def: "funcdef" fptr_base fptr_args arg_type ";" {
   $2->args = $3;
   $2->fbflag |= $4;
   $$ = new_fptr_def(mpool(arg), $2);
 };
 
-//typedef_when: { $$ = NULL;} | "when" "{" binary_exp ";" "}" { $$ = $3; }
 typedef_when: { $$ = NULL;} | "when" binary_exp { $$ = $2; }
 type_def_type: "typedef" { $$ = 0; } | "distinct" { $$ = 1; };
 type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
@@ -229,7 +264,7 @@ type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
 type_decl_array: type_decl array { $1->array = $2; } | type_decl
 
 type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
-    { parser_error(&@$, arg, "can't instantiate with empty '[]'", 0203); YYERROR;}
+    { parser_error(&@$, arg, "can't instantiate with empty `[]`", 0203); YYERROR;}
   $$ = $1; }
 
 type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
@@ -322,23 +357,23 @@ flow
   | UNTIL { $$ = ae_stmt_until; }
 
 loop_stmt
-  : flow LPAREN exp RPAREN stmt
+  : flow "(" exp ")" stmt
     { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, @$); LIST_REM($3) }
-  | DO stmt flow exp SEMICOLON
+  | "do" stmt flow exp ";"
     { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, @$); LIST_REM($3) }
-  | FOR LPAREN exp_stmt exp_stmt RPAREN stmt
+  | "for" "(" exp_stmt exp_stmt ")" stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, @$); }
-  | FOR LPAREN exp_stmt exp_stmt exp RPAREN stmt
+  | "for" "(" exp_stmt exp_stmt exp ")" stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, @$); LIST_REM($5) }
-  | FOREACH LPAREN ID COLON binary_exp RPAREN stmt
+  | "foreach" "(" ID ":" binary_exp ")" stmt
       { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
-  | FOREACH LPAREN ID "," ID COLON binary_exp RPAREN stmt
+  | "foreach" "(" ID "," ID ":" binary_exp ")" stmt
       { $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$);
         $$->d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
         $$->d.stmt_each.idx->sym = $3;
         $$->d.stmt_each.idx->pos = @3;
     }
-  | LOOP LPAREN exp RPAREN stmt
+  | "repeat" "(" binary_exp ")" stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   ;
 
@@ -427,19 +462,25 @@ flag: access_flag { $$ = $1; }
   | { $$ = ae_flag_none; }
   ;
 
-final: FINAL { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
+final: "final" { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
 
-modifier: ABSTRACT { $$ = ae_flag_abstract; } | final;
+modifier: "abstract" { $$ = ae_flag_abstract; } | final;
 
+func_trait: { $$ = 0; } | ":" ID { $$ = $2; };
+func_code: code_stmt | ";" { $$ = NULL; }
 func_def_base
-  : FUNCTION func_base func_args arg_type code_stmt {
+  : "fun" func_base func_args arg_type func_trait func_code {
     $2->args = $3;
     $2->fbflag |= $4;
-    $$ = new_func_def(mpool(arg), $2, $5);
+    $$ = new_func_def(mpool(arg), $2, $6);
+    $$->trait = $5;
+    if(!$6) {
+      SET_FLAG($2, abstract);
+    }
   };
 
 abstract_fdef
-  : FUNCTION flag ABSTRACT type_decl_empty ID decl_template fptr_args arg_type ";"
+  : "fun" flag "abstract" type_decl_empty ID decl_template fptr_args arg_type ";"
     { Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
         base->tmpl = new_tmpl_base(mpool(arg), $6);

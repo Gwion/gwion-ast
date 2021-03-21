@@ -57,19 +57,35 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
 }
 
 ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc) {
+  perr_printer_t printer;
   char * line = get_src(filename, loc);
   if(!line) {
+    perr_printer_init(
+      &printer, stderr, NULL,
+      true, // use utf8,
+      perr_runner_secondary_style
+    );
+    const perr_t err= {
+        .filename=filename,
+        .error_position=PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column)
+    };
+    size_t len;
+    char color[3];
+    const int status = tcol_color_parse(color, 16, "+R", 2, &len);
+    if (status != TermColorErrorNone)
+       color[0] = 0;
+    else
+    color[len] = 0;
+    perr_print_line_number(&printer, &err, color);
     gw_err("%s\n", main);
     return;
   }
 
-  perr_printer_t printer;
   perr_printer_init(
     &printer, stderr, line,
     true, // use utf8,
     perr_runner_secondary_style
     );
-
   printer.rounded = true;
 
   // Create a faux error

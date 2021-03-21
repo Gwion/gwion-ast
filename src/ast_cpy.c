@@ -471,7 +471,8 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base = cpy_func_base(p, src->base);
   if(src->d.code)
-      a->d.code = cpy_stmt(p, src->d.code);
+    a->d.code = cpy_stmt(p, src->d.code);
+  a->trait = src->trait;
   return a;
 }
 
@@ -490,6 +491,7 @@ ANN static Section* cpy_section(MemPool p, const Section *src) {
       a->d.stmt_list = cpy_stmt_list(p, src->d.stmt_list);
       break;
     case ae_section_class:
+    case ae_section_extend:
       a->d.class_def = cpy_class_def(p, src->d.class_def);
       break;
     case ae_section_func:
@@ -516,8 +518,11 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   Class_Def a = mp_calloc(p, Class_Def);
   cpy_type_def2(p, &a->base, &src->base);
   if(src->body)
-      a->body = cpy_ast(p, src->body);
+    a->body = cpy_ast(p, src->body);
+  if(src->traits)
+    a->traits = cpy_id_list(p, src->traits);
   a->flag = src->flag;
+  a->cflag = src->cflag;
   a->pos = src->pos;
   return a;
 }

@@ -312,7 +312,7 @@ AST_FREE(Class_Def, class_def) {
 
 ANN static AST_FREE(Section*, section) {
   const ae_section_t t = a->section_type;
-  if(t == ae_section_class)
+  if(t == ae_section_class || t == ae_section_extend)
     free_class_def(p, a->d.class_def);
   else if(t == ae_section_stmt)
     free_stmt_list(p, a->d.stmt_list);

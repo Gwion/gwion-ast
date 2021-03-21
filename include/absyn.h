@@ -587,29 +587,32 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
+  Symbol trait;
 };
 
 ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt);
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def);
 
-typedef enum { ae_section_stmt, ae_section_func, ae_section_class,
+typedef enum { ae_section_stmt, ae_section_func, ae_section_class, ae_section_extend,
   ae_section_enum, ae_section_union, ae_section_fptr, ae_section_type } ae_section_t;
 typedef struct Section_ {
   union section_data {
     Stmt_List stmt_list;
     Class_Def class_def;
+    Class_Def extend;
     Func_Def  func_def;
     Enum_Def  enum_def;
     Union_Def union_def;
-    Fptr_Def fptr_def;
-    Type_Def type_def;
+    Fptr_Def  fptr_def;
+    Type_Def  type_def;
   } d;
   ae_section_t section_type;
 } Section;
 ANEW ANN AST_NEW(Section*, section_stmt_list, const Stmt_List);
 ANEW ANN AST_NEW(Section*, section_func_def, const Func_Def);
 ANEW ANN AST_NEW(Section*, section_class_def, const Class_Def);
+ANEW ANN AST_NEW(Section*, section_extend,   const Class_Def);
 ANEW ANN AST_NEW(Section*, section_enum_def, const Enum_Def);
 ANEW ANN AST_NEW(Section*, section_union_def, const Union_Def);
 ANEW ANN AST_NEW(Section*, section_fptr_def, const Fptr_Def);
@@ -617,12 +620,14 @@ ANEW ANN AST_NEW(Section*, section_type_def, const Type_Def);
 
 enum cflag {
   cflag_none,
-  cflag_struct
+  cflag_struct,
+  cflag_trait
 };
 
 struct Class_Def_ {
   struct Type_Def_ base;
   Ast body;
+  ID_List traits;
   struct loc_t_ pos;            ///< position
   enum cflag cflag;
   ae_flag flag;

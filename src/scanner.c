@@ -81,3 +81,12 @@ ANN2(1,2) int scanner_error(Scanner* scan, const char *main,
   secondary(scan);
   return 0;
 }
+ANN int scanner_secondary(Scanner* scan, const char *main,
+          const loc_t pos) {
+  if(scan->error++)
+    return 0;
+  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  const m_str filename = get_filename(scan, ppstate);
+  gwerr_secondary(main, filename, pos);
+  return 0;
+}

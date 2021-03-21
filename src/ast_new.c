@@ -430,6 +430,7 @@ AST_NEW(Section*, section_##name, const Type name) { \
 mk_section(Stmt_List, stmt_list, stmt)
 mk_section(Func_Def,  func_def,  func)
 mk_section(Class_Def, class_def, class)
+mk_section(Class_Def, extend,    extend)
 mk_section(Enum_Def,  enum_def,  enum)
 mk_section(Union_Def, union_def, union)
 mk_section(Fptr_Def,  fptr_def,  fptr)
@@ -442,7 +443,8 @@ AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Symbol xid, Type_D
   a->base.xid = xid;
   a->base.ext  = ext;
   a->body = body;
-  a->pos = pos;
+  a->pos = pos; // remove me
+  a->base.pos = pos;
   return a;
 }
 
