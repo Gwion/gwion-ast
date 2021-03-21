@@ -99,7 +99,7 @@ ANN Symbol lambda_name(const Scanner*);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<uval> option
+%type<uval> option ref
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
@@ -512,9 +512,10 @@ op_def:  operator op_base code_stmt
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
+ref: "&" { $$ = 1; } | "&" ref { $$ = 1 + $2; };
 type_decl_tmpl
   : ID call_template { $$ = new_type_decl(mpool(arg), $1, @$); $$->types = $2; }
-  | "&" ID call_template { $$ = new_type_decl(mpool(arg), $2, @$); $$->ref = 1; $$->types = $3; }
+  | ref ID call_template { $$ = new_type_decl(mpool(arg), $2, @$); $$->ref = 1; $$->types = $3; }
   ;
 
 type_decl_noflag
