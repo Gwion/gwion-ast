@@ -17,6 +17,7 @@ ANEW static Scanner* new_scanner(const struct AstGetter_ *arg) {
   scan->st = arg->st;
   scan->ppa = arg->ppa;
   pos_ini(&scan->pos);
+  scan->ppa->ast = NULL;
   return scan;
 }
 

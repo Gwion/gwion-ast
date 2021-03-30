@@ -157,7 +157,6 @@ ANN Symbol lambda_name(const Scanner*);
 %nonassoc NOELSE
 %nonassoc ELSE
 
-%destructor  { free_ast(mpool(arg), $$); } ast
 %%
 
 prg: ast { arg->ppa->ast = $$ = $1; /* no need for LIST_REM here */}
