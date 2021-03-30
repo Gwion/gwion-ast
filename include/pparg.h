@@ -7,6 +7,7 @@
 struct PPArg_ {
   struct Vector_ path;
   struct Hash_   hash;
+  Ast ast;
   uint lint;
 };
 

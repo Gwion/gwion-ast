@@ -160,7 +160,7 @@ ANN Symbol lambda_name(const Scanner*);
 %destructor  { free_ast(mpool(arg), $$); } ast
 %%
 
-prg: ast { arg->ast = $$ = $1; /* no need for LIST_REM here */}
+prg: ast { arg->ppa->ast = $$ = $1; /* no need for LIST_REM here */}
   | /* empty */ { loc_t loc = { {1, 1}, {1,1} }; parser_error(&loc, arg, "file is empty.", 0201); YYERROR; }
 
 ast

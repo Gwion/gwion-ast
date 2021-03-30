@@ -10,12 +10,11 @@ typedef struct Scanner_ {
   SymTable *st;
   struct PP_* pp;
   struct PPArg_ *ppa;
-  Ast ast;
+  struct Vector_ hashes;
   struct pos_t pos;
   short int interp_state;
   short unsigned int error;
   short unsigned int global;
-  short unsigned int hashes;
 } Scanner;
 
 ANN2(1,2) int scanner_error(Scanner* scan, const char *main,

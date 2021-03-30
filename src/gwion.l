@@ -100,7 +100,7 @@ ANN static double atof_space(m_str, size_t);
 
 #*\" { 
   Scanner *scan = yyget_extra(yyscanner);
-  scan->hashes = yyleng;
+  vector_add(&scan->hashes, yyleng);
   scan->interp_state++;
   BEGIN(interp);
   return INTERP_START;
@@ -111,9 +111,9 @@ ANN static double atof_space(m_str, size_t);
   size_t len = yyleng;
   short unsigned int hashes = 1;
   while(yytext[--len] == '#')hashes++;
-  if(hashes == scan->hashes) {
+  if(hashes == vector_back(&scan->hashes)) {
     BEGIN(INITIAL);
-    scan->hashes = 0;
+    vector_pop(&scan->hashes);
     yytext[len] = '\0';
     yylval->sval = alloc_str(yyscanner, yytext);
     scan->interp_state--;
@@ -215,11 +215,11 @@ ANN static double atof_space(m_str, size_t);
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 
-"#!".*"!#"       { YY_USER_ACTION; BEGIN(INITIAL); }
-"#!"{SPACE}*     { YY_USER_ACTION; BEGIN(comment); }
+"#!"             { /*YY_USER_ACTION; */ adjust(yyscanner); BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
 <comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
-<comment>.*      { adjust(yyscanner); GWYY_COMMENT;  }
+<comment>"!#"    { /*YY_USER_ACTION; */adjust(yyscanner); BEGIN(INITIAL); }
+<comment>.       { adjust(yyscanner); GWYY_COMMENT;  }
 
 "\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
 ":["                                { adjust(yyscanner); return TMPL;}
