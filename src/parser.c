@@ -2293,7 +2293,7 @@ yyreduce:
     {
   case 2: /* prg: ast  */
 #line 163 "src/gwion.y"
-         { arg->ast = (yyval.ast) = (yyvsp[0].ast); /* no need for LIST_REM here */}
+         { arg->ppa->ast = (yyval.ast) = (yyvsp[0].ast); /* no need for LIST_REM here */}
 #line 2298 "src/parser.c"
     break;
 
