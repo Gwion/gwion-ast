@@ -64,6 +64,7 @@ ANN Symbol lambda_name(const Scanner*);
   ID_List id_list;
   Type_List type_list;
   Union_List union_list;
+  Extend_Def extend_def;
   Class_Def class_def;
   Ast ast;
 };
@@ -124,7 +125,8 @@ ANN Symbol lambda_name(const Scanner*);
 %type<fptr_def> fptr_def
 %type<type_def> type_def
 %type<section> section
-%type<class_def> class_def extend_def
+%type<extend_def> extend_def
+%type<class_def> class_def
 %type<ast> class_body extend_body
 %type<id_list> id_list decl_template traits
 %type<type_list> type_list call_template
@@ -171,7 +173,7 @@ section
   : stmt_list    { $$ = new_section_stmt_list(mpool(arg), $1); LIST_REM($$) }
   | func_def     { $$ = new_section_func_def (mpool(arg), $1); }
   | class_def    { $$ = new_section_class_def(mpool(arg), $1); }
-  | extend_def   { $$ = new_section_extend(mpool(arg), $1); }
+  | extend_def   { $$ = new_section_extend_def(mpool(arg), $1); }
   | enum_def     { $$ = new_section_enum_def(mpool(arg), $1); }
   | union_def    { $$ = new_section_union_def(mpool(arg), $1); }
   | fptr_def     { $$ = new_section_fptr_def(mpool(arg), $1); }
@@ -221,11 +223,11 @@ extend_body
   }
   ;
 
-extend_def: "extends" type_decl traits "{" extend_body "}" {
-  if($3 && $3->next)
-    { parser_error(&@$, arg, "extensions must define at most trait", 0211); YYERROR;}
-  $$ = new_class_def(mpool(arg), ae_flag_none, $2->xid, $2, $5, @2);
-  $$->traits = $3;
+extend_def: "extends" type_decl_exp "{" extend_body "}" {
+//  if($3 && $3->next)
+//    { parser_error(&@$, arg, "extensions must define at most trait", 0211); YYERROR;}
+  $$ = new_extend_def(mpool(arg), $2, $4);
+//  $$->traits = $3;
 }
 
 

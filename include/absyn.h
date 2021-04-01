@@ -13,6 +13,7 @@
 
 typedef struct Ast_           * Ast;
 typedef struct Class_Def_     * Class_Def;
+typedef struct Extend_Def_    * Extend_Def;
 typedef struct Func_Def_      * Func_Def;
 typedef struct Stmt_List_     * Stmt_List;
 typedef struct Exp_           * Exp;
@@ -600,7 +601,7 @@ typedef struct Section_ {
   union section_data {
     Stmt_List stmt_list;
     Class_Def class_def;
-    Class_Def extend;
+    Extend_Def extend_def;
     Func_Def  func_def;
     Enum_Def  enum_def;
     Union_Def union_def;
@@ -612,11 +613,21 @@ typedef struct Section_ {
 ANEW ANN AST_NEW(Section*, section_stmt_list, const Stmt_List);
 ANEW ANN AST_NEW(Section*, section_func_def, const Func_Def);
 ANEW ANN AST_NEW(Section*, section_class_def, const Class_Def);
-ANEW ANN AST_NEW(Section*, section_extend,   const Class_Def);
+ANEW ANN AST_NEW(Section*, section_extend_def,   const Extend_Def);
 ANEW ANN AST_NEW(Section*, section_enum_def, const Enum_Def);
 ANEW ANN AST_NEW(Section*, section_union_def, const Union_Def);
 ANEW ANN AST_NEW(Section*, section_fptr_def, const Fptr_Def);
 ANEW ANN AST_NEW(Section*, section_type_def, const Type_Def);
+
+struct Extend_Def_ {
+  Ast body;
+//  ID_List traits;
+  Type_Decl *td;
+  struct Type_ *t;
+};
+
+ANN2(1, 3) ANEW Extend_Def new_extend_def(MemPool p, Type_Decl*const, const Ast);
+ANN void free_extend_def(MemPool p, Extend_Def);
 
 enum cflag {
   cflag_none,

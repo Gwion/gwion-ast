@@ -318,10 +318,11 @@ union YYSTYPE
   ID_List id_list;
   Type_List type_list;
   Union_List union_list;
+  Extend_Def extend_def;
   Class_Def class_def;
   Ast ast;
 
-#line 325 "include/parser.h"
+#line 326 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -300,6 +300,12 @@ AST_FREE(Stmt_List, stmt_list) {
     free_stmt_list(p, next);
 }
 
+AST_FREE(Extend_Def, extend_def) {
+  free_ast(p, a->body);
+  free_type_decl(p, a->td);
+  mp_free(p, Extend_Def, a);
+}
+
 AST_FREE(Class_Def, class_def) {
   if(a->base.ext)
     free_type_decl(p, a->base.ext);
@@ -312,8 +318,10 @@ AST_FREE(Class_Def, class_def) {
 
 ANN static AST_FREE(Section*, section) {
   const ae_section_t t = a->section_type;
-  if(t == ae_section_class || t == ae_section_extend)
+  if(t == ae_section_class)
     free_class_def(p, a->d.class_def);
+  else if(t == ae_section_extend)
+    free_extend_def(p, a->d.extend_def);
   else if(t == ae_section_stmt)
     free_stmt_list(p, a->d.stmt_list);
   else if(t == ae_section_func)

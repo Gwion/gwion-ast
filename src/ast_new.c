@@ -427,14 +427,21 @@ AST_NEW(Section*, section_##name, const Type name) { \
   a->d.name = name;                                       \
   return a;                                               \
 }
-mk_section(Stmt_List, stmt_list, stmt)
-mk_section(Func_Def,  func_def,  func)
-mk_section(Class_Def, class_def, class)
-mk_section(Class_Def, extend,    extend)
-mk_section(Enum_Def,  enum_def,  enum)
-mk_section(Union_Def, union_def, union)
-mk_section(Fptr_Def,  fptr_def,  fptr)
-mk_section(Type_Def,  type_def,  type)
+mk_section(Stmt_List,  stmt_list,  stmt)
+mk_section(Func_Def,   func_def,   func)
+mk_section(Class_Def,  class_def,  class)
+mk_section(Extend_Def, extend_def, extend)
+mk_section(Enum_Def,   enum_def,   enum)
+mk_section(Union_Def,  union_def,  union)
+mk_section(Fptr_Def,   fptr_def,   fptr)
+mk_section(Type_Def,   type_def,   type)
+
+AST_NEW(Extend_Def, extend_def, Type_Decl *const td, const Ast body) {
+  Extend_Def a = mp_calloc(p, Class_Def);
+  a->td = td;
+  a->body = body;
+  return a;
+}
 
 AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Symbol xid, Type_Decl* ext,
     const Ast body, const struct loc_t_ pos) {
