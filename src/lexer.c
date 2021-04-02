@@ -1734,7 +1734,7 @@ YY_RULE_SETUP
     yytext[len] = '\0';
     yylval->sval = alloc_str(yyscanner, yytext);
     scan->interp_state--;
-    return INTERP_END;
+    return vector_size(&scan->hashes) ? INTERP_LIT : INTERP_END;
   } else
     yymore();
 }
