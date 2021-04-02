@@ -101,7 +101,6 @@ ANN static double atof_space(m_str, size_t);
 #*\" { 
   Scanner *scan = yyget_extra(yyscanner);
   vector_add(&scan->hashes, yyleng);
-  scan->interp_state++;
   BEGIN(interp);
   return INTERP_START;
 }
@@ -116,8 +115,7 @@ ANN static double atof_space(m_str, size_t);
     vector_pop(&scan->hashes);
     yytext[len] = '\0';
     yylval->sval = alloc_str(yyscanner, yytext);
-    scan->interp_state--;
-    return vector_size(&scan->hashes) ? INTERP_LIT : INTERP_END;
+    return INTERP_END;
   } else
     yymore();
 }
@@ -250,7 +248,7 @@ ANN static double atof_space(m_str, size_t);
 "}"                                 {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
-  if(!scan->interp_state)
+  if(!vector_size(&scan->hashes))
    return RBRACE;
   BEGIN(interp);
   return INTERP_EXP;
