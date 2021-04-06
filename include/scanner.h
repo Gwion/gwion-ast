@@ -12,6 +12,7 @@ typedef struct Scanner_ {
   struct PPArg_ *ppa;
   struct Vector_ hashes;
   struct pos_t pos;
+  short int interp_state;
   short unsigned int error;
   short unsigned int global;
 } Scanner;
