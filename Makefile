@@ -32,6 +32,7 @@ libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
 
+.PHONY: generated
 generated: src/lexer.c src/parser.c
 	@export obj="$obj src/lexer.c src/parser.c"
 
