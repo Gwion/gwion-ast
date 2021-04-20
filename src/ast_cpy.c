@@ -376,7 +376,7 @@ ANN Func_Base* cpy_func_base(MemPool p, const Func_Base* src) {
   return a;
 }
 
-ANN static Fptr_Def cpy_fptr_def(MemPool p, const Fptr_Def src) {
+ANN /*static */Fptr_Def cpy_fptr_def(MemPool p, const Fptr_Def src) {
   Fptr_Def a = mp_calloc(p, Fptr_Def);
   a->base = cpy_func_base(p, src->base);
   return a;

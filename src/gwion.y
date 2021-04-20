@@ -83,7 +83,7 @@ ANN Symbol lambda_name(const Scanner*);
   TYPEDEF "typedef" DISTINCT "distinct" FUNCDEF "funcdef"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
   BACKSLASH "\\" OPID_A OPID_E
-  LATE "LATE"
+  LATE "late"
 
 %token<lval> NUM "<integer>"
 %type<ival> flow breaks type_def_type
@@ -135,10 +135,8 @@ ANN Symbol lambda_name(const Scanner*);
 
 %start prg
 
-%nonassoc ";"
 %right RANGE_EMPTY
 
-%left "."
 %right "!" "~"
 %left "*" "/" "%"
 %left "+" "-"
@@ -188,6 +186,13 @@ class_def
       if($4)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
       $$->traits = $6;
+    }
+  | "struct" class_flag ID decl_template traits "{" class_body "}"
+    {
+      $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
+      if($4)
+        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+      $$->traits = $5;
     }
   | "union" class_flag ID decl_template traits "{" class_body "}"
     {
@@ -404,13 +409,14 @@ exp_stmt
 
 exp:
     binary_exp           { $$ = $1; LIST_FIRST($$) }
-  | exp COMMA binary_exp { LIST_NEXT($$, $1, Exp, $3) };
+  | exp COMMA binary_exp { LIST_NEXT($$, $1, Exp, $3) }
+
 
 binary_exp
   : decl_exp
-  | binary_exp OPID_A decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
-  | binary_exp DYNOP decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-  | binary_exp OPTIONS decl_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+  | binary_exp OPID_A decl_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp DYNOP decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
 
 call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
@@ -439,8 +445,7 @@ range
   ;
 
 array: array_exp | array_empty;
-decl_exp
-  : con_exp
+decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
 
 func_args: LPAREN arg_list   { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
@@ -529,8 +534,8 @@ type_decl_opt: type_decl_noflag option { $$ = $1; $$->option |= $2; };
 type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $1; };
 
 type_decl_flag
-  : LATE { $$ = ae_flag_late; }
-  | CONSTT { $$ = ae_flag_const; };
+  : "late"  { $$ = ae_flag_late; }
+  | "const" { $$ = ae_flag_const; };
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
@@ -675,6 +680,7 @@ prim_exp
   | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
   | LPAREN exp RPAREN   { $$ = $2; LIST_REM($2) }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
+  | "(" op_op ")"                     { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     @$); }
   ;
 %%

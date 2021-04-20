@@ -104,7 +104,7 @@ extern int gwion_debug;
     BACKSLASH = 305,               /* "\\"  */
     OPID_A = 306,                  /* OPID_A  */
     OPID_E = 307,                  /* OPID_E  */
-    LATE = 308,                    /* "LATE"  */
+    LATE = 308,                    /* "late"  */
     NUM = 309,                     /* "<integer>"  */
     FLOATT = 310,                  /* FLOATT  */
     STRING_LIT = 311,              /* "<litteral string>"  */
