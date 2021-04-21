@@ -161,8 +161,8 @@ enum yysymbol_kind_t
   YYSYMBOL_CONTINUE = 28,                  /* "continue"  */
   YYSYMBOL_TRY = 29,                       /* "try"  */
   YYSYMBOL_PERFORM = 30,                   /* "perform"  */
-  YYSYMBOL_HANDLE = 31,                    /* "handle"  */
-  YYSYMBOL_RESUME = 32,                    /* "resume"  */
+  YYSYMBOL_HANDLET = 31,                   /* "handle"  */
+  YYSYMBOL_RETRY = 32,                     /* "retry"  */
   YYSYMBOL_CLASS = 33,                     /* "class"  */
   YYSYMBOL_STRUCT = 34,                    /* "struct"  */
   YYSYMBOL_TRAIT = 35,                     /* "trait"  */
@@ -280,7 +280,7 @@ enum yysymbol_kind_t
   YYSYMBOL_code_stmt = 147,                /* code_stmt  */
   YYSYMBOL_stmt_pp = 148,                  /* stmt_pp  */
   YYSYMBOL_stmt = 149,                     /* stmt  */
-  YYSYMBOL_resume_stmt = 150,              /* resume_stmt  */
+  YYSYMBOL_retry_stmt = 150,               /* retry_stmt  */
   YYSYMBOL_handler = 151,                  /* handler  */
   YYSYMBOL_152_1 = 152,                    /* $@1  */
   YYSYMBOL_handler_list = 153,             /* handler_list  */
@@ -812,7 +812,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
   "end of file", "error", "invalid token", ";", ",", "(", ")", "[", "]",
   "{", "}", "fun", "var", "if", "else", "while", "do", "until", "repeat",
   "for", "foreach", "match", "case", "when", "where", "enum", "return",
-  "break", "continue", "try", "perform", "handle", "resume", "class",
+  "break", "continue", "try", "perform", "handle", "retry", "class",
   "struct", "trait", "static", "global", "private", "protect", "abstract",
   "final", "extends", ".", "operator", "typedef", "distinct", "funcdef",
   "NOELSE", "union", "const", "...", "varloop", "defer", "\\", "OPID_A",
@@ -830,7 +830,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
   "fptr_base", "func_base", "fptr_def", "typedef_when", "type_def_type",
   "type_def", "type_decl_array", "type_decl_exp", "type_decl_empty", "arg",
   "arg_list", "fptr_arg", "fptr_list", "code_stmt", "stmt_pp", "stmt",
-  "resume_stmt", "handler", "$@1", "handler_list", "try_stmt", "opt_id",
+  "retry_stmt", "handler", "$@1", "handler_list", "try_stmt", "opt_id",
   "enum_def", "when_exp", "match_case_stmt", "match_list", "where_stmt",
   "match_stmt", "flow", "loop_stmt", "varloop_stmt", "defer_stmt",
   "selection_stmt", "breaks", "jump_stmt", "exp_stmt", "exp", "binary_exp",
@@ -2737,12 +2737,12 @@ yyreduce:
 #line 2738 "src/parser.c"
     break;
 
-  case 75: /* resume_stmt: "resume" ";"  */
+  case 75: /* retry_stmt: "retry" ";"  */
 #line 329 "src/gwion.y"
-                          {
+                        {
   if(!arg->handling)
-    { parser_error(&(yylsp[-1]), arg, "resume outside of handle block", 0); YYERROR; }
-  (yyval.stmt) = new_stmt(mpool(arg), ae_stmt_resume, (yylsp[-1]));
+    { parser_error(&(yylsp[-1]), arg, "`retry` outside of `handle` block", 0); YYERROR; }
+  (yyval.stmt) = new_stmt(mpool(arg), ae_stmt_retry, (yylsp[-1]));
 }
 #line 2748 "src/parser.c"
     break;
@@ -2763,7 +2763,7 @@ yyreduce:
 #line 336 "src/gwion.y"
                           {
         if(!(yyvsp[-1].handler_list)->xid)
-        { parser_error(&(yylsp[-1]), arg, "specific handle after a catch-all block", 0); YYERROR; }
+        { parser_error(&(yylsp[-1]), arg, "specific `handle` after a catch-all block", 0); YYERROR; }
         (yyval.handler_list) = (yyvsp[-1].handler_list);
         (yyvsp[-1].handler_list)->next = (yyvsp[0].handler_list);
   }

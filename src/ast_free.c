@@ -291,7 +291,7 @@ ANN AST_FREE(Union_Def, union_def) {
   mp_free(p, Union_Def, a);
 }
 
-#define free_stmt_resume    (void*)dummy_func
+#define free_stmt_retry    (void*)dummy_func
 #define free_stmt_break    (void*)dummy_func
 #define free_stmt_continue (void*)dummy_func
 #define free_stmt_return free_stmt_exp

@@ -298,8 +298,8 @@ ANN static double atof_space(m_str, size_t);
 "defer"                             { adjust(yyscanner); return DEFER;}
 "try"                               { adjust(yyscanner); return TRY;}
 "perform"                           { adjust(yyscanner); return PERFORM;}
-"handle"                            { adjust(yyscanner); return HANDLE;}
-"resume"                            { adjust(yyscanner); return RESUME;}
+"handle"                            { adjust(yyscanner); return HANDLET;}
+"retry"                             { adjust(yyscanner); return RETRY;}
 {LEX_ID}{SPACE}*("##"{SPACE}*{LEX_ID})*{SPACE}*"##"{SPACE}*{LEX_ID} {
   adjust(yyscanner);
   char c[yyleng], *buf = c;

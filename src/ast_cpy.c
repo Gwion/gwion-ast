@@ -477,7 +477,7 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
       break;
       case ae_stmt_break:
       case ae_stmt_continue:
-      case ae_stmt_resume:
+      case ae_stmt_retry:
         break;
     }
   a->stmt_type = src->stmt_type;

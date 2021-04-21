@@ -82,8 +82,8 @@ extern int gwion_debug;
     CONTINUE = 283,                /* "continue"  */
     TRY = 284,                     /* "try"  */
     PERFORM = 285,                 /* "perform"  */
-    HANDLE = 286,                  /* "handle"  */
-    RESUME = 287,                  /* "resume"  */
+    HANDLET = 286,                 /* "handle"  */
+    RETRY = 287,                   /* "retry"  */
     CLASS = 288,                   /* "class"  */
     STRUCT = 289,                  /* "struct"  */
     TRAIT = 290,                   /* "trait"  */
@@ -204,8 +204,8 @@ extern int gwion_debug;
 #define CONTINUE 283
 #define TRY 284
 #define PERFORM 285
-#define HANDLE 286
-#define RESUME 287
+#define HANDLET 286
+#define RETRY 287
 #define CLASS 288
 #define STRUCT 289
 #define TRAIT 290

@@ -38,7 +38,7 @@ const _##prefix##_stmt_func prefix##_stmt_func[] = {                            
   (_##prefix##_stmt_func)prefix##_stmt_if,       (_##prefix##_stmt_func)prefix##_stmt_code,     \
   (_##prefix##_stmt_func)prefix##_stmt_varloop,  (_##prefix##_stmt_func)prefix##_stmt_break,    \
   (_##prefix##_stmt_func)prefix##_stmt_continue, (_##prefix##_stmt_func)prefix##_stmt_return,   \
-  (_##prefix##_stmt_func)prefix##_stmt_try,      (_##prefix##_stmt_func)prefix##_stmt_resume,   \
+  (_##prefix##_stmt_func)prefix##_stmt_try,      (_##prefix##_stmt_func)prefix##_stmt_retry,    \
   (_##prefix##_stmt_func)prefix##_stmt_match,    (_##prefix##_stmt_func)prefix##_stmt_pp,       \
   (_##prefix##_stmt_func)prefix##_stmt_defer                                                    \
 };

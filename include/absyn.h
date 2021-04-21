@@ -351,7 +351,7 @@ ANN void free_exp(MemPool p, Exp);
 
 typedef enum { ae_stmt_exp, ae_stmt_while, ae_stmt_until, ae_stmt_for, ae_stmt_each, ae_stmt_loop,
                ae_stmt_if, ae_stmt_code, ae_stmt_varloop, ae_stmt_break,
-               ae_stmt_continue, ae_stmt_return, ae_stmt_try, ae_stmt_resume, ae_stmt_match, ae_stmt_pp, ae_stmt_defer
+               ae_stmt_continue, ae_stmt_return, ae_stmt_try, ae_stmt_retry, ae_stmt_match, ae_stmt_pp, ae_stmt_defer
              } ae_stmt_t;
 
 typedef struct Stmt_Exp_     * Stmt_Exp;
