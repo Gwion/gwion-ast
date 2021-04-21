@@ -688,19 +688,20 @@ interp: INTERP_START interp_exp { $$ = $2; }
 }
 
 prim_exp
-  : ID                  { $$ = new_prim_id(     mpool(arg), $1, @$); }
-  | NUM                 { $$ = new_prim_int(    mpool(arg), $1, @$); }
-  | FLOATT              { $$ = new_prim_float(  mpool(arg), $1, @$); }
-  | interp              { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
-  | STRING_LIT          { $$ = new_prim_string( mpool(arg), $1, @$); }
-  | CHAR_LIT            { $$ = new_prim_char(   mpool(arg), $1, @$); }
-  | array               { $$ = new_prim_array(  mpool(arg), $1, @$); }
-  | range               { $$ = new_prim_range(  mpool(arg), $1, @$); }
-  | L_HACK exp R_HACK   { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
-  | LPAREN exp RPAREN   { $$ = $2; LIST_REM($2) }
+  : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
+  | NUM                  { $$ = new_prim_int(    mpool(arg), $1, @$); }
+  | FLOATT               { $$ = new_prim_float(  mpool(arg), $1, @$); }
+  | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
+  | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, @$); }
+  | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
+  | array                { $$ = new_prim_array(  mpool(arg), $1, @$); }
+  | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
+  | L_HACK exp R_HACK    { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
+  | LPAREN exp RPAREN    { $$ = $2; LIST_REM($2) }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
-  | "(" op_op ")"                     { $$ = new_prim_id(     mpool(arg), $2, @$); }
-  | LPAREN RPAREN       { $$ = new_prim_nil(    mpool(arg),     @$); }
+  | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
+  | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }
+  | LPAREN RPAREN        { $$ = new_prim_nil(    mpool(arg),     @$); }
   ;
 %%
 #undef scan

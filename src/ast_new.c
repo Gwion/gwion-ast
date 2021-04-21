@@ -160,6 +160,14 @@ AST_NEW(Exp, prim_id, struct Symbol_* xid, const struct loc_t_ pos) {
   return a;
 }
 
+AST_NEW(Exp, prim_perform, struct Symbol_* xid, const struct loc_t_ pos) {
+  Exp a = new_prim(p, pos);
+  exp_setmeta(a, 0);
+  a->d.prim.prim_type = ae_prim_perform;
+  a->d.prim.d.var = xid;
+  return a;
+}
+
 AST_NEW(Exp, prim_hack, const Exp exp, const struct loc_t_ pos) {
   Exp a = new_prim(p, pos);
   a->d.prim.prim_type = ae_prim_hack;

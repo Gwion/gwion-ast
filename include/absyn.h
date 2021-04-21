@@ -134,7 +134,7 @@ typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 typedef enum { ae_prim_id, ae_prim_num, ae_prim_float,
                ae_prim_str, ae_prim_array, ae_prim_range,
                ae_prim_hack, ae_prim_char, ae_prim_nil,
-               ae_prim_interp
+               ae_prim_interp, ae_prim_perform
              } ae_prim_t;
 
 typedef struct {
@@ -319,6 +319,7 @@ static inline loc_t prim_pos(const void *data) {
 }
 
 ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_*, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_perform, struct Symbol_*, const struct loc_t_);
 ANEW AST_NEW(Exp, prim_int, const unsigned long, const struct loc_t_);
 ANEW AST_NEW(Exp, prim_float, const m_float, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_string, const m_str, const struct loc_t_);
