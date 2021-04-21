@@ -329,7 +329,7 @@ AST_NEW(Stmt, stmt, const ae_stmt_t type, const struct loc_t_ pos) {
 }
 
 AST_NEW(Stmt, stmt_flow, const ae_stmt_t type, const Exp cond, const Stmt body,
-      const m_bool is_do, const struct loc_t_ pos) {
+      const bool is_do, const struct loc_t_ pos) {
   Stmt a = new_stmt(p, type, pos);
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond = cond;

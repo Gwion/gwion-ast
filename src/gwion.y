@@ -364,9 +364,9 @@ flow
 
 loop_stmt
   : flow "(" exp ")" stmt
-    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, 0, @$); LIST_REM($3) }
+    { $$ = new_stmt_flow(mpool(arg), $1, $3, $5, false, @$); LIST_REM($3) }
   | "do" stmt flow exp ";"
-    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, 1, @$); LIST_REM($3) }
+    { $$ = new_stmt_flow(mpool(arg), $3, $4, $2, true, @$); LIST_REM($3) }
   | "for" "(" exp_stmt exp_stmt ")" stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, @$); }
   | "for" "(" exp_stmt exp_stmt exp ")" stmt
@@ -424,18 +424,18 @@ call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
 op: EQ | NEQ | DYNOP | OPTIONS;
 
 array_exp
-  : LBRACK exp RBRACK           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
-  | LBRACK exp RBRACK array_exp {
+  : "[" exp "]"           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
+  | "[" exp "]" array_exp {
     LIST_REM($2)
     if($2->next){ parser_error(&@2, arg, "invalid format for array init [...][...]...", 0207); YYERROR; } $$ = prepend_array_sub($4, $2);
   }
-  | LBRACK exp RBRACK LBRACK RBRACK  { LIST_REM(2) parser_error(&@3, arg, "partially empty array init [...][]...", 0x0208); YYERROR; }
+  | "[" exp "]" "[" "]"  { LIST_REM(2) parser_error(&@3, arg, "partially empty array init [...][]...", 0x0208); YYERROR; }
   ;
 
 array_empty
-  : LBRACK RBRACK             { $$ = new_array_sub(mpool(arg), NULL); }
-  | array_empty LBRACK RBRACK { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp     { parser_error(&@1, arg, "partially empty array init [][...]", 0x0209); YYERROR; }
+  : "[" "]"               { $$ = new_array_sub(mpool(arg), NULL); }
+  | array_empty "[" "]"   { $$ = prepend_array_sub($1, NULL); }
+  | array_empty array_exp { parser_error(&@1, arg, "partially empty array init [][...]", 0x0209); YYERROR; }
   ;
 
 range

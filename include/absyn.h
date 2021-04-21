@@ -169,10 +169,10 @@ ANN ANEW AST_NEW(Tmpl*, tmpl_base, const ID_List);
 ANN ANEW AST_NEW(Tmpl*, tmpl_call, Type_List);
 ANN void free_tmpl(MemPool p, Tmpl*);
 
-static inline m_bool tmpl_base(const Tmpl* a) {
+static inline bool tmpl_base(const Tmpl* a) {
   if(a && a->base == -1)
-    return GW_OK;
-  return 0;
+    return true;
+  return false;
 }
 
 typedef struct {
@@ -490,7 +490,7 @@ struct Type_Def_ {
   Exp when;
   Func_Def when_def;
   loc_t pos;
-  m_bool distinct;
+  bool distinct;
 };
 ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl*, const Symbol, const loc_t);
 ANN void free_type_def(MemPool p, Type_Def);
@@ -565,7 +565,7 @@ ANEW AST_NEW(Stmt, stmt, const ae_stmt_t, const struct loc_t_);
 ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp, const struct loc_t_);
 ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List, const struct loc_t_);
 ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt, const struct loc_t_);
-ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const m_bool, const struct loc_t_);
+ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt, const bool, const struct loc_t_);
 ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt, const struct loc_t_);
 ANN2(1,2,3,5) ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt, const struct loc_t_);
 ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_*, const Exp, const Stmt, const struct loc_t_);

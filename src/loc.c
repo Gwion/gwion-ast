@@ -11,9 +11,14 @@ ANN static char* get_src(const char *filename, const loc_t loc) {
   if(!f)
     return NULL;
   fseek(f, SEEK_SET, 0);
-  while (getline(&line, &len, f) != -1 && ++i < loc.first.line);
+  ssize_t ret;
+  while ((ret = getline(&line, &len, f)) != -1 && ++i < loc.first.line);
   fclose(f);
-  return line;
+  if(ret != -1)
+    return line;
+  if(line)
+    xfree(line);
+  return NULL;
 }
 
 static inline const char* get_filename(const char *filename) {
