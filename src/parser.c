@@ -3067,7 +3067,7 @@ yyreduce:
 
   case 138: /* global: "global"  */
 #line 457 "src/gwion.y"
-               { (yyval.flag) = ae_flag_global; arg->global = 1; }
+               { (yyval.flag) = ae_flag_global; arg->global = true; }
 #line 3072 "src/parser.c"
     break;
 

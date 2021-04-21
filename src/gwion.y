@@ -454,7 +454,7 @@ arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
 
 decl_template: TMPL id_list RBRACK { $$ = $2; LIST_REM(2) } | { $$ = NULL; };
 
-global: GLOBAL { $$ = ae_flag_global; arg->global = 1; }
+global: GLOBAL { $$ = ae_flag_global; arg->global = true; }
 
 storage_flag: STATIC { $$ = ae_flag_static; } | global;
 

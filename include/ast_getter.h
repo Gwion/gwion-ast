@@ -9,7 +9,7 @@ struct AstGetter_ {
   FILE* f;
   SymTable* st;
   struct PPArg_ *ppa;
-  uint global;
+  bool global;
 };
 
 ANN Ast parse(struct AstGetter_*const);
