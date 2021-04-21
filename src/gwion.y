@@ -53,6 +53,7 @@ ANN Symbol lambda_name(const Scanner*);
   Exp   exp;
   struct Func_Base_ *func_base;
   Stmt stmt;
+  Handler_List handler_list;
   Stmt_List stmt_list;
   Arg_List arg_list;
   Func_Def func_def;
@@ -75,7 +76,7 @@ ANN Symbol lambda_name(const Scanner*);
   FUNCTION "fun" VAR "var"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
-  TRETURN "return" BREAK "break" CONTINUE "continue"
+  TRETURN "return" BREAK "break" CONTINUE "continue" TRY "try" PERFORM "perform" HANDLE "handle" RESUME "resume"
   CLASS "class" STRUCT "struct" TRAIT "trait"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
   EXTENDS "extends" DOT "."
@@ -114,8 +115,9 @@ ANN Symbol lambda_name(const Scanner*);
 %type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt func_code
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt resume_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt func_code
 %type<stmt> match_case_stmt match_stmt stmt_pp
+%type<handler_list> handler_list handler
 %type<stmt_list> stmt_list match_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<func_def> func_def op_def func_def_base abstract_fdef
@@ -320,7 +322,24 @@ stmt
   | stmt_pp
   | varloop_stmt
   | defer_stmt
+  | try_stmt
+  | resume_stmt
   ;
+
+resume_stmt: "resume" ";" {
+  if(!arg->handling)
+    { parser_error(&@1, arg, "resume outside of handle block", 0); YYERROR; }
+  $$ = new_stmt(mpool(arg), ae_stmt_resume, @1);
+};
+handler: "handle" { arg->handling = true; } opt_id stmt { $$ = new_handler_list(mpool(arg), $3, $4, $3 ? @3 :@1); arg->handling = false; };
+handler_list: handler
+  | handler_list handler  {
+        if(!$1->xid)
+        { parser_error(&@1, arg, "specific handle after a catch-all block", 0); YYERROR; }
+        $$ = $1;
+        $1->next = $2;
+  }
+try_stmt: "try" stmt handler_list { $$ = new_stmt_try(mpool(arg), $2, $3); };
 
 opt_id: ID | { $$ = NULL; };
 

@@ -344,6 +344,20 @@ ANN static Stmt_List cpy_stmt_cases(MemPool p, const Stmt_List src) {
   return a;
 }
 
+ANN static Handler_List cpy_handler_list(MemPool p, const Handler_List src) {
+  Handler_List a = mp_calloc(p, Handler_List);
+  a->stmt = src->stmt;
+  a->xid = src->xid;
+  if(src->next)
+    a->next = cpy_handler_list(p, src->next);
+  return a;
+}
+
+ANN static void cpy_stmt_try(MemPool p, Stmt_Try a, const Stmt_Try src) {
+  a->stmt    = cpy_stmt(p, src->stmt);
+  a->handler = cpy_handler_list(p, src->handler);
+}
+
 ANN static void cpy_stmt_match(MemPool p, Stmt_Match a, const Stmt_Match src) {
   a->cond = cpy_exp(p, src->cond);
   a->list = cpy_stmt_cases(p, src->list);
@@ -449,6 +463,9 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
     case ae_stmt_if:
       cpy_stmt_if(p, &a->d.stmt_if, &src->d.stmt_if);
       break;
+    case ae_stmt_try:
+      cpy_stmt_try(p, &a->d.stmt_try, &src->d.stmt_try);
+      break;
     case ae_stmt_match:
       cpy_stmt_match(p, &a->d.stmt_match, &src->d.stmt_match);
       break;
@@ -460,6 +477,7 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
       break;
       case ae_stmt_break:
       case ae_stmt_continue:
+      case ae_stmt_resume:
         break;
     }
   a->stmt_type = src->stmt_type;

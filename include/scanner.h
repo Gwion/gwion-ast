@@ -13,8 +13,9 @@ typedef struct Scanner_ {
   struct Vector_ hashes;
   struct pos_t pos;
   short int interp_state;
-  short unsigned int error;
-  short unsigned int global;
+  bool error;
+  bool global;
+  bool handling;
 } Scanner;
 
 ANN2(1,2) int scanner_error(Scanner* scan, const char *main,

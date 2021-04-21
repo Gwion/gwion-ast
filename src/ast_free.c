@@ -218,6 +218,17 @@ ANN static AST_FREE(struct Stmt_Match_*, stmt_case) {
     free_exp(p, a->when);
 }
 
+ANN static AST_FREE(struct Handler_List_*, handler_list) {
+  free_stmt(p, a->stmt);
+  if(a->next)
+    free_handler_list(p, a->next);
+}
+
+ANN static AST_FREE(struct Stmt_Try_*, stmt_try) {
+  free_stmt(p, a->stmt);
+  free_handler_list(p, a->handler);
+}
+
 ANN static AST_FREE(struct Stmt_Match_*, stmt_match) {
   free_exp(p, a->cond);
   Stmt_List list = a->list;
@@ -280,6 +291,7 @@ ANN AST_FREE(Union_Def, union_def) {
   mp_free(p, Union_Def, a);
 }
 
+#define free_stmt_resume    (void*)dummy_func
 #define free_stmt_break    (void*)dummy_func
 #define free_stmt_continue (void*)dummy_func
 #define free_stmt_return free_stmt_exp

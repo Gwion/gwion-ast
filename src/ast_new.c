@@ -369,6 +369,21 @@ AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body, const struct loc_t_ po
   return a;
 }
 
+AST_NEW(Handler_List, handler_list, const Symbol xid, const restrict Stmt stmt, const struct loc_t_ pos ) {
+  Handler_List a = mp_malloc(p, Handler_List);
+  a->xid = xid;
+  a->stmt = stmt;
+  a->pos = pos;
+  return a;
+}
+
+AST_NEW(Stmt, stmt_try, const restrict Stmt stmt, const Handler_List handler) {
+  Stmt a = new_stmt(p, ae_stmt_try, stmt->pos);
+  a->d.stmt_try.stmt = stmt;
+  a->d.stmt_try.handler = handler;
+  return a;
+}
+
 AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body, const struct loc_t_ pos) {
   Stmt a = new_stmt(p, ae_stmt_if, pos);
   a->d.stmt_if.cond = cond;

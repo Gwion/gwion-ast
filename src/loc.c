@@ -16,8 +16,6 @@ ANN static char* get_src(const char *filename, const loc_t loc) {
   fclose(f);
   if(ret != -1)
     return line;
-  if(line)
-    xfree(line);
   return NULL;
 }
 
@@ -64,6 +62,7 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
 ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc) {
   perr_printer_t printer;
   char * line = get_src(filename, loc);
+
   if(!line) {
     perr_printer_init(
       &printer, stderr, NULL,
