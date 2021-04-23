@@ -358,7 +358,7 @@ ANN static double atof_space(m_str, size_t);
 }
 
 '(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
-.                                   { YY_USER_ACTION; adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
+.                                   { adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
 
 %% // LCOV_EXCL_LINE
 // LCOV_EXCL_LINE

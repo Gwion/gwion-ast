@@ -2461,7 +2461,7 @@ YY_RULE_SETUP
 case 121:
 YY_RULE_SETUP
 #line 361 "src/gwion.l"
-{ YY_USER_ACTION; adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
+{ adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
