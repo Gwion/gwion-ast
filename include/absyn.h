@@ -476,6 +476,7 @@ typedef struct Func_Base_ {
   struct Type_*       ret_type;
   Tmpl *tmpl;
   Scope values;
+  struct Vector_ effects;
   ae_flag flag;
   enum fbflag fbflag;
   loc_t pos;

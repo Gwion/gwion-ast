@@ -234,7 +234,7 @@ ANN static double atof_space(m_str, size_t);
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
 "distinct"                          { adjust(yyscanner); return DISTINCT;}
-"funcdef"                           { adjust(yyscanner); return FUNCDEF;}
+"funptr"                            { adjust(yyscanner); return FUNPTR;}
 "var"                               { adjust(yyscanner); return VAR; }
 "new"                               { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return NEW; }
 "spork"                             { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
@@ -358,7 +358,7 @@ ANN static double atof_space(m_str, size_t);
 }
 
 '(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
-.                                   { lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
+.                                   { YY_USER_ACTION; adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
 
 %% // LCOV_EXCL_LINE
 // LCOV_EXCL_LINE

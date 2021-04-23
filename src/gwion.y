@@ -81,7 +81,7 @@ ANN Symbol lambda_name(const Scanner*);
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
-  TYPEDEF "typedef" DISTINCT "distinct" FUNCDEF "funcdef"
+  TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
   BACKSLASH "\\" OPID_A OPID_E
   LATE "late"
@@ -241,7 +241,7 @@ extend_def: "extends" type_decl_exp "{" extend_body "}" {
 class_body : ast | { $$ = NULL; };
 
 id_list: ID { $$ = new_id_list(mpool(arg), $1); LIST_FIRST($$) }
-       | id_list COMMA ID  { LIST_NEXT($$, $1, ID_List, new_id_list(mpool(arg), $3)) };
+       | id_list "," ID  { LIST_NEXT($$, $1, ID_List, new_id_list(mpool(arg), $3)) };
 
 stmt_list: stmt  { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) } |
   stmt_list stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) };
@@ -252,7 +252,7 @@ fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg)
 func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
   if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
 
-fptr_def: "funcdef" fptr_base fptr_args arg_type ";" {
+fptr_def: "funptr" fptr_base fptr_args arg_type ";" {
   $2->args = $3;
   $2->fbflag |= $4;
   $$ = new_fptr_def(mpool(arg), $2);
@@ -294,8 +294,8 @@ fptr_arg: type_decl_array fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, 
 fptr_list: fptr_arg { $$ = $1; LIST_FIRST($$) } | fptr_list COMMA fptr_arg { LIST_NEXT($$, $1, Arg_List, $3) };
 
 code_stmt
-  : LBRACE RBRACE { $$ = new_stmt(mpool(arg), ae_stmt_code, @$); }
-  | LBRACE stmt_list RBRACE { $$ = new_stmt_code(mpool(arg), $2, @$); LIST_REM($2) }
+  : "{" "}" { $$ = new_stmt(mpool(arg), ae_stmt_code, @$); }
+  | "{" stmt_list "}" { $$ = new_stmt_code(mpool(arg), $2, @$); LIST_REM($2) }
   ;
 
 stmt_pp
@@ -344,16 +344,16 @@ try_stmt: "try" stmt handler_list { $$ = new_stmt_try(mpool(arg), $2, $3); };
 opt_id: ID | { $$ = NULL; };
 
 enum_def
-  : ENUM flag opt_id LBRACE id_list RBRACE {
+  : "enum" flag opt_id "{" id_list "}" {
     $$ = new_enum_def(mpool(arg), $5, $3, @$);
     $$->flag = $2;
     LIST_REM($5)
   };
 
-when_exp: WHEN exp { $$ = $2; LIST_REM($2) } | { $$ = NULL; }
+when_exp: "when" exp { $$ = $2; LIST_REM($2) } | { $$ = NULL; }
 
 match_case_stmt
-  : CASE exp when_exp COLON stmt_list {
+  : "case" exp when_exp ":" stmt_list {
     $$ = new_stmt(mpool(arg), 0, @$);
     $$->d.stmt_match.cond = $2;
     $$->d.stmt_match.list = $5;
@@ -366,9 +366,9 @@ match_list
   : match_case_stmt { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) }
   | match_list match_case_stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) }
 
-where_stmt: WHERE stmt { $$ = $2; } | { $$ = NULL; }
+where_stmt: "where" stmt { $$ = $2; } | { $$ = NULL; }
 
-match_stmt: MATCH exp LBRACE match_list RBRACE where_stmt {
+match_stmt: "match" exp "{" match_list "}" where_stmt {
   $$ = new_stmt(mpool(arg), ae_stmt_match, @$);
   $$->d.stmt_match.cond  = $2;
   $$->d.stmt_match.list  = $4;
@@ -378,8 +378,9 @@ match_stmt: MATCH exp LBRACE match_list RBRACE where_stmt {
 };
 
 flow
-  : WHILE { $$ = ae_stmt_while; }
-  | UNTIL { $$ = ae_stmt_until; }
+  : "while" { $$ = ae_stmt_while; }
+  | "until" { $$ = ae_stmt_until; }
+  ;
 
 loop_stmt
   : flow "(" exp ")" stmt
@@ -402,33 +403,33 @@ loop_stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   ;
 
-varloop_stmt: VARLOOP binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, @$); }
+varloop_stmt: "varloop" binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, @$); }
 
 defer_stmt: "defer" stmt { $$ = new_stmt_defer(mpool(arg), $2, @$); }
 
 selection_stmt
-  : IF LPAREN exp RPAREN stmt %prec NOELSE
+  : "if" "(" exp ")" stmt %prec NOELSE
       { $$ = new_stmt_if(mpool(arg), $3, $5, @$); LIST_REM($3) }
-  | IF LPAREN exp RPAREN stmt ELSE stmt
+  | "if" "(" exp ")" stmt "else" stmt
       { $$ = new_stmt_if(mpool(arg), $3, $5, @$); $$->d.stmt_if.else_body = $7; LIST_REM($3) }
   ;
 
-breaks: BREAK     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
+breaks: "break"     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : TRETURN exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, @$); LIST_REM($2) }
-  | TRETURN SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_return, @$); }
-  | breaks NUM SEMICOLON  { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = $2; }
-  | breaks SEMICOLON      { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = -1; }
+  : "return" exp ";" { $$ = new_stmt_exp(mpool(arg), ae_stmt_return, $2, @$); LIST_REM($2) }
+  | "return" ";"     { $$ = new_stmt(mpool(arg), ae_stmt_return, @$); }
+  | breaks NUM ";"   { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = $2; }
+  | breaks ";"       { $$ = new_stmt(mpool(arg), $1, @$); $$->d.stmt_index.idx = -1; }
   ;
 
 exp_stmt
-  : exp SEMICOLON { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, @$); LIST_REM($1) }
-  | SEMICOLON     { $$ = new_stmt(mpool(arg), ae_stmt_exp, @$); }
+  : exp ";" { $$ = new_stmt_exp(mpool(arg), ae_stmt_exp, $1, @$); LIST_REM($1) }
+  | ";"     { $$ = new_stmt(mpool(arg), ae_stmt_exp, @$); }
   ;
 
 exp:
     binary_exp           { $$ = $1; LIST_FIRST($$) }
-  | exp COMMA binary_exp { LIST_NEXT($$, $1, Exp, $3) }
+  | exp "," binary_exp { LIST_NEXT($$, $1, Exp, $3) }
 
 
 binary_exp
@@ -626,27 +627,27 @@ unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
   | OPID_E unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
-  | NEW type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, @$); }
-  | SPORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
-  | FORK code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
+  | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, @$); }
+  | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
+  | "fork"  code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
   | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @$); };
 
 lambda_list:
  ID { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, @$), NULL); }
 |    ID lambda_list { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, @$), $2); }
-lambda_arg: BACKSLASH lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
+lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 type_list
   : type_decl_empty { $$ = new_type_list(mpool(arg), $1, NULL); }
-  | type_decl_empty COMMA type_list { $$ = new_type_list(mpool(arg), $1, $3); }
+  | type_decl_empty "," type_list { $$ = new_type_list(mpool(arg), $1, $3); }
   ;
 
 
-call_paren : LPAREN exp RPAREN { $$ = $2; LIST_REM($2) } | LPAREN RPAREN { $$ = NULL; };
+call_paren : "(" exp ")" { $$ = $2; LIST_REM($2) } | LPAREN RPAREN { $$ = NULL; };
 
-post_op : PLUSPLUS | MINUSMINUS;
+post_op : "++" | "--";
 
-dot_exp: post_exp DOT ID {
+dot_exp: post_exp "." ID {
   if($1->next) {
     parser_error(&@1, arg, "can't use multiple expression"
       " in dot member base expression", 0211);
@@ -701,7 +702,7 @@ prim_exp
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }
-  | LPAREN RPAREN        { $$ = new_prim_nil(    mpool(arg),     @$); }
+  | "(" ")"              { $$ = new_prim_nil(    mpool(arg),     @$); }
   ;
 %%
 #undef scan

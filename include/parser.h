@@ -98,7 +98,7 @@ extern int gwion_debug;
     OPERATOR = 299,                /* "operator"  */
     TYPEDEF = 300,                 /* "typedef"  */
     DISTINCT = 301,                /* "distinct"  */
-    FUNCDEF = 302,                 /* "funcdef"  */
+    FUNPTR = 302,                  /* "funptr"  */
     NOELSE = 303,                  /* NOELSE  */
     UNION = 304,                   /* "union"  */
     CONSTT = 305,                  /* "const"  */
@@ -220,7 +220,7 @@ extern int gwion_debug;
 #define OPERATOR 299
 #define TYPEDEF 300
 #define DISTINCT 301
-#define FUNCDEF 302
+#define FUNPTR 302
 #define NOELSE 303
 #define UNION 304
 #define CONSTT 305
