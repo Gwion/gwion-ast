@@ -119,6 +119,8 @@ ANN AST_FREE(Func_Base*, func_base) {
     free_type_decl(p, a->td);
   if(a->tmpl)
     free_tmpl(p, a->tmpl);
+  if(a->effects.ptr)
+    vector_release(&a->effects);
 }
 
 AST_FREE(Func_Def, func_def) {

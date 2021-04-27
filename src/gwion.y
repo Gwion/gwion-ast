@@ -45,6 +45,7 @@ ANN Symbol lambda_name(const Scanner*);
   enum cflag cflag;
   m_float fval;
   Symbol sym;
+  struct Vector_ vector;
   Array_Sub array_sub;
   Range* range;
   Var_Decl var_decl;
@@ -106,6 +107,7 @@ ANN Symbol lambda_name(const Scanner*);
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
 %type<sym>opt_id func_trait
+%type<vector>func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
 %type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
@@ -249,13 +251,16 @@ stmt_list: stmt  { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) } |
 fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
   if($4) { $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
 
+func_effects: { $$.ptr = NULL; } | "perform" ID { vector_init(&$$); vector_add(&$$, (m_uint)$2); } | func_effects ID { vector_add(&$$, (m_uint)$2); }
+
 func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
   if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
 
-fptr_def: "funptr" fptr_base fptr_args arg_type ";" {
+fptr_def: "funptr" fptr_base fptr_args arg_type func_effects ";" {
   $2->args = $3;
   $2->fbflag |= $4;
   $$ = new_fptr_def(mpool(arg), $2);
+  $$->base->effects.ptr = $5.ptr;
 };
 
 typedef_when: { $$ = NULL;} | "when" binary_exp { $$ = $2; }

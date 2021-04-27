@@ -307,6 +307,7 @@ union YYSTYPE
   enum cflag cflag;
   m_float fval;
   Symbol sym;
+  struct Vector_ vector;
   Array_Sub array_sub;
   Range* range;
   Var_Decl var_decl;
@@ -331,7 +332,7 @@ union YYSTYPE
   Class_Def class_def;
   Ast ast;
 
-#line 335 "include/parser.h"
+#line 336 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

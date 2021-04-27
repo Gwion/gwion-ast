@@ -381,6 +381,7 @@ AST_NEW(Handler_List, handler_list, const Symbol xid, const restrict Stmt stmt, 
   Handler_List a = mp_malloc(p, Handler_List);
   a->xid = xid;
   a->stmt = stmt;
+  a->next = NULL;
   a->pos = pos;
   return a;
 }
