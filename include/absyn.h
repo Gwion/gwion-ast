@@ -344,7 +344,7 @@ ANEW ANN AST_NEW(Exp, exp_td, Type_Decl*, const struct loc_t_);
 static inline Exp take_exp(const Exp exp, const m_uint n) {
   Exp e = exp;
   for(m_uint i = 1; i < n; ++i)
-    CHECK_OO((e = e->next))
+    CHECK_OO((e = e->next));
   return e;
 }
 
