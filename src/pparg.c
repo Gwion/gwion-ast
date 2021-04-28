@@ -45,7 +45,7 @@ ANN static GwText* pparg_body(struct PPArg_ *ppa, const m_str str) {
 ANN2(1) m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   if(!ppa->hash.table)
     hini(&ppa->hash, 127);
-  DECL_OB(const Macro, m, = pparg_def(ppa, str))
+  DECL_OB(const Macro, m, = pparg_def(ppa, str));
   const m_str arg = strchr(str, '(');
   if(arg)
     m->base = pparg_arg(ppa, arg + 1);
