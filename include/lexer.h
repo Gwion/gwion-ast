@@ -464,8 +464,8 @@ void yyfree ( void * , yyscan_t yyscanner );
 #define interp 8
 #define include_start 9
 #define include_end 10
-#define require 11
-#define require_end 12
+#define import 11
+#define import_end 12
 
 #endif
 

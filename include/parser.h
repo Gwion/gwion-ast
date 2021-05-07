@@ -127,7 +127,7 @@ extern int gwion_debug;
     PP_ELSE = 328,                 /* "#else"  */
     PP_ENDIF = 329,                /* "#if"  */
     PP_NL = 330,                   /* "\n"  */
-    PP_REQUIRE = 331,              /* "require"  */
+    PP_IMPORT = 331,               /* "import"  */
     ID = 334,                      /* "<identifier>"  */
     PLUS = 335,                    /* "+"  */
     PLUSPLUS = 336,                /* "++"  */
@@ -249,7 +249,7 @@ extern int gwion_debug;
 #define PP_ELSE 328
 #define PP_ENDIF 329
 #define PP_NL 330
-#define PP_REQUIRE 331
+#define PP_IMPORT 331
 #define ID 334
 #define PLUS 335
 #define PLUSPLUS 336

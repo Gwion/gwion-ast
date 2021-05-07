@@ -206,7 +206,7 @@ enum yysymbol_kind_t
   YYSYMBOL_PP_ELSE = 73,                   /* "#else"  */
   YYSYMBOL_PP_ENDIF = 74,                  /* "#if"  */
   YYSYMBOL_PP_NL = 75,                     /* "\n"  */
-  YYSYMBOL_PP_REQUIRE = 76,                /* "require"  */
+  YYSYMBOL_PP_IMPORT = 76,                 /* "import"  */
   YYSYMBOL_77_operator_id_ = 77,           /* "@<operator id>"  */
   YYSYMBOL_78_operator_id_ = 78,           /* "&<operator id>"  */
   YYSYMBOL_ID = 79,                        /* "<identifier>"  */
@@ -820,7 +820,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
   "OPID_E", "late", "<integer>", "FLOATT", "<litteral string>",
   "<litteral char>", "`", "<interp string>", "INTERP_EXP",
   "<interp string>`", "<comment>", "#include", "#define", "#pragma",
-  "#undef", "#ifdef", "#ifndef", "#else", "#if", "\n", "require",
+  "#undef", "#ifdef", "#ifndef", "#else", "#if", "\n", "import",
   "@<operator id>", "&<operator id>", "<identifier>", "+", "++", "-", "--",
   "*", "/", "%", "$", "?", "OPTIONS", ":", "::", "?:", "new", "spork",
   "fork", "<<<", ">>>", "&&", "==", ">=", ">", "<=", "<", "!=", "<<", ">>",
@@ -2753,9 +2753,9 @@ yyreduce:
 #line 2754 "src/parser.c"
     break;
 
-  case 66: /* stmt_pp: "require"  */
+  case 66: /* stmt_pp: "import"  */
 #line 317 "src/gwion.y"
-               { (yyval.stmt) = new_stmt_pp(mpool(arg), ae_pp_require, (yyvsp[0].sval), (yyloc)); }
+               { (yyval.stmt) = new_stmt_pp(mpool(arg), ae_pp_import, (yyvsp[0].sval), (yyloc)); }
 #line 2760 "src/parser.c"
     break;
 

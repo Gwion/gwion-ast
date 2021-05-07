@@ -539,7 +539,7 @@ enum ae_pp_type {
   ae_pp_ifndef,
   ae_pp_else,
   ae_pp_endif,
-  ae_pp_require,
+  ae_pp_import,
   ae_pp_nl
 };
 

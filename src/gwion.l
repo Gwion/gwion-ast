@@ -95,7 +95,7 @@ ANN static double atof_space(m_str, size_t);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end require require_end
+%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end import import_end
 %%
 
 #*\" { 
@@ -207,9 +207,9 @@ ANN static double atof_space(m_str, size_t);
 ^#include{SPACE} { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; BEGIN(include_end); }
 
-<require>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(require_end); yylval->sval = strdup(yytext); return PP_REQUIRE; }
-<require_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
-^#require{SPACE}+ { BEGIN(require); }
+<import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
+<import_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
+^#import{SPACE}+ { BEGIN(import); }
 
 ^#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
 
