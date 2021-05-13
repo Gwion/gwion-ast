@@ -196,13 +196,6 @@ class_def
       $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
       if($4)
         $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
-      $$->traits = $5;
-    }
-  | "union" class_flag ID decl_template traits "{" class_body "}"
-    {
-      $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
-      if($4)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
       $$->cflag |= cflag_struct;
       $$->traits = $5;
     }
@@ -304,7 +297,7 @@ code_stmt
   ;
 
 stmt_pp
-  : PP_COMMENT { $$ = new_stmt_pp(mpool(arg), ae_pp_comment, $1, @$); }
+  : PP_COMMENT { if(!arg->ppa->lint)return 0; $$ = new_stmt_pp(mpool(arg), ae_pp_comment, $1, @$); }
   | PP_INCLUDE { $$ = new_stmt_pp(mpool(arg), ae_pp_include, $1, @$); }
   | PP_DEFINE  { $$ = new_stmt_pp(mpool(arg), ae_pp_define,  $1, @$); }
   | PP_PRAGMA  { $$ = new_stmt_pp(mpool(arg), ae_pp_pragma,  $1, @$); }
@@ -313,7 +306,7 @@ stmt_pp
   | PP_IFNDEF  { $$ = new_stmt_pp(mpool(arg), ae_pp_ifndef,  $1, @$); }
   | PP_ELSE    { $$ = new_stmt_pp(mpool(arg), ae_pp_else,    $1, @$); }
   | PP_ENDIF   { $$ = new_stmt_pp(mpool(arg), ae_pp_endif,   $1, @$); }
-  | PP_NL      { $$ = new_stmt_pp(mpool(arg), ae_pp_nl,      $1, @$); }
+  | PP_NL      { if(!arg->ppa->lint)return 0; $$ = new_stmt_pp(mpool(arg), ae_pp_nl,      $1, @$); }
   | PP_IMPORT  { $$ = new_stmt_pp(mpool(arg), ae_pp_import, $1, @$); }
   ;
 
@@ -546,7 +539,7 @@ func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= 
 ref: "&" { $$ = 1; } | "&" ref { $$ = 1 + $2; };
 type_decl_tmpl
   : ID call_template { $$ = new_type_decl(mpool(arg), $1, @$); $$->types = $2; }
-  | ref ID call_template { $$ = new_type_decl(mpool(arg), $2, @$); $$->ref = 1; $$->types = $3; }
+  | ref ID call_template { $$ = new_type_decl(mpool(arg), $2, @$); $$->ref = $1; $$->types = $3; }
   ;
 
 type_decl_noflag
@@ -555,7 +548,7 @@ type_decl_noflag
   ;
 
 option: "?" { $$ = 1; } | OPTIONS { $$ = strlen(s_name($1)); } | { $$ = 0; };
-type_decl_opt: type_decl_noflag option { $$ = $1; $$->option |= $2; };
+type_decl_opt: type_decl_noflag option { $$ = $1; $$->option = $2; };
 type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $1; };
 
 type_decl_flag
