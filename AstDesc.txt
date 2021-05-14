@@ -1,0 +1,267 @@
+Symbol
+
+Array_Sub
+  ?Exp exp
+
+ID_List
+  Symbol xid
+  ?ID_List next
+
+Type_List
+  Type_Decl* td
+  ?Type_List next
+
+Tmpl*
+  ?ID_List list
+  ?Type_List call
+
+Range*
+  ?Exp start
+  ?Exp end
+
+Type_Decl*
+  Symbol xid
+  ?Array_Sub array
+  ?Type_List types
+  ?Type_Decl* next
+
+: Prim
+Symbol*    id
+  =Symbol id *
+
+m_uint*    num
+
+m_float*    float
+
+m_str*      str
+
+Array_Sub* array
+  =Array_Sub array *
+
+Range**     range
+  =Range* range *
+
+Exp*       hack
+  =Exp exp *
+
+Exp*       typeof
+  =Exp exp *
+
+Exp*       interp
+  =Exp exp *
+
+m_str* char
+
+void*  nil
+
+Symbol perform
+
+:
+!PRIM
+Exp_Primary* prim
+  !prim prim &
+
+### Exp
+:
+Var_Decl
+  ?Symbol xid
+  ?Array_Sub array
+
+Var_Decl_List
+  Var_Decl self
+  ?Var_Decl_List next
+
+Exp_Decl*
+  ?Type_Decl* td
+  Var_Decl_List list
+
+Exp_Binary*
+  Exp lhs
+  Exp rhs
+  Symbol op
+
+Exp_Unary*
+  Symbol op
+  ?Exp exp
+  ?Type_Decl* td
+  ?Stmt code
+
+#skip primary
+Exp_Cast*
+  Type_Decl* td
+  Exp exp
+
+Exp_Postfix* exp_post
+  Symbol op
+  Exp exp
+
+Exp_Call*
+  Exp func
+  ?Exp args
+  ?Tmpl* tmpl
+
+Exp_Array*
+  Exp base
+  Array_Sub array
+
+Exp_Slice*
+  Exp base
+  Range* range
+
+Exp_If*
+  Exp cond
+  ?Exp if_exp
+  Exp else_exp
+
+Exp_Dot*
+  Exp base
+  Symbol xid
+
+Exp_Lambda*
+  Func_Def def
+
+Type_Decl* exp_td
+
+!exp
+Exp
+  !exp exp &
+  ?Exp next
+
+### Stmt
+:
+Stmt_Exp
+  ?Exp val
+
+Stmt_Flow stmt_while
+  Exp cond
+  Stmt Body
+
+Stmt_Flow stmt_until
+  Exp cond
+  Stmt Body
+
+Stmt_For
+  Stmt c1
+  ?Stmt c2
+  ?Exp c3
+  Stmt body
+
+Stmt_Each
+  Symbol sym
+  Exp
+  Stmt body
+
+Stmt_Loop
+  Exp  cond
+  Stmt body
+
+Stmt_If
+  Exp cond
+  Stmt if_body
+  ?Stmt else_body
+
+Stmt_Code
+  ?Stmt_List
+
+Stmt_VarLoop
+  Exp exp
+  Stmt body
+
+Stmt_Exp Stmt_Break
+
+Stmt_Exp Stmt_Continue
+
+Stmt_Exp stmt_return
+  ?Exp val
+
+Stmt_List case_list
+  Stmt_Case stmt->d.stmt_match &
+  ?Case_List next
+
+Stmt_Match
+  Exp cond
+  Case_List list
+  ?Stmt where
+
+Stmt_Match stmt_case
+  Exp cond
+  Stmt_List list
+  ?Exp when
+
+Stmt_Index
+
+Stmt_PP
+
+Stmt_Exp stmt_retry
+
+Stmt_Try
+  stmt
+
+Stmt_Defer
+  stmt
+
+!Stmt
+Stmt
+  !stmt stmt &
+
+Arg_List
+  ?Type_Decl* td
+  Var_Decl
+  ?Arg_List next
+
+Union_List
+  Type_Decl* td
+  Symbol xid
+
+### Section
+:
+Stmt_List
+  Stmt
+  ?Stmt_List next
+
+:
+Func_Base*
+  ?Type_Decl* td
+  Symbol xid
+  ?Arg_List args
+  ?Tmpl*
+
+Func_Def
+  Func_Base* base
+  ?Stmt d.code 
+
+Class_Def
+  Type_Def base &
+  ?Ast body
+
+Enum_Def
+  ID_List list
+  ?Symbol xid
+
+Union_Def
+  Union_List l
+  ?Symbol xid
+  ?Tmpl*
+
+Fptr_Def
+  Func_Base* base
+
+Type_Def
+  ?Type_Decl ext
+  Symbol xid
+  ?Tmpl tmpl
+
+Extend_Def
+  Ast body
+  Type_Decl td
+
+!section
+Section*
+  !section section *(void**)&
+
+### Ast
+:
+Ast
+  Section*
+  ?Ast next
+
