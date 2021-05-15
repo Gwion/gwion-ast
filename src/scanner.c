@@ -68,8 +68,8 @@ ANN static void secondary(Scanner* scan) {
   for(m_uint i = 0; i < vector_size(&scan->pp->filename) -1; i++) {
     const struct PPState_ *pp = (struct PPState_*)vector_at(&scan->pp->filename, i);
     loc_t loc = pp->pos;
-    loc.first.column++;
-    loc.last.column++;
+//    loc.first.column++;
+//    loc.last.column++;
     gwerr_secondary("expanded from here", get_filename(scan, pp), loc);
   }
 }

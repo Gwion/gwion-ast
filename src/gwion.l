@@ -98,7 +98,8 @@ ANN static double atof_space(m_str, size_t);
 %x define define_arg_start define_arg skip get_arg pragma interp include_start include_end import import_end
 %%
 
-#*\" { 
+#*\" {
+  adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
   vector_add(&scan->hashes, yyleng);
   scan->interp_state++;
@@ -131,14 +132,15 @@ ANN static double atof_space(m_str, size_t);
 }
 
 <interp>"${" {
-  adjust(yyscanner); BEGIN(INITIAL);
+  adjust(yyscanner);
+  BEGIN(INITIAL);
   yytext[yyleng - 2] = '\0';
   yylval->sval = alloc_str(yyscanner, yytext);
   return INTERP_LIT;
 }
-<interp>"\\#"*\" { adjust(yyscanner);  yymore(); continue; }
+<interp>"\\#"*\" { yymore(); continue; }
 <interp>"\n"     { newline(yyscanner); yymore(); continue; }
-<interp>.        { adjust(yyscanner);  yymore(); continue; }
+<interp>.        { yymore(); continue; }
 
 <get_arg>{SPACE}*","{SPACE}* { adjust(yyscanner); if(handle_comma(yyscanner) < 0) yyterminate(); }
 <get_arg>"(" { adjust(yyscanner); handle_lpar(yyscanner); }
@@ -480,8 +482,10 @@ static Macro add_macro(void* data, const m_str line) {
     lexer_error(data, "Already defined", ERRORCODE(103));
     return NULL;
   }
-  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  struct PPState_ *const ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
   scan->pp->entry->file = ppstate->filename;
+  ppstate->pos.first = scan->pos;
+  ppstate->pos.last = scan->pos;
   scan->pp->entry->pos = yyget_lloc(data)->first;//scan->pos;
   scan->pp->entry->text = mp_calloc(scan->ppa->hash.p, GwText);
   scan->pp->entry->text->mp = scan->ppa->hash.p;
