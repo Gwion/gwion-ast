@@ -24,6 +24,7 @@ typedef struct Array_Sub_     * Array_Sub;
 typedef struct Arg_List_      * Arg_List;
 typedef struct ID_List_       * ID_List;
 typedef struct Type_List_     * Type_List;
+typedef struct Fptr_Def_* Fptr_Def;
 
 /** a dot expression. @code object.member @endcode */
 typedef struct {
@@ -90,6 +91,7 @@ typedef struct Type_Decl_ {
   Array_Sub array;
   Type_List types;
   struct Type_Decl_* next;
+  Fptr_Def fptr;
   struct loc_t_ pos;               ///< position
   uint8_t option;
   uint8_t ref;
@@ -486,7 +488,6 @@ FLAG_FUNC(Func_Base*, fb)
 
 ANN2(1) AST_NEW(Func_Base*, func_base, Type_Decl*, const Symbol, const Arg_List, const ae_flag flag, const loc_t);
 
-typedef struct Fptr_Def_* Fptr_Def;
 struct Fptr_Def_ {
   Func_Base *base;
   struct Type_*       type;

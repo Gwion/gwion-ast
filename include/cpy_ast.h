@@ -14,6 +14,7 @@ ANN Func_Def cpy_func_def(MemPool, Func_Def);
 ANN struct Func_Base_* cpy_func_base(MemPool, const struct Func_Base_*);
 ANN Class_Def cpy_class_def(MemPool, Class_Def);
 ANN Extend_Def cpy_extend_def(MemPool, Extend_Def);
+ANN Fptr_Def cpy_fptr_def(MemPool p, const Fptr_Def src);
 ANN Union_Def cpy_union_def(MemPool, Union_Def);
 ANN Type_List cpy_type_list(MemPool p, const Type_List src);
 ANN ID_List cpy_id_list(MemPool p, const ID_List src);

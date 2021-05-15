@@ -33,6 +33,7 @@
 
 ANN static int parser_error(loc_t*, Scanner*const, const char *, const uint);
 ANN Symbol lambda_name(const Scanner*);
+ANN Symbol sig_name(const Scanner*, const pos_t);
 %}
 
 %union {
@@ -110,7 +111,7 @@ ANN Symbol lambda_name(const Scanner*);
 %type<vector>func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
-%type<type_decl> type_decl_tmpl type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
+%type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp
@@ -537,9 +538,26 @@ op_def:  operator op_base code_stmt
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
 ref: "&" { $$ = 1; } | "&" ref { $$ = 1 + $2; };
+
+type_decl_base
+  : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
+  | LPAREN flag type_decl_empty decl_template fptr_args arg_type func_effects RPAREN {
+      const Symbol name = sig_name(arg, @3.first);
+      $$ = new_type_decl(mpool(arg), name, @1);
+      Func_Base *fb = new_func_base(mpool(arg), $3, name, NULL, $2, @1);
+      if($4)
+        fb->tmpl = new_tmpl_base(mpool(arg), $4);
+      fb->args = $5;
+      fb->fbflag |= $6;
+      const Fptr_Def fptr = new_fptr_def(mpool(arg), fb);
+      fptr->base->effects.ptr = $7.ptr;
+      $$->fptr = fptr;
+  }
+  ;
+
 type_decl_tmpl
-  : ID call_template { $$ = new_type_decl(mpool(arg), $1, @$); $$->types = $2; }
-  | ref ID call_template { $$ = new_type_decl(mpool(arg), $2, @$); $$->ref = $1; $$->types = $3; }
+  : type_decl_base call_template { $$ = $1; $$->types = $2; }
+  | ref type_decl_base call_template { $$ = $2; $$->ref = $1; $$->types = $3; }
   ;
 
 type_decl_noflag

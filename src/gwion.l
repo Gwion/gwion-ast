@@ -396,6 +396,12 @@ ANN Symbol lambda_name(const Scanner *scan) {
   return insert_symbol(scan->st, c);
 }
 
+ANN Symbol sig_name(const Scanner *scan, const pos_t pos) {
+  char c[6 + 1 + num_digit(pos.line) + num_digit(pos.column) + 2];
+  sprintf(c, "@sig_%u_%u", pos.line, pos.column);
+  return insert_symbol(scan->st, c);
+}
+
 ANN void lexer_error(yyscan_t yyscanner, const char *msg, const uint error_code) {
   struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
