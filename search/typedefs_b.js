@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['union_5fdef_951',['Union_Def',['../absyn_8h.html#afd1aa5e24b4767c947c33dc15fbc71c7',1,'absyn.h']]],
-  ['union_5flist_952',['Union_List',['../absyn_8h.html#a78abe9b8a0cf69b02228673ec2f9cff3',1,'absyn.h']]]
+  ['tmpl_993',['Tmpl',['../absyn_8h.html#ab651a8060e3f651529f52449206bff2f',1,'absyn.h']]],
+  ['type_5fdecl_994',['Type_Decl',['../absyn_8h.html#a0bf62e881e090403c3900e5eb6360461',1,'absyn.h']]],
+  ['type_5fdef_995',['Type_Def',['../absyn_8h.html#aa88a499d1adb2621419a47bc87f028f3',1,'absyn.h']]],
+  ['type_5flist_996',['Type_List',['../absyn_8h.html#a6d585a617520483df9fb2aa56b55aa83',1,'absyn.h']]]
 ];

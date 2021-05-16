@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['var_5fdecl_5f_592',['Var_Decl_',['../structVar__Decl__.html',1,'']]],
-  ['var_5fdecl_5flist_5f_593',['Var_Decl_List_',['../structVar__Decl__List__.html',1,'']]]
+  ['union_5fdef_5f_617',['Union_Def_',['../structUnion__Def__.html',1,'']]],
+  ['union_5flist_5f_618',['Union_List_',['../structUnion__List__.html',1,'']]]
 ];
