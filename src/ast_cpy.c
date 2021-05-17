@@ -295,26 +295,27 @@ ANN static void cpy_stmt_for(MemPool p, Stmt_For a, const Stmt_For src) {
     a->body = cpy_stmt(p, src->body); 
 }
 
+ANN static struct EachIdx_* cpy_eachidx(MemPool p, const struct EachIdx_ *src) {
+  struct EachIdx_ *a = mp_malloc(p, EachIdx);
+  a->sym = src->sym;
+  a->pos = src->pos;
+  return a;
+}
+
 ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
-  if(src->sym)
-    a->sym = src->sym;
-  if(src->exp)
-    a->exp = cpy_exp(p, src->exp);
-  if(src->body)
-    a->body = cpy_stmt(p, src->body);
-  if(src->idx) {
-    a->idx = mp_malloc(p, EachIdx);
-    a->idx->sym = src->idx->sym;
-    a->idx->pos = src->idx->pos;
-  }
+  a->sym = src->sym;
+  a->exp = cpy_exp(p, src->exp);
+  a->body = cpy_stmt(p, src->body);
+  if(src->idx)
+    cpy_eachidx(p, src->idx);
   a->vpos = src->vpos;
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {
-  if(src->cond)
-    a->cond = cpy_exp(p, src->cond); 
-  if(src->body)
-    a->body = cpy_stmt(p, src->body); 
+  a->cond = cpy_exp(p, src->cond);
+  a->body = cpy_stmt(p, src->body);
+  if(src->idx)
+    cpy_eachidx(p, src->idx);
 }
 
 ANN static void cpy_stmt_if(MemPool p, Stmt_If a, const Stmt_If src) {

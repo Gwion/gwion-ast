@@ -400,6 +400,14 @@ loop_stmt
     }
   | "repeat" "(" binary_exp ")" stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
+  | "repeat" "(" ID "," binary_exp ")" stmt
+      { 
+        $$ = new_stmt_loop(mpool(arg), $5, $7, @$);
+        $$->d.stmt_loop.idx = mp_malloc(mpool(arg), EachIdx);
+        $$->d.stmt_loop.idx->sym = $3;
+        $$->d.stmt_loop.idx->pos = @3;        
+        LIST_REM($5)
+      }
   ;
 
 varloop_stmt: "varloop" binary_exp code_stmt { $$ = new_stmt_varloop(mpool(arg), $2, $3, @$); }

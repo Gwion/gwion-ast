@@ -427,6 +427,7 @@ struct Stmt_Each_ {
 struct Stmt_Loop_ {
   Exp cond;
   Stmt body;
+  struct EachIdx_ *idx;
 };
 
 struct Stmt_If_ {
