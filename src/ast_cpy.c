@@ -307,7 +307,7 @@ ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
     a->idx->sym = src->idx->sym;
     a->idx->pos = src->idx->pos;
   }
-  a->pos = src->pos;
+  a->vpos = src->vpos;
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {
