@@ -206,8 +206,9 @@ ANN static double atof_space(m_str, size_t);
 
 
 <include_end>{FILENAME} { adjust(yyscanner); BEGIN(INITIAL); yylval->sval = strdup(yytext); return PP_INCLUDE; }
-^#include{SPACE} { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
-<include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; BEGIN(include_end); }
+^#include{SPACE}* { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
+<include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; BEGIN(include_end); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
+<include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
 
 <import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
 <import_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
@@ -602,6 +603,7 @@ static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE h
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_include(filename);
   FILE* f = fopen(str, "r") ?: get_include(str, &scan->ppa->path);
+  const m_str current_filename = get_current_filename(data);
   if(!f) {
     xfree(str);
     lexer_error(data, "file not found", ERRORCODE(105));
@@ -612,8 +614,8 @@ static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE h
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
   struct yyguts_t *yyg = (struct yyguts_t*)data;
   void *yyscanner = data;
-  for(m_uint i = strlen(str) + 1; --i;)
-    unput(str[i-1]);
+  for(m_uint i = strlen(current_filename) + 1; --i;)
+    unput(current_filename[i-1]);
   return GW_OK;
 }
 
