@@ -485,57 +485,6 @@ AST_NEW(Type_List, type_list, Type_Decl* td, const Type_List next) {
   a->next = next;
   return a;
 }
-//#include "cpy_ast.h"
-
-Exp cpy_exp(MemPool, const Exp);
-Arg_List cpy_arg_list(MemPool, const Arg_List);
-
-ANN static Exp arglist2exp(MemPool p, Arg_List arg, const Exp default_arg) {
-  Exp exp = new_prim_id(p, arg->var_decl->xid, arg->var_decl->pos);
-  if(arg->next)
-    exp->next = arglist2exp(p, arg->next, default_arg);
-  else
-    exp->next = cpy_exp(p, default_arg);
-  return exp;
-}
-
-
-
-AST_NEW(Ast, ast_expand, Section* section, const Ast next) {
-  Ast ast = mp_calloc(p, Ast);
-  ast->section = section;
-  if(ast->section->section_type == ae_section_func) {
-    const Func_Def base_fdef = ast->section->d.func_def;
-    Arg_List base_arg = base_fdef->base->args, former = NULL;
-    while(base_arg) {
-      if(!base_arg->next && base_arg->exp) {
-        if(former)
-          former->next = NULL;
-        // use cpy_func_base?
-        Func_Base *base = new_func_base(p, cpy_type_decl(p, base_fdef->base->td),
-          base_fdef->base->xid, former ? cpy_arg_list(p, base_fdef->base->args) : NULL,
-          base_fdef->base->flag, base_fdef->base->pos);
-        const Exp efunc = new_prim_id(p, base_fdef->base->xid, base_fdef->base->pos);
-        Exp arg_exp = former ? arglist2exp(p, base_fdef->base->args, base_arg->exp) :
-        cpy_exp(p, base_arg->exp);
-        const Exp ecall = new_exp_call(p, efunc, arg_exp, base_fdef->base->pos);
-        const Stmt code = new_stmt_exp(p, ae_stmt_return, ecall, base_fdef->base->pos);
-        const Stmt_List slist = new_stmt_list(p, code, NULL);
-        const Stmt body = new_stmt_code(p, slist, base_fdef->base->pos);
-        const Func_Def fdef = new_func_def(p, base, body);
-        Section *new_section = new_section_func_def(p, fdef);
-        if(former)
-          former->next = base_arg;
-        ast->next = new_ast(p, new_section, next);
-        return ast;
-      }
-      former = base_arg;
-      base_arg = base_arg->next;
-    }
-  }
-  ast->next = next;
-  return ast;
-}
 
 AST_NEW(Ast, ast, Section* section, const Ast next) {
   Ast ast = mp_calloc(p, Ast);

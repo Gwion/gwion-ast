@@ -2355,13 +2355,13 @@ yyreduce:
 
   case 4: /* ast: section  */
 #line 171 "src/gwion.y"
-            { (yyval.ast) = !arg->ppa->lint ? new_ast_expand(mpool(arg), (yyvsp[0].section), NULL) : new_ast(mpool(arg), (yyvsp[0].section), NULL); LIST_FIRST((yyval.ast)) }
+            { (yyval.ast) = new_ast(mpool(arg), (yyvsp[0].section), NULL); LIST_FIRST((yyval.ast)) }
 #line 2360 "src/parser.c"
     break;
 
   case 5: /* ast: ast section  */
 #line 172 "src/gwion.y"
-                { LIST_NEXT((yyval.ast), (yyvsp[-1].ast), Ast, !arg->ppa->lint ? new_ast_expand(mpool(arg), (yyvsp[0].section), NULL) : new_ast(mpool(arg), (yyvsp[0].section), NULL)) }
+                { LIST_NEXT((yyval.ast), (yyvsp[-1].ast), Ast, new_ast(mpool(arg), (yyvsp[0].section), NULL)) }
 #line 2366 "src/parser.c"
     break;
 
@@ -2486,7 +2486,7 @@ yyreduce:
 #line 219 "src/gwion.y"
              {
     Section * section= new_section_func_def (mpool(arg), (yyvsp[0].func_def));
-    (yyval.ast) = !arg->ppa->lint ? new_ast_expand(mpool(arg), section, NULL) : new_ast(mpool(arg), section, NULL); LIST_FIRST((yyval.ast))
+    (yyval.ast) = new_ast(mpool(arg), section, NULL); LIST_FIRST((yyval.ast))
   }
 #line 2492 "src/parser.c"
     break;
@@ -2495,7 +2495,7 @@ yyreduce:
 #line 223 "src/gwion.y"
                          {
     Section * section = new_section_func_def (mpool(arg), (yyvsp[0].func_def));
-    LIST_NEXT((yyval.ast), (yyvsp[-1].ast), Ast, !arg->ppa->lint ? new_ast_expand(mpool(arg), section, NULL) : new_ast(mpool(arg), section, NULL))
+    LIST_NEXT((yyval.ast), (yyvsp[-1].ast), Ast, new_ast(mpool(arg), section, NULL))
   }
 #line 2501 "src/parser.c"
     break;

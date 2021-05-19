@@ -168,8 +168,8 @@ prg: ast { arg->ppa->ast = $$ = $1; /* no need for LIST_REM here */}
   | /* empty */ { loc_t loc = { {1, 1}, {1,1} }; parser_error(&loc, arg, "file is empty.", 0201); YYERROR; }
 
 ast
-  : section { $$ = !arg->ppa->lint ? new_ast_expand(mpool(arg), $1, NULL) : new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
-  | ast section { LIST_NEXT($$, $1, Ast, !arg->ppa->lint ? new_ast_expand(mpool(arg), $2, NULL) : new_ast(mpool(arg), $2, NULL)) }
+  : section { $$ = new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
+  | ast section { LIST_NEXT($$, $1, Ast, new_ast(mpool(arg), $2, NULL)) }
   ;
 
 section
@@ -218,11 +218,11 @@ traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
 extend_body
   : func_def {
     Section * section= new_section_func_def (mpool(arg), $1);
-    $$ = !arg->ppa->lint ? new_ast_expand(mpool(arg), section, NULL) : new_ast(mpool(arg), section, NULL); LIST_FIRST($$)
+    $$ = new_ast(mpool(arg), section, NULL); LIST_FIRST($$)
   }
   | extend_body func_def {
     Section * section = new_section_func_def (mpool(arg), $2);
-    LIST_NEXT($$, $1, Ast, !arg->ppa->lint ? new_ast_expand(mpool(arg), section, NULL) : new_ast(mpool(arg), section, NULL))
+    LIST_NEXT($$, $1, Ast, new_ast(mpool(arg), section, NULL))
   }
   ;
 

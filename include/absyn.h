@@ -676,6 +676,5 @@ struct Ast_ {
   Ast next;
 };
 ANN2(1, 2) ANEW AST_NEW(Ast, ast, Section*, const Ast);
-ANN2(1, 2) ANEW AST_NEW(Ast, ast_expand, Section*, const Ast);
 ANN void free_ast(MemPool p, Ast);
 #endif
