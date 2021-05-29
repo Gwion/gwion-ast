@@ -50,6 +50,15 @@ AST_FREE(ID_List, id_list) {
     free_id_list(p, next);
 }
 
+AST_FREE(Specialized_List, specialized_list) {
+  const Specialized_List next = a->next;
+  if(a->traits)
+    free_id_list(p, a->traits);
+  mp_free(p, ID_List, a);
+  if(next)
+    free_specialized_list(p, next);
+}
+
 AST_FREE(Type_Decl*, type_decl) {
   if(a->types)
     free_type_list(p, a->types);
@@ -108,7 +117,7 @@ ANN static AST_FREE(Exp_If*, exp_if) {
 
 AST_FREE(Tmpl*, tmpl) {
   if(a->base == -1)
-    free_id_list(p, a->list);
+    free_specialized_list(p, a->list);
   if(a->call)
     free_type_list(p, a->call);
   mp_free(p, Tmpl, a);
@@ -329,15 +338,27 @@ AST_FREE(Class_Def, class_def) {
     free_type_decl(p, a->base.ext);
   if(a->base.tmpl)
     free_tmpl(p, a->base.tmpl);
+   if(a->traits)
+     free_id_list(p, a->traits);
+   if(a->body)
+     free_ast(p, a->body);
+   mp_free(p, Class_Def, a);
+}
+
+AST_FREE(Trait_Def, trait_def) {
+  if(a->traits)
+    free_id_list(p, a->traits);
   if(a->body)
     free_ast(p, a->body);
-  mp_free(p, Class_Def, a);
+  mp_free(p, Trait_Def, a);
 }
 
 ANN static AST_FREE(Section*, section) {
   const ae_section_t t = a->section_type;
   if(t == ae_section_class)
     free_class_def(p, a->d.class_def);
+  if(t == ae_section_trait)
+    free_trait_def(p, a->d.trait_def);
   else if(t == ae_section_extend)
     free_extend_def(p, a->d.extend_def);
   else if(t == ae_section_stmt)

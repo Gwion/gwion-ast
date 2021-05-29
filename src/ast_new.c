@@ -82,6 +82,14 @@ AST_NEW(ID_List, id_list, struct Symbol_* xid) {
   return a;
 }
 
+AST_NEW(Specialized_List, specialized_list, struct Symbol_* xid, const ID_List traits, const loc_t pos) {
+  Specialized_List a = mp_calloc(p, Specialized_List);
+  a->xid = xid;
+  a->traits = traits;
+  a->pos = pos;
+  return a;
+}
+
 AST_NEW(Exp, exp_decl, Type_Decl* td, const Var_Decl_List list, const struct loc_t_ pos) {
   Exp a = new_exp(p, ae_exp_decl, pos);
   a->d.exp_decl.td = td;
@@ -245,14 +253,14 @@ AST_NEW(Exp, exp_if, const restrict Exp cond, const restrict Exp if_exp,
   return a;
 }
 
-AST_NEW(Tmpl*, tmpl, const ID_List list, const m_int base) {
+AST_NEW(Tmpl*, tmpl, const Specialized_List list, const m_int base) {
   Tmpl* a = mp_calloc(p, Tmpl);
   a->list = list;
   a->base = base;
   return a;
 }
 
-AST_NEW(Tmpl*, tmpl_base, const ID_List list) {
+AST_NEW(Tmpl*, tmpl_base, const Specialized_List list) {
   return new_tmpl(p, list, -1);
 }
 
@@ -454,6 +462,7 @@ AST_NEW(Section*, section_##name, const Type name) { \
 mk_section(Stmt_List,  stmt_list,  stmt)
 mk_section(Func_Def,   func_def,   func)
 mk_section(Class_Def,  class_def,  class)
+mk_section(Trait_Def,  trait_def,  trait)
 mk_section(Extend_Def, extend_def, extend)
 mk_section(Enum_Def,   enum_def,   enum)
 mk_section(Union_Def,  union_def,  union)
@@ -476,6 +485,16 @@ AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Symbol xid, Type_D
   a->body = body;
   a->pos = pos; // remove me
   a->base.pos = pos;
+  return a;
+}
+
+AST_NEW(Trait_Def, trait_def, const ae_flag class_decl, const Symbol xid,
+    const Ast body, const struct loc_t_ pos) {
+  Trait_Def a = mp_calloc(p, Trait_Def);
+  a->flag = class_decl;
+  a->xid = xid;
+  a->body = body;
+  a->pos = pos;
   return a;
 }
 

@@ -326,13 +326,15 @@ union YYSTYPE
   Type_Def type_def;
   Section* section;
   ID_List id_list;
+  Specialized_List specialized_list;
   Type_List type_list;
   Union_List union_list;
   Extend_Def extend_def;
   Class_Def class_def;
+  Trait_Def trait_def;
   Ast ast;
 
-#line 336 "include/parser.h"
+#line 338 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

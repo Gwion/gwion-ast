@@ -7,6 +7,11 @@ ID_List
   Symbol xid
   ?ID_List next
 
+Specialized_List
+  Symbol xid
+  ?ID_List trait
+  ?ID_List next
+
 Type_List
   Type_Decl* td
   ?Type_List next
@@ -232,6 +237,9 @@ Func_Def
 
 Class_Def
   Type_Def base &
+  ?Ast body
+
+Trait_Def
   ?Ast body
 
 Enum_Def

@@ -47,10 +47,11 @@ const _##prefix##_stmt_func prefix##_stmt_func[] = {                            
 #define DECL_SECTION_FUNC(prefix, type, arg)                                                    \
 typedef type (*_##prefix##_section_func)(const arg, union section_data*);                       \
 const _##prefix##_section_func prefix##_section_func[] = {                                      \
-  (_##prefix##_section_func)prefix##_stmt_list, (_##prefix##_section_func)prefix##_func_def,    \
-  (_##prefix##_section_func)prefix##_class_def, (_##prefix##_section_func)prefix##_extend_def,  \
-  (_##prefix##_section_func)prefix##_enum_def,  (_##prefix##_section_func)prefix##_union_def,   \
-  (_##prefix##_section_func)prefix##_fptr_def,  (_##prefix##_section_func)prefix##_type_def     \
+  (_##prefix##_section_func)prefix##_stmt_list,  (_##prefix##_section_func)prefix##_func_def,   \
+  (_##prefix##_section_func)prefix##_class_def,  (_##prefix##_section_func)prefix##_trait_def,  \
+  (_##prefix##_section_func)prefix##_extend_def, (_##prefix##_section_func)prefix##_enum_def,   \
+  (_##prefix##_section_func)prefix##_union_def,  (_##prefix##_section_func)prefix##_fptr_def,   \
+  (_##prefix##_section_func)prefix##_type_def                                                   \
 };
 
 #endif

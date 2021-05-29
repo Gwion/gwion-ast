@@ -110,6 +110,16 @@ struct ID_List_    {
 ANEW ANN AST_NEW(ID_List, id_list, struct Symbol_*);
 ANN void free_id_list(MemPool p, ID_List);
 
+typedef struct Specialized_List_ {
+  struct Symbol_* xid;
+  struct Specialized_List_ *next;
+  ID_List traits;
+  loc_t pos;
+} *Specialized_List;
+
+ANEW ANN2(1,2) AST_NEW(Specialized_List, specialized_list, struct Symbol_*, ID_List, const loc_t);
+ANN void free_specialized_list(MemPool p, Specialized_List);
+
 struct Type_List_  {
   Type_Decl* td;
   Type_List next;
@@ -161,13 +171,13 @@ typedef struct {
 } Exp_Primary;
 
 typedef struct Tmpl_ {
-  ID_List list;
+  Specialized_List list;
   m_int  base;
   Type_List call;
 } Tmpl;
 
-ANN ANEW AST_NEW(Tmpl*, tmpl, const ID_List, const m_int);
-ANN ANEW AST_NEW(Tmpl*, tmpl_base, const ID_List);
+ANN ANEW AST_NEW(Tmpl*, tmpl, const Specialized_List, const m_int);
+ANN ANEW AST_NEW(Tmpl*, tmpl_base, const Specialized_List);
 ANN ANEW AST_NEW(Tmpl*, tmpl_call, Type_List);
 ANN void free_tmpl(MemPool p, Tmpl*);
 
@@ -607,18 +617,29 @@ struct Func_Def_ {
     Stmt code;
     void* dl_func_ptr;
   } d;
-  Symbol trait;
 };
 
 ANEW AST_NEW(Func_Def, func_def, Func_Base*, const Stmt);
 ANN void free_func_base(MemPool p, Func_Base*);
 ANN void free_func_def(MemPool p, Func_Def);
 
-typedef enum { ae_section_stmt, ae_section_func, ae_section_class, ae_section_extend,
+typedef struct Trait_Def_ {
+  Symbol xid;
+  Ast body;
+  ID_List traits;
+  struct loc_t_ pos;            ///< position
+  ae_flag flag;
+} *Trait_Def;
+ANN ANEW Trait_Def new_trait_def(MemPool p, const ae_flag, const Symbol,
+                        const Ast, const struct loc_t_);
+ANN void free_trait_def(MemPool p, Trait_Def);
+
+typedef enum { ae_section_stmt, ae_section_func, ae_section_class, ae_section_trait, ae_section_extend,
   ae_section_enum, ae_section_union, ae_section_fptr, ae_section_type } ae_section_t;
 typedef struct Section_ {
   union section_data {
     Stmt_List stmt_list;
+    Trait_Def trait_def;
     Class_Def class_def;
     Extend_Def extend_def;
     Func_Def  func_def;
@@ -632,6 +653,7 @@ typedef struct Section_ {
 ANEW ANN AST_NEW(Section*, section_stmt_list, const Stmt_List);
 ANEW ANN AST_NEW(Section*, section_func_def, const Func_Def);
 ANEW ANN AST_NEW(Section*, section_class_def, const Class_Def);
+ANEW ANN AST_NEW(Section*, section_trait_def, const Trait_Def);
 ANEW ANN AST_NEW(Section*, section_extend_def,   const Extend_Def);
 ANEW ANN AST_NEW(Section*, section_enum_def, const Enum_Def);
 ANEW ANN AST_NEW(Section*, section_union_def, const Union_Def);
@@ -640,8 +662,8 @@ ANEW ANN AST_NEW(Section*, section_type_def, const Type_Def);
 
 struct Extend_Def_ {
   Ast body;
-//  ID_List traits;
   Type_Decl *td;
+  ID_List traits;
   struct Type_ *t;
 };
 
@@ -651,7 +673,6 @@ ANN void free_extend_def(MemPool p, Extend_Def);
 enum cflag {
   cflag_none,
   cflag_struct,
-  cflag_trait
 };
 
 struct Class_Def_ {

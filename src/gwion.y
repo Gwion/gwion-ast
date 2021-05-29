@@ -65,10 +65,12 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   Type_Def type_def;
   Section* section;
   ID_List id_list;
+  Specialized_List specialized_list;
   Type_List type_list;
   Union_List union_list;
   Extend_Def extend_def;
   Class_Def class_def;
+  Trait_Def trait_def;
   Ast ast;
 };
 
@@ -107,7 +109,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
-%type<sym>opt_id func_trait
+%type<sym>opt_id
 %type<vector>func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
 %type<var_decl_list> var_decl_list
@@ -119,9 +121,9 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt where_stmt varloop_stmt defer_stmt func_code
-%type<stmt> match_case_stmt match_stmt stmt_pp
+%type<stmt> match_case_stmt match_stmt stmt_pp trait_stmt
 %type<handler_list> handler_list handler
-%type<stmt_list> stmt_list match_list
+%type<stmt_list> stmt_list match_list trait_stmt_list
 %type<arg_list> arg arg_list func_args lambda_arg lambda_list fptr_list fptr_arg fptr_args
 %type<func_def> func_def op_def func_def_base abstract_fdef
 %type<func_base> func_base fptr_base op_base
@@ -129,14 +131,16 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<union_def> union_def
 %type<fptr_def> fptr_def
 %type<type_def> type_def
-%type<section> section
+%type<section> section trait_section
 %type<extend_def> extend_def
 %type<class_def> class_def
-%type<ast> class_body extend_body
-%type<id_list> id_list decl_template traits
+%type<trait_def> trait_def
+%type<ast> class_body extend_body trait_body
+%type<id_list> id_list traits
+%type<specialized_list> specialized_list decl_template
 %type<type_list> type_list call_template
 %type<union_list> union_decl union_list
-%type<ast> ast prg
+%type<ast> ast prg trait_ast
 
 %start prg
 
@@ -176,6 +180,7 @@ section
   : stmt_list    { $$ = new_section_stmt_list(mpool(arg), $1); LIST_REM($$) }
   | func_def     { $$ = new_section_func_def (mpool(arg), $1); }
   | class_def    { $$ = new_section_class_def(mpool(arg), $1); }
+  | trait_def    { $$ = new_section_trait_def(mpool(arg), $1); }
   | extend_def   { $$ = new_section_extend_def(mpool(arg), $1); }
   | enum_def     { $$ = new_section_enum_def(mpool(arg), $1); }
   | union_def    { $$ = new_section_union_def(mpool(arg), $1); }
@@ -199,16 +204,34 @@ class_def
         $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
       $$->cflag |= cflag_struct;
       $$->traits = $5;
-    }
-  | "trait" class_flag ID decl_template traits "{" class_body "}"
+    };
+
+trait_stmt: exp_stmt {
+    if($1->d.stmt_exp.val->exp_type != ae_exp_decl)
+    { parser_error(&@$, arg, "trait can only contains variable requests and functions", 0211); YYERROR;}
+    $$ = $1;
+  } | stmt_pp;
+trait_stmt_list: trait_stmt  { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) } |
+  trait_stmt_list trait_stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) };
+
+trait_section
+  : trait_stmt_list    { $$ = new_section_stmt_list(mpool(arg), $1); LIST_REM($$) }
+  | func_def     { $$ = new_section_func_def (mpool(arg), $1); }
+  ;
+
+trait_ast
+  : trait_section { $$ = new_ast(mpool(arg), $1, NULL); LIST_FIRST($$) }
+  | trait_ast trait_section { LIST_NEXT($$, $1, Ast, new_ast(mpool(arg), $2, NULL)) }
+  ;
+
+trait_body : trait_ast | { $$ = NULL; };
+
+trait_def: "trait" class_flag ID traits "{" trait_body "}"
     {
-      $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
-      if($4)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
-      $$->cflag |= cflag_trait;
-      $$->traits = $5;
+      $$ = new_trait_def(mpool(arg), $2, $3, $6, @3);
+      $$->traits = $4;
       if(GET_FLAG($$, abstract)) {
-        { scanner_secondary(arg, "abstract should not be used on ${/+trait{0} declaration", @2); }
+        { scanner_secondary(arg, "abstract should not be used on ${/+trait{0} declaration", @3); }
         UNSET_FLAG($$, abstract);
       }
     };
@@ -226,11 +249,9 @@ extend_body
   }
   ;
 
-extend_def: "extends" type_decl_exp "{" extend_body "}" {
-//  if($3 && $3->next)
-//    { parser_error(&@$, arg, "extensions must define at most trait", 0211); YYERROR;}
-  $$ = new_extend_def(mpool(arg), $2, $4);
-//  $$->traits = $3;
+extend_def: "extends" type_decl_empty traits "{" extend_body "}" {
+  $$ = new_extend_def(mpool(arg), $2, $5);
+  $$->traits = $3;
 }
 
 
@@ -238,6 +259,9 @@ class_body : ast | { $$ = NULL; };
 
 id_list: ID { $$ = new_id_list(mpool(arg), $1); LIST_FIRST($$) }
        | id_list "," ID  { LIST_NEXT($$, $1, ID_List, new_id_list(mpool(arg), $3)) };
+
+specialized_list: ID traits { $$ = new_specialized_list(mpool(arg), $1, $2, @1); LIST_FIRST($$) }
+       | specialized_list "," ID  traits { LIST_NEXT($$, $1, Specialized_List, new_specialized_list(mpool(arg), $3, $4, @3)) };
 
 stmt_list: stmt  { $$ = new_stmt_list(mpool(arg), $1, NULL); LIST_FIRST($$) } |
   stmt_list stmt { LIST_NEXT($$, $1, Stmt_List, new_stmt_list(mpool(arg), $2, NULL)) };
@@ -334,7 +358,13 @@ handler: "handle" { arg->handling = true; } opt_id stmt { $$ = new_handler_list(
 handler_list: handler
   | handler_list handler  {
         if(!$1->xid)
-        { parser_error(&@1, arg, "specific `handle` after a catch-all block", 0); YYERROR; }
+        { parser_error(&@2, arg, "specific `handle` after a catch-all block", 0); YYERROR; }
+        Handler_List list = $2;
+        while(list) {
+          if(list->xid == $1->xid)
+          { parser_error(&@2, arg, "duplicated `handle`", 0); YYERROR; }
+          list = list->next;
+        }
         $$ = $1;
         $1->next = $2;
   }
@@ -479,7 +509,7 @@ func_args: LPAREN arg_list   { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
 fptr_args: LPAREN fptr_list { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
 arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
 
-decl_template: TMPL id_list RBRACK { $$ = $2; LIST_REM(2) } | { $$ = NULL; };
+decl_template: TMPL specialized_list RBRACK { $$ = $2; LIST_REM(2) } | { $$ = NULL; };
 
 global: GLOBAL { $$ = ae_flag_global; arg->global = true; }
 
@@ -499,15 +529,14 @@ final: "final" { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
 
 modifier: "abstract" { $$ = ae_flag_abstract; } | final;
 
-func_trait: { $$ = 0; } | ":" ID { $$ = $2; };
 func_code: code_stmt | ";" { $$ = NULL; }
 func_def_base
-  : "fun" func_base func_args arg_type func_trait func_code {
+  : "fun" func_base func_args arg_type func_code {
     $2->args = $3;
     $2->fbflag |= $4;
-    $$ = new_func_def(mpool(arg), $2, $6);
-    $$->trait = $5;
-    if(!$6) {
+    $$ = new_func_def(mpool(arg), $2, $5);
+//    $$->trait = $5;
+    if(!$5) {
       SET_FLAG($2, abstract);
     }
   };

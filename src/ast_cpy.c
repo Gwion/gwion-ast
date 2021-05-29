@@ -87,6 +87,17 @@ ANN ID_List cpy_id_list(MemPool p, const ID_List src) {
   return a;
 }
 
+ANN Specialized_List cpy_specialized_list(MemPool p, const Specialized_List src) {
+  Specialized_List a = mp_calloc(p, Specialized_List);
+  a->xid = src->xid; // 1 
+  if(src->traits)
+    a->traits = cpy_id_list(p, src->traits); // 1 
+  if(src->next)
+    a->next = cpy_specialized_list(p, src->next); // 1 
+  a->pos = src->pos;
+  return a;
+}
+
 ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
   Type_List a = mp_calloc(p, Type_List);
   a->td = cpy_type_decl(p, src->td); // 1 
@@ -149,7 +160,7 @@ ANN Tmpl* cpy_tmpl(MemPool p, const Tmpl *src) {
   Tmpl *a = mp_calloc(p, Tmpl);
   a->base = src->base;
   a->list = (a->base == - 1 && src->list) ?
-     cpy_id_list(p, src->list) : src->list;
+     cpy_specialized_list(p, src->list) : src->list;
   if(src->call)
     a->call = cpy_type_list(p, src->call);
   return a;
@@ -499,7 +510,7 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   a->base = cpy_func_base(p, src->base);
   if(src->d.code)
     a->d.code = cpy_stmt(p, src->d.code);
-  a->trait = src->trait;
+//  a->trait = src->trait;
   return a;
 }
 
@@ -511,6 +522,17 @@ ANN static Stmt_List cpy_stmt_list(MemPool p, const Stmt_List src) {
   return a;
 }
 
+ANN static Trait_Def cpy_trait_def(MemPool p, const Trait_Def src) {
+  Trait_Def a = mp_calloc(p, Trait_Def);
+  if(src->body)
+    a->body = cpy_ast(p, src->body);
+  if(src->traits)
+    a->traits = cpy_id_list(p, src->traits);
+  a->flag = src->flag;
+  a->pos = src->pos;
+  return a;
+}
+
 ANN static Section* cpy_section(MemPool p, const Section *src) {
   Section* a = mp_calloc(p, Section);
   switch(src->section_type) {
@@ -519,6 +541,9 @@ ANN static Section* cpy_section(MemPool p, const Section *src) {
       break;
     case ae_section_class:
       a->d.class_def = cpy_class_def(p, src->d.class_def);
+      break;
+    case ae_section_trait:
+      a->d.trait_def = cpy_trait_def(p, src->d.trait_def);
       break;
     case ae_section_extend:
       a->d.extend_def = cpy_extend_def(p, src->d.extend_def);
