@@ -223,10 +223,11 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">typedef</span> type (*_##prefix##_section_func)(<span class="keyword">const</span> arg, <span class="keyword">union </span>section_data*);                       \</div>
 <div class="line">const _##prefix##_section_func prefix##_section_func[] = {                                      \</div>
-<div class="line">  (_##prefix##_section_func)prefix##_stmt_list, (_##prefix##_section_func)prefix##_func_def,    \</div>
-<div class="line">  (_##prefix##_section_func)prefix##_class_def, (_##prefix##_section_func)prefix##_extend_def,  \</div>
-<div class="line">  (_##prefix##_section_func)prefix##_enum_def,  (_##prefix##_section_func)prefix##_union_def,   \</div>
-<div class="line">  (_##prefix##_section_func)prefix##_fptr_def,  (_##prefix##_section_func)prefix##_type_def     \</div>
+<div class="line">  (_##prefix##_section_func)prefix##_stmt_list,  (_##prefix##_section_func)prefix##_func_def,   \</div>
+<div class="line">  (_##prefix##_section_func)prefix##_class_def,  (_##prefix##_section_func)prefix##_trait_def,  \</div>
+<div class="line">  (_##prefix##_section_func)prefix##_extend_def, (_##prefix##_section_func)prefix##_enum_def,   \</div>
+<div class="line">  (_##prefix##_section_func)prefix##_union_def,  (_##prefix##_section_func)prefix##_fptr_def,   \</div>
+<div class="line">  (_##prefix##_section_func)prefix##_type_def                                                   \</div>
 <div class="line">};</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00047">47</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
