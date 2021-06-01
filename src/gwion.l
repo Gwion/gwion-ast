@@ -58,6 +58,7 @@ ANN static m_str macro_data(void* data, const m_bool);
 
 ANN static m_uint  atoll_space(m_str, size_t);
 ANN static double atof_space(m_str, size_t);
+ANN static double exponent_not(m_str, size_t);
 
 #define SCAN_LINT(a)     if(scan->ppa->lint)a;
 #define SCAN_NOLINT      if(!scan->ppa->lint)
@@ -345,6 +346,7 @@ ANN static double atof_space(m_str, size_t);
 0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                         return NUM;    }
 0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);                return NUM;    }
 {NUM}+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll_space(yytext, yyleng);  return NUM;    }
+({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+)[eE][\+\-]{NUM}+ { adjust(yyscanner); yylval->fval = (m_float)exponent_not(yytext, yyleng);  return FLOATT; }
 ({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+) { adjust(yyscanner); yylval->fval = (m_float)atof_space(yytext, yyleng);  return FLOATT; }
 @{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
 \(&{LEX_ID}\)                           { adjust(yyscanner); yytext[yyleng - 1] = '\0'; yylval->sym  = alloc_sym(yyscanner, yytext + 1); return OPID_E; }
@@ -389,6 +391,17 @@ ANN static double atof_space(m_str str, size_t sz) {
   }
   *tmp = '\0';
   return atof(base);
+}
+
+ANN static double exponent_not(m_str str, size_t sz) {
+  char base[sz + 1], *tmp = base;
+  for(size_t i = 0; i < sz; ++i) {
+    const char c = str[i];
+    if(c != ' ')
+      *tmp++ = c;
+  }
+  *tmp = '\0';
+  return strtod(base, NULL);
 }
 
 ANN Symbol lambda_name(const Scanner *scan) {
