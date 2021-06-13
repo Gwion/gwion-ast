@@ -110,14 +110,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    yylloc-&gt;first.line = yylloc-&gt;last.line;                  \</div>
-<div class="line">    yylloc-&gt;first.column = get_currpos(yyscanner) ;          \</div>
-<div class="line">    if (yylloc-&gt;last.line == get_currline(yyscanner))        \</div>
-<div class="line">      yylloc-&gt;last.column = get_currpos(yyscanner) + yyleng; \</div>
-<div class="line">    else {                                                   \</div>
-<div class="line">      yylloc-&gt;last.line = get_currline(yyscanner);           \</div>
-<div class="line">      yylloc-&gt;last.column = get_currpos(yyscanner);          \</div>
-<div class="line">    }</div>
+<b>Value:</b><div class="fragment"><div class="line">  yylloc-&gt;first.line   = yylloc-&gt;last.line;                                    \</div>
+<div class="line">  yylloc-&gt;first.column = get_currpos(yyscanner);                               \</div>
+<div class="line">  if (yylloc-&gt;last.line == get_currline(yyscanner))                            \</div>
+<div class="line">    yylloc-&gt;last.column = get_currpos(yyscanner) + yyleng;                     \</div>
+<div class="line">  else {                                                                       \</div>
+<div class="line">    yylloc-&gt;last.line   = get_currline(yyscanner);                             \</div>
+<div class="line">    yylloc-&gt;last.column = get_currpos(yyscanner);                              \</div>
+<div class="line">  }</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="bison__compat_8h_source.html#l00010">10</a> of file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
 
@@ -154,22 +154,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    do                                                                  \</div>
-<div class="line">      if (N)                                                            \</div>
-<div class="line">        {                                                               \</div>
-<div class="line">          (Current).first.line   = YYRHSLOC (Rhs, 1).first.line;        \</div>
-<div class="line">          (Current).first.column = YYRHSLOC (Rhs, 1).first.column;      \</div>
-<div class="line">          (Current).last.line    = YYRHSLOC (Rhs, N).last.line;         \</div>
-<div class="line">          (Current).last.column  = YYRHSLOC (Rhs, N).last.column;       \</div>
-<div class="line">        }                                                               \</div>
-<div class="line">      else                                                              \</div>
-<div class="line">        {                                                               \</div>
-<div class="line">          (Current).first.line   = (Current).last.line   =              \</div>
-<div class="line">            YYRHSLOC (Rhs, 0).last.line;                                \</div>
-<div class="line">          (Current).first.column = (Current).last.column =              \</div>
-<div class="line">            YYRHSLOC (Rhs, 0).last.column;                              \</div>
-<div class="line">        }                                                               \</div>
-<div class="line">    while (0)</div>
+<b>Value:</b><div class="fragment"><div class="line">  do                                                                           \</div>
+<div class="line">    if (N) {                                                                   \</div>
+<div class="line">      (Current).first.line   = YYRHSLOC(Rhs, 1).first.line;                    \</div>
+<div class="line">      (Current).first.column = YYRHSLOC(Rhs, 1).first.column;                  \</div>
+<div class="line">      (Current).last.line    = YYRHSLOC(Rhs, N).last.line;                     \</div>
+<div class="line">      (Current).last.column  = YYRHSLOC(Rhs, N).last.column;                   \</div>
+<div class="line">    } <span class="keywordflow">else</span> {                                                                   \</div>
+<div class="line">      (Current).first.line = (Current).last.line = YYRHSLOC(Rhs, 0).last.line; \</div>
+<div class="line">      (Current).first.column                     = (Current).last.column =     \</div>
+<div class="line">          YYRHSLOC(Rhs, 0).last.column;                                        \</div>
+<div class="line">    }                                                                          \</div>
+<div class="line">  while (0)</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="bison__compat_8h_source.html#l00020">20</a> of file <a class="el" href="bison__compat_8h_source.html">bison_compat.h</a>.</p>
 

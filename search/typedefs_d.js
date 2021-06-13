@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['var_5fdecl_1020',['Var_Decl',['../absyn_8h.html#a08b34334e396338d6f9ad9387517f0c1',1,'absyn.h']]],
-  ['var_5fdecl_5flist_1021',['Var_Decl_List',['../absyn_8h.html#a005971885e8f30083d0ded28f78cafa8',1,'absyn.h']]]
+  ['var_5fdecl_1006',['Var_Decl',['../absyn_8h.html#ab7002fcdcacfec36d4a9fb983408c515',1,'absyn.h']]],
+  ['var_5fdecl_5flist_1007',['Var_Decl_List',['../absyn_8h.html#a8284ea15dcecbbc72278bb37b0ab074c',1,'absyn.h']]]
 ];
