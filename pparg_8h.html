@@ -170,7 +170,7 @@ Variables</h2></td></tr>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a>-&gt;hash.table) <span class="keywordflow">return</span> <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="macro_8h.html#a2865d931ded6ab60a78d90fbc1a25113">macro_has</a>(&amp;<a class="code" href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a>-&gt;hash, s_name(sym));</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
-<div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition:</b> <a href="macro_8c_source.html#l00047">macro.c:47</a></div></div>
+<div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition:</b> <a href="macro_8c_source.html#l00043">macro.c:43</a></div></div>
 <div class="ttc" id="amacro_8h_html_a2865d931ded6ab60a78d90fbc1a25113"><div class="ttname"><a href="macro_8h.html#a2865d931ded6ab60a78d90fbc1a25113">macro_has</a></div><div class="ttdeci">Macro macro_has(const Hash, m_str)</div></div>
 <div class="ttc" id="apparg_8h_html_a865a8206007a3214b5f066281e0d53ca"><div class="ttname"><a href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a></div><div class="ttdeci">return macro_rem &amp; ppa</div><div class="ttdef"><b>Definition:</b> <a href="pparg_8h_source.html#l00032">pparg.h:32</a></div></div>
 </div><!-- fragment -->
@@ -234,14 +234,14 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="pparg_8c_source.html#l00064">64</a> of file <a class="el" href="pparg_8c_source.html">pparg.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                     {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  vector_release(&amp;a-&gt;<a class="code" href="structPPArg__.html#a4974ccf48c866ee0980a04d21547777a">path</a>);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordflow">if</span> (a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>.table) {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976">macro_del</a>(&amp;a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    hend(&amp;a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  }</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="pparg_8c_source.html#l00060">60</a> of file <a class="el" href="pparg_8c_source.html">pparg.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                                     {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  vector_release(&amp;a-&gt;<a class="code" href="structPPArg__.html#a4974ccf48c866ee0980a04d21547777a">path</a>);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keywordflow">if</span> (a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>.table) {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976">macro_del</a>(&amp;a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    hend(&amp;a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  }</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
 <div class="ttc" id="amacro_8h_html_a1167d9809947c2ac19b1fd4207f7c976"><div class="ttname"><a href="macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976">macro_del</a></div><div class="ttdeci">void macro_del(const Hash)</div></div>
 <div class="ttc" id="astructPPArg___html_a4974ccf48c866ee0980a04d21547777a"><div class="ttname"><a href="structPPArg__.html#a4974ccf48c866ee0980a04d21547777a">PPArg_::path</a></div><div class="ttdeci">struct Vector_ path</div><div class="ttdef"><b>Definition:</b> <a href="pparg_8h_source.html#l00034">pparg.h:8</a></div></div>
 <div class="ttc" id="astructPPArg___html_a5078c0c7fd6b24935505582faa0ce989"><div class="ttname"><a href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">PPArg_::hash</a></div><div class="ttdeci">struct Hash_ hash</div><div class="ttdef"><b>Definition:</b> <a href="pparg_8h_source.html#l00034">pparg.h:9</a></div></div>
@@ -316,11 +316,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="pparg_8c_source.html#l00059">59</a> of file <a class="el" href="pparg_8c_source.html">pparg.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                                                 {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>.p = mp;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  vector_init(&amp;a-&gt;<a class="code" href="structPPArg__.html#a4974ccf48c866ee0980a04d21547777a">path</a>);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="pparg_8c_source.html#l00055">55</a> of file <a class="el" href="pparg_8c_source.html">pparg.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                                                 {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  a-&gt;<a class="code" href="structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989">hash</a>.p = mp;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  vector_init(&amp;a-&gt;<a class="code" href="structPPArg__.html#a4974ccf48c866ee0980a04d21547777a">path</a>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
 </div><!-- fragment -->
 </div>
 </div>
