@@ -5,13 +5,13 @@
 #define __AST_GETTER
 
 struct AstGetter_ {
-  const m_str name;
-  FILE* f;
-  SymTable* st;
+  const m_str    name;
+  FILE *         f;
+  SymTable *     st;
   struct PPArg_ *ppa;
-  bool global;
+  bool           global;
 };
 
-ANN Ast parse(struct AstGetter_*const);
+ANN Ast parse(struct AstGetter_ *const);
 
 #endif

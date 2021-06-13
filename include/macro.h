@@ -5,27 +5,27 @@
 #define __MACRO
 
 #define MACRO_DEFINED _("macro already defined")
-typedef struct MacroArg_* MacroArg;
-typedef struct Macro_* Macro;
+typedef struct MacroArg_ *MacroArg;
+typedef struct Macro_ *   Macro;
 
 struct MacroArg_ {
-  char* name;
-  GwText text;
-  MacroArg next;
-  Macro orig;
+  char *       name;
+  GwText       text;
+  MacroArg     next;
+  Macro        orig;
   struct pos_t pos;
 };
 
 MacroArg new_macroarg(MemPool p, const m_str);
-void clean_macroarg(const MacroArg);
+void     clean_macroarg(const MacroArg);
 
 struct Macro_ {
-  char* name;
-  GwText* text;
-  MacroArg  base;
-  MacroArg  args;
-  Macro next;
-  m_str file;
+  char *       name;
+  GwText *     text;
+  MacroArg     base;
+  MacroArg     args;
+  Macro        next;
+  m_str        file;
   struct pos_t pos;
 };
 
