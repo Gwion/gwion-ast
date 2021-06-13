@@ -1195,14 +1195,11 @@ ANN static double atof_space(m_str, size_t);
 ANN static double exponent_not(m_str, size_t);
 
 #define SCAN_LINT(a)                                                           \
-  if (scan->ppa->lint)                                                         \
-    a;
+  if (scan->ppa->lint) a;
 #define SCAN_NOLINT if (!scan->ppa->lint)
 #define GWYY_ISLINT ((Scanner *)yyextra)->ppa->lint
 #define GWYY_DOLINT(a)                                                         \
-  if (GWYY_ISLINT) {                                                           \
-    a;                                                                         \
-  }
+  if (GWYY_ISLINT) { a; }
 #define GWYY_LINT(a, b)                                                        \
   if (GWYY_ISLINT) {                                                           \
     yylval->sval = a;                                                          \
@@ -1248,10 +1245,8 @@ ANN static double exponent_not(m_str, size_t);
   GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) {                         \
     const m_bool ret = has_macro(yyscanner, a);                                \
     xfree(a);                                                                  \
-    if (ret < 0)                                                               \
-      yyterminate();                                                           \
-    if (ret)                                                                   \
-      BEGIN(skip);                                                             \
+    if (ret < 0) yyterminate();                                                \
+    if (ret) BEGIN(skip);                                                      \
   }
 #define GWYY_ELSE  GWYY_LINT(NULL, PP_ELSE) BEGIN(macro_toggle(yyscanner));
 #define GWYY_ENDIF GWYY_LINT(NULL, PP_ENDIF) macro_end(yyscanner);
@@ -1408,8 +1403,7 @@ static int input(yyscan_t yyscanner);
  */
 #define ECHO                                                                   \
   do {                                                                         \
-    if (fwrite(yytext, (size_t)yyleng, 1, yyout)) {                            \
-    }                                                                          \
+    if (fwrite(yytext, (size_t)yyleng, 1, yyout)) {}                           \
   } while (0)
 #endif
 
@@ -1423,8 +1417,7 @@ static int input(yyscan_t yyscanner);
     int n;                                                                     \
     for (n = 0; n < max_size && (c = getc(yyin)) != EOF && c != '\n'; ++n)     \
       buf[n] = (char)c;                                                        \
-    if (c == '\n')                                                             \
-      buf[n++] = (char)c;                                                      \
+    if (c == '\n') buf[n++] = (char)c;                                         \
     if (c == EOF && ferror(yyin))                                              \
       YY_FATAL_ERROR("input in flex scanner failed");                          \
     result = n;                                                                \
@@ -1512,14 +1505,11 @@ YY_DECL {
     YY_USER_INIT;
 #endif
 
-    if (!yyg->yy_start)
-      yyg->yy_start = 1; /* first start state */
+    if (!yyg->yy_start) yyg->yy_start = 1; /* first start state */
 
-    if (!yyin)
-      yyin = stdin;
+    if (!yyin) yyin = stdin;
 
-    if (!yyout)
-      yyout = stdout;
+    if (!yyout) yyout = stdout;
 
     if (!YY_CURRENT_BUFFER) {
       yyensure_buffer_stack(yyscanner);
@@ -1562,8 +1552,7 @@ YY_DECL {
         }
         while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state) {
           yy_current_state = (int)yy_def[yy_current_state];
-          if (yy_current_state >= 507)
-            yy_c = yy_meta[yy_c];
+          if (yy_current_state >= 507) yy_c = yy_meta[yy_c];
         }
         yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
         ++yy_cp;
@@ -1669,8 +1658,7 @@ YY_DECL {
 #line 146 "src/gwion.l"
         {
           adjust(yyscanner);
-          if (handle_comma(yyscanner) < 0)
-            yyterminate();
+          if (handle_comma(yyscanner) < 0) yyterminate();
         }
         YY_BREAK
       case 9:
@@ -1687,8 +1675,7 @@ YY_DECL {
         {
           adjust(yyscanner);
           const m_bool ret = handle_rpar(yyscanner);
-          if (ret < 0)
-            yyterminate();
+          if (ret < 0) yyterminate();
           if (ret) {
             BEGIN(INITIAL);
             GWYY_CALL
@@ -1708,8 +1695,7 @@ YY_DECL {
 #line 160 "src/gwion.l"
         {
           adjust(yyscanner);
-          if (!add_macro(yyscanner, yytext))
-            yyterminate();
+          if (!add_macro(yyscanner, yytext)) yyterminate();
           //  YY_USER_ACTION
           BEGIN(define_arg_start);
         }
@@ -1843,10 +1829,8 @@ YY_DECL {
           char c[sz + 2];
           strncpy(c, s, sz + 2);
           const m_bool ret = has_macro(yyscanner, c);
-          if (ret < 0)
-            yyterminate();
-          if (!ret)
-            BEGIN(skip);
+          if (ret < 0) yyterminate();
+          if (!ret) BEGIN(skip);
         }
         YY_BREAK
       case 27:
@@ -2252,8 +2236,7 @@ YY_DECL {
         {
           adjust(yyscanner);
           Scanner *scan = yyget_extra(yyscanner);
-          if (!scan->interp_state)
-            return RBRACE;
+          if (!scan->interp_state) return RBRACE;
           BEGIN(interp);
           return INTERP_EXP;
         }
@@ -2688,8 +2671,7 @@ YY_DECL {
         {
           adjust(yyscanner);
           const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
-          if (ret < 0)
-            yyterminate();
+          if (ret < 0) yyterminate();
           if (!ret) {
             yylval->sym = alloc_sym(yyscanner, yytext);
             return ID;
@@ -2825,8 +2807,7 @@ YY_DECL {
             }
 
             else {
-              if (!yyg->yy_did_buffer_switch_on_eof)
-                YY_NEW_FILE;
+              if (!yyg->yy_did_buffer_switch_on_eof) YY_NEW_FILE;
             }
             break;
           }
@@ -2943,8 +2924,7 @@ static int yy_get_next_buffer(yyscan_t yyscanner) {
       num_to_read = YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
     }
 
-    if (num_to_read > YY_READ_BUF_SIZE)
-      num_to_read = YY_READ_BUF_SIZE;
+    if (num_to_read > YY_READ_BUF_SIZE) num_to_read = YY_READ_BUF_SIZE;
 
     /* Read in more data. */
     YY_INPUT((&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
@@ -3010,8 +2990,7 @@ static yy_state_type yy_get_previous_state(yyscan_t yyscanner) {
     }
     while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state) {
       yy_current_state = (int)yy_def[yy_current_state];
-      if (yy_current_state >= 507)
-        yy_c = yy_meta[yy_c];
+      if (yy_current_state >= 507) yy_c = yy_meta[yy_c];
     }
     yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
   }
@@ -3038,8 +3017,7 @@ static yy_state_type yy_try_NUL_trans(yy_state_type yy_current_state,
   }
   while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state) {
     yy_current_state = (int)yy_def[yy_current_state];
-    if (yy_current_state >= 507)
-      yy_c = yy_meta[yy_c];
+    if (yy_current_state >= 507) yy_c = yy_meta[yy_c];
   }
   yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
   yy_is_jam        = (yy_current_state == 506);
@@ -3131,11 +3109,9 @@ static int input(yyscan_t yyscanner)
         /*FALLTHROUGH*/
 
       case EOB_ACT_END_OF_FILE: {
-        if (yywrap(yyscanner))
-          return 0;
+        if (yywrap(yyscanner)) return 0;
 
-        if (!yyg->yy_did_buffer_switch_on_eof)
-          YY_NEW_FILE;
+        if (!yyg->yy_did_buffer_switch_on_eof) YY_NEW_FILE;
 #ifdef __cplusplus
         return yyinput(yyscanner);
 #else
@@ -3190,8 +3166,7 @@ void yy_switch_to_buffer(YY_BUFFER_STATE new_buffer, yyscan_t yyscanner) {
    *		yypush_buffer_state(new_buffer);
    */
   yyensure_buffer_stack(yyscanner);
-  if (YY_CURRENT_BUFFER == new_buffer)
-    return;
+  if (YY_CURRENT_BUFFER == new_buffer) return;
 
   if (YY_CURRENT_BUFFER) {
     /* Flush out information for old buffer. */
@@ -3230,8 +3205,7 @@ YY_BUFFER_STATE yy_create_buffer(FILE *file, int size, yyscan_t yyscanner) {
   YY_BUFFER_STATE b;
 
   b = (YY_BUFFER_STATE)yyalloc(sizeof(struct yy_buffer_state), yyscanner);
-  if (!b)
-    YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
+  if (!b) YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
 
   b->yy_buf_size = size;
 
@@ -3256,14 +3230,12 @@ YY_BUFFER_STATE yy_create_buffer(FILE *file, int size, yyscan_t yyscanner) {
 void yy_delete_buffer(YY_BUFFER_STATE b, yyscan_t yyscanner) {
   struct yyguts_t *yyg = (struct yyguts_t *)yyscanner;
 
-  if (!b)
-    return;
+  if (!b) return;
 
   if (b == YY_CURRENT_BUFFER) /* Not sure if we should pop here. */
     YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE)0;
 
-  if (b->yy_is_our_buffer)
-    yyfree((void *)b->yy_ch_buf, yyscanner);
+  if (b->yy_is_our_buffer) yyfree((void *)b->yy_ch_buf, yyscanner);
 
   yyfree((void *)b, yyscanner);
 }
@@ -3303,8 +3275,7 @@ static void yy_init_buffer(YY_BUFFER_STATE b, FILE *file, yyscan_t yyscanner)
  */
 void yy_flush_buffer(YY_BUFFER_STATE b, yyscan_t yyscanner) {
   struct yyguts_t *yyg = (struct yyguts_t *)yyscanner;
-  if (!b)
-    return;
+  if (!b) return;
 
   b->yy_n_chars = 0;
 
@@ -3320,8 +3291,7 @@ void yy_flush_buffer(YY_BUFFER_STATE b, yyscan_t yyscanner) {
   b->yy_at_bol        = 1;
   b->yy_buffer_status = YY_BUFFER_NEW;
 
-  if (b == YY_CURRENT_BUFFER)
-    yy_load_buffer_state(yyscanner);
+  if (b == YY_CURRENT_BUFFER) yy_load_buffer_state(yyscanner);
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -3332,8 +3302,7 @@ void yy_flush_buffer(YY_BUFFER_STATE b, yyscan_t yyscanner) {
  */
 void yypush_buffer_state(YY_BUFFER_STATE new_buffer, yyscan_t yyscanner) {
   struct yyguts_t *yyg = (struct yyguts_t *)yyscanner;
-  if (new_buffer == NULL)
-    return;
+  if (new_buffer == NULL) return;
 
   yyensure_buffer_stack(yyscanner);
 
@@ -3346,8 +3315,7 @@ void yypush_buffer_state(YY_BUFFER_STATE new_buffer, yyscan_t yyscanner) {
   }
 
   /* Only push if top exists. Otherwise, replace top. */
-  if (YY_CURRENT_BUFFER)
-    yyg->yy_buffer_stack_top++;
+  if (YY_CURRENT_BUFFER) yyg->yy_buffer_stack_top++;
   YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
   /* copied from yy_switch_to_buffer. */
@@ -3361,13 +3329,11 @@ void yypush_buffer_state(YY_BUFFER_STATE new_buffer, yyscan_t yyscanner) {
  */
 void yypop_buffer_state(yyscan_t yyscanner) {
   struct yyguts_t *yyg = (struct yyguts_t *)yyscanner;
-  if (!YY_CURRENT_BUFFER)
-    return;
+  if (!YY_CURRENT_BUFFER) return;
 
   yy_delete_buffer(YY_CURRENT_BUFFER, yyscanner);
   YY_CURRENT_BUFFER_LVALUE = NULL;
-  if (yyg->yy_buffer_stack_top > 0)
-    --yyg->yy_buffer_stack_top;
+  if (yyg->yy_buffer_stack_top > 0) --yyg->yy_buffer_stack_top;
 
   if (YY_CURRENT_BUFFER) {
     yy_load_buffer_state(yyscanner);
@@ -3437,8 +3403,7 @@ YY_BUFFER_STATE yy_scan_buffer(char *base, yy_size_t size, yyscan_t yyscanner) {
     return NULL;
 
   b = (YY_BUFFER_STATE)yyalloc(sizeof(struct yy_buffer_state), yyscanner);
-  if (!b)
-    YY_FATAL_ERROR("out of dynamic memory in yy_scan_buffer()");
+  if (!b) YY_FATAL_ERROR("out of dynamic memory in yy_scan_buffer()");
 
   b->yy_buf_size = (int)(size - 2); /* "- 2" to take care of EOB's */
   b->yy_buf_pos = b->yy_ch_buf = base;
@@ -3485,16 +3450,14 @@ YY_BUFFER_STATE yy_scan_bytes(const char *yybytes, int _yybytes_len,
   /* Get memory for full buffer, including space for trailing EOB's. */
   n   = (yy_size_t)(_yybytes_len + 2);
   buf = (char *)yyalloc(n, yyscanner);
-  if (!buf)
-    YY_FATAL_ERROR("out of dynamic memory in yy_scan_bytes()");
+  if (!buf) YY_FATAL_ERROR("out of dynamic memory in yy_scan_bytes()");
 
   for (i = 0; i < _yybytes_len; ++i) buf[i] = yybytes[i];
 
   buf[_yybytes_len] = buf[_yybytes_len + 1] = YY_END_OF_BUFFER_CHAR;
 
   b = yy_scan_buffer(buf, n, yyscanner);
-  if (!b)
-    YY_FATAL_ERROR("bad buffer in yy_scan_bytes()");
+  if (!b) YY_FATAL_ERROR("bad buffer in yy_scan_bytes()");
 
   /* It's okay to grow etc. this buffer, and we should throw it
    * away when we're done.
@@ -3546,8 +3509,7 @@ YY_EXTRA_TYPE yyget_extra(yyscan_t yyscanner) {
 int yyget_column(yyscan_t yyscanner) {
   struct yyguts_t *yyg = (struct yyguts_t *)yyscanner;
 
-  if (!YY_CURRENT_BUFFER)
-    return 0;
+  if (!YY_CURRENT_BUFFER) return 0;
 
   return yycolumn;
 }
@@ -3581,8 +3543,7 @@ void yyset_column(int _column_no, yyscan_t yyscanner) {
   struct yyguts_t *yyg = (struct yyguts_t *)yyscanner;
 
   /* column is only valid if an input buffer exists. */
-  if (!YY_CURRENT_BUFFER)
-    YY_FATAL_ERROR("yyset_column called with no buffer");
+  if (!YY_CURRENT_BUFFER) YY_FATAL_ERROR("yyset_column called with no buffer");
 
   yycolumn = _column_no;
 }
@@ -3764,8 +3725,7 @@ ANN static m_uint atoll_space(m_str str, size_t sz) {
   char base[sz + 1], *tmp = base;
   for (size_t i = 0; i < sz; ++i) {
     const char c = str[i];
-    if (c != ' ')
-      *tmp++ = c;
+    if (c != ' ') *tmp++ = c;
   }
   *tmp = '\0';
   return atoll(base);
@@ -3775,8 +3735,7 @@ ANN static double atof_space(m_str str, size_t sz) {
   char base[sz + 1], *tmp = base;
   for (size_t i = 0; i < sz; ++i) {
     const char c = str[i];
-    if (c != ' ')
-      *tmp++ = c;
+    if (c != ' ') *tmp++ = c;
   }
   *tmp = '\0';
   return atof(base);
@@ -3786,8 +3745,7 @@ ANN static double exponent_not(m_str str, size_t sz) {
   char base[sz + 1], *tmp = base;
   for (size_t i = 0; i < sz; ++i) {
     const char c = str[i];
-    if (c != ' ')
-      *tmp++ = c;
+    if (c != ' ') *tmp++ = c;
   }
   *tmp = '\0';
   return strtod(base, NULL);
@@ -3924,8 +3882,7 @@ static inline m_bool scan_rem_macro(Scanner *scan, const m_str id) {
   const Symbol sym = insert_symbol(scan->st, id);
   if (macro_rem(scan->pp->macros, id)) {
     const m_bool ret = ppa_rem_macro(scan->ppa, sym);
-    if (!ret)
-      vector_add(&scan->pp->global_undef, (vtype)sym);
+    if (!ret) vector_add(&scan->pp->global_undef, (vtype)sym);
     return ret;
   }
   return GW_OK;
@@ -3937,8 +3894,7 @@ static m_bool rem_macro(void *data, const m_str str) {
   const m_str  id  = strip_comment(scan, str + 6);
   const m_bool ret = scan_rem_macro(scan, id);
   xfree(id);
-  if (ret > 0)
-    return GW_OK;
+  if (ret > 0) return GW_OK;
   lexer_error(data, "Undefined", ERRORCODE(104));
   return GW_ERROR;
 }
@@ -3948,22 +3904,18 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
   const m_int  ret = vector_size(&scan->pp->global_undef)
                          ? vector_find(&scan->pp->global_undef, (vtype)sym)
                          : GW_ERROR;
-  if (ret != GW_ERROR)
-    return NULL;
+  if (ret != GW_ERROR) return NULL;
   const Macro global = ppa_has_macro(scan->ppa, insert_symbol(scan->st, id));
-  if (global)
-    return global;
+  if (global) return global;
   return macro_has(scan->pp->macros, id);
 }
 
 static m_str pp_data(void *data, const m_str id) {
   Scanner *   scan = yyget_extra(data);
   const m_str arg  = get_arg_text(data, id);
-  if (arg)
-    return arg;
+  if (arg) return arg;
   Macro e = scan_has_macro(scan, id);
-  if (e)
-    return e->text->str;
+  if (e) return e->text->str;
   return id;
 }
 
@@ -4001,8 +3953,7 @@ static m_str get_current_filename(void *data) {
   for (m_uint i = vector_size(&scan->pp->filename) + 1; --i;) {
     const struct PPState_ *ppstate =
         (struct PPState_ *)vector_at(&scan->pp->filename, i - 1);
-    if (*ppstate->filename != '@')
-      return ppstate->filename;
+    if (*ppstate->filename != '@') return ppstate->filename;
   }
   return NULL;
 }
@@ -4038,13 +3989,11 @@ static m_str macro_data(void *data, const m_bool call) {
     do {
       const m_str str = call ? args->text.str : args->name;
       len += strlen(str);
-      if (args->next)
-        len += 2;
+      if (args->next) len += 2;
     } while ((args = args->next));
     len += 2;
   }
-  if (!call && e->text->str)
-    len += strlen(e->text->str) + 1;
+  if (!call && e->text->str) len += strlen(e->text->str) + 1;
   char   c[len];
   size_t offset = elen;
   strcpy(c, e->name);
@@ -4055,8 +4004,7 @@ static m_str macro_data(void *data, const m_bool call) {
       const m_str str = call ? args->text.str : args->name;
       strcpy(c + offset, str);
       offset += strlen(str);
-      if (call)
-        text_release(&args->text);
+      if (call) text_release(&args->text);
       if (args->next) {
         strcpy(c + offset, ", ");
         offset += 2;
@@ -4142,8 +4090,7 @@ static m_bool is_macro(void *data, const m_str s, YY_BUFFER_STATE handle) {
         if (arg->text.str) {
           if (!is_str) {
             SCAN_NOLINT {
-              if (ppstate->pos.first.line == arg->pos.line)
-                break;
+              if (ppstate->pos.first.line == arg->pos.line) break;
               const m_str str = concat("@argument", arg->name);
               gwpp_stack(scan, handle, arg->orig, str,
                          pptype_handle); // should be reference
@@ -4198,8 +4145,7 @@ static m_bool is_macro(void *data, const m_str s, YY_BUFFER_STATE handle) {
     return 1;
   } else if (!strcmp(id, "__VA_ARGS__")) { // vararg macro with no args
     Macro e = scan_has_macro(scan, ppstate->filename);
-    if (!e)
-      return 0;
+    if (!e) return 0;
     const m_str str = concat("@argument", "__VA_ARGS__");
     gwpp_stack(scan, handle, NULL, str, pptype_handle);
     scan->pos = e->pos;
@@ -4211,16 +4157,13 @@ static m_bool is_macro(void *data, const m_str s, YY_BUFFER_STATE handle) {
 
 static m_str get_arg_text(void *data, const m_str id) {
   const Scanner *scan = yyget_extra(data);
-  if (!scan->pp->entry)
-    return NULL;
-  if (vector_size(&scan->pp->filename) == 1)
-    return NULL;
+  if (!scan->pp->entry) return NULL;
+  if (vector_size(&scan->pp->filename) == 1) return NULL;
   const struct PPState_ *ppstate =
       (struct PPState_ *)vector_back(&scan->pp->filename);
   MacroArg arg = ppstate->arg;
   while (arg) {
-    if (!strcmp(id, arg->name))
-      return arg->text.str ?: "";
+    if (!strcmp(id, arg->name)) return arg->text.str ?: "";
     arg = arg->next;
   }
   return NULL;
@@ -4239,10 +4182,8 @@ ANN void clear_buffer(void *state, void *scan) {
   struct yyguts_t *     yyg     = (struct yyguts_t *)scan;
   YY_BUFFER_STATE       curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   YY_BUFFER_STATE       base = yyg->yy_buffer_stack[0];
-  if (ppstate->type == pptype_file)
-    fclose(ppstate->file);
-  if (fini != base && fini != curr)
-    yy_delete_buffer(fini, scan);
+  if (ppstate->type == pptype_file) fclose(ppstate->file);
+  if (fini != base && fini != curr) yy_delete_buffer(fini, scan);
   xfree(ppstate->filename);
 }
 
@@ -4261,8 +4202,7 @@ int yywrap(void *data) {
       fclose(ppstate->file);
     else if (ppstate->type == pptype_arg && ppstate->arg)
       clean_macroarg(ppstate->arg);
-    if (strlen(ppstate->filename))
-      xfree(ppstate->filename);
+    if (strlen(ppstate->filename)) xfree(ppstate->filename);
     scan->pos       = ppstate->pos.last;
     void *yyscanner = data;
     YY_USER_ACTION
@@ -4301,8 +4241,7 @@ static m_bool handle_rpar(void *data) {
     lexer_error(data, "Invalid ')' token", ERRORCODE(109));
     return GW_ERROR;
   }
-  if (--scan->pp->npar)
-    return 0;
+  if (--scan->pp->npar) return 0;
   if (scan->pp->entry->args->next) {
     struct PPState_ *ppstate =
         (struct PPState_ *)vector_back(&scan->pp->filename);

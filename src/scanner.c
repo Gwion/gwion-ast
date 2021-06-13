@@ -29,10 +29,8 @@ ANN static void free_scanner(Scanner *scan) {
 }
 
 ANN static Ast get_ast(MemPool mp, Scanner *s) {
-  if (!gwion_parse(s))
-    return s->ppa->ast;
-  if (s->ppa->ast)
-    free_ast(mp, s->ppa->ast);
+  if (!gwion_parse(s)) return s->ppa->ast;
+  if (s->ppa->ast) free_ast(mp, s->ppa->ast);
   return NULL;
 }
 
@@ -79,8 +77,7 @@ ANN static void secondary(Scanner *scan) {
 ANN2(1, 2)
 int scanner_error(Scanner *scan, const char *main, const char *explain,
                   const char *fix, const loc_t pos, const uint error_code) {
-  if (scan->error)
-    return 0;
+  if (scan->error) return 0;
   const struct PPState_ *ppstate =
       (struct PPState_ *)vector_back(&scan->pp->filename);
   const m_str filename = get_filename(scan, ppstate);
@@ -90,8 +87,7 @@ int scanner_error(Scanner *scan, const char *main, const char *explain,
   return 0;
 }
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos) {
-  if (scan->error)
-    return 0;
+  if (scan->error) return 0;
   const struct PPState_ *ppstate =
       (struct PPState_ *)vector_back(&scan->pp->filename);
   const m_str filename = get_filename(scan, ppstate);

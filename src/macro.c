@@ -9,14 +9,12 @@ MacroArg new_macroarg(MemPool p, const m_str name) {
 }
 
 void clean_macroarg(const MacroArg a) {
-  if (a->next)
-    clean_macroarg(a->next);
+  if (a->next) clean_macroarg(a->next);
   text_release(&a->text);
 }
 
 static void free_args(MemPool p, const MacroArg a) {
-  if (a->next)
-    free_args(p, a->next);
+  if (a->next) free_args(p, a->next);
   text_release(&a->text);
   free_mstr(p, a->name);
   mp_free(p, MacroArg, a);
@@ -24,13 +22,11 @@ static void free_args(MemPool p, const MacroArg a) {
 
 void free_entry(MemPool p, void *data) {
   const Macro s = (Macro)data;
-  if (s->next)
-    free_entry(p, s->next);
+  if (s->next) free_entry(p, s->next);
   free_mstr(p, s->name);
   text_release(s->text);
   mp_free(p, GwText, s->text);
-  if (s->base)
-    free_args(p, s->base);
+  if (s->base) free_args(p, s->base);
   mp_free(p, Macro, s);
 }
 

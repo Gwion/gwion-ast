@@ -98,8 +98,8 @@ typedef struct Type_Decl_ {
   Fptr_Def           fptr;
   struct loc_t_      pos; ///< position
   uint8_t            option;
-  uint8_t            ref;
   ae_flag            flag;
+  bool               ref;
 } Type_Decl;
 
 ANEW ANN AST_NEW(Type_Decl *, type_decl, const Symbol, const struct loc_t_ pos);

@@ -8,15 +8,13 @@ ANN static char *get_src(const char *filename, const loc_t loc) {
   size_t len  = 0;
   uint   i    = 0;
   FILE * f    = fopen(filename, "r");
-  if (!f)
-    return NULL;
+  if (!f) return NULL;
   fseek(f, SEEK_SET, 0);
   ssize_t ret;
   while ((ret = getline(&line, &len, f)) != -1 && ++i < loc.first.line)
     ;
   fclose(f);
-  if (ret != -1)
-    return line;
+  if (ret != -1) return line;
   return NULL;
 }
 
@@ -45,10 +43,8 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
     color[len] = 0;
   perr_print_line_number(printer, err, color);
   gw_err("%s\n", main);
-  if (explain)
-    gw_err("%s\n", explain);
-  if (fix)
-    gw_err("%s\n", fix);
+  if (explain) gw_err("%s\n", explain);
+  if (fix) gw_err("%s\n", fix);
 }
 
 void gwerr_basic(const char *main, const char *explain, const char *fix,

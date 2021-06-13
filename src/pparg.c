@@ -9,8 +9,7 @@ ANN static Macro pparg_def(struct PPArg_ *ppa, const m_str str) {
   strncpy(base, str, idx);
   base[idx] = '\0';
   Macro m   = macro_add(&ppa->hash, base);
-  if (m)
-    return m;
+  if (m) return m;
   gw_err(MACRO_DEFINED);
   return NULL;
 }
@@ -43,15 +42,12 @@ ANN static GwText *pparg_body(struct PPArg_ *ppa, const m_str str) {
 }
 
 ANN2(1) m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
-  if (!ppa->hash.table)
-    hini(&ppa->hash, 127);
+  if (!ppa->hash.table) hini(&ppa->hash, 127);
   DECL_OB(const Macro, m, = pparg_def(ppa, str));
   const m_str arg = strchr(str, '(');
-  if (arg)
-    m->base = pparg_arg(ppa, arg + 1);
+  if (arg) m->base = pparg_arg(ppa, arg + 1);
   const m_str body = strchr(str, '=');
-  if (body)
-    m->text = pparg_body(ppa, body + 1);
+  if (body) m->text = pparg_body(ppa, body + 1);
   m->file = "command line";
   return GW_OK;
 }

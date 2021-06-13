@@ -105,7 +105,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
   TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
-%type<uval> option ref
+%type<uval> option
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<fbflag> arg_type
@@ -575,8 +575,6 @@ op_def:  operator op_base code_stmt
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
 
-ref: "&" { $$ = 1; } | "&" ref { $$ = 1 + $2; };
-
 type_decl_base
   : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
   | LPAREN flag type_decl_empty decl_template fptr_args arg_type func_effects RPAREN {
@@ -595,7 +593,7 @@ type_decl_base
 
 type_decl_tmpl
   : type_decl_base call_template { $$ = $1; $$->types = $2; }
-  | ref type_decl_base call_template { $$ = $2; $$->ref = $1; $$->types = $3; }
+  | "&" type_decl_base call_template { $$ = $2; $$->ref = true; $$->types = $3; }
   ;
 
 type_decl_noflag
