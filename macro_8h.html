@@ -187,7 +187,7 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="macro_8c_source.html#l00011">11</a> of file <a class="el" href="macro_8c_source.html">macro.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                                      {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <span class="keywordflow">if</span>(a-&gt;next)</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <span class="keywordflow">if</span> (a-&gt;next)</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <a class="code" href="macro_8c.html#a0ba603dde9a208ce8c33c3b9c9b68988">clean_macroarg</a>(a-&gt;next);</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  text_release(&amp;a-&gt;text);</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;}</div>
@@ -326,8 +326,8 @@ Functions</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="macro_8c_source.html#l00004">4</a> of file <a class="el" href="macro_8c_source.html">macro.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;                                                   {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;  <span class="keyword">const</span> <a class="code" href="structMacroArg__.html">MacroArg</a> a = mp_calloc(p, <a class="code" href="structMacroArg__.html">MacroArg</a>);</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  a-&gt;<a class="code" href="structMacroArg__.html#a9389ef68dd2ee66786917a83c080c3ba">name</a> = mstrdup(p, name);</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  a-&gt;<a class="code" href="structMacroArg__.html#af76f0fd6a9f85b3377ca85781997236a">text</a>.mp = p;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  a-&gt;<a class="code" href="structMacroArg__.html#a9389ef68dd2ee66786917a83c080c3ba">name</a>          = mstrdup(p, name);</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  a-&gt;<a class="code" href="structMacroArg__.html#af76f0fd6a9f85b3377ca85781997236a">text</a>.mp       = p;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  <span class="keywordflow">return</span> a;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;}</div>
 <div class="ttc" id="astructMacroArg___html"><div class="ttname"><a href="structMacroArg__.html">MacroArg_</a></div><div class="ttdef"><b>Definition:</b> <a href="macro_8h_source.html#l00011">macro.h:11</a></div></div>

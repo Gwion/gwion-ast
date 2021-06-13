@@ -121,16 +121,16 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00035">35</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
-<div class="fragment"><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                                {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <a class="code" href="pp_8c.html#aee06fac92dbf124e031edf293c8040e5">pp_post</a>(pp, data);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">global_undef</a>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  hend(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  mp_free(p, Hash, pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#ab9cd58c8674b86ba7b287eb4804b3aa2">data</a>);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  mp_free(p, <a class="code" href="structPP__.html">PP</a>, pp);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00036">36</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                                                {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <a class="code" href="pp_8c.html#aee06fac92dbf124e031edf293c8040e5">pp_post</a>(pp, data);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">global_undef</a>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  hend(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  mp_free(p, Hash, pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  vector_release(&amp;pp-&gt;<a class="code" href="structPP__.html#ab9cd58c8674b86ba7b287eb4804b3aa2">data</a>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  mp_free(p, <a class="code" href="structPP__.html">PP</a>, pp);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
 <div class="ttc" id="app_8c_html_aee06fac92dbf124e031edf293c8040e5"><div class="ttname"><a href="pp_8c.html#aee06fac92dbf124e031edf293c8040e5">pp_post</a></div><div class="ttdeci">static void pp_post(PP *pp, void *data)</div><div class="ttdef"><b>Definition:</b> <a href="pp_8c_source.html#l00023">pp.c:23</a></div></div>
 <div class="ttc" id="astructPP___html"><div class="ttname"><a href="structPP__.html">PP_</a></div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00026">pp.h:26</a></div></div>
 <div class="ttc" id="astructPP___html_a2089b211cc14b266ee663e25d188d384"><div class="ttname"><a href="structPP__.html#a2089b211cc14b266ee663e25d188d384">PP_::macros</a></div><div class="ttdeci">struct Hash_ * macros</div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00028">pp.h:28</a></div></div>
@@ -174,7 +174,7 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00011">11</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                                                              {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <a class="code" href="structPP__.html">PP</a>* pp = (<a class="code" href="structPP__.html">PP</a>*)mp_calloc(p, <a class="code" href="structPP__.html">PP</a>);</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <a class="code" href="structPP__.html">PP</a> *pp = (<a class="code" href="structPP__.html">PP</a> *)mp_calloc(p, <a class="code" href="structPP__.html">PP</a>);</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  vector_init(&amp;pp-&gt;<a class="code" href="structPP__.html#ab9cd58c8674b86ba7b287eb4804b3aa2">data</a>);</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a> = (Hash)mp_calloc(p, Hash);</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  hini(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>, size);</div>
@@ -216,8 +216,8 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00005">5</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                                                                  {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  <span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a> * ppstate = mp_calloc(p, PPState);</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  ppstate-&gt;<a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a> = <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a>;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  <span class="keyword">struct </span><a class="code" href="structPPState__.html">PPState_</a> *ppstate = mp_calloc(p, PPState);</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  ppstate-&gt;<a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a>        = <a class="code" href="structPPState__.html#aafe86e38061b80b33bc86e1eefc408c5">filename</a>;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  <span class="keywordflow">return</span> ppstate;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;};</div>
 <div class="ttc" id="astructPPState___html"><div class="ttname"><a href="structPPState__.html">PPState_</a></div><div class="ttdef"><b>Definition:</b> <a href="pp_8h_source.html#l00014">pp.h:14</a></div></div>
@@ -261,16 +261,17 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="pp_8c_source.html#l00023">23</a> of file <a class="el" href="pp_8c_source.html">pp.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                        {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keywordflow">for</span>(m_uint i = 1; i &lt; vector_size(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>); ++i) {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> *ppstate = (<span class="keywordtype">void</span>*)vector_at(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>, i);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keywordflow">for</span> (m_uint i = 1; i &lt; vector_size(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>); ++i) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> *ppstate = (<span class="keywordtype">void</span> *)vector_at(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>, i);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="bison__compat_8h.html#aa18e3f737f350057a57b2834ec49d400">clear_buffer</a>(ppstate, data);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  }</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  mp_free(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>-&gt;p, PPState, (<span class="keyword">struct</span> <a class="code" href="structPPState__.html">PPState_</a>*)vector_front(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>));</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  pp-&gt;<a class="code" href="structPP__.html#a382a5601e6074f97756fc1e6e6f96e02">entry</a> = <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  vector_clear(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  vector_clear(&amp;pp-&gt;<a class="code" href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">global_undef</a>);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <a class="code" href="macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976">macro_del</a>(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;}</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  mp_free(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>-&gt;p, PPState,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;          (<span class="keyword">struct</span> <a class="code" href="structPPState__.html">PPState_</a> *)vector_front(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>));</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  pp-&gt;<a class="code" href="structPP__.html#a382a5601e6074f97756fc1e6e6f96e02">entry</a> = <a class="code" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  vector_clear(&amp;pp-&gt;<a class="code" href="structPP__.html#af9536f140696eb244b97e11040638065">filename</a>);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  vector_clear(&amp;pp-&gt;<a class="code" href="structPP__.html#a8a9999477f7bb04115d316bf7b3368f1">global_undef</a>);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <a class="code" href="macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976">macro_del</a>(pp-&gt;<a class="code" href="structPP__.html#a2089b211cc14b266ee663e25d188d384">macros</a>);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
 <div class="ttc" id="abison__compat_8h_html_aa18e3f737f350057a57b2834ec49d400"><div class="ttname"><a href="bison__compat_8h.html#aa18e3f737f350057a57b2834ec49d400">clear_buffer</a></div><div class="ttdeci">ANN void clear_buffer(void *state, void *scan)</div></div>
 <div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition:</b> <a href="macro_8c_source.html#l00047">macro.c:47</a></div></div>
 <div class="ttc" id="amacro_8h_html_a1167d9809947c2ac19b1fd4207f7c976"><div class="ttname"><a href="macro_8h.html#a1167d9809947c2ac19b1fd4207f7c976">macro_del</a></div><div class="ttdeci">void macro_del(const Hash)</div></div>
