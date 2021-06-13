@@ -31,13 +31,28 @@ static inline const char* get_filename(const char *filename) {
     filename + sz + 1 : filename;
 }
 
+ANN2(1,2,3) static void nosrc(const perr_printer_t* printer, const perr_t* err,
+      const char *main, const char *explain, const char *fix) {
+  size_t len;
+  char base[16];
+  char color[16];
+  strcpy(base, "+R");
+  const int status = tcol_color_parse(color, 16, base, 2, &len);
+  if (status != TermColorErrorNone)
+     color[0] = 0;
+  else
+    color[len] = 0;
+  perr_print_line_number(printer, err, color);
+  gw_err("%s\n", main);
+  if(explain)
+    gw_err("%s\n", explain);
+  if(fix)
+    gw_err("%s\n", fix);
+}
+
 void gwerr_basic(const char *main, const char *explain, const char *fix,
             const char *filename, const loc_t loc, const uint error_code) {
   char * line = get_src(filename, loc);
-  if(!line) {
-    gw_err("%s\n", main);
-    return;
-  }
 
   perr_printer_t printer;
   perr_printer_init(
@@ -48,42 +63,23 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
 
   printer.rounded = true;
 
-  // Create a faux error
   const perr_t err = PERR_Error(
-          PERR_ERROR /* error */,
-            PERR_Str(loc.first.line, line) /* location of error */,
-            PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column) /* occurs at src[15] through src[19] */,
+          PERR_ERROR,
+            PERR_Str(loc.first.line, line),
+            PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column),
             main, explain, fix, error_code, get_filename(filename)
         );
-  perr_print_error(&printer, &err);
-  xfree(line);
+
+  if(line) {
+    perr_print_error(&printer, &err);
+    xfree(line);
+  } else
+    nosrc(&printer, &err, main, explain, fix);
 }
 
 ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc) {
   perr_printer_t printer;
   char * line = get_src(filename, loc);
-
-  if(!line) {
-    perr_printer_init(
-      &printer, stderr, NULL,
-      true, // use utf8,
-      perr_runner_secondary_style
-    );
-    const perr_t err= {
-        .filename=filename,
-        .error_position=PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column)
-    };
-    size_t len;
-    char color[3];
-    const int status = tcol_color_parse(color, 16, "+R", 2, &len);
-    if (status != TermColorErrorNone)
-       color[0] = 0;
-    else
-    color[len] = 0;
-    perr_print_line_number(&printer, &err, color);
-    gw_err("%s\n", main);
-    return;
-  }
 
   perr_printer_init(
     &printer, stderr, line,
@@ -92,13 +88,15 @@ ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc
     );
   printer.rounded = true;
 
-  // Create a faux error
   const perr_t err = PERR_Secondary(
-          PERR_WARNING /* error */,
-            PERR_Str(loc.first.line, line) /* location of error */,
-            PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column) /* occurs at src[15] through src[19] */,
+          PERR_WARNING,
+            PERR_Str(loc.first.line, line),
+            PERR_Pos(loc.first.column-1, loc.last.column - loc.first.column),
             main, NULL, get_filename(filename)
         );
-  perr_print_error(&printer, &err);
-  xfree(line);
+  if(line) {
+    perr_print_error(&printer, &err);
+    xfree(line);
+  } else
+    nosrc(&printer, &err, main, NULL, NULL);
 }
