@@ -19,7 +19,7 @@ typedef struct Scanner_ {
 } Scanner;
 
 ANN2(1, 2)
-int scanner_error(Scanner *scan, const char *main, const char *explain,
-                  const char *fix, const loc_t pos, uint error_code);
+int     scanner_error(Scanner *scan, const char *main, const char *explain,
+                      const char *fix, const loc_t pos, uint error_code);
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos);
 #endif

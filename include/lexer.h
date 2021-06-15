@@ -715,7 +715,7 @@ extern int yylex(YYSTYPE *yylval_param, YYLTYPE *yylloc_param,
 #undef yyTABLES_NAME
 #endif
 
-#line 368 "src/gwion.l"
+#line 369 "src/gwion.l"
 
 #line 723 "include/lexer.h"
 #undef gwion_IN_HEADER

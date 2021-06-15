@@ -2544,6 +2544,7 @@ YY_DECL {
         YY_RULE_SETUP
 #line 307 "src/gwion.l"
         {
+          assert(yyleng > 0);
           adjust(yyscanner);
           char     c[yyleng], *buf = c;
           Scanner *scan = yyget_extra(yyscanner);
@@ -2568,7 +2569,7 @@ YY_DECL {
         YY_BREAK
       case 111:
         YY_RULE_SETUP
-#line 329 "src/gwion.l"
+#line 330 "src/gwion.l"
         {
           adjust(yyscanner);
           ++yytext;
@@ -2585,7 +2586,7 @@ YY_DECL {
         YY_BREAK
       case 112:
         YY_RULE_SETUP
-#line 343 "src/gwion.l"
+#line 344 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->lval = get_currline(yyscanner);
@@ -2594,7 +2595,7 @@ YY_DECL {
         YY_BREAK
       case 113:
         YY_RULE_SETUP
-#line 344 "src/gwion.l"
+#line 345 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->sval = get_currfile(yyscanner);
@@ -2603,7 +2604,7 @@ YY_DECL {
         YY_BREAK
       case 114:
         YY_RULE_SETUP
-#line 346 "src/gwion.l"
+#line 347 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->lval = htol(yytext);
@@ -2612,7 +2613,7 @@ YY_DECL {
         YY_BREAK
       case 115:
         YY_RULE_SETUP
-#line 347 "src/gwion.l"
+#line 348 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->lval = (m_uint)atoll(yytext);
@@ -2621,7 +2622,7 @@ YY_DECL {
         YY_BREAK
       case 116:
         YY_RULE_SETUP
-#line 348 "src/gwion.l"
+#line 349 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->lval = (m_uint)atoll_space(yytext, yyleng);
@@ -2630,7 +2631,7 @@ YY_DECL {
         YY_BREAK
       case 117:
         YY_RULE_SETUP
-#line 349 "src/gwion.l"
+#line 350 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->fval = (m_float)exponent_not(yytext, yyleng);
@@ -2639,7 +2640,7 @@ YY_DECL {
         YY_BREAK
       case 118:
         YY_RULE_SETUP
-#line 350 "src/gwion.l"
+#line 351 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->fval = (m_float)atof_space(yytext, yyleng);
@@ -2648,7 +2649,7 @@ YY_DECL {
         YY_BREAK
       case 119:
         YY_RULE_SETUP
-#line 351 "src/gwion.l"
+#line 352 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->sym = alloc_sym(yyscanner, yytext);
@@ -2657,7 +2658,7 @@ YY_DECL {
         YY_BREAK
       case 120:
         YY_RULE_SETUP
-#line 352 "src/gwion.l"
+#line 353 "src/gwion.l"
         {
           adjust(yyscanner);
           yytext[yyleng - 1] = '\0';
@@ -2667,7 +2668,7 @@ YY_DECL {
         YY_BREAK
       case 121:
         YY_RULE_SETUP
-#line 353 "src/gwion.l"
+#line 354 "src/gwion.l"
         {
           adjust(yyscanner);
           const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
@@ -2682,7 +2683,7 @@ YY_DECL {
       case 122:
         /* rule 122 can match eol */
         YY_RULE_SETUP
-#line 365 "src/gwion.l"
+#line 366 "src/gwion.l"
         {
           adjust(yyscanner);
           yylval->sval = alloc_str(yyscanner, strip_lit(yytext));
@@ -2691,7 +2692,7 @@ YY_DECL {
         YY_BREAK
       case 123:
         YY_RULE_SETUP
-#line 366 "src/gwion.l"
+#line 367 "src/gwion.l"
         {
           adjust(yyscanner);
           lexer_error(yyscanner, _("Stray in program"), 102);
@@ -2700,10 +2701,10 @@ YY_DECL {
         YY_BREAK
       case 124:
         YY_RULE_SETUP
-#line 368 "src/gwion.l"
+#line 369 "src/gwion.l"
         ECHO;
         YY_BREAK
-#line 2519 "src/lexer.c"
+#line 2520 "src/lexer.c"
       case YY_STATE_EOF(INITIAL):
       case YY_STATE_EOF(comment):
       case YY_STATE_EOF(define):
@@ -3714,7 +3715,7 @@ static int yy_flex_strlen(const char *s, yyscan_t yyscanner) {
 
 #define YYTABLES_NAME "yytables"
 
-#line 368 "src/gwion.l"
+#line 369 "src/gwion.l"
 
 // LCOV_EXCL_LINE
 #include <stdio.h>

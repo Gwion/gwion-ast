@@ -42,7 +42,7 @@ ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt,
 struct Array_Sub_ {
   Exp           exp;
   struct Type_ *type;
-  m_uint        depth;
+  uint16_t      depth;
 };
 ANEW AST_NEW(Array_Sub, array_sub, const Exp);
 ANN2(1) Array_Sub prepend_array_sub(const Array_Sub, const Exp);
@@ -282,7 +282,7 @@ ANN static inline int exp_getuse(const Exp e) {
   return (e->emit_var & (1 << exp_state_use)) == (1 << exp_state_use);
 }
 
-ANN static inline void exp_setuse(const Exp e, const uint val) {
+ANN static inline void exp_setuse(const Exp e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_use;
   else
@@ -293,7 +293,7 @@ ANN static inline int exp_getvar(const Exp e) {
   return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
 }
 
-ANN static inline void exp_setvar(const Exp e, const uint val) {
+ANN static inline void exp_setvar(const Exp e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_addr;
   else
@@ -304,7 +304,7 @@ ANN static inline int exp_getprot(const Exp e) {
   return (e->emit_var & (1 << exp_state_prot)) == (1 << exp_state_prot);
 }
 
-ANN static inline void exp_setprot(const Exp e, const uint val) {
+ANN static inline void exp_setprot(const Exp e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_prot;
   else
@@ -315,7 +315,7 @@ ANN static inline int exp_getoptionnal(const Exp e) {
   return (e->emit_var & (1 << exp_state_null)) == (1 << exp_state_null);
 }
 
-ANN static inline void exp_setoptionnal(const Exp e, const uint val) {
+ANN static inline void exp_setoptionnal(const Exp e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_null;
   else
@@ -326,7 +326,7 @@ ANN static inline int exp_getmeta(const Exp e) {
   return (e->emit_var & (1 << exp_state_meta)) == (1 << exp_state_meta);
 }
 
-ANN static inline void exp_setmeta(const Exp e, const uint val) {
+ANN static inline void exp_setmeta(const Exp e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_meta;
   else
@@ -370,7 +370,7 @@ ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp,
                  const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol, const struct loc_t_);
 ANN2(1, 2)
-ANEW AST_NEW(Exp, exp_call, const Exp, const Exp args, const struct loc_t_);
+ANEW     AST_NEW(Exp, exp_call, const Exp, const Exp args, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_cast, Type_Decl *, const Exp, const struct loc_t_);
 ANN2(1, 2, 4)
 ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp, const struct loc_t_);
@@ -383,9 +383,9 @@ ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt,
                  const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_td, Type_Decl *, const struct loc_t_);
 
-static inline Exp take_exp(const Exp exp, const m_uint n) {
+static inline Exp take_exp(const Exp exp, const uint16_t n) {
   Exp e = exp;
-  for (m_uint i = 1; i < n; ++i) CHECK_OO((e = e->next));
+  for (uint16_t i = 1; i < n; ++i) CHECK_OO((e = e->next));
   return e;
 }
 
@@ -440,7 +440,7 @@ struct Stmt_VarLoop_ {
 struct Stmt_Flow_ {
   Exp  cond;
   Stmt body;
-  uint is_do;
+  bool is_do;
 };
 
 struct Stmt_Match_ {
@@ -513,8 +513,8 @@ struct Enum_Def_ {
   ae_flag         flag;
 };
 ANN2(1, 2)
-ANEW AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_ *,
-             const struct loc_t_);
+ANEW     AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_ *,
+                 const struct loc_t_);
 ANN void free_enum_def(MemPool p, Enum_Def);
 
 enum fbflag {
@@ -647,8 +647,8 @@ ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt,
 ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt,
                  const struct loc_t_);
 ANN2(1, 2, 3, 5)
-ANEW AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt,
-             const struct loc_t_);
+ANEW     AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt,
+                 const struct loc_t_);
 ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_ *, const Exp, const Stmt,
                  const struct loc_t_);
 ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt, const struct loc_t_);
@@ -669,11 +669,11 @@ ANN void free_stmt_list(MemPool p, Stmt_List);
 
 struct Func_Def_ {
   Func_Base *base;
-  m_uint     stack_depth;
   union func_def_data {
     Stmt  code;
     void *dl_func_ptr;
   } d;
+  uint16_t stack_depth;
 };
 
 ANEW     AST_NEW(Func_Def, func_def, Func_Base *, const Stmt);
@@ -735,7 +735,7 @@ struct Extend_Def_ {
 
 ANN2(1, 3)
 ANEW Extend_Def new_extend_def(MemPool p, Type_Decl *const, const Ast);
-ANN void free_extend_def(MemPool p, Extend_Def);
+ANN void        free_extend_def(MemPool p, Extend_Def);
 
 enum cflag {
   cflag_none,
@@ -758,7 +758,7 @@ ANN static inline int cflag(const Class_Def c, const enum cflag flag) {
 ANN2(1, 3)
 ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,
                              Type_Decl *, const Ast, const struct loc_t_);
-ANN void free_class_def(MemPool p, Class_Def);
+ANN void       free_class_def(MemPool p, Class_Def);
 
 struct Ast_ {
   Section *section;

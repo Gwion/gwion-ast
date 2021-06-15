@@ -305,6 +305,7 @@ ANN static double exponent_not(m_str, size_t);
 "handle"                            { adjust(yyscanner); return HANDLET;}
 "retry"                             { adjust(yyscanner); return RETRY;}
 {LEX_ID}{SPACE}*("##"{SPACE}*{LEX_ID})*{SPACE}*"##"{SPACE}*{LEX_ID} {
+  assert(yyleng > 0);
   adjust(yyscanner);
   char c[yyleng], *buf = c;
   Scanner* scan = yyget_extra(yyscanner);
