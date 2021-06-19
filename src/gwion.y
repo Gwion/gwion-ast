@@ -682,7 +682,7 @@ unary_exp : post_exp
   | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, @$); }
   | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
   | "fork"  code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
-  | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @$); };
+  | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @2); };
 
 lambda_list:
  ID { $$ = new_arg_list(mpool(arg), NULL, new_var_decl(mpool(arg), $1, NULL, @$), NULL); }
