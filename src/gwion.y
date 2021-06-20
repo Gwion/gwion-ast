@@ -308,14 +308,14 @@ arg
   | type_decl_array arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); };
 arg_list:
      arg { $$ = $1; LIST_FIRST($1) }
-  |  arg_list COMMA arg {
+  |  arg_list "," arg {
      LIST_NEXT($$, $1, Arg_List, $3)
      if(next->exp && !$3->exp)
         { parser_error(&@3, arg, "missing default argument", 0205); YYERROR;}
    };
 
 fptr_arg: type_decl_array fptr_arg_decl { $$ = new_arg_list(mpool(arg), $1, $2, NULL); }
-fptr_list: fptr_arg { $$ = $1; LIST_FIRST($$) } | fptr_list COMMA fptr_arg { LIST_NEXT($$, $1, Arg_List, $3) };
+fptr_list: fptr_arg { $$ = $1; LIST_FIRST($$) } | fptr_list "," fptr_arg { LIST_NEXT($$, $1, Arg_List, $3) };
 
 code_stmt
   : "{" "}" { $$ = new_stmt(mpool(arg), ae_stmt_code, @$); }
@@ -477,9 +477,9 @@ binary_exp
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
 
-call_template: TMPL type_list RBRACK { $$ = $2; } | { $$ = NULL; };
+call_template: ":[" type_list "]" { $$ = $2; } | { $$ = NULL; };
 
-op: EQ | NEQ | DYNOP | OPTIONS;
+op: "==" | "!=" | DYNOP | OPTIONS;
 
 array_exp
   : "[" exp "]"           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
@@ -497,20 +497,20 @@ array_empty
   ;
 
 range
-  : LBRACK exp COLON exp RBRACK { $$ = new_range(mpool(arg), $2, $4); LIST_REM(2) LIST_REM($4) }
-  | LBRACK exp COLON RBRACK     { $$ = new_range(mpool(arg), $2, NULL);  LIST_REM($2) }
-  | LBRACK %prec RANGE_EMPTY COLON exp RBRACK     { $$ = new_range(mpool(arg), NULL, $3); LIST_REM($3) }
+  : "[" exp ":" exp "]" { $$ = new_range(mpool(arg), $2, $4); LIST_REM(2) LIST_REM($4) }
+  | "[" exp ":" "]"     { $$ = new_range(mpool(arg), $2, NULL);  LIST_REM($2) }
+  | "[" %prec RANGE_EMPTY ":" exp "]"     { $$ = new_range(mpool(arg), NULL, $3); LIST_REM($3) }
   ;
 
 array: array_exp | array_empty;
 decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
 
-func_args: LPAREN arg_list   { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
-fptr_args: LPAREN fptr_list { $$ = $2; LIST_REM($2) } | LPAREN { $$ = NULL; };
-arg_type: ELLIPSE RPAREN { $$ = fbflag_variadic; }| RPAREN { $$ = 0; };
+func_args: "(" arg_list   { $$ = $2; LIST_REM($2) } | "(" { $$ = NULL; };
+fptr_args: "(" fptr_list { $$ = $2; LIST_REM($2) } | "(" { $$ = NULL; };
+arg_type: "..." ")" { $$ = fbflag_variadic; }| ")" { $$ = 0; };
 
-decl_template: TMPL specialized_list RBRACK { $$ = $2; LIST_REM(2) } | { $$ = NULL; };
+decl_template: ":[" specialized_list "]" { $$ = $2; LIST_REM(2) } | { $$ = NULL; };
 
 global: GLOBAL { $$ = ae_flag_global; arg->global = true; }
 
@@ -554,22 +554,27 @@ abstract_fdef
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
-  :  type_decl_empty op_op LPAREN arg COMMA arg RPAREN
-    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none, @2); $4->next = $6;}
-  |  type_decl_empty post_op LPAREN arg RPAREN
-    { $$ = new_func_base(mpool(arg), $1, $2, $4, ae_flag_none, @2); }
-  |  unary_op type_decl_empty LPAREN arg RPAREN
-    {
-      $$ = new_func_base(mpool(arg), $2, $1, $4, ae_flag_none, @1);
-      $$->fbflag |= fbflag_unary;
+  :  type_decl_empty op_op decl_template "(" arg "," arg ")"
+    { $$ = new_func_base(mpool(arg), $1, $2, $5, ae_flag_none, @2); $5->next = $7;
+      if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
     }
-  | type_decl_empty OPID_A func_args RPAREN
+  |  type_decl_empty post_op decl_template "(" arg ")"
+    { $$ = new_func_base(mpool(arg), $1, $2, $5, ae_flag_none, @2);
+      if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
+    }
+  |  unary_op type_decl_empty decl_template "(" arg ")"
+    {
+      $$ = new_func_base(mpool(arg), $2, $1, $5, ae_flag_none, @1);
+      $$->fbflag |= fbflag_unary;
+      if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
+    }
+  | type_decl_empty OPID_A func_args ")"
     {
       $$ = new_func_base(mpool(arg), $1, $2, $3, ae_flag_none, @2);
       $$->fbflag |= fbflag_internal;
     };
 
-operator: OPERATOR { $$ = ae_flag_none; } | OPERATOR global { $$ = ae_flag_global; };
+operator: "operator" { $$ = ae_flag_none; } | "operator" global { $$ = ae_flag_global; };
 op_def:  operator op_base code_stmt
 { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
@@ -577,7 +582,7 @@ func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= 
 
 type_decl_base
   : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
-  | LPAREN flag type_decl_empty decl_template fptr_args arg_type func_effects RPAREN {
+  | "(" flag type_decl_empty decl_template fptr_args arg_type func_effects ")" {
       const Symbol name = sig_name(arg, @3.first);
       $$ = new_type_decl(mpool(arg), name, @1);
       Func_Base *fb = new_func_base(mpool(arg), $3, name, NULL, $2, @1);
@@ -622,7 +627,7 @@ union_list: union_decl
   | union_decl union_list { $$ = $1; $$->next = $2; };
 
 union_def
-  : UNION flag ID decl_template LBRACE union_list RBRACE {
+  : "union" flag ID decl_template "{" union_list "}" {
       $$ = new_union_def(mpool(arg), $6, @3);
       $$->xid = $3;
       $$->flag = $2;
@@ -632,7 +637,7 @@ union_def
   ;
 
 var_decl_list
-  : var_decl COMMA var_decl_list { $$ = new_var_decl_list(mpool(arg), $1, $3); }
+  : var_decl "," var_decl_list { $$ = new_var_decl_list(mpool(arg), $1, $3); }
   | var_decl { $$ = new_var_decl_list(mpool(arg), $1, NULL); }
   ;
 
@@ -644,36 +649,36 @@ arg_decl: ID { $$ = new_var_decl(mpool(arg), $1, NULL, @$); }
   | ID array_exp { parser_error(&@2, arg, "argument/union must be defined with empty []'s", 0210); YYERROR; };
 fptr_arg_decl: arg_decl | { $$ = new_var_decl(mpool(arg), NULL, NULL, @$); }
 
-eq_op : EQ | NEQ;
-rel_op: LT | GT | LE | GE;
-shift_op: SHIFT_LEFT | SHIFT_RIGHT;
-add_op: PLUS | MINUS;
-mul_op: TIMES | DIVIDE | PERCENT;
+eq_op : "==" | "!=";
+rel_op: "<" | ">" | "<=" | ">=";
+shift_op: "<<" | ">>";
+add_op: "+" | "-";
+mul_op: "*" | "/" | "%";
 
 opt_exp: exp { $$ = $1; LIST_REM($1) } | { $$ = NULL; }
 con_exp: log_or_exp
-  | log_or_exp QUESTION opt_exp COLON con_exp
+  | log_or_exp "?" opt_exp ":" con_exp
       { $$ = new_exp_if(mpool(arg), $1, $3, $5, @$); };
-  | log_or_exp QUESTIONCOLON con_exp
+  | log_or_exp "?:" con_exp
       { $$ = new_exp_if(mpool(arg), $1, NULL, $3, @$); };
 
-log_or_exp: log_and_exp | log_or_exp OR log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-log_and_exp: inc_or_exp | log_and_exp AND inc_or_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-inc_or_exp: exc_or_exp | inc_or_exp S_OR exc_or_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-exc_or_exp: and_exp | exc_or_exp S_XOR and_exp       { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-and_exp: eq_exp | and_exp S_AND eq_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-eq_exp: rel_exp | eq_exp eq_op rel_exp               { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-rel_exp: shift_exp | rel_exp rel_op shift_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-shift_exp: add_exp | shift_exp shift_op add_exp      { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-add_exp: mul_exp | add_exp add_op mul_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-mul_exp: dur_exp | mul_exp mul_op dur_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
-dur_exp: cast_exp | dur_exp "::" cast_exp            { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+log_or_exp: log_and_exp | log_or_exp "||" log_and_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+log_and_exp: inc_or_exp | log_and_exp "&&" inc_or_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+inc_or_exp: exc_or_exp | inc_or_exp "|" exc_or_exp     { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+exc_or_exp: and_exp | exc_or_exp S_XOR and_exp         { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+and_exp: eq_exp | and_exp "&" eq_exp                   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+eq_exp: rel_exp | eq_exp eq_op rel_exp                 { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+rel_exp: shift_exp | rel_exp rel_op shift_exp          { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+shift_exp: add_exp | shift_exp shift_op add_exp        { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+add_exp: mul_exp | add_exp add_op mul_exp              { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+mul_exp: dur_exp | mul_exp mul_op dur_exp              { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
+dur_exp: cast_exp | dur_exp "::" cast_exp              { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
-cast_exp: unary_exp | cast_exp DOLLAR type_decl_empty
+cast_exp: unary_exp | cast_exp "$" type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1, @$); };
 
-unary_op : MINUS %prec UMINUS | TIMES %prec UTIMES | post_op
-  | EXCLAMATION | SPORK | FORK | TILDA
+unary_op : "-" %prec UMINUS | "*" %prec UTIMES | post_op
+  | "!" | "spork" | "fork" | "~"
   ;
 
 unary_exp : post_exp
@@ -695,7 +700,7 @@ type_list
   ;
 
 
-call_paren : "(" exp ")" { $$ = $2; LIST_REM($2) } | LPAREN RPAREN { $$ = NULL; };
+call_paren : "(" exp ")" { $$ = $2; LIST_REM($2) } | "(" ")" { $$ = NULL; };
 
 post_op : "++" | "--";
 
@@ -749,8 +754,8 @@ prim_exp
   | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
   | array                { $$ = new_prim_array(  mpool(arg), $1, @$); }
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
-  | L_HACK exp R_HACK    { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
-  | LPAREN exp RPAREN    { $$ = $2; LIST_REM($2) }
+  | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
+  | "(" exp ")"          { $$ = $2; LIST_REM($2) }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, $2, @$); };
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }
