@@ -49,6 +49,9 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
 
 void gwerr_basic(const char *main, const char *explain, const char *fix,
                  const char *filename, const loc_t loc, const uint error_code) {
+#ifdef __FUZZING__
+  return;
+#endif
   char *line = get_src(filename, loc);
 
   perr_printer_t printer;
@@ -72,6 +75,9 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
 
 ANN void gwerr_secondary(const char *main, const char *filename,
                          const loc_t loc) {
+#ifdef __FUZZING__
+  return;
+#endif
   perr_printer_t printer;
   char *         line = get_src(filename, loc);
 

@@ -28,6 +28,7 @@ typedef struct Fptr_Def_ *     Fptr_Def;
 typedef struct {
   Exp             base;
   struct Symbol_ *xid;
+  bool is_call;
 } Exp_Dot;
 
 /** a lambda expression. @code \a b { <<< a + b >>>; } @endcode */
