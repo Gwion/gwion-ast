@@ -6,5 +6,6 @@ var searchData=
   ['if_5fbody_335',['if_body',['../structStmt__If__.html#a2569ca64a642d2fbd27d63835120d03e',1,'Stmt_If_']]],
   ['if_5fexp_336',['if_exp',['../structExp__If.html#a8d54a73eba327d7db06dc4923bed24ab',1,'Exp_If']]],
   ['interp_5fstate_337',['interp_state',['../structScanner__.html#adf75591f90da7acccae161a7c6562bf5',1,'Scanner_']]],
-  ['is_5fdo_338',['is_do',['../structStmt__Flow__.html#a65b95a16523722799b2a3a277823e388',1,'Stmt_Flow_']]]
+  ['is_5fcall_338',['is_call',['../structExp__Dot.html#af03f08b9ee43f3836c97fd79cf979b49',1,'Exp_Dot']]],
+  ['is_5fdo_339',['is_do',['../structStmt__Flow__.html#a65b95a16523722799b2a3a277823e388',1,'Stmt_Flow_']]]
 ];
