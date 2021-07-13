@@ -140,6 +140,7 @@ ANN static double exponent_not(m_str, size_t);
   return INTERP_LIT;
 }
 <interp>"\\#"*\" { yymore(); continue; }
+<interp>"\\"*\" { yymore(); continue; }
 <interp>"\n"     { newline(yyscanner); yymore(); continue; }
 <interp>.        { yymore(); continue; }
 

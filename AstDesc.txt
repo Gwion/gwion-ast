@@ -9,8 +9,8 @@ ID_List
 
 Specialized_List
   Symbol xid
-  ?ID_List trait
-  ?ID_List next
+  ?ID_List traits
+  ?Specialzed_List next
 
 Type_List
   Type_Decl* td
