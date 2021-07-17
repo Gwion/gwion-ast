@@ -5,7 +5,7 @@ var searchData=
   ['c3_111',['c3',['../structStmt__For__.html#ab480d4741d1e99989445d30dc0c93d88',1,'Stmt_For_']]],
   ['call_112',['call',['../structTmpl__.html#a3a1f59a8212e2763f5abb671b1b6da9b',1,'Tmpl_']]],
   ['cast_5fto_113',['cast_to',['../structExp__.html#aca37e4fcefe2e6676e7263a92e1c320a',1,'Exp_']]],
-  ['cflag_114',['cflag',['../structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c',1,'Class_Def_::cflag()'],['../absyn_8h.html#a1983aed32ea522ea0f9a21922f935524',1,'cflag(const Class_Def c, const enum cflag flag):&#160;absyn.h'],['../absyn_8h.html#a458571c243e93cf2a12f8d2b1218da8e',1,'cflag():&#160;absyn.h']]],
+  ['cflag_114',['cflag',['../absyn_8h.html#a1983aed32ea522ea0f9a21922f935524',1,'cflag():&#160;absyn.h'],['../structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c',1,'Class_Def_::cflag()'],['../absyn_8h.html#a458571c243e93cf2a12f8d2b1218da8e',1,'cflag():&#160;absyn.h']]],
   ['cflag_5fnone_115',['cflag_none',['../absyn_8h.html#a458571c243e93cf2a12f8d2b1218da8ea9770c281914a1858ef30dd6134ce0a6c',1,'absyn.h']]],
   ['cflag_5fstruct_116',['cflag_struct',['../absyn_8h.html#a458571c243e93cf2a12f8d2b1218da8ea63f1f05193e6e1c4b2b3d2ef75f3519c',1,'absyn.h']]],
   ['chr_117',['chr',['../unionExp__Primary_1_1prim__data.html#a3a7fe8e5601b7f900e60141c3686df06',1,'Exp_Primary::prim_data']]],
@@ -16,11 +16,11 @@ var searchData=
   ['clear_5fbuffer_122',['clear_buffer',['../bison__compat_8h.html#aa18e3f737f350057a57b2834ec49d400',1,'bison_compat.h']]],
   ['code_123',['code',['../unionFunc__Def___1_1func__def__data.html#a93588769f1f3ce219f026803bb777a8c',1,'Func_Def_::func_def_data::code()'],['../structExp__Unary.html#a00475bf3c09e772cae370370bd975f14',1,'Exp_Unary::code()']]],
   ['column_124',['column',['../structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964',1,'pos_t']]],
-  ['cond_125',['cond',['../structStmt__If__.html#a214b4a053f54fe7498fd487d04d7955c',1,'Stmt_If_::cond()'],['../structStmt__Match__.html#a5f2bee6c3e0b1cc2d3210516617cb271',1,'Stmt_Match_::cond()'],['../structStmt__Flow__.html#af3cf8823e794588fd851bb5c8bb91a10',1,'Stmt_Flow_::cond()'],['../structExp__If.html#a1d2b42a572189d502b85acbc19ad80bb',1,'Exp_If::cond()'],['../structStmt__Loop__.html#aeeb1b0ca493b94e967e3c103961c1750',1,'Stmt_Loop_::cond()']]],
+  ['cond_125',['cond',['../structExp__If.html#a1d2b42a572189d502b85acbc19ad80bb',1,'Exp_If::cond()'],['../structStmt__If__.html#a214b4a053f54fe7498fd487d04d7955c',1,'Stmt_If_::cond()'],['../structStmt__Loop__.html#aeeb1b0ca493b94e967e3c103961c1750',1,'Stmt_Loop_::cond()'],['../structStmt__Match__.html#a5f2bee6c3e0b1cc2d3210516617cb271',1,'Stmt_Match_::cond()'],['../structStmt__Flow__.html#af3cf8823e794588fd851bb5c8bb91a10',1,'Stmt_Flow_::cond()']]],
   ['copyright_126',['Copyright',['../License_8txt.html#aa3ed601dee313116393d6e5efc58d658',1,'License.txt']]],
   ['cpy_5farg_5flist_127',['cpy_arg_list',['../ast__cpy_8c.html#af592f705ac72612df80e5e19b35952b8',1,'cpy_arg_list(MemPool p, const Arg_List src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#acf88547757d0e5c738a3f85697bbb01e',1,'cpy_arg_list(MemPool, Arg_List):&#160;ast_cpy.c']]],
   ['cpy_5farray_5fsub_128',['cpy_array_sub',['../ast__cpy_8c.html#a1e45c076909e19f29adc26a45d60289f',1,'cpy_array_sub(MemPool p, const Array_Sub src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a439402cd31dd81198aca5b681beff687',1,'cpy_array_sub(MemPool, Array_Sub):&#160;ast_cpy.c']]],
-  ['cpy_5fast_129',['cpy_ast',['../cpy__ast_8h.html#ae7a743e778ed1d2a34986c725815706b',1,'cpy_ast(MemPool p, const Ast ast):&#160;ast_cpy.c'],['../ast__cpy_8c.html#aee78c045de1a082b15a5e3b2c410ea71',1,'cpy_ast(MemPool p, const Ast src):&#160;ast_cpy.c']]],
+  ['cpy_5fast_129',['cpy_ast',['../ast__cpy_8c.html#aee78c045de1a082b15a5e3b2c410ea71',1,'cpy_ast(MemPool p, const Ast src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#ae7a743e778ed1d2a34986c725815706b',1,'cpy_ast(MemPool p, const Ast ast):&#160;ast_cpy.c']]],
   ['cpy_5fast_2eh_130',['cpy_ast.h',['../cpy__ast_8h.html',1,'']]],
   ['cpy_5fclass_5fdef_131',['cpy_class_def',['../ast__cpy_8c.html#aff94a7fb7e94c41fa3e929a6081bf526',1,'cpy_class_def(MemPool p, const Class_Def src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#acb4f2d6ebbffdf97e2368d22bee72dd2',1,'cpy_class_def(MemPool, Class_Def):&#160;ast_cpy.c']]],
   ['cpy_5feachidx_132',['cpy_eachidx',['../ast__cpy_8c.html#ad615470aaf7cfac591aaf19641ca726f',1,'ast_cpy.c']]],
@@ -72,5 +72,6 @@ var searchData=
   ['cpy_5funion_5fdef_178',['cpy_union_def',['../ast__cpy_8c.html#a18b19981dffe8863d32a89091870afe2',1,'cpy_union_def(MemPool p, const Union_Def src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a6dfd13b2be6b1af193a8eee679e3b416',1,'cpy_union_def(MemPool, Union_Def):&#160;ast_cpy.c']]],
   ['cpy_5funion_5flist_179',['cpy_union_list',['../ast__cpy_8c.html#aa2efb806222284266262bd4580a2caf9',1,'cpy_union_list(MemPool p, const Union_List src):&#160;ast_cpy.c'],['../cpy__ast_8h.html#a51c03cd6f276565eb558d91760c07c12',1,'cpy_union_list(MemPool, const Union_List):&#160;ast_cpy.c']]],
   ['cpy_5fvar_5fdecl_180',['cpy_var_decl',['../ast__cpy_8c.html#ad5db399208d208b7150c590378842c3a',1,'ast_cpy.c']]],
-  ['cpy_5fvar_5fdecl_5flist_181',['cpy_var_decl_list',['../ast__cpy_8c.html#a4735fda4d1609178ebd629f8c24680e1',1,'ast_cpy.c']]]
+  ['cpy_5fvar_5fdecl_5flist_181',['cpy_var_decl_list',['../ast__cpy_8c.html#a4735fda4d1609178ebd629f8c24680e1',1,'ast_cpy.c']]],
+  ['ctor_182',['ctor',['../structExp__Unary.html#a3e1ce2456c2530b16c3cbf41a42e297c',1,'Exp_Unary']]]
 ];
