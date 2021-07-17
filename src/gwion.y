@@ -575,10 +575,16 @@ op_base
     };
 
 operator: "operator" { $$ = ae_flag_none; } | "operator" global { $$ = ae_flag_global; };
-op_def:  operator op_base code_stmt
-{ $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; };
+op_def
+  : operator op_base code_stmt
+  { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; };
 
-func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; };
+func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; }
+  |  operator "new" func_args arg_type code_stmt
+    { Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3, $1, @2);
+      base->fbflag = $4;
+      $$ = new_func_def(mpool(arg), base, $5);
+    }
 
 type_decl_base
   : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
@@ -684,7 +690,10 @@ unary_op : "-" %prec UMINUS | "*" %prec UTIMES | post_op
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
   | OPID_E unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
-  | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, @$); }
+  | "new" type_decl_exp "(" opt_exp ")" {
+       $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
+  }
+  | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
   | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
   | "fork"  code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, $2, @$); };
   | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @2); };

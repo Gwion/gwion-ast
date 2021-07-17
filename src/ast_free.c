@@ -81,7 +81,8 @@ ANN static AST_FREE(Exp_Unary *, exp_unary) {
     if (a->exp) free_exp(p, a->exp);
     break;
   case unary_td:
-    if (a->td) free_type_decl(p, a->td);
+    free_type_decl(p, a->ctor.td);
+    if (a->ctor.exp) free_exp(p, a->ctor.exp);
     break;
   case unary_code:
     if (a->code) free_stmt(p, a->code);

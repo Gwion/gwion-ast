@@ -187,7 +187,9 @@ ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
     a->exp = cpy_exp(p, src->exp);
     break;
   case unary_td:
-    a->td = cpy_type_decl(p, src->td);
+    a->ctor.td = cpy_type_decl(p, src->ctor.td);
+    if(src->ctor.exp)
+      a->ctor.exp = cpy_exp(p, src->ctor.exp);
     break;
   case unary_code:
     a->code = cpy_stmt(p, src->code);

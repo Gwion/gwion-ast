@@ -235,12 +235,16 @@ typedef struct {
   Exp else_exp;
 } Exp_If;
 enum unary_type { unary_exp, unary_td, unary_code };
+struct UnaryNew {
+  Type_Decl *td;
+  Exp exp;
+};
 typedef struct {
   Symbol op;
   union {
     Exp        exp;
-    Type_Decl *td;
     Stmt       code;
+    struct UnaryNew ctor;
   };
   enum unary_type unary_type;
 } Exp_Unary;
@@ -378,8 +382,8 @@ ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_ *,
                  const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const struct loc_t_);
-ANEW ANN AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl *,
-                 const struct loc_t_);
+ANEW ANN2(1,2,3) AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl *,
+                 const Exp exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt,
                  const struct loc_t_);
 ANEW ANN AST_NEW(Exp, exp_td, Type_Decl *, const struct loc_t_);

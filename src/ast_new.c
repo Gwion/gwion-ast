@@ -235,10 +235,11 @@ AST_NEW(Exp, exp_unary, const Symbol oper, const Exp exp,
 }
 
 AST_NEW(Exp, exp_unary2, const Symbol oper, Type_Decl *td,
-        const struct loc_t_ pos) {
+        const Exp exp, const struct loc_t_ pos) {
   Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
-  a->d.exp_unary.td         = td;
+  a->d.exp_unary.ctor.td    = td;
+  a->d.exp_unary.ctor.exp   = exp;
   a->d.exp_unary.unary_type = unary_td;
   return a;
 }
