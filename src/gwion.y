@@ -528,7 +528,7 @@ flag: access_flag { $$ = $1; }
 
 final: "final" { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
 
-modifier: "abstract" { $$ = ae_flag_abstract; } | final;
+modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 
 func_code: code_stmt | ";" { $$ = NULL; }
 func_def_base
