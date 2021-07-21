@@ -110,7 +110,7 @@ extern int gwion_debug;
     OPID_E = 311,                  /* OPID_E  */
     LATE = 312,                    /* "late"  */
     NUM = 313,                     /* "<integer>"  */
-    FLOATT = 314,                  /* FLOATT  */
+    FLOATT = 314,                  /* "<float>"  */
     STRING_LIT = 315,              /* "<litteral string>"  */
     CHAR_LIT = 316,                /* "<litteral char>"  */
     INTERP_START = 317,            /* "`"  */
@@ -298,6 +298,8 @@ union YYSTYPE
 {
 #line 39 "src/gwion.y"
 
+  bool yybool;
+  ae_stmt_t stmt_t;
   char* sval;
   int ival;
   long unsigned int lval;
@@ -334,7 +336,7 @@ union YYSTYPE
   Trait_Def trait_def;
   Ast ast;
 
-#line 338 "include/parser.h"
+#line 340 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

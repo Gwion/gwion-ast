@@ -37,6 +37,8 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %}
 
 %union {
+  bool yybool;
+  ae_stmt_t stmt_t;
   char* sval;
   int ival;
   long unsigned int lval;
@@ -91,8 +93,9 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   LATE "late"
 
 %token<lval> NUM "<integer>"
-%type<ival> flow breaks type_def_type
-%token<fval> FLOATT
+%type<stmt_t> flow breaks
+%type<yybool> type_def_type
+%token<fval> FLOATT "<float>"
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_IMPORT "import"
@@ -283,7 +286,7 @@ fptr_def: "funptr" fptr_base fptr_args arg_type func_effects ";" {
 };
 
 typedef_when: { $$ = NULL;} | "when" binary_exp { $$ = $2; }
-type_def_type: "typedef" { $$ = 0; } | "distinct" { $$ = 1; };
+type_def_type: "typedef" { $$ = false; } | "distinct" { $$ = true; };
 type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
   $$ = new_type_def(mpool(arg), $3, $4, @4);
   $3->flag |= $2;
