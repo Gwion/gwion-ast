@@ -377,7 +377,7 @@ try_stmt: "try" stmt handler_list { $$ = new_stmt_try(mpool(arg), $2, $3); };
 opt_id: ID | { $$ = NULL; };
 
 enum_def
-  : "enum" flag opt_id "{" id_list "}" {
+  : "enum" flag ID "{" id_list "}" {
     $$ = new_enum_def(mpool(arg), $5, $3, @$);
     $$->flag = $2;
     LIST_REM($5)

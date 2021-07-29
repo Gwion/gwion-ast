@@ -244,7 +244,7 @@ Trait_Def
 
 Enum_Def
   ID_List list
-  ?Symbol xid
+  Symbol xid
 
 Union_Def
   Union_List l
