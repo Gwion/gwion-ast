@@ -49,6 +49,9 @@ ANN enum yytokentype op1(const m_str str) {
   case '!':
     return EXCLAMATION;
     break;
+  case '@':
+    return AROBASE;
+    break;
   }
   return DYNOP;
 }

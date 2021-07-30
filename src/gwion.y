@@ -94,7 +94,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 
 %token<lval> NUM "<integer>"
 %type<stmt_t> flow breaks
-%type<yybool> type_def_type
+%type<yybool> type_def_type scoped
 %token<fval> FLOATT "<float>"
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
@@ -107,7 +107,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
-  TILDA "~" EXCLAMATION "!" DYNOP "<dynamic_operator>"
+  TILDA "~" EXCLAMATION "!" AROBASE "@" DYNOP "<dynamic_operator>"
 %type<uval> option
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
@@ -376,11 +376,13 @@ try_stmt: "try" stmt handler_list { $$ = new_stmt_try(mpool(arg), $2, $3); };
 
 opt_id: ID | { $$ = NULL; };
 
+scoped: "@" { $$ = true; } | { $$ = false; }
 enum_def
-  : "enum" flag ID "{" id_list "}" {
-    $$ = new_enum_def(mpool(arg), $5, $3, @$);
+  : "enum" flag ID scoped "{" id_list "}" {
+    $$ = new_enum_def(mpool(arg), $6, $3, @$);
     $$->flag = $2;
-    LIST_REM($5)
+    $$->is_scoped = $4;
+    LIST_REM($6)
   };
 
 when_exp: "when" exp { $$ = $2; LIST_REM($2) } | { $$ = NULL; }
@@ -476,13 +478,14 @@ exp:
 binary_exp
   : decl_exp
   | binary_exp OPID_A decl_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp "@" decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
   | binary_exp DYNOP decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
 
 call_template: ":[" type_list "]" { $$ = $2; } | { $$ = NULL; };
 
-op: "==" | "!=" | DYNOP | OPTIONS;
+op: "==" | "!=" | "@" | DYNOP | OPTIONS;
 
 array_exp
   : "[" exp "]"           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }

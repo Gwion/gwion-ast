@@ -516,6 +516,7 @@ struct Enum_Def_ {
   struct Type_ *  t;
   struct Vector_  values;
   struct loc_t_   pos; ///< position
+  bool is_scoped;
   ae_flag         flag;
 };
 ANN2(1, 2)

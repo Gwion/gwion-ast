@@ -163,12 +163,13 @@ extern int gwion_debug;
     TMPL = 366,                    /* ":["  */
     TILDA = 367,                   /* "~"  */
     EXCLAMATION = 368,             /* "!"  */
-    DYNOP = 369,                   /* "<dynamic_operator>"  */
-    RANGE_EMPTY = 370,             /* RANGE_EMPTY  */
-    UMINUS = 371,                  /* UMINUS  */
-    UTIMES = 372,                  /* UTIMES  */
-    STMT_ASSOC = 374,              /* STMT_ASSOC  */
-    STMT_NOASSOC = 375             /* STMT_NOASSOC  */
+    AROBASE = 369,                 /* "@"  */
+    DYNOP = 370,                   /* "<dynamic_operator>"  */
+    RANGE_EMPTY = 371,             /* RANGE_EMPTY  */
+    UMINUS = 372,                  /* UMINUS  */
+    UTIMES = 373,                  /* UTIMES  */
+    STMT_ASSOC = 375,              /* STMT_ASSOC  */
+    STMT_NOASSOC = 376             /* STMT_NOASSOC  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -285,12 +286,13 @@ extern int gwion_debug;
 #define TMPL 366
 #define TILDA 367
 #define EXCLAMATION 368
-#define DYNOP 369
-#define RANGE_EMPTY 370
-#define UMINUS 371
-#define UTIMES 372
-#define STMT_ASSOC 374
-#define STMT_NOASSOC 375
+#define AROBASE 369
+#define DYNOP 370
+#define RANGE_EMPTY 371
+#define UMINUS 372
+#define UTIMES 373
+#define STMT_ASSOC 375
+#define STMT_NOASSOC 376
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -336,7 +338,7 @@ union YYSTYPE
   Trait_Def trait_def;
   Ast ast;
 
-#line 340 "include/parser.h"
+#line 342 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
