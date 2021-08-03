@@ -94,7 +94,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 
 %token<lval> NUM "<integer>"
 %type<stmt_t> flow breaks
-%type<yybool> type_def_type scoped
+%type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
@@ -376,13 +376,11 @@ try_stmt: "try" stmt handler_list { $$ = new_stmt_try(mpool(arg), $2, $3); };
 
 opt_id: ID | { $$ = NULL; };
 
-scoped: "@" { $$ = true; } | { $$ = false; }
 enum_def
-  : "enum" flag ID scoped "{" id_list "}" {
-    $$ = new_enum_def(mpool(arg), $6, $3, @$);
+  : "enum" flag ID "{" id_list "}" {
+    $$ = new_enum_def(mpool(arg), $5, $3, @$);
     $$->flag = $2;
-    $$->is_scoped = $4;
-    LIST_REM($6)
+    LIST_REM($5)
   };
 
 when_exp: "when" exp { $$ = $2; LIST_REM($2) } | { $$ = NULL; }
@@ -503,7 +501,7 @@ array_empty
   ;
 
 range
-  : "[" exp ":" exp "]" { $$ = new_range(mpool(arg), $2, $4); LIST_REM(2) LIST_REM($4) }
+  : "[" exp ":" exp "]" { $$ = new_range(mpool(arg), $2, $4); LIST_REM($2) LIST_REM($4) }
   | "[" exp ":" "]"     { $$ = new_range(mpool(arg), $2, NULL);  LIST_REM($2) }
   | "[" %prec RANGE_EMPTY ":" exp "]"     { $$ = new_range(mpool(arg), NULL, $3); LIST_REM($3) }
   ;

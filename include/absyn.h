@@ -62,6 +62,7 @@ ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub,
 typedef struct Range_ {
   Exp start; ///< start of range expression
   Exp end;   ///< end   of range expression
+  bool inclusive;
 } Range;
 AST_NEW(Range *, range, const Exp, const Exp);
 
@@ -516,7 +517,6 @@ struct Enum_Def_ {
   struct Type_ *  t;
   struct Vector_  values;
   struct loc_t_   pos; ///< position
-  bool is_scoped;
   ae_flag         flag;
 };
 ANN2(1, 2)
