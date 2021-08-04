@@ -176,7 +176,7 @@ ANN static double exponent_not(m_str, size_t);
 <define_arg_start>{SPACE}*    { adjust(yyscanner); BEGIN(define); };
 <define_arg_start>\n          { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE; };
 
-<define>\\n           { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
+<define>.*\\\n           { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
 <define>.*\n          { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
 
 ^"#pragma"{SPACE}+ { adjust(yyscanner); BEGIN(pragma); }
