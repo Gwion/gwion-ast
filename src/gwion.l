@@ -60,6 +60,8 @@ ANN static m_uint  atoll_space(m_str, size_t);
 ANN static double atof_space(m_str, size_t);
 ANN static double exponent_not(m_str, size_t);
 
+static inline Macro scan_has_macro(Scanner *scan, const m_str id);
+
 #define SCAN_LINT(a)     if(scan->ppa->lint)a;
 #define SCAN_NOLINT      if(!scan->ppa->lint)
 #define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->lint
@@ -176,8 +178,9 @@ ANN static double exponent_not(m_str, size_t);
 <define_arg_start>{SPACE}*    { adjust(yyscanner); BEGIN(define); };
 <define_arg_start>\n          { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE; };
 
-<define>.*\\\n           { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); continue; /* should we use "\n" ? */ };
-<define>.*\n          { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
+<define>\\\n           { YY_USER_ACTION; adjust(yyscanner); continue; };
+<define>\n          { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
+<define>.           { YY_USER_ACTION; adjust(yyscanner); yymore(); continue; };
 
 ^"#pragma"{SPACE}+ { adjust(yyscanner); BEGIN(pragma); }
 <pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
