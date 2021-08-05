@@ -240,7 +240,18 @@ trait_def: "trait" class_flag ID traits "{" trait_body "}"
     };
 
 class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
-traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
+traits: { $$ = NULL; } | ":" id_list {
+  ID_List base = $$ = $2;
+  while(base) {
+    ID_List curr = base->next;
+    while(curr) {
+      if(base->xid == curr->xid) // could use ID_List location
+      { scanner_secondary(arg, "duplicated trait", @2); }
+      curr = curr->next;
+    }    
+    base = base->next;
+  }
+};
 extend_body
   : func_def {
     Section * section= new_section_func_def (mpool(arg), $1);
