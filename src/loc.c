@@ -47,8 +47,9 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
   if (fix) gw_err("%s\n", fix);
 }
 
-void gwerr_basic(const char *main, const char *explain, const char *fix,
-                 const char *filename, const loc_t loc, const uint error_code) {
+static void _gwerr_basic(const char *main, const char *explain, const char *fix,
+                 const char *filename, const loc_t loc, const uint error_code,
+                 const enum libprettyerr_errtype errtype) {
 #ifdef __FUZZING__
   return;
 #endif
@@ -62,7 +63,7 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
   printer.rounded = true;
 
   const perr_t err = PERR_Error(
-      PERR_ERROR, PERR_Str(loc.first.line, line),
+      errtype, PERR_Str(loc.first.line, line),
       PERR_Pos(loc.first.column - 1, loc.last.column - loc.first.column), main,
       explain, fix, error_code, get_filename(filename));
 
@@ -71,6 +72,22 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
     xfree(line);
   } else
     nosrc(&printer, &err, main, explain, fix);
+}
+
+void gwerr_basic(const char *main, const char *explain, const char *fix,
+                 const char *filename, const loc_t loc, const uint error_code) {
+#ifdef __FUZZING__
+  return;
+#endif
+  _gwerr_basic(main, explain, fix, filename, loc, error_code, PERR_ERROR);
+}
+
+void gwerr_warn(const char *main, const char *explain, const char *fix,
+                 const char *filename, const loc_t loc) {
+#ifdef __FUZZING__
+  return;
+#endif
+  _gwerr_basic(main, explain, fix, filename, loc, 0, PERR_WARNING);
 }
 
 ANN void gwerr_secondary(const char *main, const char *filename,

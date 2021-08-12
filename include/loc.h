@@ -18,6 +18,8 @@ typedef struct loc_t_ {
 
 void     gwerr_basic(const char *main, const char *explain, const char *fix,
                      const char *filename, const loc_t loc, const uint error_code);
+void     gwerr_warn(const char *main, const char *explain, const char *fix,
+                     const char *filename, const loc_t loc);
 ANN void gwerr_secondary(const char *main, const char *filename,
                          const loc_t loc);
 #endif
