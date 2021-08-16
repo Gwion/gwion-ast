@@ -154,10 +154,11 @@ AST_NEW(Exp, prim_float, const m_float num, const struct loc_t_ pos) {
   return a;
 }
 
-AST_NEW(Exp, prim_string, const m_str s, const struct loc_t_ pos) {
-  Exp a               = new_prim(p, pos);
-  a->d.prim.prim_type = ae_prim_str;
-  a->d.prim.d.str     = s;
+AST_NEW(Exp, prim_string, const m_str s, const uint16_t delim, const struct loc_t_ pos) {
+  Exp a                    = new_prim(p, pos);
+  a->d.prim.prim_type      = ae_prim_str;
+  a->d.prim.d.string.data  = s;
+  a->d.prim.d.string.delim = delim;
   return a;
 }
 

@@ -162,6 +162,12 @@ typedef enum {
   ae_exp_td
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
+
+struct AstString {
+  m_str    data;
+  uint16_t delim;
+};
+
 typedef enum {
   ae_prim_id,
   ae_prim_num,
@@ -185,14 +191,14 @@ typedef struct {
 typedef struct {
   struct Value_ *value;
   union prim_data {
-    struct Symbol_ *var;
-    m_int           num;
-    m_float         fnum;
-    m_str           chr;
-    m_str           str;
-    Array_Sub       array;
-    Range *         range;
-    Exp             exp;
+    struct Symbol_  *var;
+    m_int            num;
+    m_float          fnum;
+    m_str            chr;
+    struct AstString string;
+    Array_Sub        array;
+    Range *          range;
+    Exp              exp;
   } d;
   ae_prim_t prim_type;
 } Exp_Primary;
@@ -364,7 +370,7 @@ ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_ *, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_perform, struct Symbol_ *, const struct loc_t_);
 ANEW     AST_NEW(Exp, prim_int, const unsigned long, const struct loc_t_);
 ANEW     AST_NEW(Exp, prim_float, const m_float, const struct loc_t_);
-ANEW ANN AST_NEW(Exp, prim_string, const m_str, const struct loc_t_);
+ANEW ANN AST_NEW(Exp, prim_string, const m_str, const uint16_t delim, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_range, Range *, const struct loc_t_);
 ANEW     AST_NEW(Exp, prim_hack, const Exp, const struct loc_t_);

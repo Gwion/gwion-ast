@@ -125,7 +125,8 @@ ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
     a->d.chr = src->d.chr;
     break;
   case ae_prim_str:
-    a->d.str = src->d.str;
+    a->d.string.data  = src->d.string.data;
+    a->d.string.delim = src->d.string.delim;
     break;
   case ae_prim_array:
     a->d.array = cpy_array_sub(p, src->d.array);

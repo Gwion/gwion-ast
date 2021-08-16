@@ -114,20 +114,20 @@ extern int gwion_debug;
     STRING_LIT = 315,              /* "<litteral string>"  */
     CHAR_LIT = 316,                /* "<litteral char>"  */
     INTERP_START = 317,            /* "`"  */
-    INTERP_LIT = 318,              /* "<interp string>"  */
-    INTERP_EXP = 319,              /* INTERP_EXP  */
-    INTERP_END = 320,              /* "<interp string>`"  */
-    PP_COMMENT = 321,              /* "<comment>"  */
-    PP_INCLUDE = 322,              /* "#include"  */
-    PP_DEFINE = 323,               /* "#define"  */
-    PP_PRAGMA = 324,               /* "#pragma"  */
-    PP_UNDEF = 325,                /* "#undef"  */
-    PP_IFDEF = 326,                /* "#ifdef"  */
-    PP_IFNDEF = 327,               /* "#ifndef"  */
-    PP_ELSE = 328,                 /* "#else"  */
-    PP_ENDIF = 329,                /* "#if"  */
-    PP_NL = 330,                   /* "\n"  */
-    PP_IMPORT = 331,               /* "import"  */
+    INTERP_EXP = 318,              /* INTERP_EXP  */
+    PP_COMMENT = 319,              /* "<comment>"  */
+    PP_INCLUDE = 320,              /* "#include"  */
+    PP_DEFINE = 321,               /* "#define"  */
+    PP_PRAGMA = 322,               /* "#pragma"  */
+    PP_UNDEF = 323,                /* "#undef"  */
+    PP_IFDEF = 324,                /* "#ifdef"  */
+    PP_IFNDEF = 325,               /* "#ifndef"  */
+    PP_ELSE = 326,                 /* "#else"  */
+    PP_ENDIF = 327,                /* "#if"  */
+    PP_NL = 328,                   /* "\n"  */
+    PP_IMPORT = 329,               /* "import"  */
+    INTERP_LIT = 330,              /* "<interp string>"  */
+    INTERP_END = 331,              /* INTERP_END  */
     ID = 334,                      /* "<identifier>"  */
     PLUS = 335,                    /* "+"  */
     PLUSPLUS = 336,                /* "++"  */
@@ -237,20 +237,20 @@ extern int gwion_debug;
 #define STRING_LIT 315
 #define CHAR_LIT 316
 #define INTERP_START 317
-#define INTERP_LIT 318
-#define INTERP_EXP 319
-#define INTERP_END 320
-#define PP_COMMENT 321
-#define PP_INCLUDE 322
-#define PP_DEFINE 323
-#define PP_PRAGMA 324
-#define PP_UNDEF 325
-#define PP_IFDEF 326
-#define PP_IFNDEF 327
-#define PP_ELSE 328
-#define PP_ENDIF 329
-#define PP_NL 330
-#define PP_IMPORT 331
+#define INTERP_EXP 318
+#define PP_COMMENT 319
+#define PP_INCLUDE 320
+#define PP_DEFINE 321
+#define PP_PRAGMA 322
+#define PP_UNDEF 323
+#define PP_IFDEF 324
+#define PP_IFNDEF 325
+#define PP_ELSE 326
+#define PP_ENDIF 327
+#define PP_NL 328
+#define PP_IMPORT 329
+#define INTERP_LIT 330
+#define INTERP_END 331
 #define ID 334
 #define PLUS 335
 #define PLUSPLUS 336
@@ -303,6 +303,7 @@ union YYSTYPE
   bool yybool;
   ae_stmt_t stmt_t;
   char* sval;
+  struct AstString string;
   int ival;
   long unsigned int lval;
   m_uint uval;
@@ -338,7 +339,7 @@ union YYSTYPE
   Trait_Def trait_def;
   Ast ast;
 
-#line 342 "include/parser.h"
+#line 343 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
