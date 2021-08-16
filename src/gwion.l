@@ -117,9 +117,9 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   while(yytext[--len] == '#')hashes++;
   if(hashes == vector_back(&scan->hashes)) {
     BEGIN(INITIAL);
-    vector_pop(&scan->hashes);
     yytext[len] = '\0';
-    yylval->sval = alloc_str(yyscanner, yytext);
+    yylval->string.data = alloc_str(yyscanner, yytext);
+    yylval->string.delim = vector_pop(&scan->hashes);
     scan->interp_state--;
     return vector_size(&scan->hashes) ? INTERP_LIT : INTERP_END;
   } else
@@ -135,10 +135,12 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 }
 
 <interp>"${" {
+  Scanner *scan = yyget_extra(yyscanner);
   adjust(yyscanner);
   BEGIN(INITIAL);
   yytext[yyleng - 2] = '\0';
-  yylval->sval = alloc_str(yyscanner, yytext);
+  yylval->string.data = alloc_str(yyscanner, yytext);
+  yylval->string.delim = vector_back(&scan->hashes);
   return INTERP_LIT;
 }
 <interp>"\\#"*\" { yymore(); continue; }
@@ -160,7 +162,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 }
 <get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
-^#define{SPACE}+{LEX_ID} {
+^{SPACE}*#define{SPACE}+{LEX_ID} {
   adjust(yyscanner);
   if(!add_macro(yyscanner, yytext))
     yyterminate();
@@ -176,9 +178,10 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 <define_arg_start>"("{SPACE}* { adjust(yyscanner); BEGIN(define_arg); };
 <define_arg_start>{SPACE}*    { adjust(yyscanner); BEGIN(define); };
+<define_arg_start>\\\n        { adjust(yyscanner); yymore(); continue; };
 <define_arg_start>\n          { adjust(yyscanner); BEGIN(INITIAL); GWYY_DEFINE; };
 
-<define>\\\n           { YY_USER_ACTION; adjust(yyscanner); continue; };
+<define>\\\n        { YY_USER_ACTION; adjust(yyscanner); yymore(); continue; };
 <define>\n          { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
 <define>.           { YY_USER_ACTION; adjust(yyscanner); yymore(); continue; };
 
@@ -187,8 +190,9 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 ^#ifn?def{SPACE}+{LEX_ID}{SPACE}* {
   adjust(yyscanner);
-  const m_bool def = yytext[3] == 'n';
-  m_str s = yytext + 6 + def;
+  const m_str str = strstr(yytext, "def");
+  const m_bool def = str[-1] == 'n';
+  m_str s = str + 3;
   while(isspace(*s))++s;
   GWYY_LINT(strdup(s), def ? PP_IFNDEF : PP_IFDEF)
   size_t sz = strlen(s);
@@ -201,25 +205,25 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   if(!ret)
     BEGIN(skip);
 }
-^#else{SPACE}*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
-^#endif{SPACE}*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
+^{SPACE}*#else{SPACE}*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
+^{SPACE}*#endif{SPACE}*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
 <skip>\n      { newline(yyscanner); YY_USER_ACTION; }
-<skip>^#else{SPACE}*\n { adjust(yyscanner); BEGIN(macro_toggle(yyscanner)); }
-<skip>^#endif{SPACE}*\n { adjust(yyscanner); macro_end(yyscanner); BEGIN(INITIAL); }
+<skip>^{SPACE}*#else{SPACE}*\n { adjust(yyscanner); BEGIN(macro_toggle(yyscanner)); }
+<skip>^{SPACE}*#endif{SPACE}*\n { adjust(yyscanner); macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.*         { adjust(yyscanner); continue;}
 
 
 <include_end>{FILENAME} { adjust(yyscanner); BEGIN(INITIAL); yylval->sval = strdup(yytext); return PP_INCLUDE; }
-^#include{SPACE}* { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
+^{SPACE}*#include{SPACE}* { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
 <include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; BEGIN(include_end); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
 
 <import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
 <import_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
-^#import{SPACE}+ { BEGIN(import); }
+^{SPACE}*#import{SPACE}+ { BEGIN(import); }
 
-^#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
+^{SPACE}*#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
 
@@ -249,6 +253,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "fork"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }
 "union"                             { adjust(yyscanner); return UNION; }
 
+"\\\n"                                { adjust(yyscanner); continue; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
@@ -495,12 +500,13 @@ static void adjust(void* data) {
 
 static Macro add_macro(void* data, const m_str line) {
   Scanner* scan = yyget_extra(data);
+  const m_str str = strstr(line, "#define");
   int i = 7;
-  while(isspace(line[i]))++i;
+  while(isspace(str[i]))++i;
   loc_t *loc = yyget_lloc(data);
   loc->first.column += i;
   scan->pos.column += i;
-  m_str id = strip_comment(data, line + i);
+  m_str id = strip_comment(data, str + i);
   scan->pp->entry = macro_add(scan->pp->macros, id);
   xfree(id);
   if(!scan->pp->entry) {

@@ -40,6 +40,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   bool yybool;
   ae_stmt_t stmt_t;
   char* sval;
+  struct AstString string;
   int ival;
   long unsigned int lval;
   m_uint uval;
@@ -96,9 +97,10 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<stmt_t> flow breaks
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
-%token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_LIT "<interp string>" INTERP_EXP INTERP_END "<interp string>`"
+%token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_IMPORT "import"
+%token<string> INTERP_LIT "<interp string>" INTERP_END "<interp string>" 
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_E "&<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" OPTIONS COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
@@ -753,16 +755,16 @@ post_exp: prim_exp
   ;
 
 interp_exp
-  : INTERP_END { $$ = new_prim_string(mpool(arg), $1, @$); }
-  | INTERP_LIT interp_exp { $$ = new_prim_string(mpool(arg), $1, @$); $$->next = $2; }
+  : INTERP_END { $$ = new_prim_string(mpool(arg), $1.data, $1.delim, @$); }
+  | INTERP_LIT interp_exp { $$ = new_prim_string(mpool(arg), $1.data, $1.delim, @$); $$->next = $2; }
   | exp INTERP_EXP interp_exp { $$ = $1; $$->next = $3; LIST_REM($1) }
 
 interp: INTERP_START interp_exp { $$ = $2; }
 | interp INTERP_START interp_exp {
   if(!$3->next) {
-    char c[strlen($1->d.prim.d.str) + strlen($3->d.prim.d.str) + 1];
-    sprintf(c, "%s%s\n", $1->d.prim.d.str, $3->d.prim.d.str);
-    $1->d.prim.d.str = s_name(insert_symbol(c));
+    char c[strlen($1->d.prim.d.string.data) + strlen($3->d.prim.d.string.data) + 1];
+    sprintf(c, "%s%s\n", $1->d.prim.d.string.data, $3->d.prim.d.string.data);
+    $1->d.prim.d.string.data = s_name(insert_symbol(c));
     $1->pos.last = $3->pos.last;
     free_exp(mpool(arg), $3);
   } else
@@ -774,7 +776,7 @@ prim_exp
   | NUM                  { $$ = new_prim_int(    mpool(arg), $1, @$); }
   | FLOATT               { $$ = new_prim_float(  mpool(arg), $1, @$); }
   | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
-  | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, @$); }
+  | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }
   | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
   | array                { $$ = new_prim_array(  mpool(arg), $1, @$); }
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
