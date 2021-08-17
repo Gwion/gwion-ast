@@ -291,14 +291,14 @@ ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
   a->sym  = src->sym;
   a->exp  = cpy_exp(p, src->exp);
   a->body = cpy_stmt(p, src->body);
-  if (src->idx) cpy_eachidx(p, src->idx);
+  if (src->idx) a->idx = cpy_eachidx(p, src->idx);
   a->vpos = src->vpos;
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {
   a->cond = cpy_exp(p, src->cond);
   a->body = cpy_stmt(p, src->body);
-  if (src->idx) cpy_eachidx(p, src->idx);
+  if (src->idx) a->idx = cpy_eachidx(p, src->idx);
 }
 
 ANN static void cpy_stmt_if(MemPool p, Stmt_If a, const Stmt_If src) {

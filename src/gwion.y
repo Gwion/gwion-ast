@@ -440,11 +440,12 @@ loop_stmt
   | "foreach" "(" ID ":" binary_exp ")" stmt
       { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
   | "foreach" "(" ID "," ID ":" binary_exp ")" stmt
-      { $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$);
+      { 
+        $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$);
         $$->d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
         $$->d.stmt_each.idx->sym = $3;
         $$->d.stmt_each.idx->pos = @3;
-    }
+      }
   | "repeat" "(" binary_exp ")" stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   | "repeat" "(" ID "," binary_exp ")" stmt
