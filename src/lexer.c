@@ -1800,7 +1800,7 @@ YY_RULE_SETUP
     yylval->string.data = alloc_str(yyscanner, yytext);
     yylval->string.delim = vector_pop(&scan->hashes);
     scan->interp_state--;
-    return vector_size(&scan->hashes) ? INTERP_LIT : INTERP_END;
+    return (vector_size(&scan->hashes) != (m_uint)scan->interp_state) ? INTERP_LIT : INTERP_END;
   } else
     yymore();
 }
