@@ -126,8 +126,8 @@ extern int gwion_debug;
     PP_ENDIF = 327,                /* "#if"  */
     PP_NL = 328,                   /* "\n"  */
     PP_IMPORT = 329,               /* "import"  */
-    INTERP_LIT = 330,              /* "<interp string>"  */
-    INTERP_END = 331,              /* INTERP_END  */
+    INTERP_LIT = 330,              /* "<interp string lit>"  */
+    INTERP_END = 331,              /* "<interp string end>"  */
     ID = 334,                      /* "<identifier>"  */
     PLUS = 335,                    /* "+"  */
     PLUSPLUS = 336,                /* "++"  */
