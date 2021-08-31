@@ -62,9 +62,12 @@ static void _gwerr_basic(const char *main, const char *explain, const char *fix,
 
   printer.rounded = true;
 
+  const size_t sz = loc.last.line == loc.first.line
+     ? (size_t)(loc.last.column - loc.first.column)
+     : strlen(line) - loc.first.column;
   const perr_t err = PERR_Error(
       errtype, PERR_Str(loc.first.line, line),
-      PERR_Pos(loc.first.column - 1, loc.last.column - loc.first.column), main,
+      PERR_Pos(loc.first.column - 1, sz), main,
       explain, fix, error_code, get_filename(filename));
 
   if (line) {
