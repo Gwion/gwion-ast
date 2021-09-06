@@ -592,16 +592,30 @@ op_base
       $$->fbflag |= fbflag_internal;
     };
 
-operator: "operator" { $$ = ae_flag_none; } | "operator" global { $$ = ae_flag_global; };
+operator: "operator" access_flag final { $$ = $2 | $3; } | "operator" global access_flag final { $$ = $2 | $3 |$4; };
 op_def
   : operator op_base code_stmt
-  { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; };
+  { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; }
+  | operator op_base ";"
+  { $$ = new_func_def(mpool(arg), $2, NULL); $2->fbflag |= fbflag_op; $2->flag |= $1 | ae_flag_abstract; }
+  | operator "abstract" op_base ";"
+  { $$ = new_func_def(mpool(arg), $3, NULL); $3->fbflag |= fbflag_op; $3->flag |= $1 | ae_flag_abstract; };
 
 func_def: func_def_base | abstract_fdef | op_def { $$ = $1; $$->base->fbflag |= fbflag_op; }
   |  operator "new" func_args arg_type code_stmt
     { Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3, $1, @2);
       base->fbflag = $4;
       $$ = new_func_def(mpool(arg), base, $5);
+    }
+  |  operator "new" func_args arg_type ";"
+    { Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3, $1 | ae_flag_abstract, @2);
+      base->fbflag = $4;
+      $$ = new_func_def(mpool(arg), base, NULL);
+    }
+  |  operator "abstract" "new" func_args arg_type ";"
+    { Func_Base *const base = new_func_base(mpool(arg), NULL, $3, $4, $1 | ae_flag_abstract, @3);
+      base->fbflag = $5;
+      $$ = new_func_def(mpool(arg), base, NULL);
     }
 
 type_decl_base
