@@ -321,6 +321,7 @@ AST_NEW(Exp, exp_call, const Exp base, const Exp args,
   exp_setmeta(a, 1);
   a->d.exp_call.func = base;
   a->d.exp_call.args = args;
+  a->d.exp_call.allow_curry = true;
   return a;
 }
 
