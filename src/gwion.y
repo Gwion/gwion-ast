@@ -592,7 +592,7 @@ op_base
       $$->fbflag |= fbflag_internal;
     };
 
-operator: "operator" access_flag final { $$ = $2 | $3; } | "operator" global access_flag final { $$ = $2 | $3 |$4; };
+operator: "operator" { $$ = ae_flag_none; } | "operator" global { $$ = $2; };
 op_def
   : operator op_base code_stmt
   { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; }
