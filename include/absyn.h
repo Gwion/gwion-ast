@@ -223,6 +223,7 @@ typedef struct {
   Exp   func;
   Exp   args;
   Tmpl *tmpl;
+  bool apms;
 } Exp_Call;
 typedef struct {
   Type_Decl *td;

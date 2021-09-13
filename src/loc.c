@@ -11,10 +11,10 @@ ANN static char *get_src(const char *filename, const loc_t loc) {
   if (!f) return NULL;
   fseek(f, SEEK_SET, 0);
   ssize_t ret;
-  while ((ret = getline(&line, &len, f)) != -1 && ++i < loc.first.line)
-    ;
+  while ((ret = getline(&line, &len, f)) != -1 && ++i < loc.first.line);
   fclose(f);
   if (ret != -1) return line;
+  if(line) xfree(line);
   return NULL;
 }
 
@@ -62,9 +62,9 @@ static void _gwerr_basic(const char *main, const char *explain, const char *fix,
 
   printer.rounded = true;
 
-  const size_t sz = loc.last.line == loc.first.line
+  const size_t sz = line ? (loc.last.line == loc.first.line
      ? (size_t)(loc.last.column - loc.first.column)
-     : strlen(line) - loc.first.column;
+     : strlen(line) - loc.first.column) : 0;
   const perr_t err = PERR_Error(
       errtype, PERR_Str(loc.first.line, line),
       PERR_Pos(loc.first.column - 1, sz), main,
