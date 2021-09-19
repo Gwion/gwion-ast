@@ -284,6 +284,8 @@ struct Exp_ {
   struct Type_ *type;
   struct Type_ *cast_to;
   Exp           next;
+  Exp ref;
+  void *data;
   struct loc_t_ pos; ///< position
                      //  enum exp_state emit_var;
   ae_exp_t exp_type;
