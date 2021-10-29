@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['unarynew_0',['UnaryNew',['../structUnaryNew.html',1,'']]],
-  ['union_5fdef_5f_1',['Union_Def_',['../structUnion__Def__.html',1,'']]],
-  ['union_5flist_5f_2',['Union_List_',['../structUnion__List__.html',1,'']]]
+  ['tmpl_5f_0',['Tmpl_',['../structTmpl__.html',1,'']]],
+  ['trait_5fdef_5f_1',['Trait_Def_',['../structTrait__Def__.html',1,'']]],
+  ['type_5fdecl_5f_2',['Type_Decl_',['../structType__Decl__.html',1,'']]],
+  ['type_5fdef_5f_3',['Type_Def_',['../structType__Def__.html',1,'']]],
+  ['type_5flist_5f_4',['Type_List_',['../structType__List__.html',1,'']]]
 ];

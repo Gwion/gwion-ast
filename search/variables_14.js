@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['xid_0',['xid',['../structExp__Dot.html#a99123f74dcb32fc44ed9628c4a06c65d',1,'Exp_Dot::xid()'],['../structVar__Decl__.html#aaf9700df24c4fa8e59360ea7d7e0ec2e',1,'Var_Decl_::xid()'],['../structType__Decl__.html#ad7c44c4f42984f944d4fe9bb43b15705',1,'Type_Decl_::xid()'],['../structID__List__.html#ad7ae2baf7970798e466ef07d1d4637fd',1,'ID_List_::xid()'],['../structSpecialized__List__.html#a90f9fc45c5004ab46daac27eb9c3782b',1,'Specialized_List_::xid()'],['../structHandler__List__.html#a65412c9529e18daf042e86a9bcff26fa',1,'Handler_List_::xid()'],['../structEnum__Def__.html#aad034b6db03db24cfaf41e7284d7919b',1,'Enum_Def_::xid()'],['../structFunc__Base__.html#a8c0b359609bd3b847ae440281ba3e02a',1,'Func_Base_::xid()'],['../structType__Def__.html#a69926ff4be6ab4fec31d9a3f4f69c305',1,'Type_Def_::xid()'],['../structUnion__List__.html#a81cceb1451915eebf65e50ee7c3ba3b2',1,'Union_List_::xid()'],['../structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b',1,'Union_Def_::xid()'],['../structTrait__Def__.html#a24ce7267d7843be45cfc0c8aad69d3b5',1,'Trait_Def_::xid()']]]
+  ['when_0',['when',['../structStmt__Match__.html#ad66cf68fa4e6680e355b8a00fc910d23',1,'Stmt_Match_::when()'],['../structType__Def__.html#a519e40fb6cfadf0cf7540fe27930e366',1,'Type_Def_::when()']]],
+  ['when_5fdef_1',['when_def',['../structType__Def__.html#a8441e310a2af39704c7b6512ac0ebdc2',1,'Type_Def_']]],
+  ['where_2',['where',['../structStmt__Match__.html#ab227a8327b44cf3af5560762b2b06ef5',1,'Stmt_Match_']]]
 ];
