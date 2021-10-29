@@ -46,6 +46,9 @@ Array_Sub* array
 Range**     range
   =Range* range *
 
+Exp*       dict
+  =Exp exp *
+
 Exp*       hack
   =Exp exp *
 

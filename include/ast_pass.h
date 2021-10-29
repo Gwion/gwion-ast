@@ -17,6 +17,7 @@ static inline m_bool dummy_func(const void *a NUSED, const void *b NUSED) {
       (_##prefix##_prim_func)prefix##_prim_str,                                \
       (_##prefix##_prim_func)prefix##_prim_array,                              \
       (_##prefix##_prim_func)prefix##_prim_range,                              \
+      (_##prefix##_prim_func)prefix##_prim_dict,                               \
       (_##prefix##_prim_func)prefix##_prim_hack,                               \
       (_##prefix##_prim_func)prefix##_prim_char,                               \
       (_##prefix##_prim_func)prefix##_prim_nil,                                \

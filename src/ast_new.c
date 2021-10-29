@@ -219,6 +219,13 @@ AST_NEW(Exp, prim_range, Range *range, const struct loc_t_ pos) {
   return a;
 }
 
+AST_NEW(Exp, prim_dict, const Exp exp, const struct loc_t_ pos) {
+  Exp a               = new_prim(p, pos);
+  a->d.prim.prim_type = ae_prim_dict;
+  a->d.prim.d.exp     = exp;
+  return a;
+}
+
 static inline AST_NEW(Exp, exp_unary_base, const Symbol oper,
                       const struct loc_t_ pos) {
   Exp a             = new_exp(p, ae_exp_unary, pos);

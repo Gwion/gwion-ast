@@ -66,6 +66,13 @@ typedef struct Range_ {
 } Range;
 AST_NEW(Range *, range, const Exp, const Exp);
 
+typedef struct Dict_ {
+  Exp key;
+  Exp val;
+  struct Dict_ *next;
+} Dict;
+AST_NEW(Dict *, dict, const Exp, const Exp);
+
 /** slice. @code "test"[12:12] @endcode see \ref Range_ */
 typedef struct {
   Exp    base;
@@ -175,6 +182,7 @@ typedef enum {
   ae_prim_str,
   ae_prim_array,
   ae_prim_range,
+  ae_prim_dict,
   ae_prim_hack,
   ae_prim_char,
   ae_prim_nil,
@@ -375,6 +383,7 @@ ANEW     AST_NEW(Exp, prim_float, const m_float, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_string, const m_str, const uint16_t delim, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_range, Range *, const struct loc_t_);
+ANEW     AST_NEW(Exp, prim_dict, const Exp, const struct loc_t_);
 ANEW     AST_NEW(Exp, prim_hack, const Exp, const struct loc_t_);
 ANEW ANN AST_NEW(Exp, prim_char, const m_str, const struct loc_t_);
 ANEW     AST_NEW(Exp, prim_nil, const struct loc_t_);
@@ -689,6 +698,7 @@ struct Func_Def_ {
     void *dl_func_ptr;
   } d;
   uint16_t stack_depth;
+  bool builtin;
 };
 
 ANEW     AST_NEW(Func_Def, func_def, Func_Base *, const Stmt);

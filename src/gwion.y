@@ -121,7 +121,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
-%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp
+%type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp dict_list
 %type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
 %type<array_sub> array_exp array_empty array
 %type<range> range
@@ -514,11 +514,16 @@ array_empty
   | array_empty array_exp { parser_error(&@1, arg, "partially empty array init [][...]", 0x0209); YYERROR; }
   ;
 
+dict_list:
+    binary_exp ":" binary_exp { $1->next = $3; $$ = $1; }
+  | binary_exp ":" binary_exp "," dict_list  { $1->next = $3; $3-> next = $5; $$ = $1; }
+
 range
   : "[" exp ":" exp "]" { $$ = new_range(mpool(arg), $2, $4); LIST_REM($2) LIST_REM($4) }
   | "[" exp ":" "]"     { $$ = new_range(mpool(arg), $2, NULL);  LIST_REM($2) }
   | "[" %prec RANGE_EMPTY ":" exp "]"     { $$ = new_range(mpool(arg), NULL, $3); LIST_REM($3) }
   ;
+
 
 array: array_exp | array_empty;
 decl_exp: con_exp
@@ -794,6 +799,7 @@ prim_exp
   | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }
   | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
   | array                { $$ = new_prim_array(  mpool(arg), $1, @$); }
+  | "{" dict_list "}"    { $$ = new_prim_dict(   mpool(arg), $2, @$); }
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); LIST_REM(2) }
   | "(" exp ")"          { $$ = $2; LIST_REM($2) }
