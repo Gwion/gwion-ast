@@ -1,4 +1,4 @@
-#include "prettyerr.h"
+#include "gwion_ast.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "parser.h"
@@ -6,7 +6,7 @@
 ANN static char *get_src(const char *filename, const loc_t loc) {
   char * line = NULL;
   size_t len  = 0;
-  uint   i    = 0;
+  unsigned   i    = 0;
   FILE * f    = fopen(filename, "r");
   if (!f) return NULL;
   fseek(f, SEEK_SET, 0);
@@ -48,8 +48,8 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
 }
 
 static void _gwerr_basic(const char *main, const char *explain, const char *fix,
-                 const char *filename, const loc_t loc, const uint error_code,
-                 const enum libprettyerr_errtype errtype) {
+                 const char *filename, const loc_t loc, const unsigned error_code,
+                 const enum libgwion_ast_errtype errtype) {
 #ifdef __FUZZING__
   return;
 #endif
@@ -78,7 +78,7 @@ static void _gwerr_basic(const char *main, const char *explain, const char *fix,
 }
 
 void gwerr_basic(const char *main, const char *explain, const char *fix,
-                 const char *filename, const loc_t loc, const uint error_code) {
+                 const char *filename, const loc_t loc, const unsigned error_code) {
 #ifdef __FUZZING__
   return;
 #endif

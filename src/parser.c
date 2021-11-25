@@ -99,7 +99,7 @@
 
 #define LIST_REM(a) map_remove(&arg->map, (m_uint)a);
 
-ANN static int parser_error(loc_t*, Scanner*const, const char *, const uint);
+ANN static int parser_error(loc_t*, Scanner*const, const char *, const unsigned);
 ANN Symbol lambda_name(const Scanner*);
 ANN Symbol sig_name(const Scanner*, const pos_t);
 
@@ -4342,7 +4342,7 @@ yyreturn:
 #line 811 "src/gwion.y"
 
 #undef scan
-ANN static int parser_error(loc_t *loc, Scanner *const scan, const char* diagnostic, const uint error_code) {
+ANN static int parser_error(loc_t *loc, Scanner *const scan, const char* diagnostic, const unsigned error_code) {
   char _main[strlen(diagnostic) + 1];
   strcpy(_main, diagnostic);
   char *_explain = strchr(_main, ','),

@@ -1,0 +1,9 @@
+#ifndef GWION_AST_CONFIG_H
+#define GWION_AST_CONFIG_H
+
+#define GWION_AST_VERSION_MAJOR @gwion_ast_VERSION_MAJOR@
+#define GWION_AST_VERSION_MINOR @gwion_ast_VERSION_MINOR@
+#define GWION_AST_VERSION_PATCH @gwion_ast_VERSION_PATCH@
+#define GWION_AST_VERSION       "@gwion_ast_VERSION@"
+
+#endif /* GWION_AST_CONFIG_H */

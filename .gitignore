@@ -4,3 +4,6 @@ config.mk
 .d
 .po
 html
+*build*
+*_export.h
+.idea

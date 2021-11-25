@@ -7,7 +7,7 @@
 
 # Gwion-AST
 
-Gwion language lexer, parser, preprocessor and abstract syntatxic tree.  
+Gwion language lexer, parser, preprocessor and abstract syntactic tree.  
 Meant to be be used as a submodule and ease Tooling
 
 ## Contributors ✨
