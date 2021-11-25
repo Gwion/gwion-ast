@@ -8,7 +8,7 @@ ANN struct PPState_ *new_ppstate(MemPool p, const m_str filename) {
   return ppstate;
 };
 
-ANEW PP *new_pp(MemPool p, const uint size, const m_str name) {
+ANEW PP *new_pp(MemPool p, const unsigned size, const m_str name) {
   PP *pp = (PP *)mp_calloc(p, PP);
   vector_init(&pp->data);
   pp->macros = (Hash)mp_calloc(p, Hash);

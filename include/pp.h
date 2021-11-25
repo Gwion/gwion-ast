@@ -33,6 +33,6 @@ typedef struct PP_ {
 } PP;
 
 ANN struct PPState_ *new_ppstate(MemPool, const m_str);
-ANEW PP *new_pp(MemPool p, const uint size, const m_str);
+ANEW PP *new_pp(MemPool p, const unsigned size, const m_str);
 ANN void free_pp(MemPool p, PP *pp, void *data);
 #endif

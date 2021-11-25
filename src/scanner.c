@@ -76,7 +76,7 @@ ANN static void secondary(Scanner *scan) {
 
 ANN2(1, 2)
 int scanner_error(Scanner *scan, const char *main, const char *explain,
-                  const char *fix, const loc_t pos, const uint error_code) {
+                  const char *fix, const loc_t pos, const unsigned error_code) {
   if (scan->error) return 0;
   const struct PPState_ *ppstate =
       (struct PPState_ *)vector_back(&scan->pp->filename);

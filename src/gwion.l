@@ -21,15 +21,15 @@ NUM      ([0-9]{1,3}+({SPACE}*[0-9]{3})*)
 #define GWYY_FATAL_ERROR(msg) { lexer_error(yyscanner, msg, ERRORCODE(101)); yyterminate(); }
 
 // there was yynoreturn
-ANN void lexer_error(yyscan_t yyscanner, const char*, const uint errorcode);
+ANN void lexer_error(yyscan_t yyscanner, const char*, const unsigned errorcode);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
 ANN static m_uint htol(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
-ANN static uint  get_currline(void* data);
-ANN static uint  get_currpos(void* data);
+ANN static unsigned  get_currline(void* data);
+ANN static unsigned  get_currpos(void* data);
 ANN static char* get_currfile(void* data);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(const m_str line);
@@ -426,7 +426,7 @@ ANN Symbol sig_name(const Scanner *scan, const pos_t pos) {
   return insert_symbol(scan->st, c);
 }
 
-ANN void lexer_error(yyscan_t yyscanner, const char *msg, const uint error_code) {
+ANN void lexer_error(yyscan_t yyscanner, const char *msg, const unsigned error_code) {
   struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
   scanner_error(scan, msg, NULL, NULL, *yyget_lloc(yyscanner), error_code);
@@ -457,13 +457,13 @@ m_uint htol(const char* str) {
     n <<= 4;
     switch(*c) {
       case '0' ... '9':
-        n += (uint)(*c - '0');
+        n += (unsigned)(*c - '0');
         break;
       case 'a' ... 'f':
-        n += (uint)(*c - 'a' + 10);
+        n += (unsigned)(*c - 'a' + 10);
         break;
       case 'A' ... 'F':
-        n += (uint)(*c - 'A' + 10);
+        n += (unsigned)(*c - 'A' + 10);
         break;
     }
     c++;
@@ -477,12 +477,12 @@ static void newline(void* data) {
   scan->pos.column = 1;
 }
 
-static uint get_currline(void* data) {
+static unsigned get_currline(void* data) {
   const Scanner* scan = yyget_extra(data);
   return scan->pos.line;
 }
 
-static uint get_currpos(void* data) {
+static unsigned get_currpos(void* data) {
   const Scanner* scan = yyget_extra(data);
   return scan->pos.column;
 }
@@ -495,7 +495,7 @@ static char* get_currfile(void* data) {
 
 static void adjust(void* data) {
   Scanner *scan = yyget_extra(data);
-  scan->pos.column += (uint)gwion_get_leng((void*)data);
+  scan->pos.column += (unsigned)gwion_get_leng((void*)data);
 }
 
 static Macro add_macro(void* data, const m_str line) {
@@ -535,7 +535,7 @@ static m_str strip_comment(Scanner* scan, const m_str s) {
   while(isspace(*str)) ++str;
   size_t end = strlen(str);
   while(isspace(str[--end]));
-  scan->pos.column += (uint)(str - s);
+  scan->pos.column += (unsigned)(str - s);
   return strndup(str, end + 1);
 }
 

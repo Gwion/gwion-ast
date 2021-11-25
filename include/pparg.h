@@ -8,7 +8,7 @@ struct PPArg_ {
   struct Vector_ path;
   struct Hash_   hash;
   Ast            ast;
-  uint           lint;
+  unsigned           lint;
 };
 
 ANN void pparg_ini(MemPool, struct PPArg_ *);
