@@ -58,8 +58,16 @@ set_target_properties(
 find_package(BISON)
 find_package(FLEX)
 
-BISON_TARGET(MyParser gwion.y ${CMAKE_CURRENT_SOURCE_DIR}/parser.c)
-FLEX_TARGET(MyScanner gwion.l  ${CMAKE_CURRENT_SOURCE_DIR}/lexer.c)
+BISON_TARGET(MyParser
+        gwion.y
+        "${CMAKE_CURRENT_SOURCE_DIR}/parser.c"
+        DEFINES_FILE "${CMAKE_SOURCE_DIR}/include/lexer.h"
+        # COMPILE_FLAGS "-Wno-yacc"
+)
+FLEX_TARGET(MyScanner
+        gwion.l
+        "${CMAKE_CURRENT_SOURCE_DIR}/lexer.c"
+        COMPILE_FLAGS "--header-file=${CMAKE_SOURCE_DIR}/include/lexer.h")
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 

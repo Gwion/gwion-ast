@@ -4,6 +4,9 @@ config.mk
 .d
 .po
 html
+.idea
 *build*
 *_export.h
-.idea
+src/lexer.c
+src/parser.c
+include/lexer.h
