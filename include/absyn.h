@@ -489,8 +489,9 @@ struct Stmt_For_ {
 
 struct EachIdx_ {
   struct Symbol_ *sym;
-  struct Value_ * v;
+  struct Value_  *v;
   loc_t           pos;
+  bool            is_var;
 };
 
 struct Stmt_Each_ {

@@ -111,6 +111,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 }
 
 <interp>\"#* {
+  adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
   size_t len = yyleng;
   short unsigned int hashes = 1;

@@ -113,6 +113,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<uval> option
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
+%type<yybool> opt_var
 %type<fbflag> arg_type
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
@@ -437,23 +438,24 @@ loop_stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, NULL, $6, @$); }
   | "for" "(" exp_stmt exp_stmt exp ")" stmt
       { $$ = new_stmt_for(mpool(arg), $3, $4, $5, $7, @$); LIST_REM($5) }
-  | "foreach" "(" ID ":" binary_exp ")" stmt
-      { $$ = new_stmt_each(mpool(arg), $3, $5, $7, @$); }
-  | "foreach" "(" ID "," ID ":" binary_exp ")" stmt
-      { 
-        $$ = new_stmt_each(mpool(arg), $5, $7, $9, @$);
+  | "foreach" "(" ID ":" opt_var binary_exp ")" stmt
+      { $$ = new_stmt_each(mpool(arg), $3, $6, $8, @$); }
+  | "foreach" "(" ID "," ID ":" opt_var binary_exp ")" stmt
+      {
+        $$ = new_stmt_each(mpool(arg), $5, $8, $10, @$);
         $$->d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
         $$->d.stmt_each.idx->sym = $3;
         $$->d.stmt_each.idx->pos = @3;
+        $$->d.stmt_each.idx->is_var = $7;
       }
   | "repeat" "(" binary_exp ")" stmt
       { $$ = new_stmt_loop(mpool(arg), $3, $5, @$); LIST_REM($3) }
   | "repeat" "(" ID "," binary_exp ")" stmt
-      { 
+      {
         $$ = new_stmt_loop(mpool(arg), $5, $7, @$);
         $$->d.stmt_loop.idx = mp_malloc(mpool(arg), EachIdx);
         $$->d.stmt_loop.idx->sym = $3;
-        $$->d.stmt_loop.idx->pos = @3;        
+        $$->d.stmt_loop.idx->pos = @3;
         LIST_REM($5)
       }
   ;
@@ -656,6 +658,8 @@ type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $
 type_decl_flag
   : "late"  { $$ = ae_flag_late; }
   | "const" { $$ = ae_flag_const; };
+
+opt_var: "var" { $$ = true; } | { $$ = false; };
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
