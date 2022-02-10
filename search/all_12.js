@@ -19,8 +19,8 @@ var searchData=
   ['type_5fdef_16',['Type_Def',['../absyn_8h.html#aa88a499d1adb2621419a47bc87f028f3',1,'absyn.h']]],
   ['type_5fdef_17',['type_def',['../unionSection___1_1section__data.html#a561b74d09066f65e71e495ec1e381a01',1,'Section_::section_data']]],
   ['type_5fdef_5f_18',['Type_Def_',['../structType__Def__.html',1,'']]],
-  ['type_5flist_19',['type_list',['../absyn_8h.html#aada6878e62472c5907da1a89fa6495ef',1,'absyn.h']]],
-  ['type_5flist_20',['Type_List',['../absyn_8h.html#a6d585a617520483df9fb2aa56b55aa83',1,'absyn.h']]],
+  ['type_5flist_19',['Type_List',['../absyn_8h.html#a6d585a617520483df9fb2aa56b55aa83',1,'absyn.h']]],
+  ['type_5flist_20',['type_list',['../absyn_8h.html#aada6878e62472c5907da1a89fa6495ef',1,'absyn.h']]],
   ['type_5flist_5f_21',['Type_List_',['../structType__List__.html',1,'']]],
   ['types_22',['types',['../structType__Decl__.html#aba3b0586d1ebe8a2dcb0562fd1c89e7c',1,'Type_Decl_']]]
 ];

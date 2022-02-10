@@ -6,5 +6,6 @@ var searchData=
   ['inclusive_3',['inclusive',['../structRange__.html#a40be7d5951bbce744859a2cee12649fa',1,'Range_']]],
   ['interp_5fstate_4',['interp_state',['../structScanner__.html#adf75591f90da7acccae161a7c6562bf5',1,'Scanner_']]],
   ['is_5fcall_5',['is_call',['../structExp__Dot.html#af03f08b9ee43f3836c97fd79cf979b49',1,'Exp_Dot']]],
-  ['is_5fdo_6',['is_do',['../structStmt__Flow__.html#a65b95a16523722799b2a3a277823e388',1,'Stmt_Flow_']]]
+  ['is_5fdo_6',['is_do',['../structStmt__Flow__.html#a65b95a16523722799b2a3a277823e388',1,'Stmt_Flow_']]],
+  ['is_5fvar_7',['is_var',['../structEachIdx__.html#a4ee4ee8d4458618f7a178c1dddb419b4',1,'EachIdx_']]]
 ];
