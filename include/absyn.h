@@ -273,6 +273,12 @@ enum exp_state {
   exp_state_null, // still in use?
 };
 
+enum exp_comptime {
+  comptime_no,
+  comptime_yes,
+  comptime_need
+};
+
 struct Exp_ {
   union exp_data {
     Exp_Postfix exp_post;
@@ -299,6 +305,7 @@ struct Exp_ {
   ae_exp_t exp_type;
   int16_t  emit_var;
   int16_t  acquire;
+  enum exp_comptime comptime;
 };
 
 ANN static inline int exp_getuse(const Exp e) {

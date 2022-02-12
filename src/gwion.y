@@ -486,14 +486,21 @@ exp_stmt
 
 exp:
     binary_exp           { $$ = $1; LIST_FIRST($$) }
-  | exp "," binary_exp { LIST_NEXT($$, $1, Exp, $3) }
+  | exp "," binary_exp
+    {
+      if($3->next) {
+        parser_error(&@3, arg, "invalid format for expression", 0);
+        YYERROR;
+      }
+      LIST_NEXT($$, $1, Exp, $3)
+    };
 
 
 binary_exp
   : decl_exp
-  | binary_exp OPID_A decl_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
-  | binary_exp "@" decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
-  | binary_exp DYNOP decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp OPID_A  decl_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp "@"     decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp DYNOP   decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
 
@@ -505,15 +512,15 @@ array_exp
   : "[" exp "]"           { $$ = new_array_sub(mpool(arg), $2);  LIST_REM($2) }
   | "[" exp "]" array_exp {
     LIST_REM($2)
-    if($2->next){ parser_error(&@2, arg, "invalid format for array init [...][...]...", 0207); YYERROR; } $$ = prepend_array_sub($4, $2);
+    if($2->next){ parser_error(&@2, arg, "invalid format for array init [...][...]...", 0x0208); YYERROR; } $$ = prepend_array_sub($4, $2);
   }
-  | "[" exp "]" "[" "]"  { LIST_REM(2) parser_error(&@3, arg, "partially empty array init [...][]...", 0x0208); YYERROR; }
+  | "[" exp "]" "[" "]"  { LIST_REM(2) parser_error(&@3, arg, "partially empty array init [...][]...", 0x0209); YYERROR; }
   ;
 
 array_empty
   : "[" "]"               { $$ = new_array_sub(mpool(arg), NULL); }
   | array_empty "[" "]"   { $$ = prepend_array_sub($1, NULL); }
-  | array_empty array_exp { parser_error(&@1, arg, "partially empty array init [][...]", 0x0209); YYERROR; }
+  | array_empty array_exp { parser_error(&@1, arg, "partially empty array init [][...]", 0x0210); YYERROR; }
   ;
 
 dict_list:
