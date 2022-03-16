@@ -1,12 +1,13 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-ANN static Stmt      cpy_stmt(MemPool p, const Stmt src);
+ANN Stmt      cpy_stmt(MemPool p, const Stmt src);
+ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src);
 ANN Exp              cpy_exp(MemPool p, const Exp src);
 ANN Type_List        cpy_type_list(MemPool p, const Type_List src);
 ANN Arg_List         cpy_arg_list(MemPool p, const Arg_List src);
 ANN Class_Def        cpy_class_def(MemPool p, const Class_Def src);
-ANN static Stmt_List cpy_stmt_list(MemPool p, const Stmt_List src);
+ANN static Stmt_List cpy_stmt_list(MemPool p, Stmt_List src);
 
 ANN static void cpy_exp_dot(MemPool p, Exp_Dot *a, const Exp_Dot *src) {
   a->base = cpy_exp(p, src->base);
@@ -42,18 +43,26 @@ ANN static void cpy_exp_slice(MemPool p, Exp_Slice *a, const Exp_Slice *src) {
   a->range = cpy_range(p, src->range);
 }
 
-ANN /*static */ Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
-  Var_Decl a = mp_calloc(p, Var_Decl);
+ANN /*static */ Var_Decl cpy_var_decl2(MemPool p, Var_Decl a, const Var_Decl src) {
   a->xid     = src->xid;                                   // 1
   if (src->array) a->array = cpy_array_sub(p, src->array); // 1
   a->pos = src->pos;                                       // 1
   return a;
 }
 
+ANN /*static */ Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
+  Var_Decl a = mp_calloc(p, Var_Decl);
+  cpy_var_decl2(p, a, src);
+  return a;
+}
+
 ANN static Var_Decl_List cpy_var_decl_list(MemPool p, const Var_Decl_List src) {
-  Var_Decl_List a = mp_calloc(p, Var_Decl_List);
-  a->self         = cpy_var_decl(p, src->self);             // 1
-  if (src->next) a->next = cpy_var_decl_list(p, src->next); // 1
+  Var_Decl_List a = new_mp_vector(p, sizeof(struct Var_Decl_), src->len);
+  for(uint32_t i = 0; i < src->len; i ++) {
+    Var_Decl src_vd = mp_vector_at(src, struct Var_Decl_, i);
+    Var_Decl tgt_vd = mp_vector_at(a, struct Var_Decl_, i);
+    cpy_var_decl2(p, tgt_vd, src_vd);
+  }
   return a;
 }
 
@@ -72,36 +81,46 @@ ANN Type_Decl *cpy_type_decl(MemPool p, const Type_Decl *src) {
 }
 
 ANN ID_List cpy_id_list(MemPool p, const ID_List src) {
-  ID_List a = mp_calloc(p, ID_List);
-  a->xid    = src->xid;                               // 1
-  if (src->next) a->next = cpy_id_list(p, src->next); // 1
+  ID_List a = new_mp_vector(p, sizeof(Symbol), src->len);
+  for(uint32_t i = 0; i < src->len; i++) {
+    Symbol sym = *mp_vector_at(src, Symbol, i);
+    mp_vector_set(a, Symbol, i, sym);
+  }
   return a;
 }
 
 ANN Specialized_List cpy_specialized_list(MemPool                p,
                                           const Specialized_List src) {
-  Specialized_List a = mp_calloc(p, Specialized_List);
-  a->xid             = src->xid;                               // 1
-  if (src->traits) a->traits = cpy_id_list(p, src->traits);    // 1
-  if (src->next) a->next = cpy_specialized_list(p, src->next); // 1
-  a->pos = src->pos;
-  return a;
+  Specialized_List tgt = new_mp_vector(p, sizeof(Specialized), src->len);
+  for(uint32_t i = 0; i < src->len; i++) {
+    Specialized *_src = mp_vector_at(src, Specialized, i);
+    Specialized *_tgt = mp_vector_at(tgt, Specialized, i);
+    _tgt->xid = _src->xid;
+    if (_src->traits) _tgt->traits = cpy_id_list(p, _src->traits);
+    _tgt->pos = _src->pos;
+  }
+  return tgt;
 }
 
 ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
-  Type_List a = mp_calloc(p, Type_List);
-  a->td       = cpy_type_decl(p, src->td);              // 1
-  if (src->next) a->next = cpy_type_list(p, src->next); // 1
+  Type_List a = new_mp_vector(p, sizeof(Type_Decl*), src->len);
+  for(uint32_t i = 0; i < src->len; i++) {
+    Type_Decl *_src = *mp_vector_at(src, Type_Decl*, i);
+    mp_vector_set(a, Type_Decl*, i, cpy_type_decl(p, _src));
+  }
   return a;
 }
 
 ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
-  Arg_List a = mp_calloc(p, Arg_List);
-  if (src->td) a->td = cpy_type_decl(p, src->td);                  // 1
-  if (src->var_decl) a->var_decl = cpy_var_decl(p, src->var_decl); // 1
-  if (src->exp) a->exp = cpy_exp(p, src->exp);                     // 1
-  if (src->next) a->next = cpy_arg_list(p, src->next);             // 1
-  return a;
+  Arg_List arg = new_mp_vector(p, sizeof(Arg), src->len);
+  for(m_uint i = 0; i < src->len; i++) {
+    Arg *_src = mp_vector_at(src, Arg, i);
+    Arg *_arg = mp_vector_at(arg, Arg, i);
+    if (_src->td) _arg->td = cpy_type_decl(p, _src->td);
+    cpy_var_decl2(p, &_arg->var_decl, &_src->var_decl);
+    if (_src->exp) _arg->exp = cpy_exp(p, _src->exp);
+  }
+  return arg;
 }
 
 ANN static void cpy_exp_decl(MemPool p, Exp_Decl *a, const Exp_Decl *src) {
@@ -307,32 +326,39 @@ ANN static void cpy_stmt_if(MemPool p, Stmt_If a, const Stmt_If src) {
   if (src->else_body) a->else_body = cpy_stmt(p, src->else_body);
 }
 
-ANN static Stmt cpy_stmt_case(MemPool p, const Stmt_Match src) {
-  Stmt a               = mp_calloc(p, Stmt);
-  a->d.stmt_match.cond = cpy_exp(p, src->cond);
-  a->d.stmt_match.list = cpy_stmt_list(p, src->list);
-  if (src->when) a->d.stmt_match.when = cpy_exp(p, src->when);
-  return a;
+ANN static void cpy_stmt_case(MemPool p, const Stmt_Match a, const Stmt_Match src) {
+  a->cond = cpy_exp(p, src->cond);
+  a->list = cpy_stmt_list(p, src->list);
+  if (src->when) a->when = cpy_exp(p, src->when);
 }
 
 ANN static void cpy_stmt_pp(MemPool p NUSED, Stmt_PP a, const Stmt_PP src) {
   if (src->data) a->data = strdup(src->data);
 }
 
-ANN static Stmt_List cpy_stmt_cases(MemPool p, const Stmt_List src) {
-  Stmt_List a = mp_calloc(p, Stmt_List);
-  if (src->next) a->next = cpy_stmt_cases(p, src->next);
-  a->stmt = cpy_stmt_case(p, &src->stmt->d.stmt_match);
+ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
+  const m_uint sz = src->len;
+  Stmt_List a = new_mp_vector(p, sizeof(struct Stmt_), sz);
+  for(m_uint i = 0; i < sz; i++) {
+    const m_uint offset = i * sizeof(struct Stmt_);
+    const Stmt a_stmt   = (Stmt)(a->ptr + offset);
+    const Stmt src_stmt = (Stmt)(src->ptr + offset);
+    cpy_stmt_case(p, &a_stmt->d.stmt_match, &src_stmt->d.stmt_match);
+  }
   return a;
 }
 
 ANN static Handler_List cpy_handler_list(MemPool p, const Handler_List src) {
-  Handler_List a = mp_calloc(p, Handler_List);
-  a->stmt        = src->stmt;
-  a->xid         = src->xid;
-  if (src->next) a->next = cpy_handler_list(p, src->next);
-  a->pos = src->pos;
-  return a;
+//  Handler_List a = mp_calloc(p, Handler_List);
+  Handler_List tgt = new_mp_vector(p, sizeof(Handler), src->len);
+  for(m_uint i = 0; i < src->len; i++) {
+    Handler *src_handler = mp_vector_at(src, Handler, i);
+    Handler *tgt_handler = mp_vector_at(tgt, Handler, i);
+    tgt_handler->stmt        = src_handler->stmt;
+    tgt_handler->xid         = src_handler->xid;
+    tgt_handler->pos = src_handler->pos;
+  }
+  return tgt;
 }
 
 ANN static void cpy_stmt_try(MemPool p, Stmt_Try a, const Stmt_Try src) {
@@ -356,7 +382,7 @@ ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
 }
 
 ANN Func_Base *cpy_func_base(MemPool p, const Func_Base *src) {
-  Func_Base *a = mp_calloc(p, Func_Base);
+ Func_Base *a = mp_calloc(p, Func_Base);
   if (src->td) a->td = cpy_type_decl(p, src->td);      // 1
   if (src->xid) a->xid = src->xid;                     // 1
   if (src->args) a->args = cpy_arg_list(p, src->args); // 1
@@ -390,12 +416,18 @@ ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
   return a;
 }
 
-ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
-  Union_List a = mp_calloc(p, Union_List);
+ANN static void cpy_union_member(MemPool p, Union_Member *a, Union_Member *src) {
   a->td        = cpy_type_decl(p, src->td);
-  a->xid       = src->xid;
-  a->pos       = src->pos;
-  if (src->next) a->next = cpy_union_list(p, src->next);
+  cpy_var_decl2(p, &a->vd, &src->vd);
+}
+
+ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
+  Union_List a = new_mp_vector(p, sizeof(Union_Member), src->len);
+  for(uint32_t i = 0; i < src->len; i++) {
+    Union_Member *_src = mp_vector_at(src, Union_Member, i);
+    Union_Member *_tgt = mp_vector_at(a, Union_Member, i);
+    cpy_union_member(p, _tgt, _src);
+  }
   return a;
 }
 
@@ -409,8 +441,19 @@ ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   return a;
 }
 
-ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
-  Stmt a = mp_calloc(p, Stmt);
+ANN Stmt cpy_stmt(MemPool p, const Stmt src) {
+  const Stmt a = mp_calloc(p, Stmt);
+  cpy_stmt2(p, a, src);
+  return a;
+}
+
+ANN Stmt cpy_stmt3(MemPool p, const Stmt src) {
+  const Stmt a = mp_malloc(p, Stmt);
+  memcpy(a, src, sizeof(struct Stmt_));
+  return a;
+}
+
+ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
   switch (src->stmt_type) {
   case ae_stmt_exp:
   case ae_stmt_return:
@@ -457,7 +500,6 @@ ANN static Stmt cpy_stmt(MemPool p, const Stmt src) {
   }
   a->stmt_type = src->stmt_type;
   a->pos       = src->pos;
-  return a;
 }
 
 ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
@@ -472,10 +514,15 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   return a;
 }
 
-ANN static Stmt_List cpy_stmt_list(MemPool p, const Stmt_List src) {
-  Stmt_List a = mp_calloc(p, Stmt_List);
-  if (src->next) a->next = cpy_stmt_list(p, src->next);
-  a->stmt = cpy_stmt(p, src->stmt);
+ANN Stmt_List cpy_stmt_list(MemPool p, Stmt_List src) {
+  const m_uint sz = src->len;
+  Stmt_List a = new_mp_vector(p, sizeof(struct Stmt_), sz);
+  for(m_uint i = 0; i < sz; i++) {
+    const m_uint offset = i * sizeof(struct Stmt_);
+    const Stmt astmt = (Stmt)(a->ptr + offset);
+    const Stmt sstmt = (Stmt)(src->ptr + offset);
+    cpy_stmt2(p, astmt, sstmt);
+  }
   return a;
 }
 
@@ -488,11 +535,12 @@ ANN static Trait_Def cpy_trait_def(MemPool p, const Trait_Def src) {
   return a;
 }
 
-ANN static Section *cpy_section(MemPool p, const Section *src) {
-  Section *a = mp_calloc(p, Section);
+ANN static void cpy_section(MemPool p, Section *const a, const Section *src) {
+//  Section *a = mp_calloc(p, Section);
   switch (src->section_type) {
   case ae_section_stmt:
-    a->d.stmt_list = cpy_stmt_list(p, src->d.stmt_list);
+    //if(src->d.stmt_list)
+      a->d.stmt_list = cpy_stmt_list(p, src->d.stmt_list);
     break;
   case ae_section_class:
     a->d.class_def = cpy_class_def(p, src->d.class_def);
@@ -520,12 +568,12 @@ ANN static Section *cpy_section(MemPool p, const Section *src) {
     break;
   }
   a->section_type = src->section_type;
-  return a;
+//  return a;
 }
 
 ANN Extend_Def cpy_extend_def(MemPool p, const Extend_Def src) {
   Extend_Def a = mp_calloc(p, Extend_Def);
-  a->body      = cpy_ast(p, src->body);
+  a->body = cpy_ast(p, src->body);
   //  if(src->traits)
   //    a->traits = cpy_id_list(p, src->traits);
   a->td = cpy_type_decl(p, src->td);
@@ -543,9 +591,11 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   return a;
 }
 
-ANN Ast cpy_ast(MemPool p, const Ast src) {
-  Ast a      = mp_calloc(p, Ast);
-  a->section = cpy_section(p, src->section);
-  if (src->next) a->next = cpy_ast(p, src->next);
+ANN Ast cpy_ast(MemPool p, Ast src) {
+  Ast a = new_mp_vector(p, sizeof(Section), src->len);
+  for(m_uint i = 0; i < src->len; i++) {
+    const m_uint offset = + i * sizeof(Section);
+    cpy_section(p, (Section*)(a->ptr + offset), (Section*)(src->ptr + offset));
+  }
   return a;
 }

@@ -7,7 +7,6 @@
 
 ANEW static Scanner *new_scanner(const struct AstGetter_ *arg) {
   Scanner *scan = (Scanner *)mp_calloc(arg->st->p, Scanner);
-  map_init(&scan->map);
   vector_init(&scan->hashes);
   gwion_lex_init(&scan->scanner);
   gwion_set_extra(scan, scan->scanner);
@@ -16,12 +15,11 @@ ANEW static Scanner *new_scanner(const struct AstGetter_ *arg) {
   scan->st  = arg->st;
   scan->ppa = arg->ppa;
   pos_ini(&scan->pos);
-  scan->ppa->ast = NULL;
+  scan->ppa->ast = NULL; // ???
   return scan;
 }
 
 ANN static void free_scanner(Scanner *scan) {
-  map_release(&scan->map);
   vector_release(&scan->hashes);
   free_pp(scan->st->p, scan->pp, scan->scanner);
   gwion_lex_destroy(scan->scanner);
@@ -37,7 +35,7 @@ ANN static Ast get_ast(MemPool mp, Scanner *s) {
 Ast parse(struct AstGetter_ *const arg) {
   Scanner * s   = new_scanner(arg);
   const Ast ast = get_ast(arg->ppa->hash.p, s);
-  arg->global   = s->global;
+  //arg->global   = s->global;
   free_scanner(s);
   return ast;
 }

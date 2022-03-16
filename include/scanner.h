@@ -6,7 +6,6 @@
 
 typedef struct Scanner_ {
   void *         scanner;
-  struct Map_    map;
   SymTable *     st;
   struct PP_ *   pp;
   struct PPArg_ *ppa;
@@ -14,7 +13,6 @@ typedef struct Scanner_ {
   struct pos_t   pos;
   short int      interp_state;
   bool           error;
-  bool           global;
   bool           handling;
 } Scanner;
 

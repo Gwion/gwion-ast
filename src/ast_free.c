@@ -1,8 +1,15 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-ANN AST_FREE(Var_Decl, var_decl) {
+AST_FREE(Stmt_List, stmt_list);
+static AST_FREE(Stmt, stmt2);
+
+static ANN AST_FREE(Var_Decl, var_decl2) {
   if (a->array) free_array_sub(p, a->array);
+}
+
+ANN AST_FREE(Var_Decl, var_decl) {
+  free_var_decl2(p, a);
   mp_free(p, Var_Decl, a);
 }
 
@@ -18,10 +25,11 @@ AST_FREE(Range *, range) {
 }
 
 ANN AST_FREE(Var_Decl_List, var_decl_list) {
-  free_var_decl(p, a->self);
-  const Var_Decl_List next = a->next;
-  mp_free(p, Var_Decl_List, a);
-  if (next) free_var_decl_list(p, next);
+  for(uint32_t i = 0; i < a->len;i ++) {
+    Var_Decl vd = mp_vector_at(a, struct Var_Decl_, i);
+    free_var_decl2(p, vd);
+  }
+  free_mp_vector(p, sizeof(struct Var_Decl_), a);
 }
 
 ANN AST_FREE(Exp_Lambda *, exp_lambda) { free_func_def(p, a->def); }
@@ -37,25 +45,23 @@ ANN AST_FREE(Exp_Slice *, exp_slice) {
 }
 
 AST_FREE(ID_List, id_list) {
-  const ID_List next = a->next;
-  mp_free(p, ID_List, a);
-  if (next) free_id_list(p, next);
+  free_mp_vector(p, sizeof(ID_List), a);
 }
 
 AST_FREE(Specialized_List, specialized_list) {
-  const Specialized_List next = a->next;
-  if (a->traits) free_id_list(p, a->traits);
-  mp_free(p, ID_List, a);
-  if (next) free_specialized_list(p, next);
+  for(uint32_t i = 0; i < a->len; i++) {
+    Specialized *spec = mp_vector_at(a, Specialized, i);
+    if (spec->traits) free_id_list(p, spec->traits);
+  }
+  free_mp_vector(p, sizeof(Specialized), a);
 }
 
 AST_FREE(Type_Decl *, type_decl) {
   if (a->types) free_type_list(p, a->types);
   if (a->array) free_array_sub(p, a->array);
   if (a->fptr) free_fptr_def(p, a->fptr);
-  Type_Decl *next = a->next;
+  if (a->next) free_type_decl(p, a->next);
   mp_free(p, Type_Decl, a);
-  if (next) free_type_decl(p, next);
 }
 
 ANN AST_FREE(Exp_Decl *, exp_decl) {
@@ -78,14 +84,16 @@ ANN static inline AST_FREE(Exp_Postfix *, exp_post) { free_exp(p, a->exp); }
 ANN static AST_FREE(Exp_Unary *, exp_unary) {
   switch (a->unary_type) {
   case unary_exp:
-    if (a->exp) free_exp(p, a->exp);
+//    if (a->exp) 
+free_exp(p, a->exp);
     break;
   case unary_td:
     free_type_decl(p, a->ctor.td);
     if (a->ctor.exp) free_exp(p, a->ctor.exp);
     break;
   case unary_code:
-    if (a->code) free_stmt(p, a->code);
+ //   if (a->code) 
+ free_stmt(p, a->code);
     break;
   }
 }
@@ -111,7 +119,7 @@ ANN AST_FREE(Func_Base *, func_base) {
 
 AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
-  if (a->d.code) free_stmt(p, a->d.code);
+  if (!a->builtin && a->d.code) free_stmt(p, a->d.code);
   mp_free(p, Func_Def, a);
 }
 
@@ -160,12 +168,12 @@ AST_FREE(Exp, exp) {
 }
 
 AST_FREE(Arg_List, arg_list) {
-  if (a->td) free_type_decl(p, a->td);
-  if (a->exp) free_exp(p, a->exp);
-  free_var_decl(p, a->var_decl);
-  const Arg_List next = a->next;
-  mp_free(p, Arg_List, a);
-  if (next) free_arg_list(p, next);
+  for(uint32_t i = 0; i < a->len; i++) {
+    Arg *arg = (Arg*)(a->ptr + i * sizeof(Arg));
+    if (arg->td) free_type_decl(p, arg->td);
+    if (arg->exp) free_exp(p, arg->exp);
+    free_var_decl2(p, &arg->var_decl);
+  }
 }
 
 ANN static AST_FREE(Stmt_Code, stmt_code) {
@@ -192,9 +200,11 @@ ANN static AST_FREE(struct Stmt_Match_ *, stmt_case) {
   if (a->when) free_exp(p, a->when);
 }
 
-ANN static AST_FREE(struct Handler_List_ *, handler_list) {
-  free_stmt(p, a->stmt);
-  if (a->next) free_handler_list(p, a->next);
+ANN static AST_FREE(Handler_List, handler_list) {
+  for(uint32_t i = 0; i < a->len; i++) {
+    Handler * handler = mp_vector_at(a, Handler, i);
+    free_stmt(p, handler->stmt);
+  }
 }
 
 ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
@@ -204,9 +214,12 @@ ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
 
 ANN static AST_FREE(struct Stmt_Match_ *, stmt_match) {
   free_exp(p, a->cond);
-  Stmt_List list = a->list;
-  do free_stmt_case(p, &list->stmt->d.stmt_match);
-  while ((list = list->next));
+  for(m_uint i = 0; i  < a->list->len; i++) {
+    const m_uint offset = i * sizeof(struct Stmt_);
+    const Stmt stmt = (Stmt)(a->list->ptr + offset);
+    free_stmt_case(p, &stmt->d.stmt_match);
+  }
+  free_mp_vector(p, sizeof(struct Stmt_), a->list);
   if (a->where) free_stmt(p, a->where);
 }
 
@@ -247,9 +260,11 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
 ANN static AST_FREE(Stmt_Defer, stmt_defer) { free_stmt(p, a->stmt); }
 
 ANN AST_FREE(Union_List, union_list) {
-  free_type_decl(p, a->td);
-  if (a->next) free_union_list(p, a->next);
-  mp_free(p, Union_List, a);
+  for(uint32_t i = 0; i < a->len; i++) {
+    Union_Member *tgt = mp_vector_at(a, Union_Member, i);
+    free_type_decl(p, tgt->td);
+  }
+  free_mp_vector(p, sizeof(Union_Member), a);
 }
 
 ANN AST_FREE(Union_Def, union_def) {
@@ -265,16 +280,22 @@ ANN AST_FREE(Union_Def, union_def) {
 #define free_stmt_until    free_stmt_flow
 
 DECL_STMT_FUNC(free, void, MemPool);
+static AST_FREE(Stmt, stmt2) {
+  free_stmt_func[a->stmt_type](p, &a->d);
+}
+
 AST_FREE(Stmt, stmt) {
   free_stmt_func[a->stmt_type](p, &a->d);
   mp_free(p, Stmt, a);
 }
 
 AST_FREE(Stmt_List, stmt_list) {
-  free_stmt(p, a->stmt);
-  const Stmt_List next = a->next;
-  mp_free(p, Stmt_List, a);
-  if (next) free_stmt_list(p, next);
+  for(m_uint i = 0; i  < a->len; i++) {
+    const m_uint offset = i * sizeof(struct Stmt_);
+    const Stmt stmt = (Stmt)(a->ptr + offset);
+    free_stmt2(p, stmt);
+  }
+  free_mp_vector(p, sizeof(struct Stmt_), a);
 }
 
 AST_FREE(Extend_Def, extend_def) {
@@ -299,8 +320,9 @@ AST_FREE(Trait_Def, trait_def) {
 
 ANN static AST_FREE(Section *, section) {
   const ae_section_t t = a->section_type;
-  if (t == ae_section_class) free_class_def(p, a->d.class_def);
-  if (t == ae_section_trait)
+  if (t == ae_section_class)
+    free_class_def(p, a->d.class_def);
+  else if (t == ae_section_trait)
     free_trait_def(p, a->d.trait_def);
   else if (t == ae_section_extend)
     free_extend_def(p, a->d.extend_def);
@@ -316,19 +338,20 @@ ANN static AST_FREE(Section *, section) {
     free_fptr_def(p, a->d.fptr_def);
   else if (t == ae_section_type)
     free_type_def(p, a->d.type_def);
-  mp_free(p, Section, a);
 }
 
 AST_FREE(Type_List, type_list) {
-  free_type_decl(p, a->td);
-  const Type_List next = a->next;
-  mp_free(p, Type_List, a);
-  if (next) free_type_list(p, next);
+  for(uint32_t i = 0; i < a->len; i++) {
+    Type_Decl *td = *mp_vector_at(a, Type_Decl*, i);
+    free_type_decl(p, td);
+  }
+  free_mp_vector(p, sizeof(Type_Decl*), a);
 }
 
 AST_FREE(Ast, ast) {
-  const Ast next = a->next;
-  free_section(p, a->section);
-  mp_free(p, Ast, a);
-  if (next) free_ast(p, next);
+  for(m_uint i = 0; i < a->len; i++) {
+    const m_uint offset = i * sizeof(Section);
+    free_section(p, (Section*)(a->ptr + offset));
+  }
+  free_mp_vector(p, sizeof(Section), a);
 }

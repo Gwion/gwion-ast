@@ -10,14 +10,6 @@ AST_NEW(Var_Decl, var_decl, struct Symbol_ *xid, const Array_Sub array,
   return a;
 }
 
-AST_NEW(Var_Decl_List, var_decl_list, const Var_Decl decl,
-        const Var_Decl_List list) {
-  Var_Decl_List a = mp_calloc(p, Var_Decl_List);
-  a->self         = decl;
-  a->next         = list;
-  return a;
-}
-
 AST_NEW(Type_Decl *, type_decl, const Symbol xid, const struct loc_t_ pos) {
   Type_Decl *a = mp_calloc(p, Type_Decl);
   a->xid       = xid;
@@ -76,21 +68,6 @@ AST_NEW(Exp, exp_slice, const Exp base, Range *range, const struct loc_t_ pos) {
   Exp a                = new_exp(p, ae_exp_slice, pos);
   a->d.exp_slice.base  = base;
   a->d.exp_slice.range = range;
-  return a;
-}
-
-AST_NEW(ID_List, id_list, struct Symbol_ *xid) {
-  ID_List a = mp_calloc(p, ID_List);
-  a->xid    = xid;
-  return a;
-}
-
-AST_NEW(Specialized_List, specialized_list, struct Symbol_ *xid,
-        const ID_List traits, const loc_t pos) {
-  Specialized_List a = mp_calloc(p, Specialized_List);
-  a->xid             = xid;
-  a->traits          = traits;
-  a->pos             = pos;
   return a;
 }
 
@@ -256,7 +233,7 @@ AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt code,
         const struct loc_t_ pos) {
   Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
-  a->d.exp_unary.code       = code;
+  a->d.exp_unary.code       = cpy_stmt3(p, code);
   a->d.exp_unary.unary_type = unary_code;
   return a;
 }
@@ -287,7 +264,7 @@ AST_NEW(Tmpl *, tmpl_base, const Specialized_List list) {
 Func_Def new_func_def(MemPool p, Func_Base *base, const Stmt code) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base    = base;
-  a->d.code  = code;
+  if(code) a->d.code  = cpy_stmt3(p, code);
   return a;
 }
 
@@ -338,7 +315,7 @@ AST_NEW(Exp, exp_dot, const Exp base, struct Symbol_ *xid,
   a->d.exp_dot.xid  = xid;
   return a;
 }
-
+/*
 AST_NEW(Arg_List, arg_list, Type_Decl *td, const Var_Decl var_decl,
         const Arg_List arg_list) {
   Arg_List a  = mp_calloc(p, Arg_List);
@@ -347,7 +324,7 @@ AST_NEW(Arg_List, arg_list, Type_Decl *td, const Var_Decl var_decl,
   a->next     = arg_list;
   return a;
 }
-
+*/
 AST_NEW(Stmt, stmt_exp, const ae_stmt_t type, const Exp exp,
         const struct loc_t_ pos) {
   Stmt a            = new_stmt(p, type, pos);
@@ -381,7 +358,7 @@ AST_NEW(Stmt, stmt_varloop, const Exp exp, const Stmt body,
         const struct loc_t_ pos) {
   Stmt a                 = new_stmt(p, ae_stmt_varloop, pos);
   a->d.stmt_varloop.exp  = exp;
-  a->d.stmt_varloop.body = body;
+  a->d.stmt_varloop.body = cpy_stmt3(p, body);
   return a;
 }
 
@@ -411,20 +388,20 @@ AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body,
   a->d.stmt_loop.body = body;
   return a;
 }
-
+/*
 AST_NEW(Handler_List, handler_list, const Symbol xid, const restrict Stmt stmt,
         const struct loc_t_ pos) {
   Handler_List a = mp_malloc(p, Handler_List);
   a->xid         = xid;
-  a->stmt        = stmt;
+  a->stmt        = cpy_stmt3(p, stmt);
   a->next        = NULL;
   a->pos         = pos;
   return a;
 }
-
+*/
 AST_NEW(Stmt, stmt_try, const restrict Stmt stmt, const Handler_List handler) {
   Stmt a                = new_stmt(p, ae_stmt_try, stmt->pos);
-  a->d.stmt_try.stmt    = stmt;
+  a->d.stmt_try.stmt    = cpy_stmt3(p, stmt);
   a->d.stmt_try.handler = handler;
   return a;
 }
@@ -433,7 +410,7 @@ AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body,
         const struct loc_t_ pos) {
   Stmt a               = new_stmt(p, ae_stmt_if, pos);
   a->d.stmt_if.cond    = cond;
-  a->d.stmt_if.if_body = if_body;
+  a->d.stmt_if.if_body = cpy_stmt3(p, if_body);
   return a;
 }
 
@@ -444,15 +421,6 @@ AST_NEW(Enum_Def, enum_def, const ID_List list, struct Symbol_ *xid,
   a->list    = list;
   a->pos     = pos;
   //  vector_init(&a->values);
-  return a;
-}
-
-AST_NEW(Union_List, union_list, Type_Decl *td, const Symbol xid,
-        const struct loc_t_ pos) {
-  Union_List a = mp_calloc(p, Union_List);
-  a->td        = td;
-  a->xid       = xid;
-  a->pos       = pos;
   return a;
 }
 
@@ -475,13 +443,6 @@ AST_NEW(Stmt, stmt_defer, const Stmt stmt, const struct loc_t_ pos) {
   Stmt a               = new_stmt(p, ae_stmt_defer, pos);
   a->d.stmt_defer.stmt = stmt;
   return a;
-}
-
-AST_NEW(Stmt_List, stmt_list, Stmt stmt, Stmt_List next) {
-  Stmt_List list = mp_calloc(p, Stmt_List);
-  list->stmt     = stmt;
-  list->next     = next;
-  return list;
 }
 
 #define mk_section(Type, name, sec_type)                                       \
@@ -528,18 +489,4 @@ AST_NEW(Trait_Def, trait_def, const ae_flag class_decl, const Symbol xid,
   a->body     = body;
   a->pos      = pos;
   return a;
-}
-
-AST_NEW(Type_List, type_list, Type_Decl *td, const Type_List next) {
-  Type_List a = mp_calloc(p, Type_List);
-  a->td       = td;
-  a->next     = next;
-  return a;
-}
-
-AST_NEW(Ast, ast, Section *section, const Ast next) {
-  Ast ast      = mp_calloc(p, Ast);
-  ast->section = section;
-  ast->next    = next;
-  return ast;
 }

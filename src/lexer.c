@@ -2056,12 +2056,12 @@ case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
 #line 224 "src/gwion.l"
-{ newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
+{ adjust(yyscanner); newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 225 "src/gwion.l"
-{ BEGIN(import); }
+{ adjust(yyscanner); BEGIN(import); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP

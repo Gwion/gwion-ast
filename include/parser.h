@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.7.2.51-de63.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -174,6 +174,7 @@ extern int gwion_debug;
   typedef enum yytokentype yytoken_kind_t;
 #endif
 /* Token kinds.  */
+#define YYEMPTY -2
 #define YYEOF 0
 #define YYerror 256
 #define YYUNDEF 257
@@ -298,7 +299,7 @@ extern int gwion_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 39 "src/gwion.y"
+#line 29 "src/gwion.y"
 
   bool yybool;
   ae_stmt_t stmt_t;
@@ -315,31 +316,36 @@ union YYSTYPE
   struct Vector_ vector;
   Array_Sub array_sub;
   Range* range;
-  Var_Decl var_decl;
+  struct Var_Decl_ var_decl;
   Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
   Exp   exp;
   struct Func_Base_ *func_base;
-  Stmt stmt;
-  Handler_List handler_list;
+  struct Stmt_ stmt;
+  Stmt stmt_ptr;
+  Handler handler;
+  ParserHandler handler_list;
   Stmt_List stmt_list;
   Arg_List arg_list;
+  struct ParserArg default_args;
+  Arg arg;
   Func_Def func_def;
   Enum_Def enum_def;
   Union_Def union_def;
   Fptr_Def fptr_def;
   Type_Def type_def;
-  Section* section;
+  Section section;
   ID_List id_list;
   Specialized_List specialized_list;
   Type_List type_list;
+  Union_Member union_member;
   Union_List union_list;
   Extend_Def extend_def;
   Class_Def class_def;
   Trait_Def trait_def;
   Ast ast;
 
-#line 343 "include/parser.h"
+#line 349 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -363,6 +369,8 @@ struct YYLTYPE
 
 
 
+
 int gwion_parse (Scanner* arg);
+
 
 #endif /* !YY_GWION_INCLUDE_PARSER_H_INCLUDED  */
