@@ -3967,7 +3967,7 @@ static m_str macro_data(void* data, const m_bool call) {
 static int macro_toggle(void* data) {
   const Scanner* scan = yyget_extra(data);
   const Vector v= &scan->pp->data;
-  const int ret = VPTR(v, VLEN(v)) = !vector_back(v);
+  const int ret = VPTR(v, VLEN(v)) == !vector_back(v);
   return ret ? INITIAL : skip;
 }
 

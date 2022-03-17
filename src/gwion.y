@@ -14,7 +14,7 @@
 #include "lexer.h"
 
 #define YYERROR_VERBOSE
-#define YYMALLOC(a) mp_malloc2(mpool(arg), a)
+//#define YYMALLOC(a) mp_malloc2(mpool(arg), a)
 #define gwion_error(a,b,c) parser_error(a,b,c, 0200)
 #define scan arg->scanner
 #define mpool(arg) arg->st->p
@@ -178,8 +178,8 @@ prg: ast { arg->ppa->ast = $$ = $1; }
 
 ast
   : section {
-    mp_vector_first(mpool(arg), a, Section, $1);
-    $$ = a;
+    $$ = new_mp_vector(mpool(arg), sizeof(Section), 1);
+    mp_vector_set($$, Section, 0, $1);
   }
   | ast section {
     mp_vector_add(mpool(arg), &($1), Section, $2);
@@ -222,8 +222,8 @@ trait_stmt: exp_stmt {
     $$ = $1;
   } | stmt_pp;
 trait_stmt_list: trait_stmt  {
-  mp_vector_first(mpool(arg), a, struct Stmt_, $1);
-  $$ = a;
+  $$ = new_mp_vector(mpool(arg), sizeof(struct Stmt_), 1);
+  mp_vector_set($$, struct Stmt_, 0, $1);
 } |
   trait_stmt_list trait_stmt {
     mp_vector_add(mpool(arg), &($1), struct Stmt_, $2);
@@ -237,8 +237,8 @@ trait_section
 
 trait_ast
   : trait_section {
-    mp_vector_first(mpool(arg), a, Section, $1);
-    $$ = a;
+    $$ = new_mp_vector(mpool(arg), sizeof(Section), 1);
+    mp_vector_set($$, Section, 0, $1);
   }
   | trait_ast trait_section {
     mp_vector_add(mpool(arg), &$1, Section, $2);
@@ -261,8 +261,8 @@ class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
 traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
 extend_body
   : func_def {
-    mp_vector_first(mpool(arg), a, Section, MK_SECTION(func, func_def, $1));
-    $$ = a;
+    $$ = new_mp_vector(mpool(arg), sizeof(Section), 1);
+    mp_vector_set($$, Section, 0, MK_SECTION(func, func_def, $1));
   }
   | extend_body func_def {
     mp_vector_add(mpool(arg), &($1), Section, MK_SECTION(func, func_def, $2));
@@ -289,12 +289,12 @@ id_list: ID
   };
 
 specialized_list: ID traits {
-    mp_vector_first(mpool(arg), a, Specialized, ((Specialized) {
+    $$ = new_mp_vector(mpool(arg), sizeof(Specialized), 1);
+    mp_vector_set($$, Specialized, 0, ((Specialized) {
         .xid = $1,
         .traits = $2,
         .pos = @1
       }));
-    $$ = a;
   }
   | specialized_list "," ID  traits {
     Specialized spec = { .xid = $3, .traits = $4, .pos = @3 };
@@ -303,8 +303,8 @@ specialized_list: ID traits {
   };
 
 stmt_list: stmt {
-  mp_vector_first(mpool(arg), a, struct Stmt_, $1);
-  $$ = a;
+  $$ = new_mp_vector(mpool(arg), sizeof(struct Stmt_), 1);
+  mp_vector_set($$, struct Stmt_, 0, $1);
 } |
   stmt_list stmt {
   mp_vector_add(mpool(arg), &$1, struct Stmt_, $2);
@@ -359,8 +359,8 @@ arg
   };
 arg_list:
      arg {
-       mp_vector_first(mpool(arg), a, Arg, $1.arg);
-       $$.args = a;
+       $$.args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+       mp_vector_set($$.args, Arg, 0, $1.arg);
        $$.flag = $1.flag;
      }
 	  |  arg_list "," arg {
@@ -374,8 +374,8 @@ arg_list:
 fptr_arg: type_decl_array fptr_arg_decl { $$ = (Arg) { .td = $1, .var_decl = $2 }; }
 fptr_list:
   fptr_arg {
-    mp_vector_first(mpool(arg), a, Arg, $1);
-    $$ = a;
+    $$ = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+    mp_vector_set($$, Arg, 0, $1);
   }
   | fptr_list "," fptr_arg {
     mp_vector_add(mpool(arg), &$1, Arg, $3);
@@ -423,8 +423,8 @@ retry_stmt: "retry" ";" {
 };
 handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .xid = $3, .stmt = cpy_stmt3(mpool(arg), &$4), .pos = $3 ? @3 :@1}; arg->handling = false; };
 handler_list: handler {
-    mp_vector_first(mpool(arg), a, Handler, $1);
-    $$.handlers = a;
+    $$.handlers = new_mp_vector(mpool(arg), sizeof(Handler), 1);
+    mp_vector_set($$.handlers, Handler, 0, $1);
     $$.has_xid = !!$1.xid;
   }
   | handler_list handler  {
@@ -472,8 +472,8 @@ match_case_stmt
 };
 
 match_list: match_case_stmt {
-  mp_vector_first(mpool(arg), a, struct Stmt_, $1);
-  $$ = a;
+  $$ = new_mp_vector(mpool(arg), sizeof(struct Stmt_), 1);
+  mp_vector_set($$, struct Stmt_, 0, $1);
 } |
   match_list match_case_stmt {
     mp_vector_add(mpool(arg), &($1), struct Stmt_, $2);
@@ -780,13 +780,15 @@ op_base
     }
   |  type_decl_empty post_op decl_template "(" arg ")"
     {
-      mp_vector_first(mpool(arg), args, Arg, $5.arg);
+      Arg_List args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+      mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
     }
   |  unary_op type_decl_empty decl_template "(" arg ")"
     {
-      mp_vector_first(mpool(arg), args, Arg, $5.arg);
+      Arg_List args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+      mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
       if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
@@ -953,8 +955,8 @@ unary_exp : post_exp
 lambda_list:
  ID {
   Arg a = (Arg) { .var_decl = { .xid = $1, .pos = @1 } };
-  mp_vector_first(mpool(arg), list, Arg, a);
-  $$ = list;
+    $$ = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+    mp_vector_set($$, Arg, 0, a);
 }
 |    lambda_list ID {
   Arg a = (Arg) { .var_decl = { .xid = $2, .pos = @2 } };
@@ -965,8 +967,8 @@ lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 type_list
   : type_decl_empty {
-    mp_vector_first(mpool(arg), a, Type_Decl*, $1);
-    $$ = a;
+    $$ = new_mp_vector(mpool(arg), sizeof(Type_Decl*), 1);
+    mp_vector_set($$, Type_Decl*, 0, $1);
   }
   | type_list "," type_decl_empty {
     mp_vector_add(mpool(arg), &$1, Type_Decl*, $3);

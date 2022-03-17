@@ -169,7 +169,7 @@ AST_FREE(Exp, exp) {
 
 AST_FREE(Arg_List, arg_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    Arg *arg = (Arg*)(a->ptr + i * sizeof(Arg));
+    Arg *arg = mp_vector_at(a, Arg, i);
     if (arg->td) free_type_decl(p, arg->td);
     if (arg->exp) free_exp(p, arg->exp);
     free_var_decl2(p, &arg->var_decl);
@@ -215,8 +215,7 @@ ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
 ANN static AST_FREE(struct Stmt_Match_ *, stmt_match) {
   free_exp(p, a->cond);
   for(m_uint i = 0; i  < a->list->len; i++) {
-    const m_uint offset = i * sizeof(struct Stmt_);
-    const Stmt stmt = (Stmt)(a->list->ptr + offset);
+    const Stmt stmt = mp_vector_at(a->list, struct Stmt_, i);
     free_stmt_case(p, &stmt->d.stmt_match);
   }
   free_mp_vector(p, sizeof(struct Stmt_), a->list);
@@ -291,8 +290,7 @@ AST_FREE(Stmt, stmt) {
 
 AST_FREE(Stmt_List, stmt_list) {
   for(m_uint i = 0; i  < a->len; i++) {
-    const m_uint offset = i * sizeof(struct Stmt_);
-    const Stmt stmt = (Stmt)(a->ptr + offset);
+    const Stmt stmt = mp_vector_at(a, struct Stmt_, i);
     free_stmt2(p, stmt);
   }
   free_mp_vector(p, sizeof(struct Stmt_), a);
@@ -350,8 +348,8 @@ AST_FREE(Type_List, type_list) {
 
 AST_FREE(Ast, ast) {
   for(m_uint i = 0; i < a->len; i++) {
-    const m_uint offset = i * sizeof(Section);
-    free_section(p, (Section*)(a->ptr + offset));
+    Section *section = mp_vector_at(a, Section, i);
+    free_section(p, section);
   }
   free_mp_vector(p, sizeof(Section), a);
 }

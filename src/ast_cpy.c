@@ -340,9 +340,8 @@ ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
   Stmt_List a = new_mp_vector(p, sizeof(struct Stmt_), sz);
   for(m_uint i = 0; i < sz; i++) {
-    const m_uint offset = i * sizeof(struct Stmt_);
-    const Stmt a_stmt   = (Stmt)(a->ptr + offset);
-    const Stmt src_stmt = (Stmt)(src->ptr + offset);
+    const Stmt a_stmt   = mp_vector_at(a, struct Stmt_, i);
+    const Stmt src_stmt = mp_vector_at(src, struct Stmt_, i);
     cpy_stmt_case(p, &a_stmt->d.stmt_match, &src_stmt->d.stmt_match);
   }
   return a;
@@ -518,9 +517,8 @@ ANN Stmt_List cpy_stmt_list(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
   Stmt_List a = new_mp_vector(p, sizeof(struct Stmt_), sz);
   for(m_uint i = 0; i < sz; i++) {
-    const m_uint offset = i * sizeof(struct Stmt_);
-    const Stmt astmt = (Stmt)(a->ptr + offset);
-    const Stmt sstmt = (Stmt)(src->ptr + offset);
+    const Stmt astmt = mp_vector_at(a, struct Stmt_, i);
+    const Stmt sstmt = mp_vector_at(src, struct Stmt_, i);
     cpy_stmt2(p, astmt, sstmt);
   }
   return a;
@@ -594,8 +592,9 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
 ANN Ast cpy_ast(MemPool p, Ast src) {
   Ast a = new_mp_vector(p, sizeof(Section), src->len);
   for(m_uint i = 0; i < src->len; i++) {
-    const m_uint offset = + i * sizeof(Section);
-    cpy_section(p, (Section*)(a->ptr + offset), (Section*)(src->ptr + offset));
+    Section * asec = mp_vector_at(a, Section, i);
+    Section * ssec = mp_vector_at(src, Section, i);
+    cpy_section(p, asec, ssec);
   }
   return a;
 }
