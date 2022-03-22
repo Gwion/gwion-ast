@@ -40,35 +40,28 @@ Ast parse(struct AstGetter_ *const arg) {
   return ast;
 }
 
-ANN static char *get_filename(Scanner *scan, const struct PPState_ *ppstate) {
-  const m_str name     = ppstate->filename;
-  m_str       filename = name;
+ANN static char *get_filename(Scanner *scan, const PPState *ppstate) {
+  m_str filename = ppstate->filename;
   if (!scan->pp->npar) {
-    m_uint i = vector_size(&scan->pp->filename) - 1;
+    m_uint i = vector_size(&scan->pp->state) - 1;
     if (*filename == '@') {
       while (*filename == '@') {
         --i;
-        const struct PPState_ *ppstate =
-            (struct PPState_ *)vector_at(&scan->pp->filename, i);
+        const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i);
         filename = ppstate->filename;
       }
     }
   } else {
-    const struct PPState_ *ppstate =
-        (struct PPState_ *)vector_front(&scan->pp->filename);
+    const PPState *ppstate = (PPState*)vector_front(&scan->pp->state);
     filename = ppstate->filename;
   }
   return filename;
 }
 
 ANN static void secondary(Scanner *scan) {
-  for (m_uint i = 0; i < vector_size(&scan->pp->filename) - 1; i++) {
-    const struct PPState_ *pp =
-        (struct PPState_ *)vector_at(&scan->pp->filename, i);
-    loc_t loc = pp->pos;
-    //    loc.first.column++;
-    //    loc.last.column++;
-    gwerr_secondary("expanded from here", get_filename(scan, pp), loc);
+  for (m_uint i = 0; i < vector_size(&scan->pp->state) - 1; i++) {
+    const PPState *pp = (PPState*)vector_at(&scan->pp->state, i);
+    gwerr_secondary("expanded from here", get_filename(scan, pp), pp->pos);
   }
 }
 
@@ -76,8 +69,7 @@ ANN2(1, 2)
 int scanner_error(Scanner *scan, const char *main, const char *explain,
                   const char *fix, const loc_t pos, const uint error_code) {
   if (scan->error) return 0;
-  const struct PPState_ *ppstate =
-      (struct PPState_ *)vector_back(&scan->pp->filename);
+  const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
   gwerr_basic(main, explain, fix, filename, pos, error_code);
   secondary(scan);
@@ -86,8 +78,7 @@ int scanner_error(Scanner *scan, const char *main, const char *explain,
 }
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos) {
   if (scan->error) return 0;
-  const struct PPState_ *ppstate =
-      (struct PPState_ *)vector_back(&scan->pp->filename);
+  const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
   gwerr_secondary(main, filename, pos);
   scan->error = true;

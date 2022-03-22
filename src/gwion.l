@@ -2,7 +2,7 @@ IS       (u|U|l|L)*
 SPACE    [ \r\t]
 OP       [\?:\$@\+\-\*/%~\<\>\^|&\!=]
 LEX_ID   [A-Za-z_][A-Za-z0-9_]*
-FILENAME [A-Za-z0-9_./]*
+FILENAME [A-Za-z0-9\-_./]*
 NUM      ([0-9]{1,3}+({SPACE}*[0-9]{3})*)
 %{
 #include <ctype.h>
@@ -36,7 +36,7 @@ ANN static m_str strip_include(const m_str line);
 ANN static m_str get_current_filename(void*);
 ANN2(1,2) static m_bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static m_bool rem_macro(void* data, const m_str id);
-ANN static m_bool has_macro(void* data, const m_str id);
+ANN static bool has_macro(void* data, const m_str id);
 static m_str pp_data(void* data, const m_str id);
 ANN static int macro_toggle(void*);
 ANN static void macro_end(void*);
@@ -75,10 +75,10 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
+
+// 23 BEGIN(INITIAL)?
 #define GWYY_DEFINE  BEGIN(INITIAL); GWYY_LINT(macro_data(yyscanner, 0), PP_DEFINE) newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL);
 #define GWYY_CALL    GWYY_LINT(macro_data(yyscanner, 1), ID)
-#define GWYY_IFDEF(a,b) GWYY_LINT(strdup(a + b), b ? PP_IFNDEF : PP_IFDEF) \
-{ const m_bool ret = has_macro(yyscanner, a); xfree(a); if(ret < 0) yyterminate(); if(ret) BEGIN(skip); }
 #define GWYY_ELSE    GWYY_LINT(NULL, PP_ELSE) BEGIN(macro_toggle(yyscanner));
 #define GWYY_ENDIF   GWYY_LINT(NULL, PP_ENDIF) macro_end(yyscanner);
 %}
@@ -189,23 +189,24 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 ^"#pragma"{SPACE}+ { adjust(yyscanner); BEGIN(pragma); }
 <pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 
-^#ifn?def{SPACE}+{LEX_ID}{SPACE}* {
+^#ifn?def{SPACE}+{LEX_ID} {
   adjust(yyscanner);
   const m_str str = strstr(yytext, "def");
   const m_bool def = str[-1] == 'n';
   m_str s = str + 3;
   while(isspace(*s))++s;
   GWYY_LINT(strdup(s), def ? PP_IFNDEF : PP_IFDEF)
+  while(isspace(*s))++s;
   size_t sz = strlen(s);
   while(isspace(s[--sz]));
   char c[sz + 2];
-  strncpy(c, s, sz + 2);
-  const m_bool ret = has_macro(yyscanner, c);
-  if(ret < 0)
-    yyterminate();
-  if(!ret)
+  strncpy(c, s, sz + 1);
+  c[sz + 1] = '\0';
+  const bool ret = has_macro(yyscanner, c);
+  if((!ret && !def) || (ret && def)) // ret == def ?
     BEGIN(skip);
 }
+
 ^{SPACE}*#else{SPACE}*\n  { newline(yyscanner); YY_USER_ACTION; GWYY_ELSE }
 ^{SPACE}*#endif{SPACE}*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
@@ -214,10 +215,21 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <skip>^{SPACE}*#endif{SPACE}*\n { adjust(yyscanner); macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.*         { adjust(yyscanner); continue;}
 
+<include_end>{SPACE}*\n {
+  adjust(yyscanner);
+  Scanner *s = yyget_extra(yyscanner);
+  PPState *pps = (PPState*)vector_back(&s->pp->state);
+  BEGIN(INITIAL);
+  yylval->sval = strdup(pps->filename);
+  return PP_INCLUDE;
+}
+<include_end>. {
+  lexer_error(yyscanner, _("illegal characters after include"), 0);
+  return 1;
+}
 
-<include_end>{FILENAME} { adjust(yyscanner); BEGIN(INITIAL); yylval->sval = strdup(yytext); return PP_INCLUDE; }
-^{SPACE}*#include{SPACE}* { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
-<include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; BEGIN(include_end); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
+^{SPACE}*#include{SPACE}+ { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
+<include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; /*BEGIN(include_end); */ BEGIN(INITIAL); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
 
 <import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
@@ -347,7 +359,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
-    gw_err(_("can't stringify non argument token '%s'\n"), yytext);
+lexer_error(yyscanner, "can't stringify non argument token", 0);
+//    gw_err(_("can't stringify non argument token '%s'\n"), yytext);
     return 1;
   }
 }
@@ -490,7 +503,7 @@ static uint get_currpos(void* data) {
 
 static char* get_currfile(void* data) {
   const Scanner* scan = yyget_extra(data);
-  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   return alloc_str(data, ppstate->filename);
 }
 
@@ -514,7 +527,7 @@ static Macro add_macro(void* data, const m_str line) {
     lexer_error(data, "Already defined", ERRORCODE(103));
     return NULL;
   }
-  struct PPState_ *const ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  PPState *const ppstate = (PPState*)vector_back(&scan->pp->state);
   scan->pp->entry->file = ppstate->filename;
   ppstate->pos.first = scan->pos;
   ppstate->pos.last = scan->pos;
@@ -585,22 +598,22 @@ static m_str pp_data(void* data, const m_str id) {
   return id;
 }
 
-static m_bool has_macro(void* data, const m_str id) {
+static bool has_macro(void* data, const m_str id) {
   Scanner* scan = yyget_extra(data);
-  const m_bool ret = !!scan_has_macro(scan, id);
+  const bool ret = !!scan_has_macro(scan, id);
   vector_add(&scan->pp->data, ret);
   return ret;
 }
 
 static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt,
           const m_str str, const enum pptype type) {
-  struct PPState_ *ppstate = new_ppstate(scan->st->p, str);
+  PPState *ppstate = new_ppstate(scan->st->p, str);
   ppstate->state = state;
   ppstate->data = opt;
   ppstate->pos.first = scan->pos;
   ppstate->pos.last = scan->pos;
   ppstate->type = type;
-  vector_add(&scan->pp->filename, (vtype)ppstate);
+  vector_add(&scan->pp->state, (vtype)ppstate);
 }
 
 static FILE* get_include(const m_str str, const Vector v) {
@@ -616,8 +629,8 @@ static FILE* get_include(const m_str str, const Vector v) {
 
 static m_str get_current_filename(void* data) {
   Scanner* scan = yyget_extra(data);
-  for(m_uint i = vector_size(&scan->pp->filename) + 1; --i;) {
-    const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i - 1);
+  for(m_uint i = vector_size(&scan->pp->state) + 1; --i;) {
+    const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i - 1);
     if(*ppstate->filename != '@')
       return ppstate->filename;
   }
@@ -628,19 +641,13 @@ static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE h
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_include(filename);
   FILE* f = fopen(str, "r") ?: get_include(str, &scan->ppa->path);
-  const m_str current_filename = get_current_filename(data);
   if(!f) {
     xfree(str);
     lexer_error(data, "file not found", ERRORCODE(105));
     return GW_ERROR;
   }
-  pos_ini(&scan->pos);
   gwpp_stack(scan, handle, f, str, pptype_file);
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
-  struct yyguts_t *yyg = (struct yyguts_t*)data;
-  void *yyscanner = data;
-  for(m_uint i = strlen(current_filename) + 1; --i;)
-    unput(current_filename[i-1]);
   return GW_OK;
 }
 
@@ -733,8 +740,8 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
   const m_bool is_str = s[0] == '#';
   m_str id = is_str ? s+1 : s;
 
-  for(m_uint i = 0; i < vector_size(&scan->pp->filename); ++i) {
-    const struct PPState_ *ppstate = (struct PPState_*)vector_at(&scan->pp->filename, i);
+  for(m_uint i = 0; i < vector_size(&scan->pp->state); ++i) {
+    const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i);
     if(ppstate->filename[0] == '@') {
       char c[strlen(ppstate->filename + 8)];
       memcpy(c, ppstate->filename + 8, strlen(ppstate->filename + 8) - 1);
@@ -747,9 +754,10 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
     }
   }
 
-  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
-  for(m_uint i = vector_size(&scan->pp->filename) + 1; --i;) {
-    const struct PPState_ *pps = (struct PPState_*)vector_at(&scan->pp->filename, i-1);
+  const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
+  for(m_uint i = vector_size(&scan->pp->state) + 1; --i;) {
+    const PPState *pps = (PPState*)vector_at(&scan->pp->state, i-1);
+    if(pps->type != pptype_arg) continue;
     MacroArg arg = pps->arg;
     while(arg) {
       if(!strcmp(id, arg->name)) {
@@ -825,9 +833,10 @@ static m_str get_arg_text(void* data, const m_str id) {
   const Scanner* scan = yyget_extra(data);
   if(!scan->pp->entry)
     return NULL;
-  if(vector_size(&scan->pp->filename) == 1)
+  if(vector_size(&scan->pp->state) == 1)
     return NULL;
-  const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+  const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
+  if(ppstate->type != pptype_arg) return NULL;
   MacroArg arg = ppstate->arg;
   while(arg) {
     if(!strcmp(id, arg->name))
@@ -845,7 +854,7 @@ static void macro_append(void* data, const m_str str) {
 }
 
 ANN void clear_buffer(void *state, void* scan) {
-  struct PPState_ *ppstate = (struct PPState_*)state;
+  PPState *ppstate = (PPState*)state;
   const YY_BUFFER_STATE fini = (YY_BUFFER_STATE)ppstate->state;
   struct yyguts_t *yyg = (struct yyguts_t*)scan;
   YY_BUFFER_STATE curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
@@ -861,15 +870,16 @@ int yywrap(void* data) {
   struct yyguts_t *yyg = (struct yyguts_t*)data;
   YY_BUFFER_STATE handle = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   Scanner *scan = yyget_extra(data);
-  if(vector_size(&scan->pp->filename) > 1) {
-    const struct PPState_ *ppstate = (struct PPState_*)vector_pop(&scan->pp->filename);
+  if(vector_size(&scan->pp->state) > 1) {
+    const PPState *ppstate = (PPState*)vector_pop(&scan->pp->state);
     if(handle != ppstate->state) {
       yy_switch_to_buffer(ppstate->state, data);
       yy_delete_buffer(handle, data);
     }
-    if(ppstate->type == pptype_file && ppstate->file)
-      fclose(ppstate->file);
-    else if(ppstate->type == pptype_arg && ppstate->arg)
+    if(ppstate->type == pptype_file && ppstate->file) {
+//      fclose(ppstate->file);
+      BEGIN(include_end);
+    } else if(ppstate->type == pptype_arg && ppstate->arg)
       clean_macroarg(ppstate->arg);
     if(strlen(ppstate->filename))
       xfree(ppstate->filename);
@@ -887,7 +897,7 @@ static m_bool handle_comma(void* data) {
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next)) {
       loc_t *loc = yyget_lloc(data);
-      const struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+      const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
       *loc = ppstate->pos;
       loc->first.column++;
       loc->last.column++;
@@ -912,7 +922,7 @@ static m_bool handle_rpar(void* data) {
   if(--scan->pp->npar)
     return 0;
   if(scan->pp->entry->args->next) {
-    struct PPState_ *ppstate = (struct PPState_*)vector_back(&scan->pp->filename);
+    PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
     loc_t loc = ppstate->pos;
     loc.first.column++;
     loc.last.column++;
