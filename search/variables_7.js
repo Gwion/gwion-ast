@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['handler_0',['handler',['../structStmt__Try__.html#a8ddfe24fd860156819378cfb8c4e32fe',1,'Stmt_Try_']]],
-  ['handler_5flist_1',['handler_list',['../absyn_8h.html#a39c31c10f217f064db5003c304ebdc22',1,'absyn.h']]],
-  ['handling_2',['handling',['../structScanner__.html#a2c0fe8f4825d0f390ea6e363858bdbf2',1,'Scanner_']]],
-  ['hash_3',['hash',['../structPPArg__.html#a5078c0c7fd6b24935505582faa0ce989',1,'PPArg_']]],
-  ['hashes_4',['hashes',['../structScanner__.html#a145b87bff9ccae8f82fc781ae015655d',1,'Scanner_']]]
+  ['global_0',['global',['../structAstGetter__.html#a5d93b38b2704d2af07b21da08291a0d9',1,'AstGetter_']]],
+  ['global_5fundef_1',['global_undef',['../structPP__.html#a8a9999477f7bb04115d316bf7b3368f1',1,'PP_']]]
 ];

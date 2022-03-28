@@ -1,8 +1,22 @@
 var searchData=
 [
-  ['pos_5ft_0',['pos_t',['../structpos__t.html',1,'']]],
-  ['pp_5f_1',['PP_',['../structPP__.html',1,'']]],
-  ['pparg_5f_2',['PPArg_',['../structPPArg__.html',1,'']]],
-  ['ppstate_5f_3',['PPState_',['../structPPState__.html',1,'']]],
-  ['prim_5fdata_4',['prim_data',['../unionExp__Primary_1_1prim__data.html',1,'Exp_Primary']]]
+  ['scanner_5f_0',['Scanner_',['../structScanner__.html',1,'']]],
+  ['section_5f_1',['Section_',['../structSection__.html',1,'']]],
+  ['section_5fdata_2',['section_data',['../unionSection___1_1section__data.html',1,'Section_']]],
+  ['specialized_3',['Specialized',['../structSpecialized.html',1,'']]],
+  ['stmt_5f_4',['Stmt_',['../structStmt__.html',1,'']]],
+  ['stmt_5fcode_5f_5',['Stmt_Code_',['../structStmt__Code__.html',1,'']]],
+  ['stmt_5fdata_6',['stmt_data',['../unionStmt___1_1stmt__data.html',1,'Stmt_']]],
+  ['stmt_5fdefer_5f_7',['Stmt_Defer_',['../structStmt__Defer__.html',1,'']]],
+  ['stmt_5feach_5f_8',['Stmt_Each_',['../structStmt__Each__.html',1,'']]],
+  ['stmt_5fexp_5f_9',['Stmt_Exp_',['../structStmt__Exp__.html',1,'']]],
+  ['stmt_5fflow_5f_10',['Stmt_Flow_',['../structStmt__Flow__.html',1,'']]],
+  ['stmt_5ffor_5f_11',['Stmt_For_',['../structStmt__For__.html',1,'']]],
+  ['stmt_5fif_5f_12',['Stmt_If_',['../structStmt__If__.html',1,'']]],
+  ['stmt_5findex_5f_13',['Stmt_Index_',['../structStmt__Index__.html',1,'']]],
+  ['stmt_5floop_5f_14',['Stmt_Loop_',['../structStmt__Loop__.html',1,'']]],
+  ['stmt_5fmatch_5f_15',['Stmt_Match_',['../structStmt__Match__.html',1,'']]],
+  ['stmt_5fpp_5f_16',['Stmt_PP_',['../structStmt__PP__.html',1,'']]],
+  ['stmt_5ftry_5f_17',['Stmt_Try_',['../structStmt__Try__.html',1,'']]],
+  ['stmt_5fvarloop_5f_18',['Stmt_VarLoop_',['../structStmt__VarLoop__.html',1,'']]]
 ];

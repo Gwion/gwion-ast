@@ -1,16 +1,6 @@
 var searchData=
 [
-  ['c1_0',['c1',['../structStmt__For__.html#a49fd7c6c0fcba536ddba5acf8fd78226',1,'Stmt_For_']]],
-  ['c2_1',['c2',['../structStmt__For__.html#aa9b6356d88f91dbd53758252688bb8dd',1,'Stmt_For_']]],
-  ['c3_2',['c3',['../structStmt__For__.html#ab480d4741d1e99989445d30dc0c93d88',1,'Stmt_For_']]],
-  ['call_3',['call',['../structTmpl__.html#a3a1f59a8212e2763f5abb671b1b6da9b',1,'Tmpl_']]],
-  ['cast_5fto_4',['cast_to',['../structExp__.html#aca37e4fcefe2e6676e7263a92e1c320a',1,'Exp_']]],
-  ['cflag_5',['cflag',['../structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c',1,'Class_Def_']]],
-  ['chr_6',['chr',['../unionExp__Primary_1_1prim__data.html#a3a7fe8e5601b7f900e60141c3686df06',1,'Exp_Primary::prim_data']]],
-  ['class_5fdef_7',['class_def',['../unionSection___1_1section__data.html#adb6c284cd6ee60563a653ac18f070702',1,'Section_::section_data']]],
-  ['code_8',['code',['../unionFunc__Def___1_1func__def__data.html#a93588769f1f3ce219f026803bb777a8c',1,'Func_Def_::func_def_data::code()'],['../structExp__Unary.html#a00475bf3c09e772cae370370bd975f14',1,'Exp_Unary::code()']]],
-  ['column_9',['column',['../structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964',1,'pos_t']]],
-  ['comptime_10',['comptime',['../structExp__.html#a9ac2586b111269d7334d016763f19fa7',1,'Exp_']]],
-  ['cond_11',['cond',['../structExp__If.html#a1d2b42a572189d502b85acbc19ad80bb',1,'Exp_If::cond()'],['../structStmt__Flow__.html#af3cf8823e794588fd851bb5c8bb91a10',1,'Stmt_Flow_::cond()'],['../structStmt__Match__.html#a5f2bee6c3e0b1cc2d3210516617cb271',1,'Stmt_Match_::cond()'],['../structStmt__Loop__.html#aeeb1b0ca493b94e967e3c103961c1750',1,'Stmt_Loop_::cond()'],['../structStmt__If__.html#a214b4a053f54fe7498fd487d04d7955c',1,'Stmt_If_::cond()']]],
-  ['ctor_12',['ctor',['../structExp__Unary.html#a3e1ce2456c2530b16c3cbf41a42e297c',1,'Exp_Unary']]]
+  ['base_0',['base',['../structExp__Array.html#ab97d949d8ece42cc091e49149d251c58',1,'Exp_Array::base()'],['../structExp__Slice.html#a2b728c90a93915a9f156b7267ae9f8b2',1,'Exp_Slice::base()'],['../structTmpl__.html#aaf8beabab21833a0507efe901ef3789c',1,'Tmpl_::base()'],['../structFptr__Def__.html#a144651b0730a22e05a392957d674c38a',1,'Fptr_Def_::base()'],['../structFunc__Def__.html#a96bcb108362d4665e336bc0e53e2b948',1,'Func_Def_::base()'],['../structClass__Def__.html#af1f751040ac3414b2babd2035cbef3b2',1,'Class_Def_::base()'],['../structMacro__.html#a5e7d59e7b05d63bd76b22c40e6a9b4e7',1,'Macro_::base()'],['../structExp__Dot.html#a98180179b56850c33c90d323b75bb80d',1,'Exp_Dot::base()']]],
+  ['body_1',['body',['../structStmt__VarLoop__.html#a1baa923991146cd3471e6e488985dbfa',1,'Stmt_VarLoop_::body()'],['../structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122',1,'Class_Def_::body()'],['../structExtend__Def__.html#aa687f940ecf6faa10ff8f9b5392aa72f',1,'Extend_Def_::body()'],['../structTrait__Def__.html#a1a14f5567331e03c8fadd48bc283bd89',1,'Trait_Def_::body()'],['../structStmt__Loop__.html#ac0bdd3ad2515b61d8690c3fefd7db382',1,'Stmt_Loop_::body()'],['../structStmt__Each__.html#a3664d473f1e0928a4c6d8cdcb354ca8e',1,'Stmt_Each_::body()'],['../structStmt__For__.html#a558fc2bdaea5f4ceb403f7230c6dc34c',1,'Stmt_For_::body()'],['../structStmt__Flow__.html#a760e723d5176aa901c266fcf91fe0371',1,'Stmt_Flow_::body()']]],
+  ['builtin_2',['builtin',['../structFunc__Def__.html#a62d45fa0f083d88cbe5fd0ab97a0e0d9',1,'Func_Def_']]]
 ];

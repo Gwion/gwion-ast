@@ -6,6 +6,5 @@ var searchData=
   ['line_3',['line',['../structpos__t.html#ab51255fd45533a2412b08649ec3629de',1,'pos_t']]],
   ['lint_4',['lint',['../structPPArg__.html#a230273ebd5fd958001be31a1b7b3db8d',1,'PPArg_']]],
   ['list_5',['list',['../structExp__Decl.html#ab80de61cd5c3e1b24ffa1eafe803ab0f',1,'Exp_Decl::list()'],['../structTmpl__.html#a0a85c2ef79162be4114fed19004fc43e',1,'Tmpl_::list()'],['../structStmt__Match__.html#ac6101277dff8f41ea7763cede7f10c2b',1,'Stmt_Match_::list()'],['../structEnum__Def__.html#a138364f37015361e82d5f68bbe47266a',1,'Enum_Def_::list()']]],
-  ['loc_5ft_6',['loc_t',['../absyn_8h.html#ac17415492a0a804541582047204c957f',1,'absyn.h']]],
-  ['loc_5ft_5f_7',['loc_t_',['../absyn_8h.html#a5c7f91c6e0659dc0ffd3d8d1f5e9a109',1,'absyn.h']]]
+  ['loc_5ft_6',['loc_t',['../absyn_8h.html#a6603eddf3f8b44dbe2fcc552fd36ae09',1,'absyn.h']]]
 ];

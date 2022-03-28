@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['when_0',['when',['../structStmt__Match__.html#ad66cf68fa4e6680e355b8a00fc910d23',1,'Stmt_Match_::when()'],['../structType__Def__.html#a519e40fb6cfadf0cf7540fe27930e366',1,'Type_Def_::when()']]],
-  ['when_5fdef_1',['when_def',['../structType__Def__.html#a8441e310a2af39704c7b6512ac0ebdc2',1,'Type_Def_']]],
-  ['where_2',['where',['../structStmt__Match__.html#ab227a8327b44cf3af5560762b2b06ef5',1,'Stmt_Match_']]]
+  ['xid_0',['xid',['../structType__Decl__.html#ad7c44c4f42984f944d4fe9bb43b15705',1,'Type_Decl_::xid()'],['../structVar__Decl__.html#aaf9700df24c4fa8e59360ea7d7e0ec2e',1,'Var_Decl_::xid()'],['../structExp__Dot.html#a99123f74dcb32fc44ed9628c4a06c65d',1,'Exp_Dot::xid()'],['../structSpecialized.html#aad3f3e52487d20b6d4e19b7eb29da8a5',1,'Specialized::xid()'],['../structHandler__.html#ad787d8a77b4f24b08262e9a1dbd0d365',1,'Handler_::xid()'],['../structEnum__Def__.html#aad034b6db03db24cfaf41e7284d7919b',1,'Enum_Def_::xid()'],['../structFunc__Base__.html#a8c0b359609bd3b847ae440281ba3e02a',1,'Func_Base_::xid()'],['../structType__Def__.html#a69926ff4be6ab4fec31d9a3f4f69c305',1,'Type_Def_::xid()'],['../structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b',1,'Union_Def_::xid()'],['../structTrait__Def__.html#a24ce7267d7843be45cfc0c8aad69d3b5',1,'Trait_Def_::xid()']]]
 ];

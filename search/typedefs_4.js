@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['fptr_5fdef_0',['Fptr_Def',['../absyn_8h.html#aa29acb9fc50b0fd64145c6ef99add0c6',1,'absyn.h']]],
-  ['func_5fbase_1',['Func_Base',['../absyn_8h.html#aa47db48f1d22b1c5db9ccf1b43d7f240',1,'absyn.h']]],
-  ['func_5fdef_2',['Func_Def',['../absyn_8h.html#a9439ca24d35531b04cea2dcaa85f56fd',1,'absyn.h']]]
+  ['handler_0',['Handler',['../absyn_8h.html#a61fbf121c75dd2318bba2304cb8f0578',1,'absyn.h']]],
+  ['handler_5flist_1',['Handler_List',['../absyn_8h.html#af158a89f894abae804179811dc59275f',1,'absyn.h']]]
 ];

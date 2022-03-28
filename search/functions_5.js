@@ -17,12 +17,11 @@ var searchData=
   ['free_5fscanner_14',['free_scanner',['../scanner_8c.html#a9e1f3129d9f754aefe401c9a246b990c',1,'scanner.c']]],
   ['free_5fspecialized_5flist_15',['free_specialized_list',['../absyn_8h.html#a87ba01e6e78bdec856b11ceee79a3f0e',1,'absyn.h']]],
   ['free_5fstmt_16',['free_stmt',['../absyn_8h.html#a14adea7fbcbad3795cbac33d5401a3b9',1,'absyn.h']]],
-  ['free_5fstmt_5flist_17',['free_stmt_list',['../absyn_8h.html#a96e12d9957cefb6f6f72fd36d65a503e',1,'absyn.h']]],
-  ['free_5ftmpl_18',['free_tmpl',['../absyn_8h.html#a3738c0ea24940b5ab6c033e95e65e2dd',1,'absyn.h']]],
-  ['free_5ftrait_5fdef_19',['free_trait_def',['../absyn_8h.html#a58be56f5b06872bd1a6af658ba17576e',1,'absyn.h']]],
-  ['free_5ftype_5fdecl_20',['free_type_decl',['../absyn_8h.html#a72b02e225616a4edb22ca1fae49536c7',1,'absyn.h']]],
-  ['free_5ftype_5fdef_21',['free_type_def',['../absyn_8h.html#aa6a90807ae1abd0395bde9c894ab1c1d',1,'absyn.h']]],
-  ['free_5ftype_5flist_22',['free_type_list',['../absyn_8h.html#a2e24b514a72e7fbfcee082947bd20532',1,'absyn.h']]],
-  ['free_5funion_5fdef_23',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]],
-  ['free_5funion_5flist_24',['free_union_list',['../absyn_8h.html#aec95baf286232ee2b9c424aa4bd3a150',1,'absyn.h']]]
+  ['free_5ftmpl_17',['free_tmpl',['../absyn_8h.html#a3738c0ea24940b5ab6c033e95e65e2dd',1,'absyn.h']]],
+  ['free_5ftrait_5fdef_18',['free_trait_def',['../absyn_8h.html#a58be56f5b06872bd1a6af658ba17576e',1,'absyn.h']]],
+  ['free_5ftype_5fdecl_19',['free_type_decl',['../absyn_8h.html#a72b02e225616a4edb22ca1fae49536c7',1,'absyn.h']]],
+  ['free_5ftype_5fdef_20',['free_type_def',['../absyn_8h.html#aa6a90807ae1abd0395bde9c894ab1c1d',1,'absyn.h']]],
+  ['free_5ftype_5flist_21',['free_type_list',['../absyn_8h.html#a2e24b514a72e7fbfcee082947bd20532',1,'absyn.h']]],
+  ['free_5funion_5fdef_22',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]],
+  ['free_5funion_5flist_23',['free_union_list',['../absyn_8h.html#aec95baf286232ee2b9c424aa4bd3a150',1,'absyn.h']]]
 ];
