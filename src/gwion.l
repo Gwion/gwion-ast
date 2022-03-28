@@ -616,17 +616,41 @@ static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt,
   vector_add(&scan->pp->state, (vtype)ppstate);
 }
 
-static FILE* get_include(const m_str str, const Vector v) {
+static FILE* get_include_from_path(const m_str str, const Vector v) {
   const size_t sz = strlen(str);
   for(m_uint i = 0; i < vector_size(v); ++i) {
     const m_str dir = (m_str)vector_at(v, i);
     char c[strlen(dir) + sz + 2];
     sprintf(c, "%s/%s", dir, str);
-    return fopen(str, "r");
+    FILE *f = fopen(c, "r");
+    if(f) return f;
   }
   return NULL;
 }
 
+static bool get_dirname(m_str str, m_str c) {
+  m_str end = strrchr(str, '/');
+  if(!end) return false;
+  strncpy(c, str, end - str);
+  c[end - str] = '\0';
+  return true;
+}
+
+static FILE* get_include(void *data, const m_str str) {
+  const m_str filename = get_current_filename(data);
+  const size_t _sz = strlen(filename);
+  char dir[_sz + 1];
+  if(get_dirname(filename, dir)) {
+    const size_t sz = strlen(dir);
+    char c[strlen(dir) + sz + 2];
+    sprintf(c, "%s/%s", dir, str);
+    FILE *f = fopen(c, "r");
+    if(f) return f;
+  }
+  Scanner* scan = yyget_extra(data);
+  return get_include_from_path(str, &scan->ppa->path);
+}
+	
 static m_str get_current_filename(void* data) {
   Scanner* scan = yyget_extra(data);
   for(m_uint i = vector_size(&scan->pp->state) + 1; --i;) {
@@ -640,7 +664,7 @@ static m_str get_current_filename(void* data) {
 static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_include(filename);
-  FILE* f = fopen(str, "r") ?: get_include(str, &scan->ppa->path);
+  FILE* f = fopen(str, "r") ?: get_include(data, str);
   if(!f) {
     xfree(str);
     lexer_error(data, "file not found", ERRORCODE(105));
