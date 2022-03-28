@@ -671,6 +671,7 @@ static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE h
     return GW_ERROR;
   }
   gwpp_stack(scan, handle, f, str, pptype_file);
+  pos_ini(&scan->pos);
   yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
   return GW_OK;
 }
