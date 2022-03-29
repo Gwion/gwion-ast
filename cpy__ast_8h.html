@@ -231,18 +231,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00592">592</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  592</span>                                    {</div>
-<div class="line"><span class="lineno">  593</span>  <a class="code hl_typedef" href="absyn_8h.html#abce9558c13ffb3761401b53ee2946b96">Ast</a> a = new_mp_vector(p, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structSection__.html">Section</a>), src-&gt;len);</div>
-<div class="line"><span class="lineno">  594</span>  <span class="keywordflow">for</span>(m_uint i = 0; i &lt; src-&gt;len; i++) {</div>
-<div class="line"><span class="lineno">  595</span>    <a class="code hl_struct" href="structSection__.html">Section</a> * asec = mp_vector_at(a, <a class="code hl_struct" href="structSection__.html">Section</a>, i);</div>
-<div class="line"><span class="lineno">  596</span>    <a class="code hl_struct" href="structSection__.html">Section</a> * ssec = mp_vector_at(src, <a class="code hl_struct" href="structSection__.html">Section</a>, i);</div>
-<div class="line"><span class="lineno">  597</span>    <a class="code hl_function" href="ast__cpy_8c.html#aaf5bccc33a8353476d6013ab83eefc4e">cpy_section</a>(p, asec, ssec);</div>
-<div class="line"><span class="lineno">  598</span>  }</div>
-<div class="line"><span class="lineno">  599</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  600</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00591">591</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  591</span>                                    {</div>
+<div class="line"><span class="lineno">  592</span>  <a class="code hl_typedef" href="absyn_8h.html#abce9558c13ffb3761401b53ee2946b96">Ast</a> a = new_mp_vector(p, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structSection__.html">Section</a>), src-&gt;len);</div>
+<div class="line"><span class="lineno">  593</span>  <span class="keywordflow">for</span>(m_uint i = 0; i &lt; src-&gt;len; i++) {</div>
+<div class="line"><span class="lineno">  594</span>    <a class="code hl_struct" href="structSection__.html">Section</a> * asec = mp_vector_at(a, <a class="code hl_struct" href="structSection__.html">Section</a>, i);</div>
+<div class="line"><span class="lineno">  595</span>    <a class="code hl_struct" href="structSection__.html">Section</a> * ssec = mp_vector_at(src, <a class="code hl_struct" href="structSection__.html">Section</a>, i);</div>
+<div class="line"><span class="lineno">  596</span>    <a class="code hl_function" href="ast__cpy_8c.html#aaf5bccc33a8353476d6013ab83eefc4e">cpy_section</a>(p, asec, ssec);</div>
+<div class="line"><span class="lineno">  597</span>  }</div>
+<div class="line"><span class="lineno">  598</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  599</span>}</div>
 <div class="ttc" id="aabsyn_8h_html_abce9558c13ffb3761401b53ee2946b96"><div class="ttname"><a href="absyn_8h.html#abce9558c13ffb3761401b53ee2946b96">Ast</a></div><div class="ttdeci">MP_Vector * Ast</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00012">absyn.h:12</a></div></div>
-<div class="ttc" id="aast__cpy_8c_html_aaf5bccc33a8353476d6013ab83eefc4e"><div class="ttname"><a href="ast__cpy_8c.html#aaf5bccc33a8353476d6013ab83eefc4e">cpy_section</a></div><div class="ttdeci">static ANN void cpy_section(MemPool p, Section *const a, const Section *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00536">ast_cpy.c:536</a></div></div>
+<div class="ttc" id="aast__cpy_8c_html_aaf5bccc33a8353476d6013ab83eefc4e"><div class="ttname"><a href="ast__cpy_8c.html#aaf5bccc33a8353476d6013ab83eefc4e">cpy_section</a></div><div class="ttdeci">static ANN void cpy_section(MemPool p, Section *const a, const Section *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00535">ast_cpy.c:535</a></div></div>
 <div class="ttc" id="astructSection___html"><div class="ttname"><a href="structSection__.html">Section_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00718">absyn.h:718</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -273,20 +273,20 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00581">581</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  581</span>                                                            {</div>
-<div class="line"><span class="lineno">  582</span>  <a class="code hl_struct" href="structClass__Def__.html">Class_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structClass__Def__.html">Class_Def</a>);</div>
-<div class="line"><span class="lineno">  583</span>  <a class="code hl_function" href="ast__cpy_8c.html#a88d40058154cf2217946f2d01bf559b7">cpy_type_def2</a>(p, &amp;a-&gt;<a class="code hl_variable" href="structClass__Def__.html#af1f751040ac3414b2babd2035cbef3b2">base</a>, &amp;src-&gt;<a class="code hl_variable" href="structClass__Def__.html#af1f751040ac3414b2babd2035cbef3b2">base</a>);</div>
-<div class="line"><span class="lineno">  584</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122">body</a>) a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122">body</a> = <a class="code hl_function" href="ast__cpy_8c.html#a539a93c657feeb20e035438f4ce343fa">cpy_ast</a>(p, src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122">body</a>);</div>
-<div class="line"><span class="lineno">  585</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a374da11b3ed4c22cfd0a3c6e3fce447b">traits</a>) a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a374da11b3ed4c22cfd0a3c6e3fce447b">traits</a> = <a class="code hl_function" href="ast__cpy_8c.html#a4c385e56d7dbadab76c6901f9842edf3">cpy_id_list</a>(p, src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a374da11b3ed4c22cfd0a3c6e3fce447b">traits</a>);</div>
-<div class="line"><span class="lineno">  586</span>  a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a36ef07fc28fe06fa09055c8f5fc94708">flag</a>  = src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a36ef07fc28fe06fa09055c8f5fc94708">flag</a>;</div>
-<div class="line"><span class="lineno">  587</span>  a-&gt;<a class="code hl_variable" href="structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c">cflag</a> = src-&gt;<a class="code hl_variable" href="structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c">cflag</a>;</div>
-<div class="line"><span class="lineno">  588</span>  a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a1a58f38530ecc7244f52c441e66e4b17">pos</a>   = src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a1a58f38530ecc7244f52c441e66e4b17">pos</a>;</div>
-<div class="line"><span class="lineno">  589</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  590</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00580">580</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  580</span>                                                            {</div>
+<div class="line"><span class="lineno">  581</span>  <a class="code hl_struct" href="structClass__Def__.html">Class_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structClass__Def__.html">Class_Def</a>);</div>
+<div class="line"><span class="lineno">  582</span>  <a class="code hl_function" href="ast__cpy_8c.html#a88d40058154cf2217946f2d01bf559b7">cpy_type_def2</a>(p, &amp;a-&gt;<a class="code hl_variable" href="structClass__Def__.html#af1f751040ac3414b2babd2035cbef3b2">base</a>, &amp;src-&gt;<a class="code hl_variable" href="structClass__Def__.html#af1f751040ac3414b2babd2035cbef3b2">base</a>);</div>
+<div class="line"><span class="lineno">  583</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122">body</a>) a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122">body</a> = <a class="code hl_function" href="ast__cpy_8c.html#a539a93c657feeb20e035438f4ce343fa">cpy_ast</a>(p, src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a616ff2d514d26d711ec3ae195dd9e122">body</a>);</div>
+<div class="line"><span class="lineno">  584</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a374da11b3ed4c22cfd0a3c6e3fce447b">traits</a>) a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a374da11b3ed4c22cfd0a3c6e3fce447b">traits</a> = <a class="code hl_function" href="ast__cpy_8c.html#a4c385e56d7dbadab76c6901f9842edf3">cpy_id_list</a>(p, src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a374da11b3ed4c22cfd0a3c6e3fce447b">traits</a>);</div>
+<div class="line"><span class="lineno">  585</span>  a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a36ef07fc28fe06fa09055c8f5fc94708">flag</a>  = src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a36ef07fc28fe06fa09055c8f5fc94708">flag</a>;</div>
+<div class="line"><span class="lineno">  586</span>  a-&gt;<a class="code hl_variable" href="structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c">cflag</a> = src-&gt;<a class="code hl_variable" href="structClass__Def__.html#aa271eba78da1fa2f0bc846558cd4d74c">cflag</a>;</div>
+<div class="line"><span class="lineno">  587</span>  a-&gt;<a class="code hl_variable" href="structClass__Def__.html#a1a58f38530ecc7244f52c441e66e4b17">pos</a>   = src-&gt;<a class="code hl_variable" href="structClass__Def__.html#a1a58f38530ecc7244f52c441e66e4b17">pos</a>;</div>
+<div class="line"><span class="lineno">  588</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  589</span>}</div>
 <div class="ttc" id="aast__cpy_8c_html_a4c385e56d7dbadab76c6901f9842edf3"><div class="ttname"><a href="ast__cpy_8c.html#a4c385e56d7dbadab76c6901f9842edf3">cpy_id_list</a></div><div class="ttdeci">ANN ID_List cpy_id_list(MemPool p, const ID_List src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00083">ast_cpy.c:83</a></div></div>
-<div class="ttc" id="aast__cpy_8c_html_a539a93c657feeb20e035438f4ce343fa"><div class="ttname"><a href="ast__cpy_8c.html#a539a93c657feeb20e035438f4ce343fa">cpy_ast</a></div><div class="ttdeci">ANN Ast cpy_ast(MemPool p, Ast src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00592">ast_cpy.c:592</a></div></div>
-<div class="ttc" id="aast__cpy_8c_html_a88d40058154cf2217946f2d01bf559b7"><div class="ttname"><a href="ast__cpy_8c.html#a88d40058154cf2217946f2d01bf559b7">cpy_type_def2</a></div><div class="ttdeci">static ANN void cpy_type_def2(MemPool p, Type_Def a, const Type_Def src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00404">ast_cpy.c:404</a></div></div>
+<div class="ttc" id="aast__cpy_8c_html_a539a93c657feeb20e035438f4ce343fa"><div class="ttname"><a href="ast__cpy_8c.html#a539a93c657feeb20e035438f4ce343fa">cpy_ast</a></div><div class="ttdeci">ANN Ast cpy_ast(MemPool p, Ast src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00591">ast_cpy.c:591</a></div></div>
+<div class="ttc" id="aast__cpy_8c_html_a88d40058154cf2217946f2d01bf559b7"><div class="ttname"><a href="ast__cpy_8c.html#a88d40058154cf2217946f2d01bf559b7">cpy_type_def2</a></div><div class="ttdeci">static ANN void cpy_type_def2(MemPool p, Type_Def a, const Type_Def src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00403">ast_cpy.c:403</a></div></div>
 <div class="ttc" id="astructClass__Def___html"><div class="ttname"><a href="structClass__Def__.html">Class_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00758">absyn.h:758</a></div></div>
 <div class="ttc" id="astructClass__Def___html_a1a58f38530ecc7244f52c441e66e4b17"><div class="ttname"><a href="structClass__Def__.html#a1a58f38530ecc7244f52c441e66e4b17">Class_Def_::pos</a></div><div class="ttdeci">loc_t pos</div><div class="ttdoc">position</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00762">absyn.h:762</a></div></div>
 <div class="ttc" id="astructClass__Def___html_a36ef07fc28fe06fa09055c8f5fc94708"><div class="ttname"><a href="structClass__Def__.html#a36ef07fc28fe06fa09055c8f5fc94708">Class_Def_::flag</a></div><div class="ttdeci">ae_flag flag</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00764">absyn.h:764</a></div></div>
@@ -447,15 +447,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00572">572</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  572</span>                                                               {</div>
-<div class="line"><span class="lineno">  573</span>  <a class="code hl_struct" href="structExtend__Def__.html">Extend_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structExtend__Def__.html">Extend_Def</a>);</div>
-<div class="line"><span class="lineno">  574</span>  a-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa687f940ecf6faa10ff8f9b5392aa72f">body</a> = <a class="code hl_function" href="ast__cpy_8c.html#a539a93c657feeb20e035438f4ce343fa">cpy_ast</a>(p, src-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa687f940ecf6faa10ff8f9b5392aa72f">body</a>);</div>
-<div class="line"><span class="lineno">  575</span>  <span class="comment">//  if(src-&gt;traits)</span></div>
-<div class="line"><span class="lineno">  576</span>  <span class="comment">//    a-&gt;traits = cpy_id_list(p, src-&gt;traits);</span></div>
-<div class="line"><span class="lineno">  577</span>  a-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa3130357de1ea96be52c18004fa40f56">td</a> = <a class="code hl_function" href="ast__cpy_8c.html#a2499c65c185193d958bb64bfc9cc9508">cpy_type_decl</a>(p, src-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa3130357de1ea96be52c18004fa40f56">td</a>);</div>
-<div class="line"><span class="lineno">  578</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  579</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00571">571</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  571</span>                                                               {</div>
+<div class="line"><span class="lineno">  572</span>  <a class="code hl_struct" href="structExtend__Def__.html">Extend_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structExtend__Def__.html">Extend_Def</a>);</div>
+<div class="line"><span class="lineno">  573</span>  a-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa687f940ecf6faa10ff8f9b5392aa72f">body</a> = <a class="code hl_function" href="ast__cpy_8c.html#a539a93c657feeb20e035438f4ce343fa">cpy_ast</a>(p, src-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa687f940ecf6faa10ff8f9b5392aa72f">body</a>);</div>
+<div class="line"><span class="lineno">  574</span>  <span class="comment">//  if(src-&gt;traits)</span></div>
+<div class="line"><span class="lineno">  575</span>  <span class="comment">//    a-&gt;traits = cpy_id_list(p, src-&gt;traits);</span></div>
+<div class="line"><span class="lineno">  576</span>  a-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa3130357de1ea96be52c18004fa40f56">td</a> = <a class="code hl_function" href="ast__cpy_8c.html#a2499c65c185193d958bb64bfc9cc9508">cpy_type_decl</a>(p, src-&gt;<a class="code hl_variable" href="structExtend__Def__.html#aa3130357de1ea96be52c18004fa40f56">td</a>);</div>
+<div class="line"><span class="lineno">  577</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  578</span>}</div>
 <div class="ttc" id="astructExtend__Def___html"><div class="ttname"><a href="structExtend__Def__.html">Extend_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00742">absyn.h:742</a></div></div>
 <div class="ttc" id="astructExtend__Def___html_aa3130357de1ea96be52c18004fa40f56"><div class="ttname"><a href="structExtend__Def__.html#aa3130357de1ea96be52c18004fa40f56">Extend_Def_::td</a></div><div class="ttdeci">Type_Decl * td</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00744">absyn.h:744</a></div></div>
 <div class="ttc" id="astructExtend__Def___html_aa687f940ecf6faa10ff8f9b5392aa72f"><div class="ttname"><a href="structExtend__Def__.html#aa687f940ecf6faa10ff8f9b5392aa72f">Extend_Def_::body</a></div><div class="ttdeci">Ast body</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00743">absyn.h:743</a></div></div>
@@ -488,12 +488,12 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00398">398</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  398</span>                                                           {</div>
-<div class="line"><span class="lineno">  399</span>  <a class="code hl_struct" href="structFptr__Def__.html">Fptr_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structFptr__Def__.html">Fptr_Def</a>);</div>
-<div class="line"><span class="lineno">  400</span>  a-&gt;<a class="code hl_variable" href="structFptr__Def__.html#a144651b0730a22e05a392957d674c38a">base</a>    = <a class="code hl_function" href="ast__cpy_8c.html#a1e024bfb7e8a1b5e061e4b4e13ef0eba">cpy_func_base</a>(p, src-&gt;<a class="code hl_variable" href="structFptr__Def__.html#a144651b0730a22e05a392957d674c38a">base</a>);</div>
-<div class="line"><span class="lineno">  401</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  402</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00397">397</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  397</span>                                                           {</div>
+<div class="line"><span class="lineno">  398</span>  <a class="code hl_struct" href="structFptr__Def__.html">Fptr_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structFptr__Def__.html">Fptr_Def</a>);</div>
+<div class="line"><span class="lineno">  399</span>  a-&gt;<a class="code hl_variable" href="structFptr__Def__.html#a144651b0730a22e05a392957d674c38a">base</a>    = <a class="code hl_function" href="ast__cpy_8c.html#a1e024bfb7e8a1b5e061e4b4e13ef0eba">cpy_func_base</a>(p, src-&gt;<a class="code hl_variable" href="structFptr__Def__.html#a144651b0730a22e05a392957d674c38a">base</a>);</div>
+<div class="line"><span class="lineno">  400</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  401</span>}</div>
 <div class="ttc" id="aast__cpy_8c_html_a1e024bfb7e8a1b5e061e4b4e13ef0eba"><div class="ttname"><a href="ast__cpy_8c.html#a1e024bfb7e8a1b5e061e4b4e13ef0eba">cpy_func_base</a></div><div class="ttdeci">ANN Func_Base * cpy_func_base(MemPool p, const Func_Base *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00383">ast_cpy.c:383</a></div></div>
 <div class="ttc" id="astructFptr__Def___html"><div class="ttname"><a href="structFptr__Def__.html">Fptr_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00568">absyn.h:568</a></div></div>
 <div class="ttc" id="astructFptr__Def___html_a144651b0730a22e05a392957d674c38a"><div class="ttname"><a href="structFptr__Def__.html#a144651b0730a22e05a392957d674c38a">Fptr_Def_::base</a></div><div class="ttdeci">Func_Base * base</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00569">absyn.h:569</a></div></div>
@@ -554,19 +554,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00504">504</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  504</span>                                                         {</div>
-<div class="line"><span class="lineno">  505</span>  <a class="code hl_struct" href="structFunc__Def__.html">Func_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structFunc__Def__.html">Func_Def</a>);</div>
-<div class="line"><span class="lineno">  506</span>  a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a96bcb108362d4665e336bc0e53e2b948">base</a>    = <a class="code hl_function" href="ast__cpy_8c.html#a1e024bfb7e8a1b5e061e4b4e13ef0eba">cpy_func_base</a>(p, src-&gt;base);</div>
-<div class="line"><span class="lineno">  507</span>  <span class="keywordflow">if</span> (src-&gt;d.code) {</div>
-<div class="line"><span class="lineno">  508</span>    <span class="keywordflow">if</span>(!src-&gt;builtin) a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a6faa574acd208572c1f1cf13e7cf219c">d</a>.<a class="code hl_variable" href="unionFunc__Def___1_1func__def__data.html#a93588769f1f3ce219f026803bb777a8c">code</a> = <a class="code hl_function" href="ast__cpy_8c.html#afbebb9ba8ba27f9a72948210755110d1">cpy_stmt</a>(p, src-&gt;d.code);</div>
-<div class="line"><span class="lineno">  509</span>    <span class="keywordflow">else</span> a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a6faa574acd208572c1f1cf13e7cf219c">d</a>.<a class="code hl_variable" href="unionFunc__Def___1_1func__def__data.html#a5fbe01f1e8d053f1fd1a5fad1f872de9">dl_func_ptr</a> = src-&gt;d.dl_func_ptr;</div>
-<div class="line"><span class="lineno">  510</span>  }</div>
-<div class="line"><span class="lineno">  511</span>  <span class="comment">//  a-&gt;trait = src-&gt;trait;</span></div>
-<div class="line"><span class="lineno">  512</span>  a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a62d45fa0f083d88cbe5fd0ab97a0e0d9">builtin</a> = src-&gt;builtin;</div>
-<div class="line"><span class="lineno">  513</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  514</span>}</div>
-<div class="ttc" id="aast__cpy_8c_html_afbebb9ba8ba27f9a72948210755110d1"><div class="ttname"><a href="ast__cpy_8c.html#afbebb9ba8ba27f9a72948210755110d1">cpy_stmt</a></div><div class="ttdeci">ANN Stmt cpy_stmt(MemPool p, const Stmt src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00443">ast_cpy.c:443</a></div></div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00503">503</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  503</span>                                                         {</div>
+<div class="line"><span class="lineno">  504</span>  <a class="code hl_struct" href="structFunc__Def__.html">Func_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structFunc__Def__.html">Func_Def</a>);</div>
+<div class="line"><span class="lineno">  505</span>  a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a96bcb108362d4665e336bc0e53e2b948">base</a>    = <a class="code hl_function" href="ast__cpy_8c.html#a1e024bfb7e8a1b5e061e4b4e13ef0eba">cpy_func_base</a>(p, src-&gt;base);</div>
+<div class="line"><span class="lineno">  506</span>  <span class="keywordflow">if</span> (src-&gt;d.code) {</div>
+<div class="line"><span class="lineno">  507</span>    <span class="keywordflow">if</span>(!src-&gt;builtin) a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a6faa574acd208572c1f1cf13e7cf219c">d</a>.<a class="code hl_variable" href="unionFunc__Def___1_1func__def__data.html#a93588769f1f3ce219f026803bb777a8c">code</a> = <a class="code hl_function" href="ast__cpy_8c.html#afbebb9ba8ba27f9a72948210755110d1">cpy_stmt</a>(p, src-&gt;d.code);</div>
+<div class="line"><span class="lineno">  508</span>    <span class="keywordflow">else</span> a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a6faa574acd208572c1f1cf13e7cf219c">d</a>.<a class="code hl_variable" href="unionFunc__Def___1_1func__def__data.html#a5fbe01f1e8d053f1fd1a5fad1f872de9">dl_func_ptr</a> = src-&gt;d.dl_func_ptr;</div>
+<div class="line"><span class="lineno">  509</span>  }</div>
+<div class="line"><span class="lineno">  510</span>  <span class="comment">//  a-&gt;trait = src-&gt;trait;</span></div>
+<div class="line"><span class="lineno">  511</span>  a-&gt;<a class="code hl_variable" href="structFunc__Def__.html#a62d45fa0f083d88cbe5fd0ab97a0e0d9">builtin</a> = src-&gt;builtin;</div>
+<div class="line"><span class="lineno">  512</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  513</span>}</div>
+<div class="ttc" id="aast__cpy_8c_html_afbebb9ba8ba27f9a72948210755110d1"><div class="ttname"><a href="ast__cpy_8c.html#afbebb9ba8ba27f9a72948210755110d1">cpy_stmt</a></div><div class="ttdeci">ANN Stmt cpy_stmt(MemPool p, const Stmt src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00442">ast_cpy.c:442</a></div></div>
 <div class="ttc" id="astructFunc__Def___html"><div class="ttname"><a href="structFunc__Def__.html">Func_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00681">absyn.h:681</a></div></div>
 <div class="ttc" id="astructFunc__Def___html_a62d45fa0f083d88cbe5fd0ab97a0e0d9"><div class="ttname"><a href="structFunc__Def__.html#a62d45fa0f083d88cbe5fd0ab97a0e0d9">Func_Def_::builtin</a></div><div class="ttdeci">bool builtin</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00688">absyn.h:688</a></div></div>
 <div class="ttc" id="astructFunc__Def___html_a6faa574acd208572c1f1cf13e7cf219c"><div class="ttname"><a href="structFunc__Def__.html#a6faa574acd208572c1f1cf13e7cf219c">Func_Def_::d</a></div><div class="ttdeci">union Func_Def_::func_def_data d</div></div>
@@ -642,12 +642,12 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00449">449</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  449</span>                                              {</div>
-<div class="line"><span class="lineno">  450</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structStmt__.html">Stmt</a> a = mp_malloc(p, <a class="code hl_struct" href="structStmt__.html">Stmt</a>);</div>
-<div class="line"><span class="lineno">  451</span>  memcpy(a, src, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code hl_struct" href="structStmt__.html">Stmt_</a>));</div>
-<div class="line"><span class="lineno">  452</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  453</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00448">448</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  448</span>                                              {</div>
+<div class="line"><span class="lineno">  449</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structStmt__.html">Stmt</a> a = mp_malloc(p, <a class="code hl_struct" href="structStmt__.html">Stmt</a>);</div>
+<div class="line"><span class="lineno">  450</span>  memcpy(a, src, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code hl_struct" href="structStmt__.html">Stmt_</a>));</div>
+<div class="line"><span class="lineno">  451</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  452</span>}</div>
 <div class="ttc" id="astructStmt___html"><div class="ttname"><a href="structStmt__.html">Stmt_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00633">absyn.h:633</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -737,7 +737,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   80</span>  <span class="keywordflow">return</span> a;</div>
 <div class="line"><span class="lineno">   81</span>}</div>
 <div class="ttc" id="aast__cpy_8c_html_a1e45c076909e19f29adc26a45d60289f"><div class="ttname"><a href="ast__cpy_8c.html#a1e45c076909e19f29adc26a45d60289f">cpy_array_sub</a></div><div class="ttdeci">ANN Array_Sub cpy_array_sub(MemPool p, const Array_Sub src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00022">ast_cpy.c:22</a></div></div>
-<div class="ttc" id="aast__cpy_8c_html_a6948bbbf5472b53ad44fa657cbadcfb7"><div class="ttname"><a href="ast__cpy_8c.html#a6948bbbf5472b53ad44fa657cbadcfb7">cpy_fptr_def</a></div><div class="ttdeci">ANN Fptr_Def cpy_fptr_def(MemPool p, const Fptr_Def src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00398">ast_cpy.c:398</a></div></div>
+<div class="ttc" id="aast__cpy_8c_html_a6948bbbf5472b53ad44fa657cbadcfb7"><div class="ttname"><a href="ast__cpy_8c.html#a6948bbbf5472b53ad44fa657cbadcfb7">cpy_fptr_def</a></div><div class="ttdeci">ANN Fptr_Def cpy_fptr_def(MemPool p, const Fptr_Def src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00397">ast_cpy.c:397</a></div></div>
 <div class="ttc" id="astructType__Decl___html"><div class="ttname"><a href="structType__Decl__.html">Type_Decl_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00026">absyn.h:26</a></div></div>
 <div class="ttc" id="astructType__Decl___html_a7b6885cbc89016f37ca6d9c9b024d17a"><div class="ttname"><a href="structType__Decl__.html#a7b6885cbc89016f37ca6d9c9b024d17a">Type_Decl_::flag</a></div><div class="ttdeci">ae_flag flag</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00034">absyn.h:34</a></div></div>
 <div class="ttc" id="astructType__Decl___html_a83c295861b3bb108524806c227294376"><div class="ttname"><a href="structType__Decl__.html#a83c295861b3bb108524806c227294376">Type_Decl_::pos</a></div><div class="ttdeci">loc_t pos</div><div class="ttdoc">position</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00032">absyn.h:32</a></div></div>
@@ -816,18 +816,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00433">433</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  433</span>                                                            {</div>
-<div class="line"><span class="lineno">  434</span>  <a class="code hl_struct" href="structUnion__Def__.html">Union_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structUnion__Def__.html">Union_Def</a>);</div>
-<div class="line"><span class="lineno">  435</span>  a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ad7893f35e627f0f1c5cdfac6459603c7">l</a>        = <a class="code hl_function" href="ast__cpy_8c.html#aa2efb806222284266262bd4580a2caf9">cpy_union_list</a>(p, src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ad7893f35e627f0f1c5cdfac6459603c7">l</a>);         <span class="comment">// 1</span></div>
-<div class="line"><span class="lineno">  436</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b">xid</a>) a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b">xid</a> = src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b">xid</a>;                 <span class="comment">// 1</span></div>
-<div class="line"><span class="lineno">  437</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">tmpl</a>) a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">tmpl</a> = <a class="code hl_function" href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a>(p, src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">tmpl</a>); <span class="comment">// 1</span></div>
-<div class="line"><span class="lineno">  438</span>  a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ae69d8c92a3e1409d445b5200c305631b">pos</a>  = src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ae69d8c92a3e1409d445b5200c305631b">pos</a>;</div>
-<div class="line"><span class="lineno">  439</span>  a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a93baeb62084bc4cb54502c848e081928">flag</a> = src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a93baeb62084bc4cb54502c848e081928">flag</a>; <span class="comment">// 1</span></div>
-<div class="line"><span class="lineno">  440</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  441</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00432">432</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  432</span>                                                            {</div>
+<div class="line"><span class="lineno">  433</span>  <a class="code hl_struct" href="structUnion__Def__.html">Union_Def</a> a = mp_calloc(p, <a class="code hl_struct" href="structUnion__Def__.html">Union_Def</a>);</div>
+<div class="line"><span class="lineno">  434</span>  a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ad7893f35e627f0f1c5cdfac6459603c7">l</a>        = <a class="code hl_function" href="ast__cpy_8c.html#aa2efb806222284266262bd4580a2caf9">cpy_union_list</a>(p, src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ad7893f35e627f0f1c5cdfac6459603c7">l</a>);         <span class="comment">// 1</span></div>
+<div class="line"><span class="lineno">  435</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b">xid</a>) a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b">xid</a> = src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ade688647355c5ce03b2161964d93ec5b">xid</a>;                 <span class="comment">// 1</span></div>
+<div class="line"><span class="lineno">  436</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">tmpl</a>) a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">tmpl</a> = <a class="code hl_function" href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a>(p, src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">tmpl</a>); <span class="comment">// 1</span></div>
+<div class="line"><span class="lineno">  437</span>  a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ae69d8c92a3e1409d445b5200c305631b">pos</a>  = src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#ae69d8c92a3e1409d445b5200c305631b">pos</a>;</div>
+<div class="line"><span class="lineno">  438</span>  a-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a93baeb62084bc4cb54502c848e081928">flag</a> = src-&gt;<a class="code hl_variable" href="structUnion__Def__.html#a93baeb62084bc4cb54502c848e081928">flag</a>; <span class="comment">// 1</span></div>
+<div class="line"><span class="lineno">  439</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  440</span>}</div>
 <div class="ttc" id="aast__cpy_8c_html_a4a853b9af0034515a83bc3bb64c2ae36"><div class="ttname"><a href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a></div><div class="ttdeci">ANN Tmpl * cpy_tmpl(MemPool p, const Tmpl *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00163">ast_cpy.c:163</a></div></div>
-<div class="ttc" id="aast__cpy_8c_html_aa2efb806222284266262bd4580a2caf9"><div class="ttname"><a href="ast__cpy_8c.html#aa2efb806222284266262bd4580a2caf9">cpy_union_list</a></div><div class="ttdeci">ANN Union_List cpy_union_list(MemPool p, const Union_List src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00423">ast_cpy.c:423</a></div></div>
+<div class="ttc" id="aast__cpy_8c_html_aa2efb806222284266262bd4580a2caf9"><div class="ttname"><a href="ast__cpy_8c.html#aa2efb806222284266262bd4580a2caf9">cpy_union_list</a></div><div class="ttdeci">ANN Union_List cpy_union_list(MemPool p, const Union_List src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00422">ast_cpy.c:422</a></div></div>
 <div class="ttc" id="astructUnion__Def___html"><div class="ttname"><a href="structUnion__Def__.html">Union_Def_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00597">absyn.h:597</a></div></div>
 <div class="ttc" id="astructUnion__Def___html_a0e611557e1d72760e245466bcced8184"><div class="ttname"><a href="structUnion__Def__.html#a0e611557e1d72760e245466bcced8184">Union_Def_::tmpl</a></div><div class="ttdeci">Tmpl * tmpl</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00601">absyn.h:601</a></div></div>
 <div class="ttc" id="astructUnion__Def___html_a93baeb62084bc4cb54502c848e081928"><div class="ttname"><a href="structUnion__Def__.html#a93baeb62084bc4cb54502c848e081928">Union_Def_::flag</a></div><div class="ttdeci">ae_flag flag</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00603">absyn.h:603</a></div></div>
@@ -863,18 +863,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00423">423</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  423</span>                                                               {</div>
-<div class="line"><span class="lineno">  424</span>  <a class="code hl_typedef" href="absyn_8h.html#a72902b7b85846f472ca24ec3aa0444da">Union_List</a> a = new_mp_vector(p, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a>), src-&gt;len);</div>
-<div class="line"><span class="lineno">  425</span>  <span class="keywordflow">for</span>(uint32_t i = 0; i &lt; src-&gt;len; i++) {</div>
-<div class="line"><span class="lineno">  426</span>    <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a> *_src = mp_vector_at(src, <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a>, i);</div>
-<div class="line"><span class="lineno">  427</span>    <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a> *_tgt = mp_vector_at(a, <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a>, i);</div>
-<div class="line"><span class="lineno">  428</span>    <a class="code hl_function" href="ast__cpy_8c.html#a16c27620775f485ade6f62737bed1f2a">cpy_union_member</a>(p, _tgt, _src);</div>
-<div class="line"><span class="lineno">  429</span>  }</div>
-<div class="line"><span class="lineno">  430</span>  <span class="keywordflow">return</span> a;</div>
-<div class="line"><span class="lineno">  431</span>}</div>
+<p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00422">422</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  422</span>                                                               {</div>
+<div class="line"><span class="lineno">  423</span>  <a class="code hl_typedef" href="absyn_8h.html#a72902b7b85846f472ca24ec3aa0444da">Union_List</a> a = new_mp_vector(p, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a>), src-&gt;len);</div>
+<div class="line"><span class="lineno">  424</span>  <span class="keywordflow">for</span>(uint32_t i = 0; i &lt; src-&gt;len; i++) {</div>
+<div class="line"><span class="lineno">  425</span>    <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a> *_src = mp_vector_at(src, <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a>, i);</div>
+<div class="line"><span class="lineno">  426</span>    <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a> *_tgt = mp_vector_at(a, <a class="code hl_struct" href="structUnion__Member__.html">Union_Member</a>, i);</div>
+<div class="line"><span class="lineno">  427</span>    <a class="code hl_function" href="ast__cpy_8c.html#a16c27620775f485ade6f62737bed1f2a">cpy_union_member</a>(p, _tgt, _src);</div>
+<div class="line"><span class="lineno">  428</span>  }</div>
+<div class="line"><span class="lineno">  429</span>  <span class="keywordflow">return</span> a;</div>
+<div class="line"><span class="lineno">  430</span>}</div>
 <div class="ttc" id="aabsyn_8h_html_a72902b7b85846f472ca24ec3aa0444da"><div class="ttname"><a href="absyn_8h.html#a72902b7b85846f472ca24ec3aa0444da">Union_List</a></div><div class="ttdeci">MP_Vector * Union_List</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00594">absyn.h:594</a></div></div>
-<div class="ttc" id="aast__cpy_8c_html_a16c27620775f485ade6f62737bed1f2a"><div class="ttname"><a href="ast__cpy_8c.html#a16c27620775f485ade6f62737bed1f2a">cpy_union_member</a></div><div class="ttdeci">static ANN void cpy_union_member(MemPool p, Union_Member *a, Union_Member *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00418">ast_cpy.c:418</a></div></div>
+<div class="ttc" id="aast__cpy_8c_html_a16c27620775f485ade6f62737bed1f2a"><div class="ttname"><a href="ast__cpy_8c.html#a16c27620775f485ade6f62737bed1f2a">cpy_union_member</a></div><div class="ttdeci">static ANN void cpy_union_member(MemPool p, Union_Member *a, Union_Member *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00417">ast_cpy.c:417</a></div></div>
 <div class="ttc" id="astructUnion__Member___html"><div class="ttname"><a href="structUnion__Member__.html">Union_Member_</a></div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00590">absyn.h:590</a></div></div>
 </div><!-- fragment -->
 </div>
