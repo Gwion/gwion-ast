@@ -85,7 +85,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   OPERATOR "operator"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
-  BACKSLASH "\\" OPID_A OPID_E
+  BACKSLASH "\\" OPID_A
   LATE "late"
 
 %token<lval> NUM "<integer>"
@@ -96,7 +96,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_IMPORT "import"
 %token<string> INTERP_LIT "<interp string lit>" INTERP_END "<interp string end>" 
-%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>" OPID_E "&<operator id>"
+%type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" OPTIONS COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
   NEW "new" SPORK "spork" FORK "fork"
@@ -682,7 +682,6 @@ exp:
 
 binary_exp
   : decl_exp
-  | binary_exp OPID_A  decl_exp  { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
   | binary_exp "@"     decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
   | binary_exp DYNOP   decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
@@ -943,7 +942,6 @@ unary_op : "-" %prec UMINUS | "*" %prec UTIMES | post_op
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
-  | OPID_E unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
   | "new" type_decl_exp "(" opt_exp ")" {
        $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
   }
@@ -998,8 +996,6 @@ post_exp: prim_exp
     { $$ = new_exp_call(mpool(arg), $1, $3, @$);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
   | post_exp post_op
-    { $$ = new_exp_post(mpool(arg), $1, $2, @$); }
-  | post_exp OPID_E
     { $$ = new_exp_post(mpool(arg), $1, $2, @$); }
   | dot_exp { $$ = $1; }
   ;

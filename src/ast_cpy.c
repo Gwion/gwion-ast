@@ -383,10 +383,9 @@ ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
 ANN Func_Base *cpy_func_base(MemPool p, const Func_Base *src) {
  Func_Base *a = mp_calloc(p, Func_Base);
   if (src->td) a->td = cpy_type_decl(p, src->td);      // 1
-  if (src->xid) a->xid = src->xid;                     // 1
+  a->xid = src->xid;                     // 1
   if (src->args) a->args = cpy_arg_list(p, src->args); // 1
-  if (src->tmpl)
-    a->tmpl = cpy_tmpl(p, src->tmpl); // 1
+  if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl); // 1
                                       //  if(src->effects.ptr)
   //    vector_copy2((Vector)&src->effects, &a->effects);
   a->flag   = src->flag;
