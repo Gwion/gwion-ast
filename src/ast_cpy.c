@@ -348,12 +348,11 @@ ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
 }
 
 ANN static Handler_List cpy_handler_list(MemPool p, const Handler_List src) {
-//  Handler_List a = mp_calloc(p, Handler_List);
   Handler_List tgt = new_mp_vector(p, sizeof(Handler), src->len);
   for(m_uint i = 0; i < src->len; i++) {
     Handler *src_handler = mp_vector_at(src, Handler, i);
     Handler *tgt_handler = mp_vector_at(tgt, Handler, i);
-    tgt_handler->stmt        = src_handler->stmt;
+    tgt_handler->stmt        = cpy_stmt(p, src_handler->stmt);
     tgt_handler->xid         = src_handler->xid;
     tgt_handler->pos = src_handler->pos;
   }
