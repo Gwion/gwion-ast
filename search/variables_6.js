@@ -17,6 +17,6 @@ var searchData=
   ['fnum_14',['fnum',['../unionExp__Primary_1_1prim__data.html#a209f24694b2ad93beee8f0d36918a750',1,'Exp_Primary::prim_data']]],
   ['fptr_15',['fptr',['../structType__Decl__.html#aed5eaa855f1c770be0f7b80dbba656be',1,'Type_Decl_']]],
   ['fptr_5fdef_16',['fptr_def',['../unionSection___1_1section__data.html#adb21dff5bd9c2e06230f9a754125a947',1,'Section_::section_data']]],
-  ['func_17',['func',['../structFunc__Base__.html#ace8d2c0cf0fa400561991d131521f4e1',1,'Func_Base_::func()'],['../structExp__Call.html#af92e7a0458460717358051fed8fa394c',1,'Exp_Call::func()']]],
+  ['func_17',['func',['../structFunc__Base__.html#ace8d2c0cf0fa400561991d131521f4e1',1,'Func_Base_::func()'],['../structExp__Call__.html#a2c7602cea5619e093cc1589d3d8756ad',1,'Exp_Call_::func()']]],
   ['func_5fdef_18',['func_def',['../unionSection___1_1section__data.html#a31a209ddce2a822a4c694cb647c50d45',1,'Section_::section_data']]]
 ];

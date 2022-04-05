@@ -51,7 +51,7 @@ var searchData=
   ['free_5ftype_5flist_48',['free_type_list',['../absyn_8h.html#a2e24b514a72e7fbfcee082947bd20532',1,'absyn.h']]],
   ['free_5funion_5fdef_49',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]],
   ['free_5funion_5flist_50',['free_union_list',['../absyn_8h.html#aec95baf286232ee2b9c424aa4bd3a150',1,'absyn.h']]],
-  ['func_51',['func',['../structExp__Call.html#af92e7a0458460717358051fed8fa394c',1,'Exp_Call::func()'],['../structFunc__Base__.html#ace8d2c0cf0fa400561991d131521f4e1',1,'Func_Base_::func()']]],
+  ['func_51',['func',['../structExp__Call__.html#a2c7602cea5619e093cc1589d3d8756ad',1,'Exp_Call_::func()'],['../structFunc__Base__.html#ace8d2c0cf0fa400561991d131521f4e1',1,'Func_Base_::func()']]],
   ['func_5fbase_52',['Func_Base',['../absyn_8h.html#aa47db48f1d22b1c5db9ccf1b43d7f240',1,'absyn.h']]],
   ['func_5fbase_5f_53',['Func_Base_',['../structFunc__Base__.html',1,'']]],
   ['func_5fdef_54',['func_def',['../unionSection___1_1section__data.html#a31a209ddce2a822a4c694cb647c50d45',1,'Section_::section_data']]],

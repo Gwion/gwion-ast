@@ -122,7 +122,7 @@ Functions</h2></td></tr>
 <tr class="separator:a59c0356c44da67d125adefd354901a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a853b9af0034515a83bc3bb64c2ae36"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="absyn_8h.html#ab651a8060e3f651529f52449206bff2f">Tmpl</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a> (MemPool p, const <a class="el" href="absyn_8h.html#ab651a8060e3f651529f52449206bff2f">Tmpl</a> *src)</td></tr>
 <tr class="separator:a4a853b9af0034515a83bc3bb64c2ae36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e25351e1401d06481b1dd97aa0e83f9"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#a2e25351e1401d06481b1dd97aa0e83f9">cpy_exp_call</a> (MemPool p, <a class="el" href="structExp__Call.html">Exp_Call</a> *a, const <a class="el" href="structExp__Call.html">Exp_Call</a> *src)</td></tr>
+<tr class="memitem:a2e25351e1401d06481b1dd97aa0e83f9"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#a2e25351e1401d06481b1dd97aa0e83f9">cpy_exp_call</a> (MemPool p, <a class="el" href="absyn_8h.html#a09f8e913fe14b2378067bbd5c4ea4aaa">Exp_Call</a> *a, const <a class="el" href="absyn_8h.html#a09f8e913fe14b2378067bbd5c4ea4aaa">Exp_Call</a> *src)</td></tr>
 <tr class="separator:a2e25351e1401d06481b1dd97aa0e83f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdd4ef0893327023d72d584badda78d3"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#acdd4ef0893327023d72d584badda78d3">cpy_exp_cast</a> (MemPool p, <a class="el" href="structExp__Cast.html">Exp_Cast</a> *a, const <a class="el" href="structExp__Cast.html">Exp_Cast</a> *src)</td></tr>
 <tr class="separator:acdd4ef0893327023d72d584badda78d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -719,13 +719,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structExp__Call.html">Exp_Call</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="absyn_8h.html#a09f8e913fe14b2378067bbd5c4ea4aaa">Exp_Call</a> *&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structExp__Call.html">Exp_Call</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="absyn_8h.html#a09f8e913fe14b2378067bbd5c4ea4aaa">Exp_Call</a> *&#160;</td>
           <td class="paramname"><em>src</em>&#160;</td>
         </tr>
         <tr>
@@ -743,14 +743,14 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00172">172</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  172</span>                                                                          {</div>
-<div class="line"><span class="lineno">  173</span>  a-&gt;<a class="code hl_variable" href="structExp__Call.html#af92e7a0458460717358051fed8fa394c">func</a> = <a class="code hl_function" href="ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740">cpy_exp</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Call.html#af92e7a0458460717358051fed8fa394c">func</a>);</div>
-<div class="line"><span class="lineno">  174</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structExp__Call.html#a6fa6c01c3fa1c6905fdbceec70bbb0c5">args</a>) a-&gt;<a class="code hl_variable" href="structExp__Call.html#a6fa6c01c3fa1c6905fdbceec70bbb0c5">args</a> = <a class="code hl_function" href="ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740">cpy_exp</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Call.html#a6fa6c01c3fa1c6905fdbceec70bbb0c5">args</a>);</div>
-<div class="line"><span class="lineno">  175</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structExp__Call.html#a82c33a9e412f4d226e36e5c0c1eb6f09">tmpl</a>) a-&gt;<a class="code hl_variable" href="structExp__Call.html#a82c33a9e412f4d226e36e5c0c1eb6f09">tmpl</a> = <a class="code hl_function" href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Call.html#a82c33a9e412f4d226e36e5c0c1eb6f09">tmpl</a>);</div>
+<div class="line"><span class="lineno">  173</span>  a-&gt;<a class="code hl_variable" href="structExp__Call__.html#a2c7602cea5619e093cc1589d3d8756ad">func</a> = <a class="code hl_function" href="ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740">cpy_exp</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Call__.html#a2c7602cea5619e093cc1589d3d8756ad">func</a>);</div>
+<div class="line"><span class="lineno">  174</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structExp__Call__.html#a7243bf6efb89fa6900dc227880730aa0">args</a>) a-&gt;<a class="code hl_variable" href="structExp__Call__.html#a7243bf6efb89fa6900dc227880730aa0">args</a> = <a class="code hl_function" href="ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740">cpy_exp</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Call__.html#a7243bf6efb89fa6900dc227880730aa0">args</a>);</div>
+<div class="line"><span class="lineno">  175</span>  <span class="keywordflow">if</span> (src-&gt;<a class="code hl_variable" href="structExp__Call__.html#a08edd13d1abc96ae2ad369509ebaeb5e">tmpl</a>) a-&gt;<a class="code hl_variable" href="structExp__Call__.html#a08edd13d1abc96ae2ad369509ebaeb5e">tmpl</a> = <a class="code hl_function" href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Call__.html#a08edd13d1abc96ae2ad369509ebaeb5e">tmpl</a>);</div>
 <div class="line"><span class="lineno">  176</span>}</div>
 <div class="ttc" id="aast__cpy_8c_html_a4a853b9af0034515a83bc3bb64c2ae36"><div class="ttname"><a href="ast__cpy_8c.html#a4a853b9af0034515a83bc3bb64c2ae36">cpy_tmpl</a></div><div class="ttdeci">ANN Tmpl * cpy_tmpl(MemPool p, const Tmpl *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00163">ast_cpy.c:163</a></div></div>
-<div class="ttc" id="astructExp__Call_html_a6fa6c01c3fa1c6905fdbceec70bbb0c5"><div class="ttname"><a href="structExp__Call.html#a6fa6c01c3fa1c6905fdbceec70bbb0c5">Exp_Call::args</a></div><div class="ttdeci">Exp args</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00223">absyn.h:223</a></div></div>
-<div class="ttc" id="astructExp__Call_html_a82c33a9e412f4d226e36e5c0c1eb6f09"><div class="ttname"><a href="structExp__Call.html#a82c33a9e412f4d226e36e5c0c1eb6f09">Exp_Call::tmpl</a></div><div class="ttdeci">Tmpl * tmpl</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00224">absyn.h:224</a></div></div>
-<div class="ttc" id="astructExp__Call_html_af92e7a0458460717358051fed8fa394c"><div class="ttname"><a href="structExp__Call.html#af92e7a0458460717358051fed8fa394c">Exp_Call::func</a></div><div class="ttdeci">Exp func</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00222">absyn.h:222</a></div></div>
+<div class="ttc" id="astructExp__Call___html_a08edd13d1abc96ae2ad369509ebaeb5e"><div class="ttname"><a href="structExp__Call__.html#a08edd13d1abc96ae2ad369509ebaeb5e">Exp_Call_::tmpl</a></div><div class="ttdeci">Tmpl * tmpl</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00224">absyn.h:224</a></div></div>
+<div class="ttc" id="astructExp__Call___html_a2c7602cea5619e093cc1589d3d8756ad"><div class="ttname"><a href="structExp__Call__.html#a2c7602cea5619e093cc1589d3d8756ad">Exp_Call_::func</a></div><div class="ttdeci">Exp func</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00222">absyn.h:222</a></div></div>
+<div class="ttc" id="astructExp__Call___html_a7243bf6efb89fa6900dc227880730aa0"><div class="ttname"><a href="structExp__Call__.html#a7243bf6efb89fa6900dc227880730aa0">Exp_Call_::args</a></div><div class="ttdeci">Exp args</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00223">absyn.h:223</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -898,10 +898,10 @@ Functions</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00012">12</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   12</span>                                                                       {</div>
 <div class="line"><span class="lineno">   13</span>  a-&gt;<a class="code hl_variable" href="structExp__Dot.html#a98180179b56850c33c90d323b75bb80d">base</a> = <a class="code hl_function" href="ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740">cpy_exp</a>(p, src-&gt;<a class="code hl_variable" href="structExp__Dot.html#a98180179b56850c33c90d323b75bb80d">base</a>);</div>
-<div class="line"><span class="lineno">   14</span>  a-&gt;<a class="code hl_variable" href="structExp__Dot.html#a99123f74dcb32fc44ed9628c4a06c65d">xid</a>  = src-&gt;<a class="code hl_variable" href="structExp__Dot.html#a99123f74dcb32fc44ed9628c4a06c65d">xid</a>;</div>
+<div class="line"><span class="lineno">   14</span>  a-&gt;<a class="code hl_variable" href="structExp__Dot.html#a4f2bc4126a032a25fc23f7ef975f403f">xid</a>  = src-&gt;<a class="code hl_variable" href="structExp__Dot.html#a4f2bc4126a032a25fc23f7ef975f403f">xid</a>;</div>
 <div class="line"><span class="lineno">   15</span>}</div>
+<div class="ttc" id="astructExp__Dot_html_a4f2bc4126a032a25fc23f7ef975f403f"><div class="ttname"><a href="structExp__Dot.html#a4f2bc4126a032a25fc23f7ef975f403f">Exp_Dot::xid</a></div><div class="ttdeci">Symbol xid</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00086">absyn.h:86</a></div></div>
 <div class="ttc" id="astructExp__Dot_html_a98180179b56850c33c90d323b75bb80d"><div class="ttname"><a href="structExp__Dot.html#a98180179b56850c33c90d323b75bb80d">Exp_Dot::base</a></div><div class="ttdeci">Exp base</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00085">absyn.h:85</a></div></div>
-<div class="ttc" id="astructExp__Dot_html_a99123f74dcb32fc44ed9628c4a06c65d"><div class="ttname"><a href="structExp__Dot.html#a99123f74dcb32fc44ed9628c4a06c65d">Exp_Dot::xid</a></div><div class="ttdeci">struct Symbol_ * xid</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00086">absyn.h:86</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
