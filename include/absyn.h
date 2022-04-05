@@ -69,7 +69,7 @@ enum fbflag {
   fbflag_variadic = 1 << 5,
   fbflag_internal = 1 << 6,
   fbflag_lambda   = 1 << 7,
-  fbflag_default  = 1 << 7,
+  fbflag_default  = 1 << 8,
 } __attribute__((packed));
 
 struct ParserArg {
@@ -83,8 +83,8 @@ struct ParserArg {
 /** a dot expression. @code object.member @endcode */
 typedef struct {
   Exp             base;
-  struct Symbol_ *xid;
-  bool is_call;
+  Symbol xid;
+  struct Exp_Call_* is_call;
 } Exp_Dot;
 
 /** a lambda expression. @code \a b { <<< a + b >>>; } @endcode */
@@ -218,7 +218,7 @@ static inline bool tmpl_base(const Tmpl *a) {
   return false;
 }
 
-typedef struct {
+typedef struct Exp_Call_ {
   Exp   func;
   Exp   args;
   Tmpl *tmpl;

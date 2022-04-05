@@ -747,10 +747,12 @@ modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 func_def_base
   : "fun" func_base func_args arg_type code_stmt {
     $2->args = $3.args;
-    $2->fbflag |= $4 | $3.flag;
+    $2->fbflag |= ($4 | $3.flag);
     $$ = new_func_def(mpool(arg), $2, &$5);
   }
   | "fun" func_base func_args arg_type ";" {
+    if($3.flag == fbflag_default)
+    { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
     $2->args = $3.args;
     $2->fbflag |= $4;
     SET_FLAG($2, abstract);
@@ -759,7 +761,8 @@ func_def_base
 
 abstract_fdef
   : "fun" flag "abstract" type_decl_empty ID decl_template fptr_args arg_type ";"
-    { Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
+    {
+      Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
         base->tmpl = new_tmpl_base(mpool(arg), $6);
       base->args = $7;
@@ -771,6 +774,8 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
   :  type_decl_empty op_op decl_template "(" arg "," arg ")"
     {
+      if($5.flag == fbflag_default || $7.flag == fbflag_default)
+      { parser_error(&@2, arg, "default arguments not allowed in binary operators", 0210); YYERROR; };
       MP_Vector *args = new_mp_vector(mpool(arg), sizeof(Arg), 2);
       *(Arg*)args->ptr = $5.arg;
       *(Arg*)(args->ptr + sizeof(Arg)) = $7.arg;
@@ -779,6 +784,8 @@ op_base
     }
   |  type_decl_empty post_op decl_template "(" arg ")"
     {
+      if($5.flag == fbflag_default)
+      { parser_error(&@2, arg, "default arguments not allowed in postfix operators", 0210); YYERROR; };
       Arg_List args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
       mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
@@ -786,6 +793,8 @@ op_base
     }
   |  unary_op type_decl_empty decl_template "(" arg ")"
     {
+      if($5.flag == fbflag_default)
+      { parser_error(&@2, arg, "default arguments not allowed in unary operators", 0210); YYERROR; };
       Arg_List args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
       mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
@@ -809,17 +818,24 @@ op_def
 
 func_def: func_def_base | abstract_fdef | op_def
   |  operator "new" func_args arg_type code_stmt
-    { Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1, @2);
-      base->fbflag = $4;
+    {
+      Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1, @2);
+      base->fbflag = $4 | $3.flag;
       $$ = new_func_def(mpool(arg), base, &$5);
     }
   |  operator "new" func_args arg_type ";"
-    { Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1 | ae_flag_abstract, @2);
+    {
+      if($3.flag == fbflag_default)
+      { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
+      Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1 | ae_flag_abstract, @2);
       base->fbflag = $4;
       $$ = new_func_def(mpool(arg), base, NULL);
     }
   |  operator "abstract" "new" func_args arg_type ";"
-    { Func_Base *const base = new_func_base(mpool(arg), NULL, $3, $4.args, $1 | ae_flag_abstract, @3);
+    {
+      if($4.flag == fbflag_default)
+      { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
+      Func_Base *const base = new_func_base(mpool(arg), NULL, $3, $4.args, $1 | ae_flag_abstract, @3);
       base->fbflag = $5;
       $$ =new_func_def(mpool(arg), base, NULL);
     }
