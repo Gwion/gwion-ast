@@ -86,7 +86,7 @@ Functions</h2></td></tr>
 <tr class="separator:ae73cbeef346697f831013ea9d1730740"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a996496b648fba07b49039a4fdba48c30"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="absyn_8h.html#add4cf9e289a07a68f666a12b7e901cde">Type_List</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#a996496b648fba07b49039a4fdba48c30">cpy_type_list</a> (MemPool p, const <a class="el" href="absyn_8h.html#add4cf9e289a07a68f666a12b7e901cde">Type_List</a> src)</td></tr>
 <tr class="separator:a996496b648fba07b49039a4fdba48c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af592f705ac72612df80e5e19b35952b8"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="absyn_8h.html#a48b6fcfb65e9d8acf27af6770f774705">Arg_List</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#af592f705ac72612df80e5e19b35952b8">cpy_arg_list</a> (MemPool p, const <a class="el" href="absyn_8h.html#a48b6fcfb65e9d8acf27af6770f774705">Arg_List</a> src)</td></tr>
+<tr class="memitem:af592f705ac72612df80e5e19b35952b8"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="absyn_8h.html#afc4ca2074910e7356f24b6d96fd9ef32">Arg_List</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#af592f705ac72612df80e5e19b35952b8">cpy_arg_list</a> (MemPool p, const <a class="el" href="absyn_8h.html#afc4ca2074910e7356f24b6d96fd9ef32">Arg_List</a> src)</td></tr>
 <tr class="separator:af592f705ac72612df80e5e19b35952b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff94a7fb7e94c41fa3e929a6081bf526"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="absyn_8h.html#a0ef63016af7094809c1938d7f900bfa3">Class_Def</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ast__cpy_8c.html#aff94a7fb7e94c41fa3e929a6081bf526">cpy_class_def</a> (MemPool p, const <a class="el" href="absyn_8h.html#a0ef63016af7094809c1938d7f900bfa3">Class_Def</a> src)</td></tr>
 <tr class="separator:aff94a7fb7e94c41fa3e929a6081bf526"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,7 +203,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">ANN <a class="el" href="absyn_8h.html#a48b6fcfb65e9d8acf27af6770f774705">Arg_List</a> cpy_arg_list </td>
+          <td class="memname">ANN <a class="el" href="absyn_8h.html#afc4ca2074910e7356f24b6d96fd9ef32">Arg_List</a> cpy_arg_list </td>
           <td>(</td>
           <td class="paramtype">MemPool&#160;</td>
           <td class="paramname"><em>p</em>, </td>
@@ -211,7 +211,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="absyn_8h.html#a48b6fcfb65e9d8acf27af6770f774705">Arg_List</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="absyn_8h.html#afc4ca2074910e7356f24b6d96fd9ef32">Arg_List</a>&#160;</td>
           <td class="paramname"><em>src</em>&#160;</td>
         </tr>
         <tr>
@@ -224,7 +224,7 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="ast__cpy_8c_source.html#l00114">114</a> of file <a class="el" href="ast__cpy_8c_source.html">ast_cpy.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  114</span>                                                         {</div>
-<div class="line"><span class="lineno">  115</span>  <a class="code hl_typedef" href="absyn_8h.html#a48b6fcfb65e9d8acf27af6770f774705">Arg_List</a> arg = new_mp_vector(p, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structArg__.html">Arg</a>), src-&gt;len);</div>
+<div class="line"><span class="lineno">  115</span>  <a class="code hl_typedef" href="absyn_8h.html#afc4ca2074910e7356f24b6d96fd9ef32">Arg_List</a> arg = new_mp_vector(p, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structArg__.html">Arg</a>), src-&gt;len);</div>
 <div class="line"><span class="lineno">  116</span>  <span class="keywordflow">for</span>(m_uint i = 0; i &lt; src-&gt;len; i++) {</div>
 <div class="line"><span class="lineno">  117</span>    <a class="code hl_struct" href="structArg__.html">Arg</a> *_src = mp_vector_at(src, <a class="code hl_struct" href="structArg__.html">Arg</a>, i);</div>
 <div class="line"><span class="lineno">  118</span>    <a class="code hl_struct" href="structArg__.html">Arg</a> *_arg = mp_vector_at(arg, <a class="code hl_struct" href="structArg__.html">Arg</a>, i);</div>
@@ -234,7 +234,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  122</span>  }</div>
 <div class="line"><span class="lineno">  123</span>  <span class="keywordflow">return</span> arg;</div>
 <div class="line"><span class="lineno">  124</span>}</div>
-<div class="ttc" id="aabsyn_8h_html_a48b6fcfb65e9d8acf27af6770f774705"><div class="ttname"><a href="absyn_8h.html#a48b6fcfb65e9d8acf27af6770f774705">Arg_List</a></div><div class="ttdeci">MP_Vector * Arg_List</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00054">absyn.h:54</a></div></div>
+<div class="ttc" id="aabsyn_8h_html_afc4ca2074910e7356f24b6d96fd9ef32"><div class="ttname"><a href="absyn_8h.html#afc4ca2074910e7356f24b6d96fd9ef32">Arg_List</a></div><div class="ttdeci">MP_Vector * Arg_List</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00054">absyn.h:54</a></div></div>
 <div class="ttc" id="aast__cpy_8c_html_a2499c65c185193d958bb64bfc9cc9508"><div class="ttname"><a href="ast__cpy_8c.html#a2499c65c185193d958bb64bfc9cc9508">cpy_type_decl</a></div><div class="ttdeci">ANN Type_Decl * cpy_type_decl(MemPool p, const Type_Decl *src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00069">ast_cpy.c:69</a></div></div>
 <div class="ttc" id="aast__cpy_8c_html_aad6fae87a49678f4e2cdecf53a77ba95"><div class="ttname"><a href="ast__cpy_8c.html#aad6fae87a49678f4e2cdecf53a77ba95">cpy_var_decl2</a></div><div class="ttdeci">ANN Var_Decl cpy_var_decl2(MemPool p, Var_Decl a, const Var_Decl src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00046">ast_cpy.c:46</a></div></div>
 <div class="ttc" id="aast__cpy_8c_html_ae73cbeef346697f831013ea9d1730740"><div class="ttname"><a href="ast__cpy_8c.html#ae73cbeef346697f831013ea9d1730740">cpy_exp</a></div><div class="ttdeci">ANN Exp cpy_exp(MemPool p, const Exp src)</div><div class="ttdef"><b>Definition:</b> <a href="ast__cpy_8c_source.html#l00220">ast_cpy.c:220</a></div></div>
@@ -1446,7 +1446,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   89</span>  <span class="keywordflow">return</span> a;</div>
 <div class="line"><span class="lineno">   90</span>}</div>
 <div class="ttc" id="aabsyn_8h_html_a1c49b8f90361af6b07789fbe7d4a1f7f"><div class="ttname"><a href="absyn_8h.html#a1c49b8f90361af6b07789fbe7d4a1f7f">ID_List</a></div><div class="ttdeci">MP_Vector * ID_List</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00022">absyn.h:22</a></div></div>
-<div class="ttc" id="aabsyn_8h_html_ad45341c0e15f90fcc2130a491552f0f1"><div class="ttname"><a href="absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1">Symbol</a></div><div class="ttdeci">ANEW const Symbol</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00402">absyn.h:402</a></div></div>
+<div class="ttc" id="aabsyn_8h_html_ad45341c0e15f90fcc2130a491552f0f1"><div class="ttname"><a href="absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1">Symbol</a></div><div class="ttdeci">const Symbol</div><div class="ttdef"><b>Definition:</b> <a href="absyn_8h_source.html#l00095">absyn.h:95</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>

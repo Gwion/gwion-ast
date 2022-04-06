@@ -13,8 +13,8 @@ var searchData=
   ['macroarg_5f_10',['MacroArg_',['../structMacroArg__.html',1,'']]],
   ['macros_11',['macros',['../structPP__.html#a2089b211cc14b266ee663e25d188d384',1,'PP_']]],
   ['match_12',['match',['../dynop_8c.html#aae4fde3ecc929269186d6d6ff03c4089',1,'dynop.c']]],
-  ['mk_5fsection_13',['mk_section',['../ast__new_8c.html#ab4bb5f2dd595bd2eb9059168c345e7aa',1,'mk_section():&#160;ast_new.c'],['../ast__new_8c.html#a1e0322a4a442ec653626d65c9d5c1856',1,'mk_section(Stmt_List, stmt_list, stmt):&#160;ast_new.c']]],
-  ['mk_5fsection_14',['MK_SECTION',['../absyn_8h.html#a71afb8e3675550889673bd3c93ab4890',1,'absyn.h']]],
+  ['mk_5fsection_13',['MK_SECTION',['../absyn_8h.html#a71afb8e3675550889673bd3c93ab4890',1,'absyn.h']]],
+  ['mk_5fsection_14',['mk_section',['../ast__new_8c.html#ab4bb5f2dd595bd2eb9059168c345e7aa',1,'mk_section():&#160;ast_new.c'],['../ast__new_8c.html#a1e0322a4a442ec653626d65c9d5c1856',1,'mk_section(Stmt_List, stmt_list, stmt):&#160;ast_new.c']]],
   ['mk_5fstmt_5fpp_15',['MK_STMT_PP',['../absyn_8h.html#a7219fdbcf834e21ee980ef4f42c8ff1c',1,'absyn.h']]],
   ['mkentry_16',['mkentry',['../macro_8c.html#a8a3bcbd90c28df70814d197676694489',1,'macro.c']]],
   ['my_20project_17',['My Project',['../index.html',1,'']]]

@@ -105,6 +105,7 @@ var menudata={children:[
 {text:"f",url:"globals_func_f.html#index_f"},
 {text:"g",url:"globals_func_g.html#index_g"},
 {text:"h",url:"globals_func_h.html#index_h"},
+{text:"l",url:"globals_func_l.html#index_l"},
 {text:"m",url:"globals_func_m.html#index_m"},
 {text:"n",url:"globals_func_n.html#index_n"},
 {text:"o",url:"globals_func_o.html#index_o"},
