@@ -427,10 +427,10 @@ ANN static double exponent_not(m_str str, size_t sz) {
   return strtod(base, NULL);
 }
 
-ANN Symbol lambda_name(const Scanner *scan) {
-  char c[6 + 1 + num_digit(scan->pos.line) + num_digit(scan->pos.column) + 2];
-  sprintf(c, "lambda:%u:%u", scan->pos.line, scan->pos.column);
-  return insert_symbol(scan->st, c);
+ANN Symbol lambda_name(SymTable *const st, const pos_t pos) {
+  char c[6 + 1 + num_digit(pos.line) + num_digit(pos.column) + 2];
+  sprintf(c, "lambda:%u:%u", pos.line, pos.column);
+  return insert_symbol(st, c);
 }
 
 ANN Symbol sig_name(const Scanner *scan, const pos_t pos) {

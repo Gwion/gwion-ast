@@ -297,7 +297,7 @@ extern int gwion_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 29 "src/gwion.y"
+#line 28 "src/gwion.y"
 
   bool yybool;
   ae_stmt_t stmt_t;

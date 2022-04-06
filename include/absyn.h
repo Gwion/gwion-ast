@@ -92,9 +92,9 @@ typedef struct {
   Func_Def      def;
   struct Type_ *owner;
 } Exp_Lambda;
-ANN AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt,
+ANN2(1,2,4) AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt,
             const loc_t);
-
+ANN Symbol lambda_name(SymTable *const st, const pos_t pos);
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
   Exp           exp;

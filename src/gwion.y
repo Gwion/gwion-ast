@@ -21,7 +21,6 @@
 #define insert_symbol(a) insert_symbol(arg->st, (a))
 
 ANN static int parser_error(loc_t*, Scanner*const, const char *, const uint);
-ANN Symbol lambda_name(const Scanner*);
 ANN Symbol sig_name(const Scanner*, const pos_t);
 
 %}
@@ -1045,7 +1044,7 @@ prim_exp
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
   | "(" exp ")"          { $$ = $2; }
-  | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg), $1, &$2, @1); };
+  | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$2, @1); };
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }
   | "(" ")"              { $$ = new_prim_nil(    mpool(arg),     @$); }
