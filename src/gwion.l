@@ -26,6 +26,7 @@ ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
 ANN static m_uint htol(const char* str);
+ANN static m_uint btol(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
@@ -368,6 +369,7 @@ lexer_error(yyscanner, "can't stringify non argument token", 0);
 "__file__"                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 
 0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                         return NUM;    }
+0[bB][0-1]+{IS}?                    { adjust(yyscanner); yylval->lval = btol(yytext);                         return NUM;    }
 0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);                return NUM;    }
 {NUM}+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll_space(yytext, yyleng);  return NUM;    }
 ({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+)[eE][\+\-]{NUM}+ { adjust(yyscanner); yylval->fval = (m_float)exponent_not(yytext, yyleng);  return FLOATT; }
@@ -481,6 +483,16 @@ m_uint htol(const char* str) {
     }
     c++;
   }
+  return n;
+}
+
+m_uint btol(const char* str) {
+  m_uint n = 0;
+  str += 2;
+
+  for (; *str; str++)
+    n = (n * 2) + ((unsigned char)*str - '0');
+
   return n;
 }
 
@@ -649,7 +661,7 @@ static FILE* get_include(void *data, const m_str str) {
   Scanner* scan = yyget_extra(data);
   return get_include_from_path(str, &scan->ppa->path);
 }
-	
+
 static m_str get_current_filename(void* data) {
   Scanner* scan = yyget_extra(data);
   for(m_uint i = vector_size(&scan->pp->state) + 1; --i;) {
