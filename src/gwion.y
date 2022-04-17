@@ -84,14 +84,14 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   OPERATOR "operator"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
-  BACKSLASH "\\" OPID_A
+  BACKSLASH "\\" BACKTICK "`" OPID_A
   LATE "late"
 
 %token<lval> NUM "<integer>"
 %type<stmt_t> flow breaks
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
-%token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "`" INTERP_EXP
+%token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "${" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_IMPORT "import"
 %token<string> INTERP_LIT "<interp string lit>" INTERP_END "<interp string end>" 
@@ -108,7 +108,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<yybool> opt_var
-%type<fbflag> arg_type
+%type<fbflag> arg_type FUNCTION
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
@@ -744,28 +744,28 @@ final: "final" { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
 modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 
 func_def_base
-  : "fun" func_base func_args arg_type code_stmt {
+  : FUNCTION func_base func_args arg_type code_stmt {
     $2->args = $3.args;
-    $2->fbflag |= ($4 | $3.flag);
+    $2->fbflag |= ($1 | $4 | $3.flag);
     $$ = new_func_def(mpool(arg), $2, &$5);
   }
-  | "fun" func_base func_args arg_type ";" {
+  | FUNCTION func_base func_args arg_type ";" {
     if($3.flag == fbflag_default)
     { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
     $2->args = $3.args;
-    $2->fbflag |= $4;
+    $2->fbflag |= ($1 | $4);
     SET_FLAG($2, abstract);
     $$ = new_func_def(mpool(arg), $2, NULL);
   };
 
 abstract_fdef
-  : "fun" flag "abstract" type_decl_empty ID decl_template fptr_args arg_type ";"
+  : FUNCTION flag "abstract" type_decl_empty ID decl_template fptr_args arg_type ";"
     {
       Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
         base->tmpl = new_tmpl_base(mpool(arg), $6);
       base->args = $7;
-      base->fbflag |= $8;
+      base->fbflag |= $1 | $8;
       $$ = new_func_def(mpool(arg), base, NULL);
     };
 
@@ -1044,6 +1044,7 @@ prim_exp
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
   | "(" exp ")"          { $$ = $2; }
+  | "`" ID "`"           { $$ = new_prim_id(     mpool(arg), $2, @$); $$->d.prim.prim_type = ae_prim_locale; }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$2, @1); };
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }

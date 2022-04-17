@@ -22,7 +22,8 @@ static inline m_bool dummy_func(const void *a NUSED, const void *b NUSED) {
       (_##prefix##_prim_func)prefix##_prim_char,                               \
       (_##prefix##_prim_func)prefix##_prim_nil,                                \
       (_##prefix##_prim_func)prefix##_prim_interp,                             \
-      (_##prefix##_prim_func)prefix##_prim_perform};
+      (_##prefix##_prim_func)prefix##_prim_perform,                            \
+      (_##prefix##_prim_func)prefix##_prim_locale};
 
 #define DECL_EXP_FUNC(prefix, type, arg)                                       \
   typedef type (*_##prefix##_exp_func)(const arg, union exp_data *);           \

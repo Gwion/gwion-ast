@@ -257,7 +257,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 {OP}{4,} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DYNOP; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 ","                                 { adjust(yyscanner); return COMMA;}
-"fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
+"fun"|"function"                    { adjust(yyscanner); yylval->fbflag = fbflag_none; return FUNCTION;}
+"locale"                            { adjust(yyscanner); yylval->fbflag = fbflag_locale; return FUNCTION;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
 "distinct"                          { adjust(yyscanner); return DISTINCT;}
 "funptr"                            { adjust(yyscanner); return FUNPTR;}
@@ -269,6 +270,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 "\\\n"                                { adjust(yyscanner); continue; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
+"`"                                 { adjust(yyscanner); return BACKTICK; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }

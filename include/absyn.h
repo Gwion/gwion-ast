@@ -70,6 +70,7 @@ enum fbflag {
   fbflag_internal = 1 << 6,
   fbflag_lambda   = 1 << 7,
   fbflag_default  = 1 << 8,
+  fbflag_locale   = 1 << 9,
 } __attribute__((packed));
 
 struct ParserArg {
@@ -178,7 +179,8 @@ typedef enum {
   ae_prim_char,
   ae_prim_nil,
   ae_prim_interp,
-  ae_prim_perform
+  ae_prim_perform,
+  ae_prim_locale
 } ae_prim_t;
 
 typedef struct {
@@ -223,6 +225,7 @@ typedef struct Exp_Call_ {
   Exp   args;
   Tmpl *tmpl;
   bool apms;
+  bool checked;
 } Exp_Call;
 typedef struct {
   Type_Decl *td;
