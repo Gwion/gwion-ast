@@ -14,6 +14,7 @@ typedef struct Scanner_ {
   short int      interp_state;
   bool           error;
   bool           handling;
+  bool           locale; // handle \n in the lexer
 } Scanner;
 
 ANN2(1, 2)

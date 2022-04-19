@@ -619,13 +619,16 @@ enum ae_pp_type {
   ae_pp_else,
   ae_pp_endif,
   ae_pp_import,
+  ae_pp_locale,
   ae_pp_nl
 };
 
 #define MK_STMT_PP(_type, _data, _pos) (struct Stmt_){ .stmt_type = ae_stmt_pp, \
   .d = { .stmt_pp = { .data = _data, .pp_type = ae_pp_##_type, }}, .pos = _pos }
 struct Stmt_PP_ {
-  m_str           data;
+  m_str data;
+  Exp   exp;
+  Symbol xid;
   enum ae_pp_type pp_type;
 };
 

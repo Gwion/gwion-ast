@@ -84,7 +84,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   OPERATOR "operator"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
-  BACKSLASH "\\" BACKTICK "`" OPID_A
+  BACKSLASH "\\" BACKTICK "`" OPID_A LOCALE LOCALE_INI LOCALE_END
   LATE "late"
 
 %token<lval> NUM "<integer>"
@@ -108,7 +108,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<yybool> opt_var
-%type<fbflag> arg_type FUNCTION
+%type<fbflag> arg_type
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
@@ -127,7 +127,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<stmt_list> stmt_list match_list trait_stmt_list
 %type<arg> fptr_arg
 %type<arg_list> lambda_arg lambda_list fptr_list fptr_args
-%type<default_args> arg arg_list func_args
+%type<default_args> arg arg_list func_args locale_arg locale_list
 %type<func_def> func_def op_def func_def_base abstract_fdef
 %type<func_base> func_base fptr_base op_base
 %type<enum_def> enum_def
@@ -370,6 +370,37 @@ arg_list:
      $$ = $1;
    };
 
+locale_arg:
+    arg {
+       $$.args = new_mp_vector(mpool(arg), sizeof(Arg), 2);
+       Arg self = {
+         .td = new_type_decl(mpool(arg), insert_symbol("string"), @$),
+         .var_decl = (struct Var_Decl_) { .xid = insert_symbol("self"), .pos = @$ },
+         .exp = NULL
+       };
+       mp_vector_set($$.args, Arg, 0, self);
+       mp_vector_set($$.args, Arg, 1, $1.arg);
+       $$.flag = $1.flag;
+     }
+	  |  locale_arg "," arg {
+     if($1.flag == fbflag_default && !$3.arg.exp)
+        { parser_error(&@3, arg, "missing default argument", 0205); YYERROR;}
+     else $1.flag = $3.flag;
+     mp_vector_add(mpool(arg), &$1.args, Arg, $3.arg);
+     $$ = $1;
+   };
+locale_list:
+    locale_arg |
+    {
+       Arg self = {
+         .td = new_type_decl(mpool(arg), insert_symbol("string"), @$),
+         .var_decl = (struct Var_Decl_) { .xid = insert_symbol("self"), .pos = @$ },
+         .exp = NULL
+       };
+       $$.args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+       mp_vector_set($$.args, Arg, 0, self);
+    }
+
 fptr_arg: type_decl_array fptr_arg_decl { $$ = (Arg) { .td = $1, .var_decl = $2 }; }
 fptr_list:
   fptr_arg {
@@ -399,7 +430,10 @@ stmt_pp
   | PP_ENDIF   { $$ = MK_STMT_PP(endif,   $1, @$); }
   | PP_NL      { if(!arg->ppa->lint)return 0; $$ = MK_STMT_PP(nl,      $1, @$); }
   | PP_IMPORT  { $$ = MK_STMT_PP(import, $1, @$); }
-  ;
+  | LOCALE_INI ID exp LOCALE_END { $$ = (struct Stmt_) { .stmt_type = ae_stmt_pp,
+  .d = { .stmt_pp = { .exp = $3, .xid = $2, .pp_type = ae_pp_locale, }}, .pos = @1 }; }
+  | LOCALE_INI ID LOCALE_END { $$ = (struct Stmt_) { .stmt_type = ae_stmt_pp,
+  .d = { .stmt_pp = { .xid = $2, .pp_type = ae_pp_locale, }}, .pos = @1 }; };
 
 stmt
   : exp_stmt
@@ -746,17 +780,29 @@ modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 func_def_base
   : FUNCTION func_base func_args arg_type code_stmt {
     $2->args = $3.args;
-    $2->fbflag |= ($1 | $4 | $3.flag);
+    $2->fbflag |= $4 | $3.flag;
     $$ = new_func_def(mpool(arg), $2, &$5);
   }
   | FUNCTION func_base func_args arg_type ";" {
     if($3.flag == fbflag_default)
     { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
     $2->args = $3.args;
-    $2->fbflag |= ($1 | $4);
+    $2->fbflag |= $4;
     SET_FLAG($2, abstract);
     $$ = new_func_def(mpool(arg), $2, NULL);
-  };
+  }
+  | LOCALE global ID LPAREN locale_list RPAREN code_stmt {
+    Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @3);
+    Func_Base *base = new_func_base(mpool(arg), td, $3, $5.args, $2, @3);
+    base->fbflag |= fbflag_locale | $5.flag;
+    $$ = new_func_def(mpool(arg), base, cpy_stmt3(mpool(arg), &$7));
+  }
+  | LOCALE ID LPAREN locale_list RPAREN code_stmt {
+    Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @2);
+    Func_Base *base = new_func_base(mpool(arg), td, $2, $4.args, ae_flag_none, @2);
+    base->fbflag |= fbflag_locale | $4.flag;
+    $$ = new_func_def(mpool(arg), base, cpy_stmt3(mpool(arg), &$6));
+  }
 
 abstract_fdef
   : FUNCTION flag "abstract" type_decl_empty ID decl_template fptr_args arg_type ";"
@@ -765,7 +811,7 @@ abstract_fdef
       if($6)
         base->tmpl = new_tmpl_base(mpool(arg), $6);
       base->args = $7;
-      base->fbflag |= $1 | $8;
+      base->fbflag |= $8;
       $$ = new_func_def(mpool(arg), base, NULL);
     };
 

@@ -99,7 +99,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment
-%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end import import_end
+%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end import import_end locale_end
 %%
 
 #*\" {
@@ -239,7 +239,9 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 ^{SPACE}*#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
 
-^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; continue; }
+^{SPACE}*"#locale" { adjust(yyscanner); Scanner* scan = yyget_extra(yyscanner); scan->locale = true; return LOCALE_INI; }
+
+^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; Scanner* scan = yyget_extra(yyscanner); if(!scan->locale)continue; scan->locale = false; return LOCALE_END;}
 
 "#!"             { /*YY_USER_ACTION; */ adjust(yyscanner); BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
@@ -247,7 +249,15 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <comment>"!#"    { /*YY_USER_ACTION; */adjust(yyscanner); BEGIN(INITIAL); }
 <comment>.       { adjust(yyscanner); GWYY_COMMENT;  }
 
-"\n"                                { newline(yyscanner); YY_USER_ACTION; continue; }
+"\n"                                {
+  newline(yyscanner);
+  YY_USER_ACTION;
+  Scanner* scan = yyget_extra(yyscanner);
+  if(!scan->locale) continue;
+  scan->locale = false;
+  return LOCALE_END;
+}
+
 ":["                                { adjust(yyscanner); return TMPL;}
 {SPACE}*                             { adjust(yyscanner); continue; }
 {OP}{1}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
@@ -257,8 +267,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 {OP}{4,} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DYNOP; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 ","                                 { adjust(yyscanner); return COMMA;}
-"fun"|"function"                    { adjust(yyscanner); yylval->fbflag = fbflag_none; return FUNCTION;}
-"locale"                            { adjust(yyscanner); yylval->fbflag = fbflag_locale; return FUNCTION;}
+"fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
+"locale"                            { adjust(yyscanner); return LOCALE;}
 "typedef"                           { adjust(yyscanner); return TYPEDEF;}
 "distinct"                          { adjust(yyscanner); return DISTINCT;}
 "funptr"                            { adjust(yyscanner); return FUNPTR;}

@@ -254,6 +254,7 @@ ANN AST_FREE(Enum_Def, enum_def) {
 
 ANN static AST_FREE(Stmt_PP, stmt_pp) {
   if (a->data) xfree(a->data);
+  if (a->exp) free_exp(p, a->exp);
 }
 
 ANN static AST_FREE(Stmt_Defer, stmt_defer) { free_stmt(p, a->stmt); }

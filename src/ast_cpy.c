@@ -334,6 +334,8 @@ ANN static void cpy_stmt_case(MemPool p, const Stmt_Match a, const Stmt_Match sr
 
 ANN static void cpy_stmt_pp(MemPool p NUSED, Stmt_PP a, const Stmt_PP src) {
   if (src->data) a->data = strdup(src->data);
+  if (src->exp) a->exp = cpy_exp(p, src->exp);
+  a->xid = src->xid;
 }
 
 ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
