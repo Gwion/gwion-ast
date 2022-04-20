@@ -224,7 +224,6 @@ typedef struct Exp_Call_ {
   Exp   func;
   Exp   args;
   Tmpl *tmpl;
-  bool apms;
   bool checked;
 } Exp_Call;
 typedef struct {
