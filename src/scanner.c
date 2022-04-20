@@ -47,13 +47,13 @@ ANN static char *get_filename(Scanner *scan, const PPState *ppstate) {
     if (*filename == '@') {
       while (*filename == '@') {
         --i;
-        const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i);
-        filename = ppstate->filename;
+        const PPState *pps = (PPState*)vector_at(&scan->pp->state, i);
+        filename = pps->filename;
       }
     }
   } else {
-    const PPState *ppstate = (PPState*)vector_front(&scan->pp->state);
-    filename = ppstate->filename;
+    const PPState *pps = (PPState*)vector_front(&scan->pp->state);
+    filename = pps->filename;
   }
   return filename;
 }
