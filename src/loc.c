@@ -1,4 +1,4 @@
-#include "prettyerr.h"
+#include "prettyerr_export.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "parser.h"
