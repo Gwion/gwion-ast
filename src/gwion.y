@@ -1092,6 +1092,7 @@ prim_exp
   | "(" exp ")"          { $$ = $2; }
   | "`" ID "`"           { $$ = new_prim_id(     mpool(arg), $2, @$); $$->d.prim.prim_type = ae_prim_locale; }
   | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$2, @1); };
+  | lambda_arg "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $3, @1); };
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }
   | "(" ")"              { $$ = new_prim_nil(    mpool(arg),     @$); }
