@@ -21,6 +21,7 @@ typedef MP_Vector *Var_Decl_List;
 typedef struct Array_Sub_ *    Array_Sub;
 typedef MP_Vector *ID_List;
 typedef MP_Vector *Type_List;
+typedef MP_Vector *Capture_List;
 typedef struct Fptr_Def_ *     Fptr_Def;
 
 typedef struct Type_Decl_ {
@@ -87,6 +88,16 @@ typedef struct {
   Symbol xid;
   struct Exp_Call_* is_call;
 } Exp_Dot;
+
+
+typedef struct Capture {
+  Symbol xid;
+  struct Value_ *v;
+  loc_t pos;
+  uint32_t offset;
+  bool is_ref;
+} Capture;
+
 
 /** a lambda expression. @code \a b { <<< a + b >>>; } @endcode */
 typedef struct {
@@ -257,6 +268,7 @@ typedef struct {
     Stmt       code;
     struct UnaryNew ctor;
   };
+  Capture_List captures;
   enum unary_type unary_type;
 } Exp_Unary;
 
@@ -691,6 +703,7 @@ struct Func_Def_ {
     Stmt  code;
     void *dl_func_ptr;
   } d;
+  Capture_List captures;
   uint16_t stack_depth;
   bool builtin;
 };

@@ -333,6 +333,8 @@ union YYSTYPE
   ParserHandler handler_list;
   Stmt_List stmt_list;
   Arg_List arg_list;
+  Capture capture;
+  Capture_List captures;
   struct ParserArg default_args;
   Arg arg;
   Func_Def func_def;
@@ -351,7 +353,7 @@ union YYSTYPE
   Trait_Def trait_def;
   Ast ast;
 
-#line 355 "include/parser.h"
+#line 357 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

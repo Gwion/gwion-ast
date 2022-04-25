@@ -199,6 +199,15 @@ ANN static void cpy_exp_if(MemPool p, Exp_If *a, const Exp_If *src) {
   if (src->else_exp) a->else_exp = cpy_exp(p, src->else_exp);
 }
 
+ANN static MP_Vector *cpy_captures(MemPool p, const Capture_List src) {
+  Capture_List a = new_mp_vector(p, sizeof(Capture), src->len);
+  for(uint32_t i = 0; i < src->len; i++) {
+    Capture capture = *mp_vector_at(src, Capture, i);
+    mp_vector_set(a, Capture, i, capture);
+  }
+  return a;
+}
+
 // TODO check me
 ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
   a->op = src->op;
@@ -215,6 +224,8 @@ ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
     a->code = cpy_stmt(p, src->code);
     break;
   }
+  if(src->captures)
+    a->captures = cpy_captures(p, src->captures);
 }
 
 ANN Exp cpy_exp(MemPool p, const Exp src) {
@@ -508,6 +519,7 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
     if(!src->builtin) a->d.code = cpy_stmt(p, src->d.code);
     else a->d.dl_func_ptr = src->d.dl_func_ptr;
   }
+  if (src->captures) a->captures = cpy_captures(p, src->captures);
   //  a->trait = src->trait;
   a->builtin = src->builtin;
   return a;

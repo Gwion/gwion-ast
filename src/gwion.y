@@ -52,6 +52,8 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   ParserHandler handler_list;
   Stmt_List stmt_list;
   Arg_List arg_list;
+  Capture capture;
+  Capture_List captures;
   struct ParserArg default_args;
   Arg arg;
   Func_Def func_def;
@@ -128,6 +130,8 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<arg> fptr_arg
 %type<arg_list> lambda_arg lambda_list fptr_list fptr_args
 %type<default_args> arg arg_list func_args locale_arg locale_list
+%type<capture> capture
+%type<captures> captures _captures
 %type<func_def> func_def op_def func_def_base abstract_fdef
 %type<func_base> func_base fptr_base op_base
 %type<enum_def> enum_def
@@ -998,17 +1002,21 @@ cast_exp: unary_exp | cast_exp "$" type_decl_empty
     { $$ = new_exp_cast(mpool(arg), $3, $1, @$); };
 
 unary_op : "-" %prec UMINUS | "*" %prec UTIMES | post_op
-  | "!" | "spork" | "fork" | "~"
+  | "!" | "~"
   ;
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
+  | "spork" captures unary_exp { $$ = new_exp_unary(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; }
+  | "fork" captures unary_exp { $$ = new_exp_unary(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; }
   | "new" type_decl_exp "(" opt_exp ")" {
        $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
   }
   | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
   | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @$); };
-  | "fork"  code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @$); };
+  | "fork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @$); };
+  | "spork" captures code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$3, @1); $$->d.exp_unary.captures = $2; };
+  | "fork"  captures code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$3, @1); $$->d.exp_unary.captures = $2; };
   | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @2); };
 
 lambda_list:
@@ -1078,6 +1086,11 @@ interp: INTERP_START interp_exp { $$ = $2; }
   $1->next = $3;
 }
 
+capture: ID { $$ = (Capture){ .xid = $1, .pos = @1 };} | "&" ID { $$ = (Capture){ .xid = $2, .is_ref = true, .pos = @2 }; };
+
+_captures: capture { $$ = new_mp_vector(mpool(arg), sizeof(Capture), 1); mp_vector_set($$, Capture, 0, $1); }
+        | _captures capture { mp_vector_add(mpool(arg), &$1, Capture, $2); $$ = $1; }
+captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
 prim_exp
   : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
   | NUM                  { $$ = new_prim_int(    mpool(arg), $1, @$); }
@@ -1091,8 +1104,8 @@ prim_exp
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
   | "(" exp ")"          { $$ = $2; }
   | "`" ID "`"           { $$ = new_prim_id(     mpool(arg), $2, @$); $$->d.prim.prim_type = ae_prim_locale; }
-  | lambda_arg code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$2, @1); };
-  | lambda_arg "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $3, @1); };
+  | lambda_arg captures code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$3, @1); $$->d.exp_lambda.def->captures = $2;};
+  | lambda_arg captures "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $4, @1); $$->d.exp_lambda.def->captures = $2;};
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" ID         { $$ = new_prim_perform(mpool(arg), $2, @2); }
   | "(" ")"              { $$ = new_prim_nil(    mpool(arg),     @$); }
