@@ -1007,8 +1007,8 @@ unary_op : "-" %prec UMINUS | "*" %prec UTIMES | post_op
 
 unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
-  | "spork" captures unary_exp { $$ = new_exp_unary(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; }
-  | "fork" captures unary_exp { $$ = new_exp_unary(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; }
+  | "spork" unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @1); }
+  | "fork" unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @1); }
   | "new" type_decl_exp "(" opt_exp ")" {
        $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
   }
