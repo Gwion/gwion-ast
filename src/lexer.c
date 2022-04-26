@@ -4282,7 +4282,7 @@ static m_bool handle_rpar(void* data) {
 
 static void handle_char(void* data, m_str str) {
   const Scanner *scan = yyget_extra(data);
-  while(isspace(*str))++str;
+//  while(isspace(*str))++str;
   text_add(&scan->pp->entry->args->text, str);
 }
 
