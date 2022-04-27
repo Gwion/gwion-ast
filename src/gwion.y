@@ -1013,8 +1013,8 @@ unary_exp : post_exp
        $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
   }
   | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
-  | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @$); };
-  | "fork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @$); };
+  | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @1); };
+  | "fork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @1); };
   | "spork" captures code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$3, @1); $$->d.exp_unary.captures = $2; };
   | "fork"  captures code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$3, @1); $$->d.exp_unary.captures = $2; };
   | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @2); };

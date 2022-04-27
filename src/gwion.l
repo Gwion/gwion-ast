@@ -212,8 +212,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 ^{SPACE}*#endif{SPACE}*\n { newline(yyscanner); YY_USER_ACTION; GWYY_ENDIF; BEGIN(INITIAL); }
 
 <skip>\n      { newline(yyscanner); YY_USER_ACTION; }
-<skip>^{SPACE}*#else{SPACE}*\n { adjust(yyscanner); BEGIN(macro_toggle(yyscanner)); }
-<skip>^{SPACE}*#endif{SPACE}*\n { adjust(yyscanner); macro_end(yyscanner); BEGIN(INITIAL); }
+<skip>^{SPACE}*#else{SPACE}*\n { adjust(yyscanner); newline(yyscanner); BEGIN(macro_toggle(yyscanner)); }
+<skip>^{SPACE}*#endif{SPACE}*\n { adjust(yyscanner); newline(yyscanner); macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.*         { adjust(yyscanner); continue;}
 
 <include_end>{SPACE}*\n {
@@ -221,6 +221,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   Scanner *s = yyget_extra(yyscanner);
   PPState *pps = (PPState*)vector_back(&s->pp->state);
   BEGIN(INITIAL);
+  newline(yyscanner);
   yylval->sval = strdup(pps->filename);
   return PP_INCLUDE;
 }
@@ -234,7 +235,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
 
 <import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
-<import_end>.*\n   { adjust(yyscanner); newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
+<import_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
 ^{SPACE}*#import{SPACE}+ { adjust(yyscanner); BEGIN(import); }
 
 ^{SPACE}*#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
