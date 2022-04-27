@@ -561,6 +561,11 @@ ANEW     AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_ *,
                  const loc_t);
 ANN void free_enum_def(MemPool p, Enum_Def);
 
+typedef struct Upvalues {
+  Scope           values;
+  struct Upvalues *parent;
+} Upvalues;
+
 typedef struct Func_Base_ {
   Type_Decl *     td;
   struct Symbol_ *xid;
@@ -568,7 +573,7 @@ typedef struct Func_Base_ {
   struct Func_ *  func;
   struct Type_ *  ret_type;
   Tmpl *          tmpl;
-  Scope           values;
+  Upvalues       *values;
   struct Vector_  effects;
   ae_flag         flag;
   enum fbflag     fbflag;

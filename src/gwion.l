@@ -160,8 +160,9 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   if(ret) {
     BEGIN(INITIAL);
     GWYY_CALL
-  }
+  } else yymore();
 }
+<get_arg>\n   { newline(yyscanner); handle_char(yyscanner, "\n"); }
 <get_arg>.   { adjust(yyscanner); handle_char(yyscanner, yytext); }
 
 ^{SPACE}*#define{SPACE}+{LEX_ID} {
@@ -943,6 +944,7 @@ int yywrap(void* data) {
 static m_bool handle_comma(void* data) {
   const Scanner *scan = yyget_extra(data);
   const MacroArg a = scan->pp->entry->args;
+  if(scan->pp->npar > 1) { handle_char(data, ","); return GW_OK;}
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next)) {
       loc_t *loc = yyget_lloc(data);
@@ -959,7 +961,7 @@ static m_bool handle_comma(void* data) {
 
 static void handle_lpar(void* data) {
   const Scanner *scan = yyget_extra(data);
-  ++scan->pp->npar;
+  if(++scan->pp->npar > 1) handle_char(data, "(");
 }
 
 static m_bool handle_rpar(void* data) {
@@ -970,6 +972,7 @@ static m_bool handle_rpar(void* data) {
   }
   if(--scan->pp->npar)
     return 0;
+  if(scan->pp->npar > 1) { handle_char(data, ")"); return 0;}
   if(scan->pp->entry->args->next) {
     PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
     loc_t loc = ppstate->pos;
