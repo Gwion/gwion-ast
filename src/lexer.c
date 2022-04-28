@@ -4246,7 +4246,6 @@ int yywrap(void* data) {
 static m_bool handle_comma(void* data) {
   const Scanner *scan = yyget_extra(data);
   const MacroArg a = scan->pp->entry->args;
-printf("handle comma %u\n", scan->pp->npar);
   if(scan->pp->npar > 1) { handle_char(data, ","); return GW_OK;}
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next)) {
@@ -4264,7 +4263,6 @@ printf("handle comma %u\n", scan->pp->npar);
 
 static void handle_lpar(void* data) {
   const Scanner *scan = yyget_extra(data);
-//  ++scan->pp->npar;
   if(++scan->pp->npar > 1) handle_char(data, "(");
 }
 

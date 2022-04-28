@@ -92,7 +92,8 @@ typedef struct {
 
 typedef struct Capture {
   Symbol xid;
-  struct Value_ *v;
+  struct Value_ *orig;
+  struct Value_ *new;
   loc_t pos;
   uint32_t offset;
   bool is_ref;
