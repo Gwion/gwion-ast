@@ -352,11 +352,11 @@ type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
   $$ = $1; }
 
 arg
-  : type_decl_array arg_decl ":" binary_exp {
+  : type_decl_empty arg_decl ":" binary_exp {
     $$.arg = (Arg) { .td =  $1, .var_decl = $2, .exp = $4 };
     $$.flag = fbflag_default;
   }
-  | type_decl_array arg_decl {
+  | type_decl_empty arg_decl {
     $$.arg = (Arg) { .td =  $1, .var_decl = $2};
     $$.flag = fbflag_none;
   };
