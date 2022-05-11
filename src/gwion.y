@@ -86,7 +86,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   OPERATOR "operator"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
-  BACKSLASH "\\" BACKTICK "`" OPID_A LOCALE LOCALE_INI LOCALE_END
+  BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
   LATE "late"
 
 %token<lval> NUM "<integer>"
@@ -105,7 +105,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   AND "&&" EQ "==" GE ">=" GT ">" LE "<=" LT "<"
   NEQ "!=" SHIFT_LEFT "<<" SHIFT_RIGHT ">>" S_AND "&" S_OR "|" S_XOR "^" OR "||"
   TMPL ":["
-  TILDA "~" EXCLAMATION "!" AROBASE "@" DYNOP "<dynamic_operator>"
+  TILDA "~" EXCLAMATION "!" AROBASE "@" DYNOP "<dynamic_operator>" LOCALE_EXP "`foo`"
 %type<uval> option
 %type<flag> flag final modifier operator class_flag
   global storage_flag access_flag type_decl_flag type_decl_flag2
@@ -1103,7 +1103,12 @@ prim_exp
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
   | "(" exp ")"          { $$ = $2; }
-  | "`" ID "`"           { $$ = new_prim_id(     mpool(arg), $2, @$); $$->d.prim.prim_type = ae_prim_locale; }
+  | LOCALE_EXP           {
+    const loc_t loc = { .first = { .line = @1.first.line, .column = @1.first.column - 1},
+                        .last = { .line = @1.last.line, .column = @1.last.column - 1}};
+    $$ = new_prim_id(mpool(arg), $1, loc);
+    $$->d.prim.prim_type = ae_prim_locale;
+  }
   | lambda_arg captures code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$3, @1); $$->d.exp_lambda.def->captures = $2;};
   | lambda_arg captures "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $4, @1); $$->d.exp_lambda.def->captures = $2;};
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }

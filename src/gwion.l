@@ -282,7 +282,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 "\\\n"                                { adjust(yyscanner); continue; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
-"`"                                 { adjust(yyscanner); return BACKTICK; }
+"`".*"`"                            { adjust(yyscanner); yytext[yyleng-1] = '\0'; yylval->sym = alloc_sym(yyscanner, yytext + 1); return LOCALE_EXP; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
