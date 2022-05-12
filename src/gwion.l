@@ -280,9 +280,9 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "fork"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }
 "union"                             { adjust(yyscanner); return UNION; }
 
-"\\\n"                                { adjust(yyscanner); continue; }
+"\\\n"                              { adjust(yyscanner); continue; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
-"`".*"`"                            { adjust(yyscanner); yytext[yyleng-1] = '\0'; yylval->sym = alloc_sym(yyscanner, yytext + 1); return LOCALE_EXP; }
+`[^`]*`                             { adjust(yyscanner); yytext[yyleng-1] = '\0'; yylval->sym = alloc_sym(yyscanner, yytext + 1); return LOCALE_EXP; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
