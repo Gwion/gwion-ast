@@ -15,7 +15,7 @@ endif
 endif
 
 obj    := $(src:.c=.o)
-obj += src/lexer.c src/parser.c
+obj += src/lexer.o src/parser.o
 
 CFLAGS += -Iinclude -D_GNU_SOURCE
 
