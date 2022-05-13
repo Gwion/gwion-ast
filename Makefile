@@ -15,6 +15,7 @@ endif
 endif
 
 obj    := $(src:.c=.o)
+obj += src/lexer.c src/parser.c
 
 CFLAGS += -Iinclude -D_GNU_SOURCE
 
@@ -23,7 +24,7 @@ ifeq ($(shell uname), Linux)
 -DYYENABLE_NLS=1 -DENABLE_NLS
 endif
 
-all: options-show generated libgwion_ast.a
+all: options-show libgwion_ast.a
 
 options-show:
 	@$(call _options)
@@ -31,10 +32,6 @@ options-show:
 libgwion_ast.a: ${obj}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
-
-.PHONY: generated
-generated: src/lexer.c src/parser.c
-	@export obj="$obj src/lexer.c src/parser.c"
 
 include/lexer.h src/lexer.c: src/gwion.l
 	$(info generating lexer)
