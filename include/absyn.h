@@ -589,8 +589,7 @@ AST_NEW(Func_Base *, func_base, Type_Decl *, const Symbol, const Arg_List,
 
 struct Fptr_Def_ {
   Func_Base *    base;
-  struct Type_ * type;
-  struct Value_ *value;
+  Class_Def cdef;
 };
 ANEW ANN AST_NEW(Fptr_Def, fptr_def, Func_Base *);
 ANN void free_fptr_def(MemPool p, Fptr_Def);
