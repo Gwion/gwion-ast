@@ -57,7 +57,7 @@ ANN /*static */ Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
 }
 
 ANN static Var_Decl_List cpy_var_decl_list(MemPool p, const Var_Decl_List src) {
-  Var_Decl_List a = new_mp_vector(p, sizeof(struct Var_Decl_), src->len);
+  Var_Decl_List a = new_mp_vector(p, struct Var_Decl_, src->len);
   for(uint32_t i = 0; i < src->len; i ++) {
     Var_Decl src_vd = mp_vector_at(src, struct Var_Decl_, i);
     Var_Decl tgt_vd = mp_vector_at(a, struct Var_Decl_, i);
@@ -81,7 +81,7 @@ ANN Type_Decl *cpy_type_decl(MemPool p, const Type_Decl *src) {
 }
 
 ANN ID_List cpy_id_list(MemPool p, const ID_List src) {
-  ID_List a = new_mp_vector(p, sizeof(Symbol), src->len);
+  ID_List a = new_mp_vector(p, Symbol, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
     Symbol sym = *mp_vector_at(src, Symbol, i);
     mp_vector_set(a, Symbol, i, sym);
@@ -91,7 +91,7 @@ ANN ID_List cpy_id_list(MemPool p, const ID_List src) {
 
 ANN Specialized_List cpy_specialized_list(MemPool                p,
                                           const Specialized_List src) {
-  Specialized_List tgt = new_mp_vector(p, sizeof(Specialized), src->len);
+  Specialized_List tgt = new_mp_vector(p, Specialized, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
     Specialized *_src = mp_vector_at(src, Specialized, i);
     Specialized *_tgt = mp_vector_at(tgt, Specialized, i);
@@ -103,7 +103,7 @@ ANN Specialized_List cpy_specialized_list(MemPool                p,
 }
 
 ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
-  Type_List a = new_mp_vector(p, sizeof(Type_Decl*), src->len);
+  Type_List a = new_mp_vector(p, Type_Decl*, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
     Type_Decl *_src = *mp_vector_at(src, Type_Decl*, i);
     mp_vector_set(a, Type_Decl*, i, cpy_type_decl(p, _src));
@@ -112,7 +112,7 @@ ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
 }
 
 ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
-  Arg_List arg = new_mp_vector(p, sizeof(Arg), src->len);
+  Arg_List arg = new_mp_vector(p, Arg, src->len);
   for(m_uint i = 0; i < src->len; i++) {
     Arg *_src = mp_vector_at(src, Arg, i);
     Arg *_arg = mp_vector_at(arg, Arg, i);
@@ -202,7 +202,7 @@ ANN static void cpy_exp_if(MemPool p, Exp_If *a, const Exp_If *src) {
 }
 
 ANN static MP_Vector *cpy_captures(MemPool p, const Capture_List src) {
-  Capture_List a = new_mp_vector(p, sizeof(Capture), src->len);
+  Capture_List a = new_mp_vector(p, Capture, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
     Capture capture = *mp_vector_at(src, Capture, i);
     mp_vector_set(a, Capture, i, capture);
@@ -353,7 +353,7 @@ ANN static void cpy_stmt_pp(MemPool p NUSED, Stmt_PP a, const Stmt_PP src) {
 
 ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
-  Stmt_List a = new_mp_vector(p, sizeof(struct Stmt_), sz);
+  Stmt_List a = new_mp_vector(p, struct Stmt_, sz);
   for(m_uint i = 0; i < sz; i++) {
     const Stmt a_stmt   = mp_vector_at(a, struct Stmt_, i);
     const Stmt src_stmt = mp_vector_at(src, struct Stmt_, i);
@@ -363,7 +363,7 @@ ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
 }
 
 ANN static Handler_List cpy_handler_list(MemPool p, const Handler_List src) {
-  Handler_List tgt = new_mp_vector(p, sizeof(Handler), src->len);
+  Handler_List tgt = new_mp_vector(p, Handler, src->len);
   for(m_uint i = 0; i < src->len; i++) {
     Handler *src_handler = mp_vector_at(src, Handler, i);
     Handler *tgt_handler = mp_vector_at(tgt, Handler, i);
@@ -434,7 +434,7 @@ ANN static void cpy_union_member(MemPool p, Union_Member *a, Union_Member *src) 
 }
 
 ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
-  Union_List a = new_mp_vector(p, sizeof(Union_Member), src->len);
+  Union_List a = new_mp_vector(p, Union_Member, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
     Union_Member *_src = mp_vector_at(src, Union_Member, i);
     Union_Member *_tgt = mp_vector_at(a, Union_Member, i);
@@ -529,7 +529,7 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
 
 ANN Stmt_List cpy_stmt_list(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
-  Stmt_List a = new_mp_vector(p, sizeof(struct Stmt_), sz);
+  Stmt_List a = new_mp_vector(p, struct Stmt_, sz);
   for(m_uint i = 0; i < sz; i++) {
     const Stmt astmt = mp_vector_at(a, struct Stmt_, i);
     const Stmt sstmt = mp_vector_at(src, struct Stmt_, i);
@@ -604,7 +604,7 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
 }
 
 ANN Ast cpy_ast(MemPool p, Ast src) {
-  Ast a = new_mp_vector(p, sizeof(Section), src->len);
+  Ast a = new_mp_vector(p, Section, src->len);
   for(m_uint i = 0; i < src->len; i++) {
     Section * asec = mp_vector_at(a, Section, i);
     Section * ssec = mp_vector_at(src, Section, i);

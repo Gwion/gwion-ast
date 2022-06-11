@@ -181,7 +181,7 @@ prg: ast { arg->ppa->ast = $$ = $1; }
 
 ast
   : section {
-    $$ = new_mp_vector(mpool(arg), sizeof(Section), 1);
+    $$ = new_mp_vector(mpool(arg), Section, 1);
     mp_vector_set($$, Section, 0, $1);
   }
   | ast section {
@@ -225,7 +225,7 @@ trait_stmt: exp_stmt {
     $$ = $1;
   } | stmt_pp;
 trait_stmt_list: trait_stmt  {
-  $$ = new_mp_vector(mpool(arg), sizeof(struct Stmt_), 1);
+  $$ = new_mp_vector(mpool(arg), struct Stmt_, 1);
   mp_vector_set($$, struct Stmt_, 0, $1);
 } |
   trait_stmt_list trait_stmt {
@@ -240,7 +240,7 @@ trait_section
 
 trait_ast
   : trait_section {
-    $$ = new_mp_vector(mpool(arg), sizeof(Section), 1);
+    $$ = new_mp_vector(mpool(arg), Section, 1);
     mp_vector_set($$, Section, 0, $1);
   }
   | trait_ast trait_section {
@@ -264,7 +264,7 @@ class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
 traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
 extend_body
   : func_def {
-    $$ = new_mp_vector(mpool(arg), sizeof(Section), 1);
+    $$ = new_mp_vector(mpool(arg), Section, 1);
     mp_vector_set($$, Section, 0, MK_SECTION(func, func_def, $1));
   }
   | extend_body func_def {
@@ -282,7 +282,7 @@ class_body : ast | { $$ = NULL; };
 
 id_list: ID
   {
-    $$ = new_mp_vector(mpool(arg), sizeof(Symbol), 1);
+    $$ = new_mp_vector(mpool(arg), Symbol, 1);
     mp_vector_set($$, Symbol, 0, $1);
   }
        | id_list "," ID
@@ -292,7 +292,7 @@ id_list: ID
   };
 
 specialized_list: ID traits {
-    $$ = new_mp_vector(mpool(arg), sizeof(Specialized), 1);
+    $$ = new_mp_vector(mpool(arg), Specialized, 1);
     mp_vector_set($$, Specialized, 0, ((Specialized) {
         .xid = $1,
         .traits = $2,
@@ -306,7 +306,7 @@ specialized_list: ID traits {
   };
 
 stmt_list: stmt {
-  $$ = new_mp_vector(mpool(arg), sizeof(struct Stmt_), 1);
+  $$ = new_mp_vector(mpool(arg), struct Stmt_, 1);
   mp_vector_set($$, struct Stmt_, 0, $1);
 } |
   stmt_list stmt {
@@ -362,7 +362,7 @@ arg
   };
 arg_list:
      arg {
-       $$.args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+       $$.args = new_mp_vector(mpool(arg), Arg, 1);
        mp_vector_set($$.args, Arg, 0, $1.arg);
        $$.flag = $1.flag;
      }
@@ -376,7 +376,7 @@ arg_list:
 
 locale_arg:
     arg {
-       $$.args = new_mp_vector(mpool(arg), sizeof(Arg), 2);
+       $$.args = new_mp_vector(mpool(arg), Arg, 2);
        Arg self = {
          .td = new_type_decl(mpool(arg), insert_symbol("string"), @$),
          .var_decl = (struct Var_Decl_) { .xid = insert_symbol("self"), .pos = @$ },
@@ -401,14 +401,14 @@ locale_list:
          .var_decl = (struct Var_Decl_) { .xid = insert_symbol("self"), .pos = @$ },
          .exp = NULL
        };
-       $$.args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+       $$.args = new_mp_vector(mpool(arg), Arg, 1);
        mp_vector_set($$.args, Arg, 0, self);
     }
 
 fptr_arg: type_decl_array fptr_arg_decl { $$ = (Arg) { .td = $1, .var_decl = $2 }; }
 fptr_list:
   fptr_arg {
-    $$ = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+    $$ = new_mp_vector(mpool(arg), Arg, 1);
     mp_vector_set($$, Arg, 0, $1);
   }
   | fptr_list "," fptr_arg {
@@ -460,7 +460,7 @@ retry_stmt: "retry" ";" {
 };
 handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .xid = $3, .stmt = cpy_stmt3(mpool(arg), &$4), .pos = $3 ? @3 :@1}; arg->handling = false; };
 handler_list: handler {
-    $$.handlers = new_mp_vector(mpool(arg), sizeof(Handler), 1);
+    $$.handlers = new_mp_vector(mpool(arg), Handler, 1);
     mp_vector_set($$.handlers, Handler, 0, $1);
     $$.has_xid = !!$1.xid;
   }
@@ -509,7 +509,7 @@ match_case_stmt
 };
 
 match_list: match_case_stmt {
-  $$ = new_mp_vector(mpool(arg), sizeof(struct Stmt_), 1);
+  $$ = new_mp_vector(mpool(arg), struct Stmt_, 1);
   mp_vector_set($$, struct Stmt_, 0, $1);
 } |
   match_list match_case_stmt {
@@ -825,7 +825,7 @@ op_base
     {
       if($5.flag == fbflag_default || $7.flag == fbflag_default)
       { parser_error(&@2, arg, "default arguments not allowed in binary operators", 0210); YYERROR; };
-      MP_Vector *args = new_mp_vector(mpool(arg), sizeof(Arg), 2);
+      MP_Vector *args = new_mp_vector(mpool(arg), Arg, 2);
       *(Arg*)args->ptr = $5.arg;
       *(Arg*)(args->ptr + sizeof(Arg)) = $7.arg;
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
@@ -835,7 +835,7 @@ op_base
     {
       if($5.flag == fbflag_default)
       { parser_error(&@2, arg, "default arguments not allowed in postfix operators", 0210); YYERROR; };
-      Arg_List args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+      Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
       mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
@@ -844,7 +844,7 @@ op_base
     {
       if($5.flag == fbflag_default)
       { parser_error(&@2, arg, "default arguments not allowed in unary operators", 0210); YYERROR; };
-      Arg_List args = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+      Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
       mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
@@ -936,7 +936,7 @@ union_decl:
 | type_decl_empty ID array_empty ";" { $$ = (Union_Member) { .td = $1, .vd = { .xid =$2, .array = $3, .pos = @2 }  };};
 
 union_list: union_decl {
-    $$ = new_mp_vector(mpool(arg), sizeof(Union_Member), 1);
+    $$ = new_mp_vector(mpool(arg), Union_Member, 1);
     mp_vector_set($$, Union_Member, 0, $1);
   }
   | union_list union_decl {
@@ -960,7 +960,7 @@ var_decl_list
      $$ = $1;
   }
   | var_decl {
-     $$ = new_mp_vector(mpool(arg), sizeof(struct Var_Decl_), 1);
+     $$ = new_mp_vector(mpool(arg), struct Var_Decl_, 1);
      mp_vector_set($$, struct Var_Decl_, 0, $1);
   }
   ;
@@ -1022,7 +1022,7 @@ unary_exp : post_exp
 lambda_list:
  ID {
   Arg a = (Arg) { .var_decl = { .xid = $1, .pos = @1 } };
-    $$ = new_mp_vector(mpool(arg), sizeof(Arg), 1);
+    $$ = new_mp_vector(mpool(arg), Arg, 1);
     mp_vector_set($$, Arg, 0, a);
 }
 |    lambda_list ID {
@@ -1034,7 +1034,7 @@ lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 type_list
   : type_decl_empty {
-    $$ = new_mp_vector(mpool(arg), sizeof(Type_Decl*), 1);
+    $$ = new_mp_vector(mpool(arg), Type_Decl*, 1);
     mp_vector_set($$, Type_Decl*, 0, $1);
   }
   | type_list "," type_decl_empty {
@@ -1088,7 +1088,7 @@ interp: INTERP_START interp_exp { $$ = $2; }
 
 capture: ID { $$ = (Capture){ .xid = $1, .pos = @1 };} | "&" ID { $$ = (Capture){ .xid = $2, .is_ref = true, .pos = @2 }; };
 
-_captures: capture { $$ = new_mp_vector(mpool(arg), sizeof(Capture), 1); mp_vector_set($$, Capture, 0, $1); }
+_captures: capture { $$ = new_mp_vector(mpool(arg), Capture, 1); mp_vector_set($$, Capture, 0, $1); }
         | _captures capture { mp_vector_add(mpool(arg), &$1, Capture, $2); $$ = $1; }
 captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
 prim_exp

@@ -29,7 +29,7 @@ ANN AST_FREE(Var_Decl_List, var_decl_list) {
     Var_Decl vd = mp_vector_at(a, struct Var_Decl_, i);
     free_var_decl2(p, vd);
   }
-  free_mp_vector(p, sizeof(struct Var_Decl_), a);
+  free_mp_vector(p, struct Var_Decl_, a);
 }
 
 ANN AST_FREE(Exp_Lambda *, exp_lambda) { free_func_def(p, a->def); }
@@ -45,7 +45,7 @@ ANN AST_FREE(Exp_Slice *, exp_slice) {
 }
 
 AST_FREE(ID_List, id_list) {
-  free_mp_vector(p, sizeof(ID_List), a);
+  free_mp_vector(p, ID_List, a);
 }
 
 AST_FREE(Specialized_List, specialized_list) {
@@ -53,7 +53,7 @@ AST_FREE(Specialized_List, specialized_list) {
     Specialized *spec = mp_vector_at(a, Specialized, i);
     if (spec->traits) free_id_list(p, spec->traits);
   }
-  free_mp_vector(p, sizeof(Specialized), a);
+  free_mp_vector(p, Specialized, a);
 }
 
 AST_FREE(Type_Decl *, type_decl) {
@@ -96,7 +96,7 @@ free_exp(p, a->exp);
  free_stmt(p, a->code);
     break;
   }
-  if (a->captures) free_mp_vector(p, sizeof(Capture), a->captures);
+  if (a->captures) free_mp_vector(p, Capture, a->captures);
 }
 
 ANN static AST_FREE(Exp_If *, exp_if) {
@@ -121,7 +121,7 @@ ANN AST_FREE(Func_Base *, func_base) {
 AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
   if (!a->builtin && a->d.code) free_stmt(p, a->d.code);
-  if (a->captures) free_mp_vector(p, sizeof(Capture), a->captures);
+  if (a->captures) free_mp_vector(p, Capture, a->captures);
   mp_free(p, Func_Def, a);
 }
 
@@ -220,7 +220,7 @@ ANN static AST_FREE(struct Stmt_Match_ *, stmt_match) {
     const Stmt stmt = mp_vector_at(a->list, struct Stmt_, i);
     free_stmt_case(p, &stmt->d.stmt_match);
   }
-  free_mp_vector(p, sizeof(struct Stmt_), a->list);
+  free_mp_vector(p, struct Stmt_, a->list);
   if (a->where) free_stmt(p, a->where);
 }
 
@@ -266,7 +266,7 @@ ANN AST_FREE(Union_List, union_list) {
     Union_Member *tgt = mp_vector_at(a, Union_Member, i);
     free_type_decl(p, tgt->td);
   }
-  free_mp_vector(p, sizeof(Union_Member), a);
+  free_mp_vector(p, Union_Member, a);
 }
 
 ANN AST_FREE(Union_Def, union_def) {
@@ -296,7 +296,7 @@ AST_FREE(Stmt_List, stmt_list) {
     const Stmt stmt = mp_vector_at(a, struct Stmt_, i);
     free_stmt2(p, stmt);
   }
-  free_mp_vector(p, sizeof(struct Stmt_), a);
+  free_mp_vector(p, struct Stmt_, a);
 }
 
 AST_FREE(Extend_Def, extend_def) {
@@ -346,7 +346,7 @@ AST_FREE(Type_List, type_list) {
     Type_Decl *td = *mp_vector_at(a, Type_Decl*, i);
     free_type_decl(p, td);
   }
-  free_mp_vector(p, sizeof(Type_Decl*), a);
+  free_mp_vector(p, Type_Decl*, a);
 }
 
 AST_FREE(Ast, ast) {
@@ -354,5 +354,5 @@ AST_FREE(Ast, ast) {
     Section *section = mp_vector_at(a, Section, i);
     free_section(p, section);
   }
-  free_mp_vector(p, sizeof(Section), a);
+  free_mp_vector(p, Section, a);
 }

@@ -61,7 +61,7 @@ AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
   Exp        a    = new_exp(p, ae_exp_lambda, pos);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, pos);
   base->fbflag |= fbflag_lambda;
-  Stmt_List slist = new_mp_vector(p, sizeof(struct Stmt_), 1);
+  Stmt_List slist = new_mp_vector(p, struct Stmt_, 1);
   struct Stmt_ stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .pos = pos };
   mp_vector_set(slist, struct Stmt_, 0, stmt);
   Stmt code = new_stmt_code(p, slist, pos);
