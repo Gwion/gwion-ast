@@ -230,7 +230,7 @@ ANN ANEW AST_NEW(Tmpl *, tmpl_call, Type_List);
 ANN void free_tmpl(MemPool p, Tmpl *);
 
 static inline bool tmpl_base(const Tmpl *a) {
-  if (a && a->base == -1) return true;
+  if (a && !a->call) return true;
   return false;
 }
 
