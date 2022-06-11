@@ -106,8 +106,8 @@ ANN static AST_FREE(Exp_If *, exp_if) {
 }
 
 AST_FREE(Tmpl *, tmpl) {
-  if (a->base == -1) free_specialized_list(p, a->list);
-  if (a->call) free_type_list(p, a->call);
+  if (!a->call) free_specialized_list(p, a->list);
+  else free_type_list(p, a->call);
   mp_free(p, Tmpl, a);
 }
 

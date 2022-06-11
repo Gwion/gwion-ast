@@ -162,10 +162,12 @@ ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
 
 ANN Tmpl *cpy_tmpl(MemPool p, const Tmpl *src) {
   Tmpl *a = mp_calloc(p, Tmpl);
-  a->base = src->base;
-  a->list = (a->base == -1 && src->list) ? cpy_specialized_list(p, src->list)
-                                         : src->list;
-  if (src->call) a->call = cpy_type_list(p, src->call);
+  if (!src->call)
+    a->list = cpy_specialized_list(p, src->list);
+  else {
+    a->list = src->list;
+    a->call = cpy_type_list(p, src->call);
+  }
   return a;
 }
 
@@ -398,7 +400,7 @@ ANN Func_Base *cpy_func_base(MemPool p, const Func_Base *src) {
   a->xid = src->xid;                     // 1
   if (src->args) a->args = cpy_arg_list(p, src->args); // 1
   if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl); // 1
-                                      //  if(src->effects.ptr)
+  //  if(src->effects.ptr)
   //    vector_copy2((Vector)&src->effects, &a->effects);
   a->flag   = src->flag;
   a->fbflag = src->fbflag;
