@@ -465,20 +465,19 @@ AST_NEW(Stmt, stmt_defer, const Stmt stmt, const struct loc_t_ pos) {
     a->d.name       = name;                                                    \
     return a;                                                                  \
   }
-mk_section(Stmt_List, stmt_list, stmt) mk_section(Func_Def, func_def, func)
-    mk_section(Class_Def, class_def, class)
-        mk_section(Trait_Def, trait_def, trait)
-            mk_section(Extend_Def, extend_def, extend)
-                mk_section(Enum_Def, enum_def, enum)
-                    mk_section(Union_Def, union_def, union)
-                        mk_section(Fptr_Def, fptr_def, fptr)
-                            mk_section(Type_Def, type_def, type)
+mk_section(Stmt_List, stmt_list, stmt) mk_section(Func_Def, func_def, func);
+mk_section(Class_Def, class_def, class);
+mk_section(Trait_Def, trait_def, trait);
+mk_section(Extend_Def, extend_def, extend);
+mk_section(Enum_Def, enum_def, enum);
+mk_section(Union_Def, union_def, union);
+mk_section(Fptr_Def, fptr_def, fptr);
+mk_section(Type_Def, type_def, type);
 
-                                AST_NEW(Extend_Def, extend_def,
-                                        Type_Decl *const td, const Ast body) {
+AST_NEW(Extend_Def, extend_def, Type_Decl *const td, const ID_List trait) {
   Extend_Def a = mp_calloc(p, Class_Def);
   a->td        = td;
-  a->body      = body;
+  a->traits    = trait;
   return a;
 }
 

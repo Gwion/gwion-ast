@@ -585,9 +585,7 @@ ANN static void cpy_section(MemPool p, Section *const a, const Section *src) {
 
 ANN Extend_Def cpy_extend_def(MemPool p, const Extend_Def src) {
   Extend_Def a = mp_calloc(p, Extend_Def);
-  a->body = cpy_ast(p, src->body);
-  //  if(src->traits)
-  //    a->traits = cpy_id_list(p, src->traits);
+  a->traits = cpy_id_list(p, src->traits);
   a->td = cpy_type_decl(p, src->td);
   return a;
 }

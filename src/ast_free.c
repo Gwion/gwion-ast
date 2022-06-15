@@ -300,7 +300,6 @@ AST_FREE(Stmt_List, stmt_list) {
 }
 
 AST_FREE(Extend_Def, extend_def) {
-  free_ast(p, a->body);
   free_type_decl(p, a->td);
   mp_free(p, Extend_Def, a);
 }

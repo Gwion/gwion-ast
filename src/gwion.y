@@ -108,7 +108,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   TILDA "~" EXCLAMATION "!" AROBASE "@" DYNOP "<dynamic_operator>" LOCALE_EXP "`foo`"
 %type<uval> option
 %type<flag> flag final modifier operator class_flag
-  global storage_flag access_flag type_decl_flag type_decl_flag2
+  global opt_global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<yybool> opt_var
 %type<fbflag> arg_type
 %type<sym>opt_id
@@ -142,7 +142,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<extend_def> extend_def
 %type<class_def> class_def
 %type<trait_def> trait_def
-%type<ast> class_body extend_body trait_body
+%type<ast> class_body trait_body
 %type<id_list> id_list traits
 %type<specialized_list> specialized_list decl_template
 %type<type_list> type_list call_template
@@ -248,33 +248,19 @@ trait_ast
     $$ = $1;
   };
 
-trait_body : trait_ast | { $$ = NULL; };
+trait_body : "{" trait_ast "}"  { $$ = $2; } | ";" { $$ = NULL; };
 
-trait_def: "trait" class_flag ID traits "{" trait_body "}"
+trait_def: "trait" opt_global ID traits trait_body
     {
-      $$ = new_trait_def(mpool(arg), $2, $3, $6, @3);
+      $$ = new_trait_def(mpool(arg), $2, $3, $5, @3);
       $$->traits = $4;
-      if(GET_FLAG($$, abstract)) {
-        { scanner_secondary(arg, "abstract should not be used on ${/+trait{0} declaration", @3); }
-        UNSET_FLAG($$, abstract);
-      }
     };
 
 class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
 traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
-extend_body
-  : func_def {
-    $$ = new_mp_vector(mpool(arg), Section, 1);
-    mp_vector_set($$, Section, 0, MK_SECTION(func, func_def, $1));
-  }
-  | extend_body func_def {
-    mp_vector_add(mpool(arg), &($1), Section, MK_SECTION(func, func_def, $2));
-    $$ = $1;
-  };
 
-extend_def: "extends" type_decl_empty traits "{" extend_body "}" {
-  $$ = new_extend_def(mpool(arg), $2, $5);
-  $$->traits = $3;
+extend_def: "extends" type_decl_empty ":" id_list ";" {
+  $$ = new_extend_def(mpool(arg), $2, $4);
 }
 
 
@@ -764,6 +750,7 @@ arg_type: "..." ")" { $$ = fbflag_variadic; }| ")" { $$ = 0; };
 decl_template: ":[" specialized_list "]" { $$ = $2; } | { $$ = NULL; };
 
 global: GLOBAL { $$ = ae_flag_global; /*arg->global = true;*/ }
+opt_global: global | { $$ = ae_flag_none; }
 
 storage_flag: STATIC { $$ = ae_flag_static; } | global;
 

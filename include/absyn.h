@@ -765,14 +765,13 @@ ANEW ANN AST_NEW(Section *, section_fptr_def, const Fptr_Def);
 ANEW ANN AST_NEW(Section *, section_type_def, const Type_Def);
 
 struct Extend_Def_ {
-  Ast           body;
   Type_Decl *   td;
   ID_List       traits;
   struct Type_ *t;
 };
 
 ANN2(1)
-ANEW Extend_Def new_extend_def(MemPool p, Type_Decl *const, const Ast);
+ANEW Extend_Def new_extend_def(MemPool p, Type_Decl *const, const ID_List);
 ANN void        free_extend_def(MemPool p, Extend_Def);
 
 enum cflag {
