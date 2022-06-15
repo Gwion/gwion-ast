@@ -2580,7 +2580,7 @@ yyreduce:
     {
       (yyval.class_def) = new_class_def(mpool(arg), (yyvsp[-7].flag), (yyvsp[-6].sym), (yyvsp[-4].type_decl), (yyvsp[-1].ast), (yylsp[-6]));
       if((yyvsp[-5].specialized_list))
-        (yyval.class_def)->base.tmpl = new_tmpl_base(mpool(arg), (yyvsp[-5].specialized_list));
+        (yyval.class_def)->base.tmpl = new_tmpl(mpool(arg), (yyvsp[-5].specialized_list));
       (yyval.class_def)->traits = (yyvsp[-3].id_list);
     }
 #line 2587 "src/parser.c"
@@ -2591,7 +2591,7 @@ yyreduce:
     {
       (yyval.class_def) = new_class_def(mpool(arg), (yyvsp[-6].flag), (yyvsp[-5].sym), NULL, (yyvsp[-1].ast), (yylsp[-5]));
       if((yyvsp[-4].specialized_list))
-        (yyval.class_def)->base.tmpl = new_tmpl_base(mpool(arg), (yyvsp[-4].specialized_list));
+        (yyval.class_def)->base.tmpl = new_tmpl(mpool(arg), (yyvsp[-4].specialized_list));
       (yyval.class_def)->cflag |= cflag_struct;
       (yyval.class_def)->traits = (yyvsp[-3].id_list);
     }
@@ -2777,7 +2777,7 @@ yyreduce:
   case 42: /* fptr_base: flag type_decl_empty "<identifier>" decl_template  */
 #line 303 "src/gwion.y"
                                                  { (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-2].type_decl), (yyvsp[-1].sym), NULL, (yyvsp[-3].flag), (yylsp[-2]));
-  if((yyvsp[0].specialized_list)) { (yyval.func_base)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[0].specialized_list)); } }
+  if((yyvsp[0].specialized_list)) { (yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[0].specialized_list)); } }
 #line 2782 "src/parser.c"
     break;
 
@@ -2808,7 +2808,7 @@ yyreduce:
   case 47: /* func_base: flag final type_decl_empty "<identifier>" decl_template  */
 #line 309 "src/gwion.y"
                                                        { (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-2].type_decl), (yyvsp[-1].sym), NULL, (yyvsp[-4].flag) | (yyvsp[-3].flag), (yylsp[-1]));
-  if((yyvsp[0].specialized_list)) { (yyval.func_base)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[0].specialized_list)); } }
+  if((yyvsp[0].specialized_list)) { (yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[0].specialized_list)); } }
 #line 2813 "src/parser.c"
     break;
 
@@ -2854,7 +2854,7 @@ yyreduce:
   (yyvsp[-4].type_decl)->flag |= (yyvsp[-5].flag);
   (yyval.type_def)->when = (yyvsp[-1].exp);
   if((yyvsp[-2].specialized_list))
-    (yyval.type_def)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-2].specialized_list));
+    (yyval.type_def)->tmpl = new_tmpl(mpool(arg), (yyvsp[-2].specialized_list));
   (yyval.type_def)->distinct = (yyvsp[-6].yybool);
 }
 #line 2861 "src/parser.c"
@@ -3781,7 +3781,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
     {
       Func_Base *base = new_func_base(mpool(arg), (yyvsp[-5].type_decl), (yyvsp[-4].sym), NULL, (yyvsp[-7].flag) | ae_flag_abstract, (yylsp[-4]));
       if((yyvsp[-3].specialized_list))
-        base->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-3].specialized_list));
+        base->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
       base->args = (yyvsp[-2].arg_list);
       base->fbflag |= (yyvsp[-1].fbflag);
       (yyval.func_def) = new_func_def(mpool(arg), base, NULL);
@@ -3798,7 +3798,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
       *(Arg*)args->ptr = (yyvsp[-3].default_args).arg;
       *(Arg*)(args->ptr + sizeof(Arg)) = (yyvsp[-1].default_args).arg;
       (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-7].type_decl), (yyvsp[-6].sym), args, ae_flag_none, (yylsp[-6]));
-      if((yyvsp[-5].specialized_list))(yyval.func_base)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-5].specialized_list));
+      if((yyvsp[-5].specialized_list))(yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[-5].specialized_list));
     }
 #line 3804 "src/parser.c"
     break;
@@ -3811,7 +3811,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
       Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
       mp_vector_set(args, Arg, 0, (yyvsp[-1].default_args).arg);
       (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-5].type_decl), (yyvsp[-4].sym), args, ae_flag_none, (yylsp[-4]));
-      if((yyvsp[-3].specialized_list))(yyval.func_base)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-3].specialized_list));
+      if((yyvsp[-3].specialized_list))(yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
     }
 #line 3817 "src/parser.c"
     break;
@@ -3825,7 +3825,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
       mp_vector_set(args, Arg, 0, (yyvsp[-1].default_args).arg);
       (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-4].type_decl), (yyvsp[-5].sym), args, ae_flag_none, (yylsp[-5]));
       (yyval.func_base)->fbflag |= fbflag_unary;
-      if((yyvsp[-3].specialized_list))(yyval.func_base)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-3].specialized_list));
+      if((yyvsp[-3].specialized_list))(yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
     }
 #line 3831 "src/parser.c"
     break;
@@ -3916,7 +3916,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
       (yyval.type_decl) = new_type_decl(mpool(arg), name, (yylsp[-7]));
       Func_Base *fb = new_func_base(mpool(arg), (yyvsp[-5].type_decl), name, NULL, (yyvsp[-6].flag), (yylsp[-7]));
       if((yyvsp[-4].specialized_list))
-        fb->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-4].specialized_list));
+        fb->tmpl = new_tmpl(mpool(arg), (yyvsp[-4].specialized_list));
       fb->args = (yyvsp[-3].arg_list);
       fb->fbflag |= (yyvsp[-2].fbflag);
       const Fptr_Def fptr = new_fptr_def(mpool(arg), fb);
@@ -4050,7 +4050,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
       (yyval.union_def)->xid = (yyvsp[-4].sym);
       (yyval.union_def)->flag = (yyvsp[-5].flag);
       if((yyvsp[-3].specialized_list))
-        (yyval.union_def)->tmpl = new_tmpl_base(mpool(arg), (yyvsp[-3].specialized_list));
+        (yyval.union_def)->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
     }
 #line 4056 "src/parser.c"
     break;

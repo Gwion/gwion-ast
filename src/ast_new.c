@@ -263,15 +263,10 @@ AST_NEW(Exp, exp_if, const restrict Exp cond, const restrict Exp if_exp,
   return a;
 }
 
-AST_NEW(Tmpl *, tmpl, const Specialized_List list, const m_int base) {
+AST_NEW(Tmpl *, tmpl, const Specialized_List list) {
   Tmpl *a = mp_calloc(p, Tmpl);
   a->list = list;
-  a->base = base;
   return a;
-}
-
-AST_NEW(Tmpl *, tmpl_base, const Specialized_List list) {
-  return new_tmpl(p, list, -1);
 }
 
 Func_Def new_func_def(MemPool p, Func_Base *base, const Stmt code) {

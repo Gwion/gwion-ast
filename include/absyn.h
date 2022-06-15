@@ -220,12 +220,10 @@ typedef struct {
 
 typedef struct Tmpl_ {
   Specialized_List list;
-  m_int            base;
   Type_List        call;
 } Tmpl;
 
-ANN ANEW AST_NEW(Tmpl *, tmpl, const Specialized_List, const m_int);
-ANN ANEW AST_NEW(Tmpl *, tmpl_base, const Specialized_List);
+ANN ANEW AST_NEW(Tmpl *, tmpl, const Specialized_List);
 ANN ANEW AST_NEW(Tmpl *, tmpl_call, Type_List);
 ANN void free_tmpl(MemPool p, Tmpl *);
 
@@ -710,6 +708,7 @@ struct Func_Def_ {
   } d;
   Capture_List captures;
   uint16_t stack_depth;
+  uint16_t vt_index;
   bool builtin;
 };
 
