@@ -1,15 +1,6 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-AST_NEW(Var_Decl, var_decl, struct Symbol_ *xid, const Array_Sub array,
-        const struct loc_t_ pos) {
-  Var_Decl a = mp_calloc(p, Var_Decl);
-  a->xid     = xid;
-  a->array   = array;
-  a->pos     = pos;
-  return a;
-}
-
 AST_NEW(Type_Decl *, type_decl, const Symbol xid, const struct loc_t_ pos) {
   Type_Decl *a = mp_calloc(p, Type_Decl);
   a->xid       = xid;
@@ -84,11 +75,11 @@ AST_NEW(Exp, exp_slice, const Exp base, Range *range, const struct loc_t_ pos) {
   return a;
 }
 
-AST_NEW(Exp, exp_decl, Type_Decl *td, const Var_Decl_List list,
+AST_NEW(Exp, exp_decl, Type_Decl *td, const Var_Decl *vd,
         const struct loc_t_ pos) {
   Exp a              = new_exp(p, ae_exp_decl, pos);
   a->d.exp_decl.td   = td;
-  a->d.exp_decl.list = list;
+  a->d.exp_decl.vd = *vd;
   return a;
 }
 

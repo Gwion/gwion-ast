@@ -323,7 +323,6 @@ union YYSTYPE
   Array_Sub array_sub;
   Range* range;
   struct Var_Decl_ var_decl;
-  Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
   Exp   exp;
   struct Func_Base_ *func_base;
@@ -353,7 +352,7 @@ union YYSTYPE
   Trait_Def trait_def;
   Ast ast;
 
-#line 357 "include/parser.h"
+#line 356 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

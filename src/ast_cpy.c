@@ -43,27 +43,10 @@ ANN static void cpy_exp_slice(MemPool p, Exp_Slice *a, const Exp_Slice *src) {
   a->range = cpy_range(p, src->range);
 }
 
-ANN /*static */ Var_Decl cpy_var_decl2(MemPool p, Var_Decl a, const Var_Decl src) {
+ANN static void cpy_var_decl(MemPool p, Var_Decl *a, const Var_Decl *src) {
   a->xid     = src->xid;                                   // 1
   if (src->array) a->array = cpy_array_sub(p, src->array); // 1
   a->pos = src->pos;                                       // 1
-  return a;
-}
-
-ANN /*static */ Var_Decl cpy_var_decl(MemPool p, const Var_Decl src) {
-  Var_Decl a = mp_calloc(p, Var_Decl);
-  cpy_var_decl2(p, a, src);
-  return a;
-}
-
-ANN static Var_Decl_List cpy_var_decl_list(MemPool p, const Var_Decl_List src) {
-  Var_Decl_List a = new_mp_vector(p, struct Var_Decl_, src->len);
-  for(uint32_t i = 0; i < src->len; i ++) {
-    Var_Decl src_vd = mp_vector_at(src, struct Var_Decl_, i);
-    Var_Decl tgt_vd = mp_vector_at(a, struct Var_Decl_, i);
-    cpy_var_decl2(p, tgt_vd, src_vd);
-  }
-  return a;
 }
 
 ANN Type_Decl *cpy_type_decl(MemPool p, const Type_Decl *src) {
@@ -117,7 +100,7 @@ ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
     Arg *_src = mp_vector_at(src, Arg, i);
     Arg *_arg = mp_vector_at(arg, Arg, i);
     if (_src->td) _arg->td = cpy_type_decl(p, _src->td);
-    cpy_var_decl2(p, &_arg->var_decl, &_src->var_decl);
+    cpy_var_decl(p, &_arg->var_decl, &_src->var_decl);
     if (_src->exp) _arg->exp = cpy_exp(p, _src->exp);
   }
   return arg;
@@ -125,7 +108,7 @@ ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
 
 ANN static void cpy_exp_decl(MemPool p, Exp_Decl *a, const Exp_Decl *src) {
   a->td   = cpy_type_decl(p, src->td);
-  a->list = cpy_var_decl_list(p, src->list);
+  cpy_var_decl(p, &a->vd, &src->vd);
 }
 
 ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
@@ -430,7 +413,7 @@ ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
 
 ANN static void cpy_union_member(MemPool p, Union_Member *a, Union_Member *src) {
   a->td        = cpy_type_decl(p, src->td);
-  cpy_var_decl2(p, &a->vd, &src->vd);
+  cpy_var_decl(p, &a->vd, &src->vd);
 }
 
 ANN Union_List cpy_union_list(MemPool p, const Union_List src) {

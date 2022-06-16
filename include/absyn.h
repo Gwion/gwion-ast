@@ -16,8 +16,6 @@ typedef struct Func_Def_ *     Func_Def;
 typedef struct MP_Vector *Stmt_List;
 typedef struct Exp_ *          Exp;
 typedef struct Stmt_ *         Stmt;
-typedef struct Var_Decl_ *     Var_Decl;
-typedef MP_Vector *Var_Decl_List;
 typedef struct Array_Sub_ *    Array_Sub;
 typedef MP_Vector *ID_List;
 typedef MP_Vector *Type_List;
@@ -41,16 +39,12 @@ ANN void free_type_decl(MemPool p, Type_Decl *);
 ANN Type_Decl *add_type_decl_array(Type_Decl *, const Array_Sub);
 
 /** variable declaration **/
-struct Var_Decl_ {
+typedef struct Var_Decl_ {
   struct Symbol_ *xid;   ///< variable name
   struct Value_ * value; ///< corresponding value
   Array_Sub       array; ///< array subscript, if any
   loc_t   pos;   ///< position
-};
-ANN2(1)
-ANEW AST_NEW(Var_Decl, var_decl, struct Symbol_ *, const Array_Sub,
-             const loc_t);
-
+} Var_Decl;
 
 typedef MP_Vector *     Arg_List;
 
@@ -200,7 +194,7 @@ typedef enum {
 typedef struct {
   Type_Decl *   td;
   struct Type_ *type;
-  Var_Decl_List list;
+  Var_Decl vd;
 } Exp_Decl;
 
 typedef struct {
@@ -401,7 +395,7 @@ ANEW     AST_NEW(Exp, prim_hack, const Exp, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);
 ANEW     AST_NEW(Exp, prim_nil, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl *, const Var_Decl_List,
+ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl *, const Var_Decl*,
                  const loc_t);
 ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp,
                  const loc_t);
@@ -607,8 +601,8 @@ ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl *, const Symbol, const loc_t);
 ANN void free_type_def(MemPool p, Type_Def);
 
 typedef struct Union_Member_ {
-  Type_Decl *      td;
-  struct Var_Decl_ vd;
+  Type_Decl *td;
+  Var_Decl   vd;
 } Union_Member;
 typedef MP_Vector *Union_List;
 ANN void free_union_list(MemPool p, Union_List);

@@ -42,7 +42,6 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
   Array_Sub array_sub;
   Range* range;
   struct Var_Decl_ var_decl;
-  Var_Decl_List var_decl_list;
   Type_Decl* type_decl;
   Exp   exp;
   struct Func_Base_ *func_base;
@@ -114,7 +113,6 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
-%type<var_decl_list> var_decl_list
 %type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
@@ -207,14 +205,14 @@ class_def
     {
       $$ = new_class_def(mpool(arg), $2, $3, $5, $8, @3);
       if($4)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+        $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->traits = $6;
     }
   | "struct" class_flag ID decl_template traits "{" class_body "}"
     {
       $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
       if($4)
-        $$->base.tmpl = new_tmpl_base(mpool(arg), $4);
+        $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->cflag |= cflag_struct;
       $$->traits = $5;
     };
@@ -301,13 +299,13 @@ stmt_list: stmt {
   };
 
 fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
-  if($4) { $$->tmpl = new_tmpl_base(mpool(arg), $4); } }
+  if($4) { $$->tmpl = new_tmpl(mpool(arg), $4); } }
 
 _func_effects: "perform" ID { vector_init(&$$); vector_add(&$$, (m_uint)$2); } | _func_effects ID { vector_add(&$$, (m_uint)$2); }
 func_effects: { $$.ptr = NULL; } | _func_effects { $$.ptr = $1.ptr; }
 
 func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
-  if($5) { $$->tmpl = new_tmpl_base(mpool(arg), $5); } }
+  if($5) { $$->tmpl = new_tmpl(mpool(arg), $5); } }
 
 fptr_def: "funptr" fptr_base fptr_args arg_type func_effects ";" {
   $2->args = $3;
@@ -323,7 +321,7 @@ type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
   $3->flag |= $2;
   $$->when = $6;
   if($5)
-    $$->tmpl = new_tmpl_base(mpool(arg), $5);
+    $$->tmpl = new_tmpl(mpool(arg), $5);
   $$->distinct = $1;
 };
 
@@ -741,7 +739,7 @@ range
 
 array: array_exp | array_empty;
 decl_exp: con_exp
-  | type_decl_flag2 flag type_decl_array var_decl_list { $$= new_exp_decl(mpool(arg), $3, $4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
 
 func_args: "(" arg_list   { $$ = $2; } | "(" { $$ = (struct ParserArg){}; };
 fptr_args: "(" fptr_list { $$ = $2; } | "(" { $$ = NULL; };
@@ -800,7 +798,7 @@ abstract_fdef
     {
       Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
-        base->tmpl = new_tmpl_base(mpool(arg), $6);
+        base->tmpl = new_tmpl(mpool(arg), $6);
       base->args = $7;
       base->fbflag |= $8;
       $$ = new_func_def(mpool(arg), base, NULL);
@@ -816,7 +814,7 @@ op_base
       *(Arg*)args->ptr = $5.arg;
       *(Arg*)(args->ptr + sizeof(Arg)) = $7.arg;
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
-      if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
+      if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
   |  type_decl_empty post_op decl_template "(" arg ")"
     {
@@ -825,7 +823,7 @@ op_base
       Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
       mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
-      if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
+      if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
   |  unary_op type_decl_empty decl_template "(" arg ")"
     {
@@ -835,7 +833,7 @@ op_base
       mp_vector_set(args, Arg, 0, $5.arg);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
-      if($3)$$->tmpl = new_tmpl_base(mpool(arg), $3);
+      if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
   | type_decl_empty OPID_A func_args ")"
     {
@@ -883,7 +881,7 @@ type_decl_base
       $$ = new_type_decl(mpool(arg), name, @1);
       Func_Base *fb = new_func_base(mpool(arg), $3, name, NULL, $2, @1);
       if($4)
-        fb->tmpl = new_tmpl_base(mpool(arg), $4);
+        fb->tmpl = new_tmpl(mpool(arg), $4);
       fb->args = $5;
       fb->fbflag |= $6;
       const Fptr_Def fptr = new_fptr_def(mpool(arg), fb);
@@ -937,19 +935,8 @@ union_def
       $$->xid = $3;
       $$->flag = $2;
       if($4)
-        $$->tmpl = new_tmpl_base(mpool(arg), $4);
+        $$->tmpl = new_tmpl(mpool(arg), $4);
     }
-  ;
-
-var_decl_list
-  : var_decl_list "," var_decl {
-     mp_vector_add(mpool(arg), &$1, struct Var_Decl_, $3);
-     $$ = $1;
-  }
-  | var_decl {
-     $$ = new_mp_vector(mpool(arg), struct Var_Decl_, 1);
-     mp_vector_set($$, struct Var_Decl_, 0, $1);
-  }
   ;
 
 var_decl: ID { $$ = (struct Var_Decl_) { .xid = $1, .pos = @1 }; }

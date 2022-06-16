@@ -4,13 +4,8 @@
 AST_FREE(Stmt_List, stmt_list);
 static AST_FREE(Stmt, stmt2);
 
-static ANN AST_FREE(Var_Decl, var_decl2) {
+static ANN AST_FREE(Var_Decl*, var_decl) {
   if (a->array) free_array_sub(p, a->array);
-}
-
-ANN AST_FREE(Var_Decl, var_decl) {
-  free_var_decl2(p, a);
-  mp_free(p, Var_Decl, a);
 }
 
 AST_FREE(Array_Sub, array_sub) {
@@ -22,14 +17,6 @@ AST_FREE(Range *, range) {
   if (a->start) free_exp(p, a->start);
   if (a->end) free_exp(p, a->end);
   mp_free(p, Range, a);
-}
-
-ANN AST_FREE(Var_Decl_List, var_decl_list) {
-  for(uint32_t i = 0; i < a->len;i ++) {
-    Var_Decl vd = mp_vector_at(a, struct Var_Decl_, i);
-    free_var_decl2(p, vd);
-  }
-  free_mp_vector(p, struct Var_Decl_, a);
 }
 
 ANN AST_FREE(Exp_Lambda *, exp_lambda) { free_func_def(p, a->def); }
@@ -66,7 +53,7 @@ AST_FREE(Type_Decl *, type_decl) {
 
 ANN AST_FREE(Exp_Decl *, exp_decl) {
   free_type_decl(p, a->td);
-  free_var_decl_list(p, a->list);
+  free_var_decl(p, &a->vd);
 }
 
 ANN static AST_FREE(Exp_Binary *, exp_binary) {
@@ -174,7 +161,7 @@ AST_FREE(Arg_List, arg_list) {
     Arg *arg = mp_vector_at(a, Arg, i);
     if (arg->td) free_type_decl(p, arg->td);
     if (arg->exp) free_exp(p, arg->exp);
-    free_var_decl2(p, &arg->var_decl);
+    free_var_decl(p, &arg->var_decl);
   }
 }
 
