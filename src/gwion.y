@@ -389,7 +389,7 @@ locale_list:
        mp_vector_set($$.args, Arg, 0, self);
     }
 
-fptr_arg: type_decl_array fptr_arg_decl { $$ = (Arg) { .td = $1, .var_decl = $2 }; }
+fptr_arg: type_decl_empty fptr_arg_decl { $$ = (Arg) { .td = $1, .var_decl = $2 }; }
 fptr_list:
   fptr_arg {
     $$ = new_mp_vector(mpool(arg), Arg, 1);
@@ -918,7 +918,6 @@ union_decl:
   $$ = (Union_Member) { .td = td, .vd = { .xid =$1, .pos = @1 } };
 }
 | type_decl_empty ID ";" { $$ = (Union_Member) { .td = $1, .vd = { .xid =$2, .pos = @2 }  };}
-| type_decl_empty ID array_empty ";" { $$ = (Union_Member) { .td = $1, .vd = { .xid =$2, .array = $3, .pos = @2 }  };};
 
 union_list: union_decl {
     $$ = new_mp_vector(mpool(arg), Union_Member, 1);
@@ -939,12 +938,9 @@ union_def
     }
   ;
 
-var_decl: ID { $$ = (struct Var_Decl_) { .xid = $1, .pos = @1 }; }
-  | ID array   { $$ = (struct Var_Decl_) { .xid = $1, .array = $2, .pos = @1 }; };
+var_decl: ID { $$ = (struct Var_Decl_) { .xid = $1, .pos = @1 }; };
 
 arg_decl: ID { $$ = (struct Var_Decl_) { .xid = $1, .pos = @1 }; }
-  | ID array_empty { $$ = (struct Var_Decl_) { .xid = $1, .array = $2, .pos = @1 }; }
-  | ID array_exp { parser_error(&@2, arg, "argument/union must be defined with empty []'s", 0210); YYERROR; };
 fptr_arg_decl: arg_decl | { $$ = (struct Var_Decl_){}; }
 
 eq_op : "==" | "!=";

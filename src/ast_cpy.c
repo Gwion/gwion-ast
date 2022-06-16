@@ -43,9 +43,8 @@ ANN static void cpy_exp_slice(MemPool p, Exp_Slice *a, const Exp_Slice *src) {
   a->range = cpy_range(p, src->range);
 }
 
-ANN static void cpy_var_decl(MemPool p, Var_Decl *a, const Var_Decl *src) {
+ANN static void cpy_var_decl(MemPool p NUSED, Var_Decl *a, const Var_Decl *src) {
   a->xid     = src->xid;                                   // 1
-  if (src->array) a->array = cpy_array_sub(p, src->array); // 1
   a->pos = src->pos;                                       // 1
 }
 

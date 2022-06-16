@@ -4,10 +4,6 @@
 AST_FREE(Stmt_List, stmt_list);
 static AST_FREE(Stmt, stmt2);
 
-static ANN AST_FREE(Var_Decl*, var_decl) {
-  if (a->array) free_array_sub(p, a->array);
-}
-
 AST_FREE(Array_Sub, array_sub) {
   if (a->exp) free_exp(p, a->exp);
   mp_free(p, Array_Sub, a);
@@ -53,7 +49,6 @@ AST_FREE(Type_Decl *, type_decl) {
 
 ANN AST_FREE(Exp_Decl *, exp_decl) {
   free_type_decl(p, a->td);
-  free_var_decl(p, &a->vd);
 }
 
 ANN static AST_FREE(Exp_Binary *, exp_binary) {
@@ -161,7 +156,6 @@ AST_FREE(Arg_List, arg_list) {
     Arg *arg = mp_vector_at(a, Arg, i);
     if (arg->td) free_type_decl(p, arg->td);
     if (arg->exp) free_exp(p, arg->exp);
-    free_var_decl(p, &arg->var_decl);
   }
 }
 

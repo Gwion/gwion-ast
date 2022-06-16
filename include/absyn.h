@@ -42,7 +42,6 @@ ANN Type_Decl *add_type_decl_array(Type_Decl *, const Array_Sub);
 typedef struct Var_Decl_ {
   struct Symbol_ *xid;   ///< variable name
   struct Value_ * value; ///< corresponding value
-  Array_Sub       array; ///< array subscript, if any
   loc_t   pos;   ///< position
 } Var_Decl;
 
