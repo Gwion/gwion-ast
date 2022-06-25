@@ -346,7 +346,6 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "when"                              { adjust(yyscanner); return WHEN;}
 "case"                              { adjust(yyscanner); return CASE;}
 "enum"                              { adjust(yyscanner); return ENUM;}
-"varloop"                           { adjust(yyscanner); return VARLOOP;}
 "defer"                             { adjust(yyscanner); return DEFER;}
 "try"                               { adjust(yyscanner); return TRY;}
 "perform"                           { adjust(yyscanner); return PERFORM;}

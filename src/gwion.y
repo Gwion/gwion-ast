@@ -84,7 +84,7 @@ void lex_spread(void *data);
   EXTENDS "extends" DOT "."
   OPERATOR "operator"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
-  NOELSE UNION "union" CONSTT "const" ELLIPSE "..." VARLOOP "varloop" DEFER "defer"
+  NOELSE UNION "union" CONSTT "const" ELLIPSE "..." DEFER "defer"
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
   LATE "late"
 
@@ -111,7 +111,6 @@ void lex_spread(void *data);
 %type<flag> flag final modifier operator class_flag
   global opt_global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<yybool> opt_var
-%type<fbflag> arg_type
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
 %type<var_decl> var_decl arg_decl fptr_arg_decl
@@ -122,7 +121,7 @@ void lex_spread(void *data);
 %type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt varloop_stmt defer_stmt spread_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt defer_stmt spread_stmt
 %type<stmt> match_case_stmt match_stmt stmt_pp trait_stmt
 %type<handler> handler
 %type<handler_list> handler_list
@@ -309,11 +308,10 @@ func_effects: { $$.ptr = NULL; } | _func_effects { $$.ptr = $1.ptr; }
 func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
   if($5) { $$->tmpl = new_tmpl(mpool(arg), $5); } }
 
-fptr_def: "funptr" fptr_base fptr_args arg_type func_effects ";" {
+fptr_def: "funptr" fptr_base fptr_args func_effects ";" {
   $2->args = $3;
-  $2->fbflag |= $4;
   $$ = new_fptr_def(mpool(arg), $2);
-  $$->base->effects.ptr = $5.ptr;
+  $$->base->effects.ptr = $4.ptr;
 };
 
 typedef_when: { $$ = NULL;} | "when" binary_exp { $$ = $2; }
@@ -433,7 +431,6 @@ stmt
   | match_stmt
   | jump_stmt
   | stmt_pp
-  | varloop_stmt
   | defer_stmt
   | try_stmt
   | retry_stmt
@@ -635,14 +632,6 @@ loop_stmt
     $$.d.stmt_loop.idx->v = NULL;
   };
 
-varloop_stmt: "varloop" binary_exp code_stmt { $$ = (struct Stmt_) { .stmt_type = ae_stmt_varloop,
-  .d = { .stmt_varloop = {
-    .exp = $2,
-    .body = cpy_stmt3(mpool(arg), &$3)
-  }},
-  .pos = @1
-};};
-
 defer_stmt: "defer" stmt { $$ = (struct Stmt_) { .stmt_type = ae_stmt_defer,
     .d = { .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) }},
     .pos = @1
@@ -754,9 +743,8 @@ array: array_exp | array_empty;
 decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
 
-func_args: "(" arg_list   { $$ = $2; } | "(" { $$ = (struct ParserArg){}; };
-fptr_args: "(" fptr_list { $$ = $2; } | "(" { $$ = NULL; };
-arg_type: "..." ")" { $$ = fbflag_variadic; }| ")" { $$ = 0; };
+func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = (struct ParserArg){}; };
+fptr_args: "(" fptr_list ")" { $$ = $2; } | "(" ")" { $$ = NULL; };
 
 decl_template: ":[" specialized_list "]" { $$ = $2; }
  |              ":[" specialized_list "," "..." "]" {
@@ -792,16 +780,15 @@ final: "final" { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
 modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 
 func_def_base
-  : FUNCTION func_base func_args arg_type code_stmt {
+  : FUNCTION func_base func_args code_stmt {
     $2->args = $3.args;
-    $2->fbflag |= $4 | $3.flag;
-    $$ = new_func_def(mpool(arg), $2, &$5);
+    $2->fbflag |= $3.flag;
+    $$ = new_func_def(mpool(arg), $2, &$4);
   }
-  | FUNCTION func_base func_args arg_type ";" {
+  | FUNCTION func_base func_args ";" {
     if($3.flag == fbflag_default)
     { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
     $2->args = $3.args;
-    $2->fbflag |= $4;
     SET_FLAG($2, abstract);
     $$ = new_func_def(mpool(arg), $2, NULL);
   }
@@ -819,13 +806,12 @@ func_def_base
   }
 
 abstract_fdef
-  : FUNCTION flag "abstract" type_decl_empty ID decl_template fptr_args arg_type ";"
+  : FUNCTION flag "abstract" type_decl_empty ID decl_template fptr_args ";"
     {
       Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
         base->tmpl = new_tmpl(mpool(arg), $6);
       base->args = $7;
-      base->fbflag |= $8;
       $$ = new_func_def(mpool(arg), base, NULL);
     };
 
@@ -860,7 +846,7 @@ op_base
       $$->fbflag |= fbflag_unary;
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
-  | type_decl_empty OPID_A func_args ")"
+  | type_decl_empty OPID_A func_args
     {
       $$ = new_func_base(mpool(arg), $1, $2, $3.args, ae_flag_none, @2);
       $$->fbflag |= fbflag_internal;
@@ -876,41 +862,38 @@ op_def
   { $$ = new_func_def(mpool(arg), $3, NULL); $3->fbflag |= fbflag_op; $3->flag |= $1 | ae_flag_abstract; }
 
 func_def: func_def_base | abstract_fdef | op_def
-  |  operator "new" func_args arg_type code_stmt
+  |  operator "new" func_args code_stmt
     {
       Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1, @2);
-      base->fbflag = $4 | $3.flag;
-      $$ = new_func_def(mpool(arg), base, &$5);
+      base->fbflag = $3.flag;
+      $$ = new_func_def(mpool(arg), base, &$4);
     }
-  |  operator "new" func_args arg_type ";"
+  |  operator "new" func_args ";"
     {
       if($3.flag == fbflag_default)
       { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
       Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1 | ae_flag_abstract, @2);
-      base->fbflag = $4;
       $$ = new_func_def(mpool(arg), base, NULL);
     }
-  |  operator "abstract" "new" func_args arg_type ";"
+  |  operator "abstract" "new" func_args ";"
     {
       if($4.flag == fbflag_default)
       { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
       Func_Base *const base = new_func_base(mpool(arg), NULL, $3, $4.args, $1 | ae_flag_abstract, @3);
-      base->fbflag = $5;
       $$ =new_func_def(mpool(arg), base, NULL);
     }
 
 type_decl_base
   : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
-  | "(" flag type_decl_empty decl_template fptr_args arg_type func_effects ")" {
+  | "(" flag type_decl_empty decl_template fptr_args func_effects ")" {
       const Symbol name = sig_name(arg, @3.first);
       $$ = new_type_decl(mpool(arg), name, @1);
       Func_Base *fb = new_func_base(mpool(arg), $3, name, NULL, $2, @1);
       if($4)
         fb->tmpl = new_tmpl(mpool(arg), $4);
       fb->args = $5;
-      fb->fbflag |= $6;
       const Fptr_Def fptr = new_fptr_def(mpool(arg), fb);
-      fptr->base->effects.ptr = $7.ptr;
+      fptr->base->effects.ptr = $6.ptr;
       $$->fptr = fptr;
   }
   ;

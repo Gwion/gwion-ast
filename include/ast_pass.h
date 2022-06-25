@@ -54,7 +54,6 @@ static inline m_bool dummy_func(const void *a NUSED, const void *b NUSED) {
       (_##prefix##_stmt_func)prefix##_stmt_loop,                               \
       (_##prefix##_stmt_func)prefix##_stmt_if,                                 \
       (_##prefix##_stmt_func)prefix##_stmt_code,                               \
-      (_##prefix##_stmt_func)prefix##_stmt_varloop,                            \
       (_##prefix##_stmt_func)prefix##_stmt_break,                              \
       (_##prefix##_stmt_func)prefix##_stmt_continue,                           \
       (_##prefix##_stmt_func)prefix##_stmt_return,                             \

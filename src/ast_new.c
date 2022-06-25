@@ -353,14 +353,6 @@ AST_NEW(Stmt, stmt_flow, const ae_stmt_t type, const Exp cond, const Stmt body,
   return a;
 }
 
-AST_NEW(Stmt, stmt_varloop, const Exp exp, const Stmt body,
-        const struct loc_t_ pos) {
-  Stmt a                 = new_stmt(p, ae_stmt_varloop, pos);
-  a->d.stmt_varloop.exp  = exp;
-  a->d.stmt_varloop.body = cpy_stmt3(p, body);
-  return a;
-}
-
 AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2,
         const restrict Exp c3, const Stmt body, const struct loc_t_ pos) {
   Stmt a             = new_stmt(p, ae_stmt_for, pos);

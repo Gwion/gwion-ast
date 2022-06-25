@@ -273,12 +273,6 @@ ANN static void cpy_stmt_flow(MemPool p, Stmt_Flow a, const Stmt_Flow src) {
   a->is_do = src->is_do;
 }
 
-ANN static void cpy_stmt_varloop(MemPool p, Stmt_VarLoop a,
-                                 const Stmt_VarLoop src) {
-  a->exp = cpy_exp(p, src->exp);
-  if (src->body) a->body = cpy_stmt(p, src->body);
-}
-
 ANN static void cpy_stmt_defer(MemPool p, Stmt_Defer a, const Stmt_Defer src) {
   a->stmt = cpy_stmt(p, src->stmt);
 }
@@ -466,9 +460,6 @@ ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
   case ae_stmt_while:
   case ae_stmt_until:
     cpy_stmt_flow(p, &a->d.stmt_flow, &src->d.stmt_flow);
-    break;
-  case ae_stmt_varloop:
-    cpy_stmt_varloop(p, &a->d.stmt_varloop, &src->d.stmt_varloop);
     break;
   case ae_stmt_loop:
     cpy_stmt_loop(p, &a->d.stmt_loop, &src->d.stmt_loop);

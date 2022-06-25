@@ -172,11 +172,6 @@ ANN static AST_FREE(struct Stmt_Flow_ *, stmt_flow) {
   free_stmt(p, a->body);
 }
 
-ANN static AST_FREE(struct Stmt_VarLoop_ *, stmt_varloop) {
-  free_exp(p, a->exp);
-  free_stmt(p, a->body);
-}
-
 ANN static AST_FREE(struct Stmt_Match_ *, stmt_case) {
   free_exp(p, a->cond);
   free_stmt_list(p, a->list);

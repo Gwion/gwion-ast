@@ -60,11 +60,10 @@ enum fbflag {
   fbflag_op       = 1 << 1,
   fbflag_unary    = 1 << 3,
   fbflag_postfix  = 1 << 4,
-  fbflag_variadic = 1 << 5,
-  fbflag_internal = 1 << 6,
-  fbflag_lambda   = 1 << 7,
-  fbflag_default  = 1 << 8,
-  fbflag_locale   = 1 << 9,
+  fbflag_internal = 1 << 5,
+  fbflag_lambda   = 1 << 6,
+  fbflag_default  = 1 << 7,
+  fbflag_locale   = 1 << 8,
 } __attribute__((packed));
 
 struct ParserArg {
@@ -437,7 +436,6 @@ typedef enum {
   ae_stmt_loop,
   ae_stmt_if,
   ae_stmt_code,
-  ae_stmt_varloop,
   ae_stmt_break,
   ae_stmt_continue,
   ae_stmt_return,
@@ -452,7 +450,6 @@ typedef enum {
 typedef struct Stmt_Exp_ *    Stmt_Exp;
 typedef struct Stmt_Code_ *   Stmt_Code;
 typedef struct Stmt_For_ *    Stmt_For;
-typedef struct Stmt_VarLoop_ *Stmt_VarLoop;
 typedef struct Stmt_Flow_ *   Stmt_Flow;
 typedef struct Stmt_Each_ *   Stmt_Each;
 typedef struct Stmt_Loop_ *   Stmt_Loop;
@@ -468,11 +465,6 @@ struct Stmt_Exp_ {
 
 struct Stmt_Index_ {
   m_int idx;
-};
-
-struct Stmt_VarLoop_ {
-  Exp  exp;
-  Stmt body;
 };
 
 struct Stmt_Flow_ {
@@ -658,7 +650,6 @@ struct Stmt_ {
     struct Stmt_Exp_     stmt_exp;
     struct Stmt_Code_    stmt_code;
     struct Stmt_Flow_    stmt_flow;
-    struct Stmt_VarLoop_ stmt_varloop;
     struct Stmt_Loop_    stmt_loop;
     struct Stmt_For_     stmt_for;
     struct Stmt_Each_    stmt_each;
@@ -685,8 +676,6 @@ ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List, const loc_t);
 ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt, const loc_t);
 ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt,
                  const bool, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_varloop, const Exp, const Stmt,
-                 const loc_t);
 ANN2(1, 2, 3, 5)
 ANEW     AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt,
                  const loc_t);
