@@ -17,7 +17,7 @@ endif
 obj    := $(src:.c=.o)
 obj += src/lexer.o src/parser.o
 
-CFLAGS += -Iinclude -D_GNU_SOURCE -I../util/libtermcolor/include
+CFLAGS += -Iinclude -D_GNU_SOURCE -I${UTIL_DIR}/libtermcolor/include
 
 # (parser) internationalization (linux only for now)
 ifeq ($(shell uname), Linux)
