@@ -421,6 +421,13 @@ static inline Exp take_exp(const Exp exp, const uint32_t n) {
 
 ANN void free_exp(MemPool p, Exp);
 
+typedef struct Spread_Def {
+  Symbol  xid;
+  ID_List list;
+  m_str   data;
+  loc_t   start_pos;
+} *Spread_Def;
+
 typedef enum {
   ae_stmt_exp,
   ae_stmt_while,
@@ -438,7 +445,8 @@ typedef enum {
   ae_stmt_retry,
   ae_stmt_match,
   ae_stmt_pp,
-  ae_stmt_defer
+  ae_stmt_defer,
+  ae_stmt_spread
 } ae_stmt_t;
 
 typedef struct Stmt_Exp_ *    Stmt_Exp;
@@ -660,6 +668,7 @@ struct Stmt_ {
     struct Stmt_Index_   stmt_index;
     struct Stmt_PP_      stmt_pp;
     struct Stmt_Defer_   stmt_defer;
+    struct Spread_Def    stmt_spread;
   } d;
   loc_t pos; ///< position
   ae_stmt_t     stmt_type;

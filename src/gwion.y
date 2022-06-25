@@ -22,7 +22,7 @@
 
 ANN static int parser_error(loc_t*, Scanner*const, const char *, const uint);
 ANN Symbol sig_name(const Scanner*, const pos_t);
-
+void lex_spread(void *data);
 %}
 
 %union {
@@ -95,7 +95,9 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "${" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_IMPORT "import"
-%token<string> INTERP_LIT "<interp string lit>" INTERP_END "<interp string end>" 
+  SPREAD "}..."
+
+%token<string> INTERP_LIT "<interp string lit>" INTERP_END "<interp string end>"
 %type<sym>op shift_op post_op rel_op eq_op unary_op add_op mul_op op_op OPID_A "@<operator id>"
 %token <sym> ID "<identifier>" PLUS "+" PLUSPLUS "++" MINUS "-" MINUSMINUS "--" TIMES "*" DIVIDE "/" PERCENT "%"
   DOLLAR "$" QUESTION "?" OPTIONS COLON ":" COLONCOLON "::" QUESTIONCOLON "?:"
@@ -120,7 +122,7 @@ ANN Symbol sig_name(const Scanner*, const pos_t);
 %type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
 %type<array_sub> array_exp array_empty array
 %type<range> range
-%type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt varloop_stmt defer_stmt
+%type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt varloop_stmt defer_stmt spread_stmt
 %type<stmt> match_case_stmt match_stmt stmt_pp trait_stmt
 %type<handler> handler
 %type<handler_list> handler_list
@@ -435,7 +437,18 @@ stmt
   | defer_stmt
   | try_stmt
   | retry_stmt
+  | spread_stmt
   ;
+
+spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
+  struct Spread_Def spread = {
+    .xid = $2,
+    .list = $4,
+    .data = $7,
+    .start_pos = @5
+  };
+  $$ = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .pos = @2};
+}
 
 retry_stmt: "retry" ";" {
   if(!arg->handling)
@@ -745,7 +758,19 @@ func_args: "(" arg_list   { $$ = $2; } | "(" { $$ = (struct ParserArg){}; };
 fptr_args: "(" fptr_list { $$ = $2; } | "(" { $$ = NULL; };
 arg_type: "..." ")" { $$ = fbflag_variadic; }| ")" { $$ = 0; };
 
-decl_template: ":[" specialized_list "]" { $$ = $2; } | { $$ = NULL; };
+decl_template: ":[" specialized_list "]" { $$ = $2; }
+ |              ":[" specialized_list "," "..." "]" {
+  $$ = $2;
+  Specialized spec = { .xid = insert_symbol("...") };
+  mp_vector_add(mpool(arg), &$$, Specialized, spec);
+
+}
+|                ":[" "..." "]" {
+  Specialized spec = { .xid = insert_symbol("...") };
+  $$ = new_mp_vector(mpool(arg), Specialized, 1);
+  mp_vector_set($$, Specialized, 0, spec);
+}
+             | { $$ = NULL; };
 
 global: GLOBAL { $$ = ae_flag_global; /*arg->global = true;*/ }
 opt_global: global | { $$ = ae_flag_none; }

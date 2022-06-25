@@ -442,9 +442,16 @@ ANN Stmt cpy_stmt(MemPool p, const Stmt src) {
 }
 
 ANN Stmt cpy_stmt3(MemPool p, const Stmt src) {
-  const Stmt a = mp_malloc(p, Stmt);
+  const Stmt a = mp_calloc(p, Stmt);
   memcpy(a, src, sizeof(struct Stmt_));
   return a;
+}
+
+ANN static void cpy_stmt_spread(MemPool p, Spread_Def a, const Spread_Def src) {
+  a->xid = src->xid;
+  a->list = cpy_id_list(p, src->list);
+  a->data = mstrdup(p, src->data);
+  a->start_pos  = src->start_pos;
 }
 
 ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
@@ -486,6 +493,9 @@ ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
     break;
   case ae_stmt_defer:
     cpy_stmt_defer(p, &a->d.stmt_defer, &src->d.stmt_defer);
+    break;
+  case ae_stmt_spread:
+    cpy_stmt_spread(p, &a->d.stmt_spread, &src->d.stmt_spread);
     break;
   case ae_stmt_break:
   case ae_stmt_continue:

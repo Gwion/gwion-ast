@@ -35,7 +35,6 @@ ANN static Ast get_ast(MemPool mp, Scanner *s) {
 Ast parse(struct AstGetter_ *const arg) {
   Scanner * s   = new_scanner(arg);
   const Ast ast = get_ast(arg->ppa->hash.p, s);
-  //arg->global   = s->global;
   free_scanner(s);
   return ast;
 }

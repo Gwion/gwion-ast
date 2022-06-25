@@ -98,9 +98,20 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 %option yymore
 %option never-interactive batch
 %option nobackup nodebug
-%x comment
+%x comment spread
 %x define define_arg_start define_arg skip get_arg pragma interp include_start include_end import import_end locale_end
 %%
+
+<spread>"}..." {
+  adjust(yyscanner);
+  Scanner *scan = yyget_extra(yyscanner);
+  yytext[yyleng-5] = '\0';
+  yylval->string.data = mstrdup(scan->st->p, yytext);
+  BEGIN(INITIAL);
+  return SPREAD;
+}
+<spread>\n { newline(yyscanner); yymore(); continue; }
+<spread>. { adjust(yyscanner); yymore(); continue; }
 
 #*\" {
   adjust(yyscanner);
@@ -282,7 +293,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 "\\\n"                              { adjust(yyscanner); continue; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }
-`[^`]*`                             { adjust(yyscanner); yytext[yyleng-1] = '\0'; yylval->sym = alloc_sym(yyscanner, yytext + 1); return LOCALE_EXP; }
+`[^`]*`                             { adjust(yyscanner); yytext[yyleng-1] = '\0'; yylval->sym = alloc_sym(yyscanner, yytext + 1); yylloc->first.column += 2; return LOCALE_EXP; }
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
@@ -894,6 +905,11 @@ static m_str get_arg_text(void* data, const m_str id) {
     arg = arg->next;
   }
   return NULL;
+}
+
+void lex_spread(void *data) {
+  struct yyguts_t *yyg = (struct yyguts_t*)data;
+  yyg->yy_start = 1 + 2 * spread;
 }
 
 static void macro_append(void* data, const m_str str) {

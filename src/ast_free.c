@@ -262,6 +262,11 @@ ANN AST_FREE(Union_Def, union_def) {
 #define free_stmt_while    free_stmt_flow
 #define free_stmt_until    free_stmt_flow
 
+AST_FREE(Spread_Def, stmt_spread) {
+  free_id_list(p, a->list);
+  free_mstr(p, a->data);
+}
+
 DECL_STMT_FUNC(free, void, MemPool);
 static AST_FREE(Stmt, stmt2) {
   free_stmt_func[a->stmt_type](p, &a->d);
