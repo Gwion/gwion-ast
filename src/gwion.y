@@ -438,7 +438,7 @@ stmt
   ;
 
 spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
-  struct Spread_Def spread = {
+  struct Spread_Def_ spread = {
     .xid = $2,
     .list = $4,
     .data = $7,

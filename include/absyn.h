@@ -659,7 +659,7 @@ struct Stmt_ {
     struct Stmt_Index_   stmt_index;
     struct Stmt_PP_      stmt_pp;
     struct Stmt_Defer_   stmt_defer;
-    struct Spread_Def    stmt_spread;
+    struct Spread_Def_    stmt_spread;
   } d;
   loc_t pos; ///< position
   ae_stmt_t     stmt_type;

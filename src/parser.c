@@ -3101,7 +3101,7 @@ yyreduce:
   case 96: /* spread_stmt: "..." "<identifier>" ":" id_list "{" $@1 "}..."  */
 #line 440 "src/gwion.y"
                                                                              {
-  struct Spread_Def spread = {
+  struct Spread_Def_ spread = {
     .xid = (yyvsp[-5].sym),
     .list = (yyvsp[-3].id_list),
     .data = (yyvsp[0].sval),
