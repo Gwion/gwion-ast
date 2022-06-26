@@ -420,7 +420,7 @@ static inline Exp take_exp(const Exp exp, const uint32_t n) {
 
 ANN void free_exp(MemPool p, Exp);
 
-typedef struct Spread_Def {
+typedef struct Spread_Def_ {
   Symbol  xid;
   ID_List list;
   m_str   data;
