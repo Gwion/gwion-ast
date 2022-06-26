@@ -9,7 +9,7 @@ ANN static char *get_src(const char *filename, const loc_t loc) {
   uint   i    = 0;
   FILE * f    = fopen(filename, "r");
   if (!f) return NULL;
-  fseek(f, SEEK_SET, 0);
+  fseek(f, 0, SEEK_SET);
   ssize_t ret;
   while ((ret = getline(&line, &len, f)) != -1 && ++i < loc.first.line);
   fclose(f);

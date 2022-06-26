@@ -12,6 +12,7 @@ typedef struct Scanner_ {
   struct Vector_ hashes;
   struct pos_t   pos;
   short int      interp_state;
+  short int      spread_state;
   bool           error;
   bool           handling;
   bool           locale; // handle \n in the lexer

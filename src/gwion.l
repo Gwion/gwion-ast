@@ -105,10 +105,16 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <spread>"}..." {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
-  yytext[yyleng-5] = '\0';
-  yylval->string.data = mstrdup(scan->st->p, yytext);
-  BEGIN(INITIAL);
-  return SPREAD;
+  if(!--scan->spread_state) {
+    yytext[yyleng-5] = '\0';
+    yylval->string.data = mstrdup(scan->st->p, yytext);
+    BEGIN(INITIAL);
+    return SPREAD;
+  }
+}
+<spread>"..." { 
+  Scanner *scan = yyget_extra(yyscanner);
+  scan->spread_state++;
 }
 <spread>\n { newline(yyscanner); yymore(); continue; }
 <spread>. { adjust(yyscanner); yymore(); continue; }
@@ -909,6 +915,8 @@ static m_str get_arg_text(void* data, const m_str id) {
 void lex_spread(void *data) {
   struct yyguts_t *yyg = (struct yyguts_t*)data;
   yyg->yy_start = 1 + 2 * spread;
+  Scanner *scan = yyget_extra(data);
+  scan->spread_state++;
 }
 
 static void macro_append(void* data, const m_str str) {
