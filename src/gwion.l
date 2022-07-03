@@ -577,9 +577,7 @@ static m_str strip_include(const m_str line) {
   const m_str str = line + 1;
   m_str end = strstr(str, ">");
   *end = '\0';
-  char c[PATH_MAX];
-  char *real = realpath(str, c);
-  return real ? strdup(real) : NULL;
+   return realpath(str, NULL);
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
