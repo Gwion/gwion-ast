@@ -31,7 +31,6 @@ ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
-ANN static char* get_currfile(void* data);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(const m_str line);
 ANN static m_str get_current_filename(void*);
@@ -395,8 +394,6 @@ lexer_error(yyscanner, "can't stringify non argument token", 0);
     return 1;
   }
 }
-"__line__"                          { adjust(yyscanner); yylval->lval = get_currline(yyscanner); return NUM;}
-"__file__"                          { adjust(yyscanner); yylval->sval = get_currfile(yyscanner); return STRING_LIT;}
 
 0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                         return NUM;    }
 0[bB][0-1]+{IS}?                    { adjust(yyscanner); yylval->lval = btol(yytext);                         return NUM;    }
@@ -542,12 +539,6 @@ static uint get_currpos(void* data) {
   return scan->pos.column;
 }
 
-static char* get_currfile(void* data) {
-  const Scanner* scan = yyget_extra(data);
-  const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
-  return alloc_str(data, ppstate->filename);
-}
-
 static void adjust(void* data) {
   Scanner *scan = yyget_extra(data);
   scan->pos.column += (uint)gwion_get_leng((void*)data);
@@ -578,11 +569,17 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+
 static m_str strip_include(const m_str line) {
   const m_str str = line + 1;
   m_str end = strstr(str, ">");
   *end = '\0';
-  return strdup(str);
+  char c[PATH_MAX];
+  char *real = realpath(str, c);
+  return real ? strdup(real) : NULL;
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
@@ -705,6 +702,10 @@ static m_str get_current_filename(void* data) {
 static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
   const m_str str = strip_include(filename);
+  if(!str) {
+    lexer_error(data, "file not found", ERRORCODE(105));
+    return GW_ERROR;
+  }
   FILE* f = fopen(str, "r") ?: get_include(data, str);
   if(!f) {
     xfree(str);
