@@ -4244,7 +4244,7 @@ int yywrap(void* data) {
       yy_delete_buffer(handle, data);
     }
     if(ppstate->type == pptype_file && ppstate->file) {
-//      fclose(ppstate->file);
+      fclose(ppstate->file);
       BEGIN(include_end);
     } else if(ppstate->type == pptype_arg && ppstate->arg)
       clean_macroarg(ppstate->arg);
