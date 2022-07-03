@@ -569,15 +569,11 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
-#ifndef PATH_MAX
-#define PATH_MAX 1024
-#endif
-
 static m_str strip_include(const m_str line) {
   const m_str str = line + 1;
   m_str end = strstr(str, ">");
   *end = '\0';
-   return realpath(str, NULL);
+  return realpath(str, NULL);
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
