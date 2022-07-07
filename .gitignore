@@ -4,3 +4,4 @@ config.mk
 .d
 .po
 html
+.mo
