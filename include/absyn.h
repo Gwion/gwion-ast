@@ -193,6 +193,7 @@ typedef struct {
   Type_Decl *   td;
   struct Type_ *type;
   Var_Decl vd;
+  Exp args;
 } Exp_Decl;
 
 typedef struct {

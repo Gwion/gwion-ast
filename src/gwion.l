@@ -32,7 +32,7 @@ ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static Macro add_macro(void* data, const m_str id);
-ANN static m_str strip_include(const m_str line);
+ANN static m_str strip_include(const m_str line, const bool);
 ANN static m_str get_current_filename(void*);
 ANN2(1,2) static m_bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static m_bool rem_macro(void* data, const m_str id);
@@ -69,11 +69,11 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 #define GWYY_LINT(a,b)   if(GWYY_ISLINT) { yylval->sval = a; return b; }
 #define GWYY_NL          if(GWYY_ISLINT) { yylval->sval = NULL; return PP_NL; }
 
-#define GWYY_COMMENT     if(GWYY_ISLINT) { yymore(); continue; }
-#define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
+#define GWYY_COMMENT     /*if(GWYY_ISLINT)*/{ yymore(); continue; }
+#define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
+#define GWYY_COMMENT_END BEGIN(INITIAL); /*if(GWYY_ISLINT) */ if(*yytext == '+' || *yytext == '-') { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
 
-#define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
+#define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
 
 // 23 BEGIN(INITIAL)?
@@ -248,7 +248,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 }
 
 ^{SPACE}*#include{SPACE}+ { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
-<include_start><{FILENAME}> { adjust(yyscanner); GWYY_INCLUDE; /*BEGIN(include_end); */ BEGIN(INITIAL); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
+<include_start><{FILENAME}> { adjust(yyscanner); BEGIN(INITIAL); GWYY_INCLUDE; /*BEGIN(include_end); */ /*BEGIN(INITIAL); */yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
 
 <import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
@@ -404,6 +404,11 @@ lexer_error(yyscanner, "can't stringify non argument token", 0);
 @{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
 {LEX_ID}                            {
   adjust(yyscanner);
+  Scanner *scan = yyget_extra(yyscanner);
+  if(scan->ppa->lint) {
+    yylval->sym = alloc_sym(yyscanner, yytext);
+    return ID;
+  }
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
   if(ret < 0)
     yyterminate();
@@ -569,11 +574,11 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
-static m_str strip_include(const m_str line) {
+static m_str strip_include(const m_str line, const bool lint) {
   const m_str str = line + 1;
   m_str end = strstr(str, ">");
   *end = '\0';
-  return realpath(str, NULL);
+  return !lint ? realpath(str, NULL) : strdup(str);
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
@@ -695,7 +700,7 @@ static m_str get_current_filename(void* data) {
 
 static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
-  const m_str str = strip_include(filename);
+  const m_str str = strip_include(filename, false);
   if(!str) {
     lexer_error(data, "file not found", ERRORCODE(105));
     return GW_ERROR;

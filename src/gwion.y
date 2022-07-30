@@ -407,7 +407,7 @@ code_stmt
     $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .pos = @$}; };
 
 stmt_pp
-  : PP_COMMENT { if(!arg->ppa->lint)return 0; $$ = MK_STMT_PP(comment, $1, @$); }
+  : PP_COMMENT { /*if(!arg->ppa->lint)return 0; */$$ = MK_STMT_PP(comment, $1, @$); }
   | PP_INCLUDE { $$ = MK_STMT_PP(include, $1, @$); }
   | PP_DEFINE  { $$ = MK_STMT_PP(define,  $1, @$); }
   | PP_PRAGMA  { $$ = MK_STMT_PP(pragma,  $1, @$); }
@@ -742,6 +742,11 @@ range
 array: array_exp | array_empty;
 decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl "(" exp ")" var_decl {
+      $$= new_exp_decl(mpool(arg), $3, &$7, @7);
+      $$->d.exp_decl.td->flag |= $1 | $2;
+      $$->d.exp_decl.args = $5 ?: new_prim_nil(mpool(arg), @5);
+  };
 
 func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = (struct ParserArg){}; };
 fptr_args: "(" fptr_list ")" { $$ = $2; } | "(" ")" { $$ = NULL; };

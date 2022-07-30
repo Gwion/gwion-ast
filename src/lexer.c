@@ -1375,7 +1375,7 @@ ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static Macro add_macro(void* data, const m_str id);
-ANN static m_str strip_include(const m_str line);
+ANN static m_str strip_include(const m_str line, const bool);
 ANN static m_str get_current_filename(void*);
 ANN2(1,2) static m_bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static m_bool rem_macro(void* data, const m_str id);
@@ -1412,11 +1412,11 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 #define GWYY_LINT(a,b)   if(GWYY_ISLINT) { yylval->sval = a; return b; }
 #define GWYY_NL          if(GWYY_ISLINT) { yylval->sval = NULL; return PP_NL; }
 
-#define GWYY_COMMENT     if(GWYY_ISLINT) { yymore(); continue; }
-#define GWYY_COMMENT2    if(GWYY_ISLINT)   { yymore(); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT) { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
+#define GWYY_COMMENT     /*if(GWYY_ISLINT)*/{ yymore(); continue; }
+#define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
+#define GWYY_COMMENT_END BEGIN(INITIAL); /*if(GWYY_ISLINT) */ if(*yytext == '+' || *yytext == '-') { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
 
-#define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
+#define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
 
 // 23 BEGIN(INITIAL)?
@@ -2092,7 +2092,7 @@ YY_RULE_SETUP
 case 44:
 YY_RULE_SETUP
 #line 251 "src/gwion.l"
-{ adjust(yyscanner); GWYY_INCLUDE; /*BEGIN(include_end); */ BEGIN(INITIAL); yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
+{ adjust(yyscanner); BEGIN(INITIAL); GWYY_INCLUDE; /*BEGIN(include_end); */ /*BEGIN(INITIAL); */yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
@@ -2589,6 +2589,11 @@ YY_RULE_SETUP
 #line 405 "src/gwion.l"
 {
   adjust(yyscanner);
+  Scanner *scan = yyget_extra(yyscanner);
+  if(scan->ppa->lint) {
+    yylval->sym = alloc_sym(yyscanner, yytext);
+    return ID;
+  }
   const int ret = is_macro(yyscanner, yytext, YY_CURRENT_BUFFER);
   if(ret < 0)
     yyterminate();
@@ -2602,20 +2607,20 @@ YY_RULE_SETUP
 case 132:
 /* rule 132 can match eol */
 YY_RULE_SETUP
-#line 417 "src/gwion.l"
+#line 422 "src/gwion.l"
 { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 418 "src/gwion.l"
+#line 423 "src/gwion.l"
 { adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 420 "src/gwion.l"
+#line 425 "src/gwion.l"
 ECHO;
 	YY_BREAK
-#line 2618 "src/lexer.c"
+#line 2623 "src/lexer.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 case YY_STATE_EOF(spread):
@@ -3709,7 +3714,7 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 420 "src/gwion.l"
+#line 425 "src/gwion.l"
 
 // LCOV_EXCL_LINE
 #include <stdio.h>
@@ -3862,11 +3867,11 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
-static m_str strip_include(const m_str line) {
+static m_str strip_include(const m_str line, const bool lint) {
   const m_str str = line + 1;
   m_str end = strstr(str, ">");
   *end = '\0';
-  return realpath(str, NULL);
+  return !lint ? realpath(str, NULL) : strdup(str);
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
@@ -3988,7 +3993,7 @@ static m_str get_current_filename(void* data) {
 
 static m_bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
   Scanner* scan = yyget_extra(data);
-  const m_str str = strip_include(filename);
+  const m_str str = strip_include(filename, false);
   if(!str) {
     lexer_error(data, "file not found", ERRORCODE(105));
     return GW_ERROR;
