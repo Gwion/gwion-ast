@@ -229,6 +229,7 @@ typedef struct Exp_Call_ {
   Exp   func;
   Exp   args;
   Tmpl *tmpl;
+  Exp   other;
   bool checked;
 } Exp_Call;
 typedef struct {

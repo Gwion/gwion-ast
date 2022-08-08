@@ -1777,7 +1777,7 @@ YY_RULE_SETUP
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
   if(!--scan->spread_state) {
-    yytext[yyleng-5] = '\0';
+    yytext[yyleng-4] = '\0';
     yylval->string.data = mstrdup(scan->st->p, yytext);
     BEGIN(INITIAL);
     return SPREAD;

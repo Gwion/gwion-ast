@@ -49,6 +49,7 @@ AST_FREE(Type_Decl *, type_decl) {
 
 ANN AST_FREE(Exp_Decl *, exp_decl) {
   free_type_decl(p, a->td);
+  if(a->args) free_exp(p, a->args);
 }
 
 ANN static AST_FREE(Exp_Binary *, exp_binary) {
