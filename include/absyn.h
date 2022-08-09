@@ -384,7 +384,7 @@ static inline loc_t prim_pos(const void *data) {
 }
 
 ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_ *, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_perform, struct Symbol_ *, const loc_t);
+ANEW ANN2(1) AST_NEW(Exp, prim_perform, struct Symbol_ *, const loc_t);
 ANEW     AST_NEW(Exp, prim_int, const unsigned long, const loc_t);
 ANEW     AST_NEW(Exp, prim_float, const m_float, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_string, const m_str, const uint16_t delim, const loc_t);
