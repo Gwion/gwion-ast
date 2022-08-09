@@ -742,8 +742,8 @@ range
 array: array_exp | array_empty;
 decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.td->flag |= $1 | $2; };
-  | type_decl_flag2 flag type_decl "(" opt_exp ")" var_decl {
-      $$= new_exp_decl(mpool(arg), $3, &$7, @7);
+  | type_decl_flag2 flag type_decl_array "(" opt_exp ")" var_decl {
+      $$ = new_exp_decl(mpool(arg), $3, &$7, @7);
       $$->d.exp_decl.td->flag |= $1 | $2;
       $$->d.exp_decl.args = $5 ?: new_prim_nil(mpool(arg), @5);
   };

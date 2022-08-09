@@ -108,7 +108,7 @@ ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
 ANN static void cpy_exp_decl(MemPool p, Exp_Decl *a, const Exp_Decl *src) {
   a->td   = cpy_type_decl(p, src->td);
   cpy_var_decl(p, &a->vd, &src->vd);
-  if(src->args) a->args = src->args;
+  if(src->args) a->args = cpy_exp(p, src->args);
 }
 
 ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
