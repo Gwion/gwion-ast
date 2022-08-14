@@ -446,7 +446,7 @@ ANN static void cpy_stmt_spread(MemPool p, Spread_Def a, const Spread_Def src) {
   a->xid = src->xid;
   a->list = cpy_id_list(p, src->list);
   a->data = mstrdup(p, src->data);
-  a->start_pos  = src->start_pos;
+  a->pos  = src->pos;
 }
 
 ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {

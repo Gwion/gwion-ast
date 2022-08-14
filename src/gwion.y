@@ -442,7 +442,7 @@ spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
     .xid = $2,
     .list = $4,
     .data = $7,
-    .start_pos = @5
+    .pos = @5.first
   };
   $$ = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .pos = @2};
 }

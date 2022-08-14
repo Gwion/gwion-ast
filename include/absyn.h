@@ -426,7 +426,7 @@ typedef struct Spread_Def_ {
   Symbol  xid;
   ID_List list;
   m_str   data;
-  loc_t   start_pos;
+  pos_t   pos;
 } *Spread_Def;
 
 typedef enum {

@@ -3108,7 +3108,7 @@ yyreduce:
     .xid = (yyvsp[-5].sym),
     .list = (yyvsp[-3].id_list),
     .data = (yyvsp[0].sval),
-    .start_pos = (yylsp[-2])
+    .pos = (yylsp[-2]).first
   };
   (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .pos = (yylsp[-5])};
 }

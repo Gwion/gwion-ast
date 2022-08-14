@@ -32,8 +32,9 @@ ANN static Ast get_ast(MemPool mp, Scanner *s) {
   return NULL;
 }
 
-Ast parse(struct AstGetter_ *const arg) {
+ANN Ast parse_pos(struct AstGetter_ *const arg, const pos_t pos) {
   Scanner * s   = new_scanner(arg);
+  s->pos = pos;
   const Ast ast = get_ast(arg->ppa->hash.p, s);
   free_scanner(s);
   return ast;
