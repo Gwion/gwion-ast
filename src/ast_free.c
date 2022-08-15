@@ -75,8 +75,7 @@ free_exp(p, a->exp);
     if (a->ctor.exp) free_exp(p, a->ctor.exp);
     break;
   case unary_code:
- //   if (a->code) 
- free_stmt(p, a->code);
+    if (a->code) free_stmt_list(p, a->code);
     break;
   }
   if (a->captures) free_mp_vector(p, Capture, a->captures);
@@ -103,7 +102,7 @@ ANN AST_FREE(Func_Base *, func_base) {
 
 AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
-  if (!a->builtin && a->d.code) free_stmt(p, a->d.code);
+  if (!a->builtin && a->d.code) free_stmt_list(p, a->d.code);
   if (a->captures) free_mp_vector(p, Capture, a->captures);
   mp_free(p, Func_Def, a);
 }

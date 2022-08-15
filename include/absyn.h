@@ -97,7 +97,7 @@ typedef struct {
   Func_Def      def;
   struct Type_ *owner;
 } Exp_Lambda;
-ANN2(1,2,4) AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt,
+ANN2(1,2,4) AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt_List,
             const loc_t);
 AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
         const struct loc_t_ pos);
@@ -258,7 +258,7 @@ typedef struct {
   Symbol op;
   union {
     Exp        exp;
-    Stmt       code;
+    Stmt_List  code;
     struct UnaryNew ctor;
   };
   Capture_List captures;
@@ -410,7 +410,7 @@ ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_ *,
 ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const loc_t);
 ANEW ANN2(1,2,3) AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl *,
                  const Exp exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt,
+ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt_List,
                  const loc_t);
 ANEW ANN AST_NEW(Exp, exp_td, Type_Decl *, const loc_t);
 
@@ -696,7 +696,7 @@ ANN void free_stmt(MemPool p, Stmt);
 struct Func_Def_ {
   Func_Base *base;
   union func_def_data {
-    Stmt  code;
+    Stmt_List code;
     void *dl_func_ptr;
   } d;
   Capture_List captures;
@@ -705,7 +705,7 @@ struct Func_Def_ {
   bool builtin;
 };
 
-ANEW     AST_NEW(Func_Def, func_def, Func_Base *, const Stmt);
+ANEW     AST_NEW(Func_Def, func_def, Func_Base *, const Stmt_List);
 ANN void free_func_base(MemPool p, Func_Base *);
 ANN void free_func_def(MemPool p, Func_Def);
 

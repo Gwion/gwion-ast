@@ -38,7 +38,7 @@ ANN static AST_NEW(Exp, exp, const ae_exp_t type, const struct loc_t_ pos) {
   return a;
 }
 
-AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt code,
+AST_NEW(Exp, exp_lambda, const Symbol xid, const Arg_List args, const Stmt_List code,
         const struct loc_t_ pos) {
   Exp        a    = new_exp(p, ae_exp_lambda, pos);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, pos);
@@ -52,10 +52,9 @@ AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
   Exp        a    = new_exp(p, ae_exp_lambda, pos);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, pos);
   base->fbflag |= fbflag_lambda;
-  Stmt_List slist = new_mp_vector(p, struct Stmt_, 1);
+  Stmt_List code = new_mp_vector(p, struct Stmt_, 1);
   struct Stmt_ stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .pos = pos };
-  mp_vector_set(slist, struct Stmt_, 0, stmt);
-  Stmt code = new_stmt_code(p, slist, pos);
+  mp_vector_set(code, struct Stmt_, 0, stmt);
   a->d.exp_lambda.def = new_func_def(p, base, code);
   return a;
 }
@@ -233,11 +232,11 @@ AST_NEW(Exp, exp_unary2, const Symbol oper, Type_Decl *td,
   return a;
 }
 
-AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt code,
+AST_NEW(Exp, exp_unary3, const Symbol oper, const Stmt_List code,
         const struct loc_t_ pos) {
   Exp a = new_exp_unary_base(p, oper, pos);
   exp_setmeta(a, 1);
-  a->d.exp_unary.code       = cpy_stmt3(p, code);
+  a->d.exp_unary.code       = code;
   a->d.exp_unary.unary_type = unary_code;
   return a;
 }
@@ -260,10 +259,10 @@ AST_NEW(Tmpl *, tmpl, const Specialized_List list) {
   return a;
 }
 
-Func_Def new_func_def(MemPool p, Func_Base *base, const Stmt code) {
+Func_Def new_func_def(MemPool p, Func_Base *base, const Stmt_List code) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base    = base;
-  if(code) a->d.code  = cpy_stmt3(p, code);
+  a->d.code  = code;
   return a;
 }
 

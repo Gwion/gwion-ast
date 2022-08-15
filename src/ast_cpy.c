@@ -206,7 +206,7 @@ ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
       a->ctor.exp = cpy_exp(p, src->ctor.exp);
     break;
   case unary_code:
-    a->code = cpy_stmt(p, src->code);
+    a->code = cpy_stmt_list(p, src->code);
     break;
   }
   if(src->captures)
@@ -502,7 +502,7 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base    = cpy_func_base(p, src->base);
   if (src->d.code) {
-    if(!src->builtin) a->d.code = cpy_stmt(p, src->d.code);
+    if(!src->builtin) a->d.code = cpy_stmt_list(p, src->d.code);
     else a->d.dl_func_ptr = src->d.dl_func_ptr;
   }
   if (src->captures) a->captures = cpy_captures(p, src->captures);

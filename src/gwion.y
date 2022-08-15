@@ -125,7 +125,7 @@ void lex_spread(void *data);
 %type<stmt> match_case_stmt match_stmt stmt_pp trait_stmt
 %type<handler> handler
 %type<handler_list> handler_list
-%type<stmt_list> stmt_list match_list trait_stmt_list
+%type<stmt_list> stmt_list match_list trait_stmt_list code_list
 %type<arg> fptr_arg
 %type<arg_list> lambda_arg lambda_list fptr_list fptr_args
 %type<default_args> arg arg_list func_args locale_arg locale_list
@@ -405,6 +405,10 @@ code_stmt
     $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .pos = @$}; }
   | "{" stmt_list "}" {
     $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .pos = @$}; };
+
+code_list
+  : "{" "}" { NULL; }
+  | "{" stmt_list "}" { $$ = $2; }
 
 stmt_pp
   : PP_COMMENT { /*if(!arg->ppa->lint)return 0; */$$ = MK_STMT_PP(comment, $1, @$); }
@@ -785,10 +789,10 @@ final: "final" { $$ = ae_flag_final; } | { $$ = ae_flag_none; };
 modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 
 func_def_base
-  : FUNCTION func_base func_args code_stmt {
+  : FUNCTION func_base func_args code_list {
     $2->args = $3.args;
     $2->fbflag |= $3.flag;
-    $$ = new_func_def(mpool(arg), $2, &$4);
+    $$ = new_func_def(mpool(arg), $2, $4);
   }
   | FUNCTION func_base func_args ";" {
     if($3.flag == fbflag_default)
@@ -797,17 +801,17 @@ func_def_base
     SET_FLAG($2, abstract);
     $$ = new_func_def(mpool(arg), $2, NULL);
   }
-  | LOCALE global ID LPAREN locale_list RPAREN code_stmt {
+  | LOCALE global ID LPAREN locale_list RPAREN code_list {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @3);
     Func_Base *base = new_func_base(mpool(arg), td, $3, $5.args, $2, @3);
     base->fbflag |= fbflag_locale | $5.flag;
-    $$ = new_func_def(mpool(arg), base, cpy_stmt3(mpool(arg), &$7));
+    $$ = new_func_def(mpool(arg), base, $7);
   }
-  | LOCALE ID LPAREN locale_list RPAREN code_stmt {
+  | LOCALE ID LPAREN locale_list RPAREN code_list {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @2);
     Func_Base *base = new_func_base(mpool(arg), td, $2, $4.args, ae_flag_none, @2);
     base->fbflag |= fbflag_locale | $4.flag;
-    $$ = new_func_def(mpool(arg), base, cpy_stmt3(mpool(arg), &$6));
+    $$ = new_func_def(mpool(arg), base, $6);
   }
 
 abstract_fdef
@@ -859,19 +863,19 @@ op_base
 
 operator: "operator" { $$ = ae_flag_none; } | "operator" global { $$ = $2; };
 op_def
-  : operator op_base code_stmt
-  { $$ = new_func_def(mpool(arg), $2, &$3); $2->fbflag |= fbflag_op; $2->flag |= $1; }
+  : operator op_base code_list
+  { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; }
   | operator op_base ";"
   { $$ = new_func_def(mpool(arg), $2, NULL); $2->fbflag |= fbflag_op; $2->flag |= $1 | ae_flag_abstract; }
   | operator "abstract" op_base ";"
   { $$ = new_func_def(mpool(arg), $3, NULL); $3->fbflag |= fbflag_op; $3->flag |= $1 | ae_flag_abstract; }
 
 func_def: func_def_base | abstract_fdef | op_def
-  |  operator "new" func_args code_stmt
+  |  operator "new" func_args code_list
     {
       Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1, @2);
       base->fbflag = $3.flag;
-      $$ = new_func_def(mpool(arg), base, &$4);
+      $$ = new_func_def(mpool(arg), base, $4);
     }
   |  operator "new" func_args ";"
     {
@@ -996,10 +1000,10 @@ unary_exp : post_exp
        $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
   }
   | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
-  | "spork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @1); };
-  | "fork" code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$2, @1); };
-  | "spork" captures code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$3, @1); $$->d.exp_unary.captures = $2; };
-  | "fork"  captures code_stmt   { $$ = new_exp_unary3(mpool(arg), $1, &$3, @1); $$->d.exp_unary.captures = $2; };
+  | "spork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
+  | "fork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
+  | "spork" captures code_list   { $$ = new_exp_unary3(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; };
+  | "fork"  captures code_list   { $$ = new_exp_unary3(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; };
   | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @2); };
 
 lambda_list:
@@ -1092,7 +1096,7 @@ prim_exp
     $$ = new_prim_id(mpool(arg), $1, loc);
     $$->d.prim.prim_type = ae_prim_locale;
   }
-  | lambda_arg captures code_stmt { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, &$3, @1); $$->d.exp_lambda.def->captures = $2;};
+  | lambda_arg captures code_list { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, $3, @1); $$->d.exp_lambda.def->captures = $2;};
   | lambda_arg captures "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $4, @1); $$->d.exp_lambda.def->captures = $2;};
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
   | "perform" opt_id     { $$ = new_prim_perform(mpool(arg), $2, @2); }
