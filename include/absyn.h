@@ -545,7 +545,7 @@ typedef struct Enum_Def_ *Enum_Def;
 struct Enum_Def_ {
   ID_List         list;
   struct Symbol_ *xid;
-  struct Type_ *  t;
+  struct Type_ *  type;
   struct Vector_  values;
   loc_t   pos; ///< position
   ae_flag         flag;
@@ -759,7 +759,7 @@ ANEW ANN AST_NEW(Section *, section_type_def, const Type_Def);
 struct Extend_Def_ {
   Type_Decl *   td;
   ID_List       traits;
-  struct Type_ *t;
+  struct Type_ *type;
 };
 
 ANN2(1)
