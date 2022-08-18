@@ -3079,7 +3079,7 @@ yyreduce:
 
   case 71: /* code_list: "{" "}"  */
 #line 410 "src/gwion.y"
-            { NULL; }
+            { (yyval.stmt_list) = new_mp_vector(mpool(arg), struct Stmt_, 0); }
 #line 3084 "src/parser.c"
     break;
 

@@ -407,7 +407,7 @@ code_stmt
     $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .pos = @$}; };
 
 code_list
-  : "{" "}" { NULL; }
+  : "{" "}" { $$ = new_mp_vector(mpool(arg), struct Stmt_, 0); }
   | "{" stmt_list "}" { $$ = $2; }
 
 stmt_pp
