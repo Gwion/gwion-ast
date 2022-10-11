@@ -531,6 +531,15 @@ ANN static Trait_Def cpy_trait_def(MemPool p, const Trait_Def src) {
   return a;
 }
 
+ANN static Prim_Def cpy_prim_def(MemPool p, const Prim_Def src) {
+  Prim_Def a = mp_calloc(p, Prim_Def);
+  a->name = src->name;
+  a->size = src->size;
+  a->flag = src->flag;
+  a->loc = src->loc;
+  return a;
+}
+
 ANN static void cpy_section(MemPool p, Section *const a, const Section *src) {
 //  Section *a = mp_calloc(p, Section);
   switch (src->section_type) {
@@ -561,6 +570,9 @@ ANN static void cpy_section(MemPool p, Section *const a, const Section *src) {
     break;
   case ae_section_type:
     a->d.type_def = cpy_type_def(p, src->d.type_def);
+    break;
+    case ae_section_primitive:
+    a->d.prim_def = cpy_prim_def(p, src->d.prim_def);
     break;
   }
   a->section_type = src->section_type;

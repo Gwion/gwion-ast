@@ -5,3 +5,4 @@ config.mk
 .po
 html
 .mo
+gwparse

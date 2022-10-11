@@ -75,6 +75,7 @@ static inline m_bool dummy_func(const void *a NUSED, const void *b NUSED) {
       (_##prefix##_section_func)prefix##_enum_def,                             \
       (_##prefix##_section_func)prefix##_union_def,                            \
       (_##prefix##_section_func)prefix##_fptr_def,                             \
-      (_##prefix##_section_func)prefix##_type_def};
+      (_##prefix##_section_func)prefix##_type_def,                             \
+      (_##prefix##_section_func)prefix##_prim_def};
 
 #endif

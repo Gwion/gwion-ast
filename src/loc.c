@@ -21,6 +21,7 @@ ANN static char *get_src(const char *filename, const loc_t loc) {
 static inline const char *get_filename(const char *filename) {
 #ifndef BUILD_ON_WINDOWS
   const char *pwd = getenv("PWD");
+  if(!pwd) return filename;
 #else
   TCHAR pwd[MAX_PATH];
   GetCurrentDirectory(MAX_PATH, pwd);

@@ -299,6 +299,10 @@ AST_FREE(Trait_Def, trait_def) {
   mp_free(p, Trait_Def, a);
 }
 
+AST_FREE(Prim_Def, prim_def) {
+  mp_free(p, Prim_Def, a);
+}
+
 ANN static AST_FREE(Section *, section) {
   const ae_section_t t = a->section_type;
   if (t == ae_section_class)
@@ -319,6 +323,8 @@ ANN static AST_FREE(Section *, section) {
     free_fptr_def(p, a->d.fptr_def);
   else if (t == ae_section_type)
     free_type_def(p, a->d.type_def);
+  else if (t == ae_section_primitive)
+    free_prim_def(p, a->d.prim_def);
 }
 
 AST_FREE(Type_List, type_list) {

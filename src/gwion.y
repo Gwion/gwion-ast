@@ -69,6 +69,7 @@ void lex_spread(void *data);
   Extend_Def extend_def;
   Class_Def class_def;
   Trait_Def trait_def;
+  Prim_Def prim_def;
   Ast ast;
 };
 
@@ -82,7 +83,7 @@ void lex_spread(void *data);
   CLASS "class" STRUCT "struct" TRAIT "trait"
   STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
   EXTENDS "extends" DOT "."
-  OPERATOR "operator"
+  OPERATOR "operator" PRIMITIVE "primitive"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." DEFER "defer"
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
@@ -147,6 +148,7 @@ void lex_spread(void *data);
 %type<type_list> type_list call_template
 %type<union_member> union_decl
 %type<union_list> union_list
+%type<prim_def> prim_def
 %type<ast> ast prg trait_ast
 
 %start prg
@@ -198,6 +200,7 @@ section
   | union_def    { $$ = MK_SECTION(union, union_def, $1); }
   | fptr_def     { $$ = MK_SECTION(fptr, fptr_def, $1); }
   | type_def     { $$ = MK_SECTION(type, type_def, $1); }
+  | prim_def     { $$ = MK_SECTION(primitive, prim_def, $1); }
   ;
 
 class_flag: flag modifier { $$ = $1 | $2; }
@@ -255,6 +258,10 @@ trait_def: "trait" opt_global ID traits trait_body
       $$->traits = $4;
     };
 
+prim_def: "primitive" class_flag ID NUM ";"
+    {
+      $$ = new_prim_def(mpool(arg), $3, $4, @3, $2);
+    }
 class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
 traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
 

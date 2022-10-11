@@ -204,7 +204,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <define>\n          { YY_USER_ACTION; adjust(yyscanner); macro_append(yyscanner, yytext); GWYY_DEFINE; };
 <define>.           { YY_USER_ACTION; adjust(yyscanner); yymore(); continue; };
 
-^"#pragma"{SPACE}+ { adjust(yyscanner); BEGIN(pragma); }
+^{SPACE}*"#pragma"{SPACE}+ { adjust(yyscanner); BEGIN(pragma); }
 <pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 
 ^#ifn?def{SPACE}+{LEX_ID} {
@@ -295,6 +295,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "spork"                             { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return SPORK; }
 "fork"                              { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return FORK; }
 "union"                             { adjust(yyscanner); return UNION; }
+"primitive"                         { adjust(yyscanner); return PRIMITIVE; }
 
 "\\\n"                              { adjust(yyscanner); continue; }
 "\\"                                { adjust(yyscanner); return BACKSLASH; }

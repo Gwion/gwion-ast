@@ -720,6 +720,26 @@ ANN ANEW Trait_Def new_trait_def(MemPool p, const ae_flag, const Symbol,
                                  const Ast, const loc_t);
 ANN void           free_trait_def(MemPool p, Trait_Def);
 
+typedef struct Prim_Def_ {
+  Symbol name;
+  m_uint size;
+  loc_t loc;
+  ae_flag flag;
+} *Prim_Def;
+
+AST_NEW(Prim_Def, prim_def, const Symbol name, const m_uint size, const loc_t loc, const ae_flag flag);
+ANN void free_prim_def(MemPool p, Prim_Def);
+
+static inline bool is_prim(const Exp e) { return e->exp_type == ae_exp_primary; }
+
+static inline bool is_prim_int(const Exp e) {
+  return (is_prim(e) && e->d.prim.prim_type == ae_prim_num);
+}
+
+static inline bool is_prim_float(const Exp e) {
+  return (is_prim(e) && e->d.prim.prim_type == ae_prim_float);
+}
+
 #define MK_SECTION(_type, _target, _data) (Section){ .section_type = ae_section_##_type, .d = { ._target = _data } }
 typedef enum {
   ae_section_stmt,
@@ -730,7 +750,8 @@ typedef enum {
   ae_section_enum,
   ae_section_union,
   ae_section_fptr,
-  ae_section_type
+  ae_section_type,
+  ae_section_primitive
 } ae_section_t;
 typedef struct Section_ {
   union section_data {
@@ -743,6 +764,7 @@ typedef struct Section_ {
     Union_Def  union_def;
     Fptr_Def   fptr_def;
     Type_Def   type_def;
+    Prim_Def   prim_def;
   } d;
   ae_section_t section_type;
 } Section;

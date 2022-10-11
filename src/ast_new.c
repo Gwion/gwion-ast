@@ -479,3 +479,12 @@ AST_NEW(Trait_Def, trait_def, const ae_flag class_decl, const Symbol xid,
   a->pos      = pos;
   return a;
 }
+
+AST_NEW(Prim_Def, prim_def, const Symbol name, const m_uint size, const loc_t loc, const ae_flag flag) {
+  Prim_Def a = mp_calloc(p, Prim_Def);
+  a->name    = name;
+  a->size    = size;
+  a->loc     = loc;
+  a->flag    = flag;
+  return a;
+}
