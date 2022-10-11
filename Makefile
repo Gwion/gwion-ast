@@ -57,5 +57,10 @@ uninstall: translation-uninstall
 	rm ${DESTDIR}/${PREFIX}/bin/lib${PACKAGE}.a
 	rm -r ${DESTDIR}/${PREFIX}/include/gwion/ast
 
+gwparse: main.o
+	${CC} -o $@ $< -lfl libgwion_ast.a libprettyerr/libprettyerr.a ../util/libgwion_util.a -lpthread -lm
+
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/locale.mk
+
+
