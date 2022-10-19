@@ -643,7 +643,13 @@ loop_stmt
     $$.d.stmt_loop.idx->v = NULL;
   };
 
-defer_stmt: "defer" stmt { $$ = (struct Stmt_) { .stmt_type = ae_stmt_defer,
+defer_stmt: "defer" stmt {
+    if(!defer_stmt(&$2)) {
+      // defer could maybe return the position
+      parser_error(&@1, arg, "return statement in defer", 0x0209);
+      YYERROR;
+    }
+    $$ = (struct Stmt_) { .stmt_type = ae_stmt_defer,
     .d = { .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) }},
     .pos = @1
   };
