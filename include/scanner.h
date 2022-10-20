@@ -23,5 +23,5 @@ int     scanner_error(Scanner *scan, const char *main, const char *explain,
                       const char *fix, const loc_t pos, uint error_code);
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos);
 
-ANN bool defer_stmt(const Stmt stmt);
+ANN loc_t defer_stmt(const Stmt stmt);
 #endif

@@ -644,9 +644,10 @@ loop_stmt
   };
 
 defer_stmt: "defer" stmt {
-    if(!defer_stmt(&$2)) {
+    const loc_t loc = defer_stmt(&$2);
+    if(loc.first.line) {
       // defer could maybe return the position
-      parser_error(&@1, arg, "return statement in defer", 0x0209);
+      parser_error(&loc, arg, "return statement in defer", 0x0209);
       YYERROR;
     }
     $$ = (struct Stmt_) { .stmt_type = ae_stmt_defer,
