@@ -171,10 +171,6 @@ Stmt_If
 Stmt_Code
   ?Stmt_List
 
-Stmt_VarLoop
-  Exp exp
-  Stmt body
-
 Stmt_Exp Stmt_Break
 
 Stmt_Exp Stmt_Continue
@@ -207,6 +203,11 @@ Stmt_Try
 
 Stmt_Defer
   stmt
+
+Stmt_Spread 
+  Symbol xid
+  ID_List list
+  m_str data
 
 !Stmt
 Stmt
