@@ -49,6 +49,12 @@ member() {
        echo "  ${gname}_${s}$type(a, ${access}b);"
       continue
     fi
+    if [ "${type:0:1}" = "&" ]
+    then
+       type=$(cname "${type:1}")
+       echo "  ${gname}_${s}$type(a, ${access}b->$name);"
+      continue
+    fi
     if [ "${type:0:1}" = "!" ]
     then
        type=${type:1}
@@ -86,6 +92,19 @@ struct() {
   done
 }
 
+vector() {
+  type=$(echo "$1" | cut -d: -f1)
+  elem=$(echo "$1" | cut -d: -f2)
+  etype=$(echo "$elem" | tr '*' ' ')
+  access=$(echo "$1" | cut -d: -f3)
+  n=$(cname "$type")
+  echo  "ANN static $return_type ${gname}_${n}($(ctype "$gtype")a, $(ctype "$type")b) {"
+  echo "  for (uint32_t i = 0; i < b->len; i++) {"
+  echo "    $elem c = ${access}mp_vector_at(b, $etype, i);"
+  echo "    ${gname}_$(cname $elem)(a, c);"
+  echo "  }"
+}
+
 decl() {
   echo "$@" | while read -r type
   do
@@ -115,6 +134,7 @@ do
   "!" ) decl "${line:1}";;
   ":") section="${line:1}";;
   " ") member "$line";;
+  "$") vector "${line:1}";;
   *) struct "$line";;
   esac
 done < "$2" >> "${gname}.c"

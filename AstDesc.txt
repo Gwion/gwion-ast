@@ -3,18 +3,15 @@ Symbol
 Array_Sub
   ?Exp exp
 
-ID_List
-  Symbol xid
-  ?ID_List next
+$ID_List:Symbol:*
 
-Specialized_List
+Specialized*
   Symbol xid
   ?ID_List traits
-  ?Specialzed_List next
 
-Type_List
-  Type_Decl* td
-  ?Type_List next
+$Specialized_List:Specialized *:
+
+$Type_List:Type_Decl *:
 
 Tmpl*
   ?ID_List list
@@ -28,7 +25,6 @@ Type_Decl*
   Symbol xid
   ?Array_Sub array
   ?Type_List types
-  ?Type_Decl* next
 
 : Prim
 Symbol*    id
@@ -71,17 +67,12 @@ Exp_Primary* prim
 
 ### Exp
 :
-Var_Decl
+Var_Decl*
   ?Symbol xid
-  ?Array_Sub array
-
-Var_Decl_List
-  Var_Decl self
-  ?Var_Decl_List next
 
 Exp_Decl*
   ?Type_Decl* td
-  Var_Decl_List list
+  &Var_Decl vd &
 
 Exp_Binary*
   Exp lhs
@@ -180,7 +171,6 @@ Stmt_Exp stmt_return
 
 Stmt_List case_list
   Stmt_Case stmt->d.stmt_match &
-  ?Case_List next
 
 Stmt_Match
   Exp cond
@@ -204,19 +194,16 @@ Stmt_Try
 Stmt_Defer
   stmt
 
-Stmt_Spread 
-  Symbol xid
-  ID_List list
-  m_str data
-
 !Stmt
 Stmt
   !stmt stmt &
 
-Arg_List
+
+Arg 
   ?Type_Decl* td
-  Var_Decl
-  ?Arg_List next
+  Var_Decl vd
+
+$Arg_List:Arg
 
 Union_List
   Type_Decl* td
@@ -226,7 +213,6 @@ Union_List
 :
 Stmt_List
   Stmt
-  ?Stmt_List next
 
 :
 Func_Base*
@@ -267,13 +253,16 @@ Extend_Def
   Ast body
   Type_Decl td
 
+Spread_Def
+  Symbol xid
+  ID_List list
+  m_str data
+
 !section
 Section*
   !section section *(void**)&
 
 ### Ast
 :
-Ast
-  Section*
-  ?Ast next
+$Ast:Section:*
 
