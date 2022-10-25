@@ -306,6 +306,7 @@ struct Exp_ {
   int16_t  emit_var;
   int16_t  acquire;
   enum exp_comptime comptime;
+  bool paren;
 };
 
 ANN static inline int exp_getuse(const Exp e) {

@@ -1103,7 +1103,7 @@ prim_exp
   | "{" dict_list "}"    { $$ = new_prim_dict(   mpool(arg), $2, @$); }
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
-  | "(" exp ")"          { $$ = $2; }
+  | "(" exp ")"          { $$ = $2; $$->paren = true; }
   | LOCALE_EXP           {
     const loc_t loc = { .first = { .line = @1.first.line, .column = @1.first.column - 1},
                         .last = { .line = @1.last.line, .column = @1.last.column - 1}};

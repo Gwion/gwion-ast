@@ -4608,7 +4608,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 338: /* prim_exp: "(" exp ")"  */
 #line 1106 "src/gwion.y"
-                         { (yyval.exp) = (yyvsp[-1].exp); }
+                         { (yyval.exp) = (yyvsp[-1].exp); (yyval.exp)->paren = true; }
 #line 4613 "src/parser.c"
     break;
 
