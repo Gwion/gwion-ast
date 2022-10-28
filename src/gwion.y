@@ -20,7 +20,7 @@
 #define mpool(arg) arg->st->p
 #define insert_symbol(a) insert_symbol(arg->st, (a))
 
-ANN static int parser_error(loc_t*, Scanner*const, const char *, const uint);
+ANN static int parser_error(const loc_t*, Scanner*const, const char *, const uint);
 ANN Symbol sig_name(const Scanner*, const pos_t);
 void lex_spread(void *data);
 %}
@@ -1118,7 +1118,7 @@ prim_exp
   ;
 %%
 #undef scan
-ANN static int parser_error(loc_t *loc, Scanner *const scan, const char* diagnostic, const uint error_code) {
+ANN static int parser_error(const loc_t *loc, Scanner *const scan, const char* diagnostic, const uint error_code) {
   char _main[strlen(diagnostic) + 1];
   strcpy(_main, diagnostic);
   char *_explain = strchr(_main, ','),
