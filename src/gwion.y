@@ -1103,7 +1103,7 @@ prim_exp
   | "{" dict_list "}"    { $$ = new_prim_dict(   mpool(arg), $2, @$); }
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
-  | "(" exp ")"          { $$ = $2; $$->paren = true; }
+  | "(" exp ")"          { $$ = $2; if(!$2->next) $$->paren = true; }
   | LOCALE_EXP           {
     const loc_t loc = { .first = { .line = @1.first.line, .column = @1.first.column - 1},
                         .last = { .line = @1.last.line, .column = @1.last.column - 1}};
@@ -1112,7 +1112,7 @@ prim_exp
   }
   | lambda_arg captures code_list { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, $3, @1); $$->d.exp_lambda.def->captures = $2;};
   | lambda_arg captures "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $4, @1); $$->d.exp_lambda.def->captures = $2;};
-  | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); }
+  | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); $$->paren = true; }
   | "perform" opt_id     { $$ = new_prim_perform(mpool(arg), $2, @2); }
   | "(" ")"              { $$ = new_prim_nil(    mpool(arg),     @$); }
   ;
