@@ -78,7 +78,6 @@ struct ParserArg {
 typedef struct {
   Exp             base;
   Symbol xid;
-  struct Exp_Call_* is_call;
 } Exp_Dot;
 
 
@@ -269,9 +268,7 @@ enum exp_state {
   exp_state_meta, // ae_meta_value
   exp_state_prot, // ae_meta_protect
   exp_state_addr,
-  exp_state_nomut,
   exp_state_use,
-  exp_state_null, // still in use?
 };
 
 enum exp_comptime {
@@ -302,13 +299,11 @@ struct Exp_ {
   Exp ref;
   void *data;
   loc_t pos; ///< position
-  uint32_t start;
-                     //  enum exp_state emit_var;
   ae_exp_t exp_type;
   int16_t  emit_var;
-  int16_t  acquire;
   enum exp_comptime comptime;
   bool paren;
+  bool is_call;
 };
 
 ANN static inline int exp_getuse(const Exp e) {
@@ -324,10 +319,6 @@ ANN static inline void exp_setuse(const Exp e, const bool val) {
 
 ANN static inline int exp_getvar(const Exp e) {
   return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
-}
-
-ANN static inline int exp_getnomut(const Exp e) {
-  return (e->emit_var & (1 << exp_state_nomut)) == (1 << exp_state_nomut);
 }
 
 ANN static inline void exp_setvar(const Exp e, const bool val) {
@@ -346,24 +337,6 @@ ANN static inline void exp_setprot(const Exp e, const bool val) {
     e->emit_var |= 1 << exp_state_prot;
   else
     e->emit_var &= ~(1 << exp_state_prot);
-}
-
-ANN static inline void exp_setnomut(const Exp e, const bool val) {
-  if (val)
-    e->emit_var |= 1 << exp_state_nomut;
-  else
-    e->emit_var &= ~(1 << exp_state_nomut);
-}
-
-ANN static inline int exp_getoptionnal(const Exp e) {
-  return (e->emit_var & (1 << exp_state_null)) == (1 << exp_state_null);
-}
-
-ANN static inline void exp_setoptionnal(const Exp e, const bool val) {
-  if (val)
-    e->emit_var |= 1 << exp_state_null;
-  else
-    e->emit_var &= ~(1 << exp_state_null);
 }
 
 ANN static inline int exp_getmeta(const Exp e) {
