@@ -114,6 +114,7 @@ ANN static void cpy_exp_decl(MemPool p, Exp_Decl *a, const Exp_Decl *src) {
 ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
   switch (src->prim_type) {
   case ae_prim_id:
+  case ae_prim_locale:
   case ae_prim_perform:
     a->d.var = src->d.var;
     break;
