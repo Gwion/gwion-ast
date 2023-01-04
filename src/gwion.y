@@ -31,7 +31,7 @@ void lex_spread(void *data);
   char* sval;
   struct AstString string;
   int ival;
-  long unsigned int lval;
+  long long unsigned int lval;
   m_uint uval;
   ae_flag flag;
   enum fbflag fbflag;
@@ -89,7 +89,8 @@ void lex_spread(void *data);
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
   LATE "late"
 
-%token<lval> NUM "<integer>"
+%token<lval> NUM
+%type<lval> number "<integer>"
 %type<stmt_t> flow breaks
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
@@ -258,7 +259,14 @@ trait_def: "trait" opt_global ID traits trait_body
       $$->traits = $4;
     };
 
-prim_def: "primitive" class_flag ID NUM ";"
+number: NUM {
+  if($1 > INTPTR_MAX) {
+    parser_error(&@1, arg, "number too big", 0); YYERROR;
+  }
+  $$ = $1;
+}
+
+prim_def: "primitive" class_flag ID number ";"
     {
       $$ = new_prim_def(mpool(arg), $3, $4, @3, $2);
     }
@@ -688,7 +696,7 @@ jump_stmt
       .pos = @1
     };
   }
-  | breaks NUM ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
+  | breaks number ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
       .d = { .stmt_index = { .idx = $2 }},
       .pos = @1
     };
@@ -1094,7 +1102,7 @@ _captures: capture { $$ = new_mp_vector(mpool(arg), Capture, 1); mp_vector_set($
 captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
 prim_exp
   : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
-  | NUM                  { $$ = new_prim_int(    mpool(arg), $1, @$); }
+  | number               { $$ = new_prim_int(    mpool(arg), $1, @$); }
   | FLOATT               { $$ = new_prim_float(  mpool(arg), $1, @$); }
   | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }

@@ -111,69 +111,69 @@ extern int gwion_debug;
     LOCALE_INI = 312,              /* LOCALE_INI  */
     LOCALE_END = 313,              /* LOCALE_END  */
     LATE = 314,                    /* "late"  */
-    NUM = 315,                     /* "<integer>"  */
-    FLOATT = 316,                  /* "<float>"  */
-    STRING_LIT = 317,              /* "<litteral string>"  */
-    CHAR_LIT = 318,                /* "<litteral char>"  */
-    INTERP_START = 319,            /* "${"  */
-    INTERP_EXP = 320,              /* INTERP_EXP  */
-    PP_COMMENT = 321,              /* "<comment>"  */
-    PP_INCLUDE = 322,              /* "#include"  */
-    PP_DEFINE = 323,               /* "#define"  */
-    PP_PRAGMA = 324,               /* "#pragma"  */
-    PP_UNDEF = 325,                /* "#undef"  */
-    PP_IFDEF = 326,                /* "#ifdef"  */
-    PP_IFNDEF = 327,               /* "#ifndef"  */
-    PP_ELSE = 328,                 /* "#else"  */
-    PP_ENDIF = 329,                /* "#if"  */
-    PP_NL = 330,                   /* "\n"  */
-    PP_IMPORT = 331,               /* "import"  */
-    SPREAD = 332,                  /* "}..."  */
-    INTERP_LIT = 333,              /* "<interp string lit>"  */
-    INTERP_END = 334,              /* "<interp string end>"  */
-    ID = 336,                      /* "<identifier>"  */
-    PLUS = 337,                    /* "+"  */
-    PLUSPLUS = 338,                /* "++"  */
-    MINUS = 339,                   /* "-"  */
-    MINUSMINUS = 340,              /* "--"  */
-    TIMES = 341,                   /* "*"  */
-    DIVIDE = 342,                  /* "/"  */
-    PERCENT = 343,                 /* "%"  */
-    DOLLAR = 344,                  /* "$"  */
-    QUESTION = 345,                /* "?"  */
-    OPTIONS = 346,                 /* OPTIONS  */
-    COLON = 347,                   /* ":"  */
-    COLONCOLON = 348,              /* "::"  */
-    QUESTIONCOLON = 349,           /* "?:"  */
-    NEW = 350,                     /* "new"  */
-    SPORK = 351,                   /* "spork"  */
-    FORK = 352,                    /* "fork"  */
-    L_HACK = 353,                  /* "<<<"  */
-    R_HACK = 354,                  /* ">>>"  */
-    AND = 355,                     /* "&&"  */
-    EQ = 356,                      /* "=="  */
-    GE = 357,                      /* ">="  */
-    GT = 358,                      /* ">"  */
-    LE = 359,                      /* "<="  */
-    LT = 360,                      /* "<"  */
-    NEQ = 361,                     /* "!="  */
-    SHIFT_LEFT = 362,              /* "<<"  */
-    SHIFT_RIGHT = 363,             /* ">>"  */
-    S_AND = 364,                   /* "&"  */
-    S_OR = 365,                    /* "|"  */
-    S_XOR = 366,                   /* "^"  */
-    OR = 367,                      /* "||"  */
-    TMPL = 368,                    /* ":["  */
-    TILDA = 369,                   /* "~"  */
-    EXCLAMATION = 370,             /* "!"  */
-    AROBASE = 371,                 /* "@"  */
-    DYNOP = 372,                   /* "<dynamic_operator>"  */
-    LOCALE_EXP = 373,              /* "`foo`"  */
-    RANGE_EMPTY = 374,             /* RANGE_EMPTY  */
-    UMINUS = 375,                  /* UMINUS  */
-    UTIMES = 376,                  /* UTIMES  */
-    STMT_ASSOC = 378,              /* STMT_ASSOC  */
-    STMT_NOASSOC = 379             /* STMT_NOASSOC  */
+    NUM = 315,                     /* NUM  */
+    FLOATT = 317,                  /* "<float>"  */
+    STRING_LIT = 318,              /* "<litteral string>"  */
+    CHAR_LIT = 319,                /* "<litteral char>"  */
+    INTERP_START = 320,            /* "${"  */
+    INTERP_EXP = 321,              /* INTERP_EXP  */
+    PP_COMMENT = 322,              /* "<comment>"  */
+    PP_INCLUDE = 323,              /* "#include"  */
+    PP_DEFINE = 324,               /* "#define"  */
+    PP_PRAGMA = 325,               /* "#pragma"  */
+    PP_UNDEF = 326,                /* "#undef"  */
+    PP_IFDEF = 327,                /* "#ifdef"  */
+    PP_IFNDEF = 328,               /* "#ifndef"  */
+    PP_ELSE = 329,                 /* "#else"  */
+    PP_ENDIF = 330,                /* "#if"  */
+    PP_NL = 331,                   /* "\n"  */
+    PP_IMPORT = 332,               /* "import"  */
+    SPREAD = 333,                  /* "}..."  */
+    INTERP_LIT = 334,              /* "<interp string lit>"  */
+    INTERP_END = 335,              /* "<interp string end>"  */
+    ID = 337,                      /* "<identifier>"  */
+    PLUS = 338,                    /* "+"  */
+    PLUSPLUS = 339,                /* "++"  */
+    MINUS = 340,                   /* "-"  */
+    MINUSMINUS = 341,              /* "--"  */
+    TIMES = 342,                   /* "*"  */
+    DIVIDE = 343,                  /* "/"  */
+    PERCENT = 344,                 /* "%"  */
+    DOLLAR = 345,                  /* "$"  */
+    QUESTION = 346,                /* "?"  */
+    OPTIONS = 347,                 /* OPTIONS  */
+    COLON = 348,                   /* ":"  */
+    COLONCOLON = 349,              /* "::"  */
+    QUESTIONCOLON = 350,           /* "?:"  */
+    NEW = 351,                     /* "new"  */
+    SPORK = 352,                   /* "spork"  */
+    FORK = 353,                    /* "fork"  */
+    L_HACK = 354,                  /* "<<<"  */
+    R_HACK = 355,                  /* ">>>"  */
+    AND = 356,                     /* "&&"  */
+    EQ = 357,                      /* "=="  */
+    GE = 358,                      /* ">="  */
+    GT = 359,                      /* ">"  */
+    LE = 360,                      /* "<="  */
+    LT = 361,                      /* "<"  */
+    NEQ = 362,                     /* "!="  */
+    SHIFT_LEFT = 363,              /* "<<"  */
+    SHIFT_RIGHT = 364,             /* ">>"  */
+    S_AND = 365,                   /* "&"  */
+    S_OR = 366,                    /* "|"  */
+    S_XOR = 367,                   /* "^"  */
+    OR = 368,                      /* "||"  */
+    TMPL = 369,                    /* ":["  */
+    TILDA = 370,                   /* "~"  */
+    EXCLAMATION = 371,             /* "!"  */
+    AROBASE = 372,                 /* "@"  */
+    DYNOP = 373,                   /* "<dynamic_operator>"  */
+    LOCALE_EXP = 374,              /* "`foo`"  */
+    RANGE_EMPTY = 375,             /* RANGE_EMPTY  */
+    UMINUS = 376,                  /* UMINUS  */
+    UTIMES = 377,                  /* UTIMES  */
+    STMT_ASSOC = 379,              /* STMT_ASSOC  */
+    STMT_NOASSOC = 380             /* STMT_NOASSOC  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -240,68 +240,68 @@ extern int gwion_debug;
 #define LOCALE_END 313
 #define LATE 314
 #define NUM 315
-#define FLOATT 316
-#define STRING_LIT 317
-#define CHAR_LIT 318
-#define INTERP_START 319
-#define INTERP_EXP 320
-#define PP_COMMENT 321
-#define PP_INCLUDE 322
-#define PP_DEFINE 323
-#define PP_PRAGMA 324
-#define PP_UNDEF 325
-#define PP_IFDEF 326
-#define PP_IFNDEF 327
-#define PP_ELSE 328
-#define PP_ENDIF 329
-#define PP_NL 330
-#define PP_IMPORT 331
-#define SPREAD 332
-#define INTERP_LIT 333
-#define INTERP_END 334
-#define ID 336
-#define PLUS 337
-#define PLUSPLUS 338
-#define MINUS 339
-#define MINUSMINUS 340
-#define TIMES 341
-#define DIVIDE 342
-#define PERCENT 343
-#define DOLLAR 344
-#define QUESTION 345
-#define OPTIONS 346
-#define COLON 347
-#define COLONCOLON 348
-#define QUESTIONCOLON 349
-#define NEW 350
-#define SPORK 351
-#define FORK 352
-#define L_HACK 353
-#define R_HACK 354
-#define AND 355
-#define EQ 356
-#define GE 357
-#define GT 358
-#define LE 359
-#define LT 360
-#define NEQ 361
-#define SHIFT_LEFT 362
-#define SHIFT_RIGHT 363
-#define S_AND 364
-#define S_OR 365
-#define S_XOR 366
-#define OR 367
-#define TMPL 368
-#define TILDA 369
-#define EXCLAMATION 370
-#define AROBASE 371
-#define DYNOP 372
-#define LOCALE_EXP 373
-#define RANGE_EMPTY 374
-#define UMINUS 375
-#define UTIMES 376
-#define STMT_ASSOC 378
-#define STMT_NOASSOC 379
+#define FLOATT 317
+#define STRING_LIT 318
+#define CHAR_LIT 319
+#define INTERP_START 320
+#define INTERP_EXP 321
+#define PP_COMMENT 322
+#define PP_INCLUDE 323
+#define PP_DEFINE 324
+#define PP_PRAGMA 325
+#define PP_UNDEF 326
+#define PP_IFDEF 327
+#define PP_IFNDEF 328
+#define PP_ELSE 329
+#define PP_ENDIF 330
+#define PP_NL 331
+#define PP_IMPORT 332
+#define SPREAD 333
+#define INTERP_LIT 334
+#define INTERP_END 335
+#define ID 337
+#define PLUS 338
+#define PLUSPLUS 339
+#define MINUS 340
+#define MINUSMINUS 341
+#define TIMES 342
+#define DIVIDE 343
+#define PERCENT 344
+#define DOLLAR 345
+#define QUESTION 346
+#define OPTIONS 347
+#define COLON 348
+#define COLONCOLON 349
+#define QUESTIONCOLON 350
+#define NEW 351
+#define SPORK 352
+#define FORK 353
+#define L_HACK 354
+#define R_HACK 355
+#define AND 356
+#define EQ 357
+#define GE 358
+#define GT 359
+#define LE 360
+#define LT 361
+#define NEQ 362
+#define SHIFT_LEFT 363
+#define SHIFT_RIGHT 364
+#define S_AND 365
+#define S_OR 366
+#define S_XOR 367
+#define OR 368
+#define TMPL 369
+#define TILDA 370
+#define EXCLAMATION 371
+#define AROBASE 372
+#define DYNOP 373
+#define LOCALE_EXP 374
+#define RANGE_EMPTY 375
+#define UMINUS 376
+#define UTIMES 377
+#define STMT_ASSOC 379
+#define STMT_NOASSOC 380
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -314,7 +314,7 @@ union YYSTYPE
   char* sval;
   struct AstString string;
   int ival;
-  long unsigned int lval;
+  long long unsigned int lval;
   m_uint uval;
   ae_flag flag;
   enum fbflag fbflag;
