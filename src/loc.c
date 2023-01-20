@@ -3,6 +3,19 @@
 #include "gwion_ast.h"
 #include "parser.h"
 
+static void _gwerr_basic(const char *main, const char *explain, const char *fix,
+                 const char *filename, const loc_t loc, const uint error_code,
+                 const enum libprettyerr_errtype errtype);
+ANN static void _gwerr_secondary(const char *main, const char *filename,
+                         const loc_t loc);
+
+static gwerr_basic_function_t _basic = _gwerr_basic;
+static gwerr_secondary_function_t _secondary = _gwerr_secondary;
+ANN void gwerr_set_func(gwerr_basic_function_t basic, gwerr_secondary_function_t secondary) {
+  _basic = basic;
+  _secondary = secondary;
+}
+
 ANN static char *get_src(const char *filename, const loc_t loc) {
   char * line = NULL;
   size_t len  = 0;
@@ -83,7 +96,7 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
 #ifdef __FUZZING__
   return;
 #endif
-  _gwerr_basic(main, explain, fix, filename, loc, error_code, PERR_ERROR);
+  _basic(main, explain, fix, filename, loc, error_code, PERR_ERROR);
 }
 
 void gwerr_warn(const char *main, const char *explain, const char *fix,
@@ -91,10 +104,10 @@ void gwerr_warn(const char *main, const char *explain, const char *fix,
 #ifdef __FUZZING__
   return;
 #endif
-  _gwerr_basic(main, explain, fix, filename, loc, 0, PERR_WARNING);
+  _basic(main, explain, fix, filename, loc, 0, PERR_WARNING);
 }
 
-ANN void gwerr_secondary(const char *main, const char *filename,
+ANN static void _gwerr_secondary(const char *main, const char *filename,
                          const loc_t loc) {
 #ifdef __FUZZING__
   return;
@@ -116,4 +129,8 @@ ANN void gwerr_secondary(const char *main, const char *filename,
     xfree(line);
   } else
     nosrc(&printer, &err, main, NULL, NULL);
+}
+ANN void gwerr_secondary(const char *main, const char *filename,
+                         const loc_t loc) {
+  _secondary(main, filename, loc);
 }

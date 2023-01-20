@@ -22,4 +22,9 @@ void     gwerr_warn(const char *main, const char *explain, const char *fix,
                      const char *filename, const loc_t loc);
 ANN void gwerr_secondary(const char *main, const char *filename,
                          const loc_t loc);
+typedef void (*gwerr_basic_function_t)(const char *, const char *, const char *,
+  const char *, const loc_t,  const uint,  const enum libprettyerr_errtype);
+typedef void (*gwerr_secondary_function_t)(const char *main, const char *filename,
+                         const loc_t loc);
+ANN void gwerr_set_func(gwerr_basic_function_t, gwerr_secondary_function_t);
 #endif

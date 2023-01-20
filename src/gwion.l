@@ -362,7 +362,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   adjust(yyscanner);
   char c[yyleng], *buf = c;
   Scanner* scan = yyget_extra(yyscanner);
-  GwText text = { .mp=scan->st->p };
+  GwText text;
+  text_init(&text, scan->st->p);
   while(*yytext) {
     if(isspace(*yytext) || *yytext == '#') {
       *buf = '\0';
@@ -570,8 +571,7 @@ static Macro add_macro(void* data, const m_str line) {
   ppstate->pos.first = scan->pos;
   ppstate->pos.last = scan->pos;
   scan->pp->entry->pos = yyget_lloc(data)->first;//scan->pos;
-  scan->pp->entry->text = mp_calloc(scan->ppa->hash.p, GwText);
-  scan->pp->entry->text->mp = scan->ppa->hash.p;
+  scan->pp->entry->text = new_text(scan->ppa->hash.p);
   return scan->pp->entry;
 }
 
@@ -1014,5 +1014,7 @@ static m_bool handle_rpar(void* data) {
 static void handle_char(void* data, m_str str) {
   const Scanner *scan = yyget_extra(data);
 //  while(isspace(*str))++str;
+  if(!scan->pp->entry->args->text.str)
+    text_init(&scan->pp->entry->args->text, scan->st->p);
   text_add(&scan->pp->entry->args->text, str);
 }

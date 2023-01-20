@@ -2531,7 +2531,8 @@ YY_RULE_SETUP
   adjust(yyscanner);
   char c[yyleng], *buf = c;
   Scanner* scan = yyget_extra(yyscanner);
-  GwText text = { .mp=scan->st->p };
+  GwText text;
+  text_init(&text, scan->st->p);
   while(*yytext) {
     if(isspace(*yytext) || *yytext == '#') {
       *buf = '\0';
@@ -2552,7 +2553,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 383 "src/gwion.l"
+#line 384 "src/gwion.l"
 {
   adjust(yyscanner);
   ++yytext;
@@ -2571,42 +2572,42 @@ lexer_error(yyscanner, "can't stringify non argument token", 0);
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 399 "src/gwion.l"
+#line 400 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = htol(yytext);                         return NUM;    }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 400 "src/gwion.l"
+#line 401 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = btol(yytext);                         return NUM;    }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 401 "src/gwion.l"
+#line 402 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);                return NUM;    }
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 402 "src/gwion.l"
+#line 403 "src/gwion.l"
 { adjust(yyscanner); yylval->lval = (m_uint)atoll_space(yytext, yyleng);  return NUM;    }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 403 "src/gwion.l"
+#line 404 "src/gwion.l"
 { adjust(yyscanner); yylval->fval = (m_float)exponent_not(yytext, yyleng);  return FLOATT; }
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 404 "src/gwion.l"
+#line 405 "src/gwion.l"
 { adjust(yyscanner); yylval->fval = (m_float)atof_space(yytext, yyleng);  return FLOATT; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 405 "src/gwion.l"
+#line 406 "src/gwion.l"
 { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 406 "src/gwion.l"
+#line 407 "src/gwion.l"
 {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
@@ -2627,20 +2628,20 @@ YY_RULE_SETUP
 case 133:
 /* rule 133 can match eol */
 YY_RULE_SETUP
-#line 423 "src/gwion.l"
+#line 424 "src/gwion.l"
 { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 424 "src/gwion.l"
+#line 425 "src/gwion.l"
 { adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 426 "src/gwion.l"
+#line 427 "src/gwion.l"
 ECHO;
 	YY_BREAK
-#line 2643 "src/lexer.c"
+#line 2644 "src/lexer.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 case YY_STATE_EOF(spread):
@@ -3734,7 +3735,7 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 426 "src/gwion.l"
+#line 427 "src/gwion.l"
 
 // LCOV_EXCL_LINE
 #include <stdio.h>
@@ -3882,8 +3883,7 @@ static Macro add_macro(void* data, const m_str line) {
   ppstate->pos.first = scan->pos;
   ppstate->pos.last = scan->pos;
   scan->pp->entry->pos = yyget_lloc(data)->first;//scan->pos;
-  scan->pp->entry->text = mp_calloc(scan->ppa->hash.p, GwText);
-  scan->pp->entry->text->mp = scan->ppa->hash.p;
+  scan->pp->entry->text = new_text(scan->ppa->hash.p);
   return scan->pp->entry;
 }
 
@@ -4326,6 +4326,8 @@ static m_bool handle_rpar(void* data) {
 static void handle_char(void* data, m_str str) {
   const Scanner *scan = yyget_extra(data);
 //  while(isspace(*str))++str;
+  if(!scan->pp->entry->args->text.str)
+    text_init(&scan->pp->entry->args->text, scan->st->p);
   text_add(&scan->pp->entry->args->text, str);
 }
 

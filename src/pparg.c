@@ -35,8 +35,7 @@ ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
 }
 
 ANN static GwText *pparg_body(struct PPArg_ *ppa, const m_str str) {
-  GwText *text = mp_calloc(ppa->hash.p, GwText);
-  text->mp     = ppa->hash.p;
+  GwText *text = new_text(ppa->hash.p);
   text_add(text, str);
   return text;
 }

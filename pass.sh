@@ -87,8 +87,8 @@ struct() {
     then n=$(cname "$name")
     else n=$(cname "$type")
     fi
-    echo  "ANN static $return_type ${gname}_${s}${n}($(ctype "$gtype")a, $(ctype "$type")b);"  >> "${gname}.h"
-    echo  "ANN static $return_type ${gname}_${s}${n}($(ctype "$gtype")a, $(ctype "$type")b) {"
+    echo  "ANN $return_type ${gname}_${s}${n}($(ctype "$gtype")a, $(ctype "$type")b);"  >> "${gname}.h"
+    echo  "ANN $return_type ${gname}_${s}${n}($(ctype "$gtype")a, $(ctype "$type")b) {"
   done
 }
 
@@ -98,8 +98,8 @@ vector() {
   etype=$(echo "$elem" | tr '*' ' ')
   access=$(echo "$1" | cut -d: -f3)
   n=$(cname "$type")
-  echo  "ANN static $return_type ${gname}_${n}($(ctype "$gtype")a, $(ctype "$type")b) {"
-  echo "  for (uint32_t i = 0; i < b->len; i++) {"
+  echo  "ANN $return_type ${gname}_${n}($(ctype "$gtype")a, $(ctype "$type")b) {"
+  echo "  for(uint32_t i = 0; i < b->len; i++) {"
   echo "    $elem c = ${access}mp_vector_at(b, $etype, i);"
   echo "    ${gname}_$(cname $elem)(a, c);"
   echo "  }"
