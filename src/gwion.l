@@ -62,9 +62,9 @@ ANN static double exponent_not(m_str, size_t);
 
 static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
-#define SCAN_LINT(a)     if(scan->ppa->lint)a;
-#define SCAN_NOLINT      if(!scan->ppa->lint)
-#define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->lint
+#define SCAN_LINT(a)     if(scan->ppa->fmt)a;
+#define SCAN_NOLINT      if(!scan->ppa->fmt)
+#define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->fmt
 #define GWYY_DOLINT(a)   if(GWYY_ISLINT) { a; }
 #define GWYY_LINT(a,b)   if(GWYY_ISLINT) { yylval->sval = a; return b; }
 #define GWYY_NL          if(GWYY_ISLINT) { yylval->sval = NULL; return PP_NL; }
@@ -407,7 +407,7 @@ lexer_error(yyscanner, "can't stringify non argument token", 0);
 {LEX_ID}                            {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
-  if(scan->ppa->lint) {
+  if(scan->ppa->fmt) {
     yylval->sym = alloc_sym(yyscanner, yytext);
     return ID;
   }
@@ -575,11 +575,11 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
-static m_str strip_include(const m_str line, const bool lint) {
+static m_str strip_include(const m_str line, const bool fmt) {
   const m_str str = line + 1;
   m_str end = strstr(str, ">");
   *end = '\0';
-  return !lint ? realpath(str, NULL) : strdup(str);
+  return !fmt ? realpath(str, NULL) : strdup(str);
 }
 
 static m_str strip_comment(Scanner* scan, const m_str s) {

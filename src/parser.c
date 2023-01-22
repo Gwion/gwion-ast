@@ -535,7 +535,7 @@ typedef int yy_state_fast_t;
 #endif
 
 /* Suppress unused-variable warnings by "using" E.  */
-#if ! defined lint || defined __GNUC__
+#if ! defined fmt || defined __GNUC__
 # define YY_USE(E) ((void) (E))
 #else
 # define YY_USE(E) /* empty */
@@ -3124,7 +3124,7 @@ yyreduce:
 
   case 76: /* stmt_pp: "<comment>"  */
 #line 429 "src/gwion.y"
-               { /*if(!arg->ppa->lint)return 0; */(yyval.stmt) = MK_STMT_PP(comment, (yyvsp[0].sval), (yyloc)); }
+               { /*if(!arg->ppa->fmt)return 0; */(yyval.stmt) = MK_STMT_PP(comment, (yyvsp[0].sval), (yyloc)); }
 #line 3129 "src/parser.c"
     break;
 
@@ -3178,7 +3178,7 @@ yyreduce:
 
   case 85: /* stmt_pp: "\n"  */
 #line 438 "src/gwion.y"
-               { if(!arg->ppa->lint)return 0; (yyval.stmt) = MK_STMT_PP(nl,      (yyvsp[0].sval), (yyloc)); }
+               { if(!arg->ppa->fmt)return 0; (yyval.stmt) = MK_STMT_PP(nl,      (yyvsp[0].sval), (yyloc)); }
 #line 3183 "src/parser.c"
     break;
 

@@ -426,7 +426,7 @@ code_list
   | "{" stmt_list "}" { $$ = $2; }
 
 stmt_pp
-  : PP_COMMENT { /*if(!arg->ppa->lint)return 0; */$$ = MK_STMT_PP(comment, $1, @$); }
+  : PP_COMMENT { /*if(!arg->ppa->fmt)return 0; */$$ = MK_STMT_PP(comment, $1, @$); }
   | PP_INCLUDE { $$ = MK_STMT_PP(include, $1, @$); }
   | PP_DEFINE  { $$ = MK_STMT_PP(define,  $1, @$); }
   | PP_PRAGMA  { $$ = MK_STMT_PP(pragma,  $1, @$); }
@@ -435,7 +435,7 @@ stmt_pp
   | PP_IFNDEF  { $$ = MK_STMT_PP(ifndef,  $1, @$); }
   | PP_ELSE    { $$ = MK_STMT_PP(else,    $1, @$); }
   | PP_ENDIF   { $$ = MK_STMT_PP(endif,   $1, @$); }
-  | PP_NL      { if(!arg->ppa->lint)return 0; $$ = MK_STMT_PP(nl,      $1, @$); }
+  | PP_NL      { if(!arg->ppa->fmt)return 0; $$ = MK_STMT_PP(nl,      $1, @$); }
   | PP_IMPORT  { $$ = MK_STMT_PP(import, $1, @$); }
   | LOCALE_INI ID exp LOCALE_END { $$ = (struct Stmt_) { .stmt_type = ae_stmt_pp,
   .d = { .stmt_pp = { .exp = $3, .xid = $2, .pp_type = ae_pp_locale, }}, .pos = @1 }; }
