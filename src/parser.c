@@ -535,7 +535,7 @@ typedef int yy_state_fast_t;
 #endif
 
 /* Suppress unused-variable warnings by "using" E.  */
-#if ! defined fmt || defined __GNUC__
+#if ! defined lint || defined __GNUC__
 # define YY_USE(E) ((void) (E))
 #else
 # define YY_USE(E) /* empty */

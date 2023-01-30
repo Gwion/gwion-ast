@@ -137,7 +137,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
     BEGIN(INITIAL);
     yytext[len] = '\0';
     yylval->string.data = alloc_str(yyscanner, yytext);
-    yylval->string.delim = vector_pop(&scan->hashes);
+    yylval->string.delim = vector_pop(&scan->hashes) - 1;
     scan->interp_state--;
     return (vector_size(&scan->hashes) != (m_uint)scan->interp_state) ? INTERP_LIT : INTERP_END;
   } else
@@ -158,7 +158,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   BEGIN(INITIAL);
   yytext[yyleng - 2] = '\0';
   yylval->string.data = alloc_str(yyscanner, yytext);
-  yylval->string.delim = vector_back(&scan->hashes);
+  yylval->string.delim = vector_back(&scan->hashes) - 1;
   return INTERP_LIT;
 }
 <interp>"\\#"*\" { yymore(); continue; }
