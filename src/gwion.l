@@ -1,5 +1,6 @@
 IS       (u|U|l|L)*
 SPACE    [ \r\t]
+SPACE_NL [ \r\t\n]
 OP       [\?:\$@\+\-\*/%~\<\>\^|&\!=]
 LEX_ID   [A-Za-z_][A-Za-z0-9_]*
 FILENAME [A-Za-z0-9\-_./]*
@@ -284,6 +285,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 {OP}{3}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op3(yytext); }
 {OP}{4,} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DYNOP; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
+"]"                                 { adjust(yyscanner); return RBRACK; }
+,{SPACE_NL}*"]"                                 { adjust(yyscanner); return RBRACK2; }
 ","                                 { adjust(yyscanner); return COMMA;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "locale"                            { adjust(yyscanner); return LOCALE;}
@@ -303,7 +306,6 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "("                                 { adjust(yyscanner); return LPAREN; }
 ")"                                 { adjust(yyscanner); return RPAREN; }
 "["                                 { adjust(yyscanner); return LBRACK; }
-"]"                                 { adjust(yyscanner); return RBRACK; }
 "{"                                 { adjust(yyscanner); return LBRACE; }
 "}"                                 {
   adjust(yyscanner);

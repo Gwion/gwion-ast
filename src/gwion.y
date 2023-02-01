@@ -75,7 +75,7 @@ void lex_spread(void *data);
 
 
 %token SEMICOLON ";" COMMA ","
-  LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" LBRACE "{" RBRACE "}"
+  LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" RBRACK2 ",]" LBRACE "{" RBRACE "}"
   FUNCTION "fun" VAR "var"
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
@@ -499,9 +499,9 @@ try_stmt: "try" stmt handler_list { $$ = (struct Stmt_){ .stmt_type = ae_stmt_tr
 };
 
 opt_id: ID | { $$ = NULL; };
-
+opt_comma: "," | {}
 enum_def
-  : "enum" flag ID "{" id_list "}" {
+  : "enum" flag ID "{" id_list opt_comma "}" {
     $$ = new_enum_def(mpool(arg), $5, $3, @$);
     $$->flag = $2;
   };
@@ -1100,6 +1100,7 @@ capture: ID { $$ = (Capture){ .xid = $1, .pos = @1 };} | "&" ID { $$ = (Capture)
 _captures: capture { $$ = new_mp_vector(mpool(arg), Capture, 1); mp_vector_set($$, Capture, 0, $1); }
         | _captures capture { mp_vector_add(mpool(arg), &$1, Capture, $2); $$ = $1; }
 captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
+array_lit_end: ",]" | "]"
 prim_exp
   : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
   | number               { $$ = new_prim_int(    mpool(arg), $1, @$); }
@@ -1107,7 +1108,14 @@ prim_exp
   | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }
   | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
-  | array                { $$ = new_prim_array(  mpool(arg), $1, @$); }
+  | "[" opt_exp array_lit_end { 
+    if(!$2) {
+      parser_error(&@1, arg, "must provide values/expressions for array [...]", 0);
+      YYERROR;
+    }
+    Array_Sub array = new_array_sub(mpool(arg), $2);
+    $$ = new_prim_array(  mpool(arg), array, @$);
+  }
   | "{" dict_list "}"    { $$ = new_prim_dict(   mpool(arg), $2, @$); }
   | range                { $$ = new_prim_range(  mpool(arg), $1, @$); }
   | "<<<" exp ">>>"      { $$ = new_prim_hack(   mpool(arg), $2, @$); }
