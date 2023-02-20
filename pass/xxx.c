@@ -30,7 +30,7 @@ ANN static void xxx_specialized_list(XXX *a, Specialized_List b) {
 
 ANN static void xxx_type_list(XXX *a, Type_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Type_Decl * c = mp_vector_at(b, Type_Decl  , i);
+    Type_Decl * c = *mp_vector_at(b, Type_Decl*, i);
     xxx_type_decl(a, c);
   }
 }
@@ -140,7 +140,7 @@ ANN static void xxx_exp_unary(XXX *a, Exp_Unary *b) {
   else if(type == unary_td) xxx_type_decl(a, b->ctor.td);
   else {
     xxx_stmt_list(a, b->code);
-    xxx_captures(a, b->captures);
+    if(b->captures)xxx_captures(a, b->captures);
   }
 }
 
