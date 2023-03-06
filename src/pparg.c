@@ -9,7 +9,10 @@ ANN static Macro pparg_def(struct PPArg_ *ppa, const m_str str) {
   strncpy(base, str, idx);
   base[idx] = '\0';
   Macro m   = macro_add(&ppa->hash, base);
-  if (m) return m;
+  if (m) {
+    m->pos = (pos_t){ 1, 1};
+    return m;
+  }
   gw_err(MACRO_DEFINED);
   return NULL;
 }
@@ -47,6 +50,7 @@ ANN2(1) m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   if (arg) m->base = pparg_arg(ppa, arg + 1);
   const m_str body = strchr(str, '=');
   if (body) m->text = pparg_body(ppa, body + 1);
+  printf("test %s\n", m->text->str);
   m->file = "command line";
   return GW_OK;
 }
