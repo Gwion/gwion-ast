@@ -527,18 +527,21 @@ typedef struct Stmt_Try_ {
   Handler_List handler;
 } * Stmt_Try;
 
-typedef struct Enum_Def_ *Enum_Def;
-
-struct Enum_Def_ {
+typedef struct EnumValue {
+  Symbol xid;
+  m_uint num;
+  bool set;
+} EnumValue;
+typedef MP_Vector *Enum_List;
+typedef struct Enum_Def_ {
   ID_List         list;
   struct Symbol_ *xid;
   struct Type_ *  type;
-  struct Vector_  values;
   loc_t   pos; ///< position
   ae_flag         flag;
-};
+} *Enum_Def;
 ANN2(1, 2)
-ANEW     AST_NEW(Enum_Def, enum_def, const ID_List, struct Symbol_ *,
+ANEW     AST_NEW(Enum_Def, enum_def, const Enum_List, struct Symbol_ *,
                  const loc_t);
 ANN void free_enum_def(MemPool p, Enum_Def);
 

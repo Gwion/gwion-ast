@@ -345,8 +345,15 @@ ANN static void xxx_trait_def(XXX *a, Trait_Def b) {
   if(b->body) xxx_ast(a, b->body);
 }
 
+ANN static void xxx_enum_list(XXX *a, Enum_List b) {
+  for(uint32_t i = 0; i < b->len; i++) {
+    Stmt c = mp_vector_at(b, EnumValue, i);
+    //xxx_enumvalue(a, c);
+  }
+}
+
 ANN static void xxx_enum_def(XXX *a, Enum_Def b) {
-  xxx_id_list(a, b->list);
+  xxx_enum_list(a, b->list);
   xxx_symbol(a, b->xid);
 }
 

@@ -341,6 +341,8 @@ union YYSTYPE
   struct ParserArg default_args;
   Arg arg;
   Func_Def func_def;
+  EnumValue enum_value;
+  Enum_List enum_list;
   Enum_Def enum_def;
   Union_Def union_def;
   Fptr_Def fptr_def;
@@ -357,7 +359,7 @@ union YYSTYPE
   Prim_Def prim_def;
   Ast ast;
 
-#line 361 "include/parser.h"
+#line 363 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -363,9 +363,16 @@ ANN static void cpy_stmt_match(MemPool p, Stmt_Match a, const Stmt_Match src) {
   if (src->where) a->where = cpy_stmt(p, src->where);
 }
 
+
+ANN static Enum_List cpy_enum_list(MemPool p, const Enum_List src) {
+  Enum_List tgt = new_mp_vector(p, EnumValue, src->len);
+  memcpy(tgt->ptr, src->ptr, src->len * sizeof(EnumValue));
+  return tgt;
+}
+
 ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
   Enum_Def a = mp_calloc(p, Enum_Def);
-  a->list    = cpy_id_list(p, src->list);
+  a->list    = cpy_enum_list(p, src->list);
   a->xid     = src->xid;
   a->pos     = src->pos;
   a->flag    = src->flag;

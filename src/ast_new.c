@@ -394,7 +394,7 @@ AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body,
   return a;
 }
 
-AST_NEW(Enum_Def, enum_def, const ID_List list, struct Symbol_ *xid,
+AST_NEW(Enum_Def, enum_def, const Enum_List list, struct Symbol_ *xid,
         const struct loc_t_ pos) {
   Enum_Def a = mp_calloc(p, Enum_Def);
   a->xid     = xid;

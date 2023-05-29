@@ -56,6 +56,8 @@ void lex_spread(void *data);
   struct ParserArg default_args;
   Arg arg;
   Func_Def func_def;
+  EnumValue enum_value;
+  Enum_List enum_list;
   Enum_Def enum_def;
   Union_Def union_def;
   Fptr_Def fptr_def;
@@ -135,6 +137,8 @@ void lex_spread(void *data);
 %type<captures> captures _captures
 %type<func_def> func_def op_def func_def_base abstract_fdef
 %type<func_base> func_base fptr_base op_base
+%type<enum_value> enum_value
+%type<enum_list> enum_list
 %type<enum_def> enum_def
 %type<union_def> union_def
 %type<fptr_def> fptr_def
@@ -500,8 +504,27 @@ try_stmt: "try" stmt handler_list { $$ = (struct Stmt_){ .stmt_type = ae_stmt_tr
 
 opt_id: ID | { $$ = NULL; };
 opt_comma: "," | {}
+
+
+enum_value: ID { $$ = (EnumValue) { .xid = $1 }; }
+          | NUM "<dynamic_operator>" ID { 
+            if (strcmp(s_name($2), ":=>")) {
+              parser_error(&@1, arg, "enum value must be set with :=>", 0x0240); YYERROR;
+          }
+            $$ = (EnumValue) {.xid = $3, .num = $1, .set = true };
+          }
+enum_list: enum_value
+  {
+    $$ = new_mp_vector(mpool(arg), EnumValue, 1);
+    mp_vector_set($$, EnumValue, 0, $1);
+  }
+       | enum_list "," enum_value
+  {
+    mp_vector_add(mpool(arg), &$1, EnumValue, $3);
+    $$ = $1;
+  };
 enum_def
-  : "enum" flag ID "{" id_list opt_comma "}" {
+  : "enum" flag ID "{" enum_list opt_comma "}" {
     $$ = new_enum_def(mpool(arg), $5, $3, @$);
     $$->flag = $2;
   };

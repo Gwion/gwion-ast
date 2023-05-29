@@ -179,14 +179,15 @@ ANN static AST_FREE(struct Stmt_Match_ *, stmt_case) {
 }
 
 ANN static AST_FREE(Handler_List, handler_list) {
-  for(uint32_t i = 0; i < a->len; i++) {
+  for(uint32_t i = 0; i  < a->len; i++) {
     Handler * handler = mp_vector_at(a, Handler, i);
     free_stmt(p, handler->stmt);
   }
+  free_mp_vector(p, Handler, a);
 }
 
 ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
-  free_stmt(p, a->stmt);
+  free_stmt(p, a->stmt); 
   free_handler_list(p, a->handler);
 }
 
@@ -226,7 +227,7 @@ ANN static AST_FREE(Stmt_If, stmt_if) {
 }
 
 ANN AST_FREE(Enum_Def, enum_def) {
-  free_id_list(p, a->list);
+  free_mp_vector(p, EnumValue, a->list);
   mp_free(p, Enum_Def, a);
 }
 
