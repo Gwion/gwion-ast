@@ -55,6 +55,7 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
     color[0] = 0;
   else
     color[len] = 0;
+  gw_err("[internal]\n");
   perr_print_line_number(printer, err, color);
   gw_err("%s\n", main);
   if (explain) gw_err("%s\n", explain);
