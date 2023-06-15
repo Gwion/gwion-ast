@@ -27,8 +27,8 @@ ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
 ANN static long long btoll(const char* str);
-ANN static long long htoll(char* str, const size_t sz);
-ANN static long long otoll(char* str, const size_t sz);
+ANN static long long htoll_space(const char* str);
+ANN static long long otoll_space(const char* str);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
@@ -411,12 +411,12 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 }
 0[xX]([0-9a-fA-F]{2}+({SPACE}*[0-9a-fA-F]{2})*)+{IS}?    {
   adjust(yyscanner); 
-  yylval->yyint = (struct yyint) { .num =htoll(yytext, yyleng), .int_type = gwint_hexa };
+  yylval->yyint = (struct yyint) { .num =htoll_space(yytext), .int_type = gwint_hexa };
   return HEXA;
 }
-0[cCoO]([0-7]{3}+({SPACE}*[0-7]{3})*)+{IS}?              {
+0[oO]([0-7]{3}+({SPACE}*[0-7]{3})*)+{IS}?              {
   adjust(yyscanner);
-  yylval->yyint = (struct yyint){ .num =otoll(yytext, yyleng), .int_type = gwint_octal };
+  yylval->yyint = (struct yyint){ .num = otoll_space(yytext), .int_type = gwint_octal };
   return OCTAL;
 }
 (({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+))[eE][\+\-]{NUM}+ { adjust(yyscanner); yylval->fval = (m_float)exponent_not(yytext, yyleng);  return FLOATT; }
@@ -514,51 +514,52 @@ char* alloc_str(void *data, const char* str) {
   return s_name(sym);
 }
 
-long long htoll(char* str, const size_t sz) {
-  unsigned char * c = (unsigned char*)str;
+long long htoll_space(const char* str) {
+  str += 2;
   long long n = 0;
+  unsigned char c;
 
-  c += 2;
-  while(*c) {
-    if (!isspace(*c)) {
-      n <<= 4;
-      switch(*c) {
-        case '0' ... '9':
-          n += (uint)(*c - '0');
-          break;
-        case 'a' ... 'f':
-          n += (uint)(*c - 'a' + 10);
-          break;
-        case 'A' ... 'F':
-          n += (uint)(*c - 'A' + 10);
-          break;
-      }
+  while((c = *str)) {
+    str++;
+    if (unlikely(isspace(c))) continue;
+    n <<= 4;
+    switch(c) {
+      case '0' ... '9':
+        n += (uint)(c - '0');
+        break;
+      case 'a' ... 'f':
+        n += (uint)(c - 'a' + 10);
+        break;
+      case 'A' ... 'F':
+        n += (uint)(c - 'A' + 10);
+        break;
     }
-    c++;
   }
   return n;
 }
 
-long long otoll(char* str, const size_t sz) {
-  char *c = str, *tmp = str;
-  for(size_t i = 2; i < sz; i++) {
-    if(isspace(str[i])) continue;
-    *tmp = str[i];
-    tmp++;
+long long otoll_space(const char* str) {
+  str+=2;
+  long long n = 0;
+  unsigned char c;
+  while((c = *str)) {
+    str++;
+    if (unlikely(isspace(c))) continue;
+    n <<= 3;
+    n += (uint)(c - '0');
   }
-  *tmp = '\0';
-  return strtoull(c, NULL, 8);
+  return n;
 }
 
 long long btoll(const char* str) {
-  m_uint n = 0;
   str += 2;
-
-  for (; *str; str++) {
-    if(*str != ' ')
-      n = (n * 2) + ((unsigned char)*str - '0');
+  long long n = 0;
+  unsigned char c;
+  while((c = *str)) {
+    if (unlikely(isspace(c))) continue;
+    n <<= 2;
+    n = c - '0';
   }
-
   return n;
 }
 
