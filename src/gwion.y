@@ -23,15 +23,18 @@
 ANN static int parser_error(const loc_t*, Scanner*const, const char *, const uint);
 ANN Symbol sig_name(const Scanner*, const pos_t);
 void lex_spread(void *data);
+
 %}
 
 %union {
   bool yybool;
   ae_stmt_t stmt_t;
   char* sval;
+  long long integer;
+  struct yyint yyint;
+  struct gwint gwint;
   struct AstString string;
   int ival;
-  long long unsigned int lval;
   m_uint uval;
   ae_flag flag;
   enum fbflag fbflag;
@@ -91,8 +94,8 @@ void lex_spread(void *data);
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
   LATE "late"
 
-%token<lval> NUM
-%type<lval> number "<integer>"
+%token<yyint> DECIMAL BINARY HEXA OCTAL 
+%type<gwint> integer number "<integer>"
 %type<stmt_t> flow breaks
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
@@ -263,16 +266,21 @@ trait_def: "trait" opt_global ID traits trait_body
       $$->traits = $4;
     };
 
-number: NUM {
-  if($1 > INTPTR_MAX) {
+integer: DECIMAL { $$ = GWINT($1.num, $1.int_type); } | 
+         BINARY  { $$ = GWINT($1.num, $1.int_type); } | 
+         HEXA    { $$ = GWINT($1.num, $1.int_type); } |
+         OCTAL   { $$ = GWINT($1.num, $1.int_type); };
+
+number: integer {
+  if($1.num < 0 || $1.num > INTPTR_MAX) {
     parser_error(&@1, arg, "number too big", 0); YYERROR;
   }
   $$ = $1;
 }
 
-prim_def: "primitive" class_flag ID number ";"
+prim_def: "primitive" class_flag ID DECIMAL ";"
     {
-      $$ = new_prim_def(mpool(arg), $3, $4, @3, $2);
+      $$ = new_prim_def(mpool(arg), $3, $4.num, @3, $2);
     }
 class_ext : "extends" type_decl_exp { $$ = $2; } | { $$ = NULL; };
 traits: { $$ = NULL; } | ":" id_list { $$ = $2; };
@@ -507,11 +515,11 @@ opt_comma: "," | {}
 
 
 enum_value: ID { $$ = (EnumValue) { .xid = $1 }; }
-          | NUM "<dynamic_operator>" ID { 
+          | number "<dynamic_operator>" ID { 
             if (strcmp(s_name($2), ":=>")) {
               parser_error(&@1, arg, "enum value must be set with :=>", 0x0240); YYERROR;
           }
-            $$ = (EnumValue) {.xid = $3, .num = $1, .set = true };
+            $$ = (EnumValue) {.xid = $3, .gwint = $1, .set = true };
           }
 enum_list: enum_value
   {
@@ -719,8 +727,8 @@ jump_stmt
       .pos = @1
     };
   }
-  | breaks number ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
-      .d = { .stmt_index = { .idx = $2 }},
+  | breaks DECIMAL ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
+      .d = { .stmt_index = { .idx = $2.num }},
       .pos = @1
     };
   }
@@ -1126,7 +1134,9 @@ captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
 array_lit_end: ",]" | "]"
 prim_exp
   : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
-  | number               { $$ = new_prim_int(    mpool(arg), $1, @$); }
+  | number               { $$ = new_prim_int(    mpool(arg), $1.num, @$);
+    $$->d.prim.d.gwint.int_type = $1.int_type;
+  }
   | FLOATT               { $$ = new_prim_float(  mpool(arg), $1, @$); }
   | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }

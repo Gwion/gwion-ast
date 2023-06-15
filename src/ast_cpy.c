@@ -119,7 +119,7 @@ ANN static void cpy_prim(MemPool p, Exp_Primary *a, const Exp_Primary *src) {
     a->d.var = src->d.var;
     break;
   case ae_prim_num:
-    a->d.num = src->d.num;
+    a->d.gwint.num = src->d.gwint.num;
     break;
   case ae_prim_float:
     a->d.fnum = src->d.fnum;

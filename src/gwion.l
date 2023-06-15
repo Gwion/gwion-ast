@@ -26,8 +26,9 @@ ANN void lexer_error(yyscan_t yyscanner, const char*, const uint errorcode);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
-ANN static m_uint htol(const char* str);
-ANN static m_uint btol(const char* str);
+ANN static long long btoll(const char* str);
+ANN static long long htoll(char* str, const size_t sz);
+ANN static long long otoll(char* str, const size_t sz);
 ANN static void newline(void* data);
 ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
@@ -57,7 +58,7 @@ ANN static m_str strip_comment(Scanner* scan, const m_str str);
 ANN static m_str get_arg_text(void* data, const m_str id);
 ANN static m_str macro_data(void* data, const m_bool);
 
-ANN static m_uint  atoll_space(m_str, size_t);
+ANN static long long atoll_space(m_str, size_t);
 ANN static double atof_space(m_str, size_t);
 ANN static double exponent_not(m_str, size_t);
 
@@ -393,16 +394,31 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
     yylval->sval = alloc_str(yyscanner, text);
     return STRING_LIT;
   } else {
-lexer_error(yyscanner, "can't stringify non argument token", 0);
-//    gw_err(_("can't stringify non argument token '%s'\n"), yytext);
+    lexer_error(yyscanner, "can't stringify non argument token", 0);
     return 1;
   }
 }
 
-0[xX][0-9a-fA-F]+{IS}?              { adjust(yyscanner); yylval->lval = htol(yytext);                         return NUM;    }
-0[bB][0-1]+{IS}?                    { adjust(yyscanner); yylval->lval = btol(yytext);                         return NUM;    }
-0[cC][0-7]+{IS}?                    { adjust(yyscanner); yylval->lval = (m_uint)atoll(yytext);                return NUM;    }
-{NUM}+{IS}?                         { adjust(yyscanner); yylval->lval = (m_uint)atoll_space(yytext, yyleng);  return NUM;    }
+{NUM}+{IS}?                         {
+  adjust(yyscanner);
+  yylval->yyint = (struct yyint) { .num = atoll_space(yytext, yyleng), .int_type = gwint_decimal };
+  return DECIMAL;
+}
+0[bB]([0-1]{4}+({SPACE}*[0-1]{4})*)+{IS}?                {
+  adjust(yyscanner);
+  yylval->yyint = (struct yyint){ .num = btoll(yytext), .int_type = gwint_binary };
+  return BINARY;
+}
+0[xX]([0-9a-fA-F]{2}+({SPACE}*[0-9a-fA-F]{2})*)+{IS}?    {
+  adjust(yyscanner); 
+  yylval->yyint = (struct yyint) { .num =htoll(yytext, yyleng), .int_type = gwint_hexa };
+  return HEXA;
+}
+0[cCoO]([0-7]{3}+({SPACE}*[0-7]{3})*)+{IS}?              {
+  adjust(yyscanner);
+  yylval->yyint = (struct yyint){ .num =otoll(yytext, yyleng), .int_type = gwint_octal };
+  return OCTAL;
+}
 (({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+))[eE][\+\-]{NUM}+ { adjust(yyscanner); yylval->fval = (m_float)exponent_not(yytext, yyleng);  return FLOATT; }
 ({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+) { adjust(yyscanner); yylval->fval = (m_float)atof_space(yytext, yyleng);  return FLOATT; }
 @{LEX_ID}                           { adjust(yyscanner); yylval->sym  = alloc_sym(yyscanner, yytext); return OPID_A; }
@@ -432,7 +448,7 @@ lexer_error(yyscanner, "can't stringify non argument token", 0);
 #include <string.h>
 #include <stdlib.h>
 
-ANN static m_uint  atoll_space(m_str str, size_t sz) {
+ANN static long long atoll_space(m_str str, size_t sz) {
   char base[sz + 1], *tmp = base;
   for(size_t i = 0; i < sz; ++i) {
     const char c = str[i];
@@ -440,7 +456,7 @@ ANN static m_uint  atoll_space(m_str str, size_t sz) {
       *tmp++ = c;
   }
   *tmp = '\0';
-  return atoll(base);
+  return strtoll(base, NULL, 10);
 }
 
 ANN static double atof_space(m_str str, size_t sz) {
@@ -498,36 +514,36 @@ char* alloc_str(void *data, const char* str) {
   return s_name(sym);
 }
 
-
-m_uint htol(const char* str) {
-  unsigned char * c = (unsigned char*)str;
-  m_uint n = 0;
-
-  c += 2;
-  while(*c) {
-    n <<= 4;
-    switch(*c) {
-      case '0' ... '9':
-        n += (uint)(*c - '0');
-        break;
-      case 'a' ... 'f':
-        n += (uint)(*c - 'a' + 10);
-        break;
-      case 'A' ... 'F':
-        n += (uint)(*c - 'A' + 10);
-        break;
-    }
-    c++;
+long long htoll(char* str, const size_t sz) {
+  char *c = str, *tmp = str;
+  for(size_t i = 0; i < sz; i++) {
+    if(isspace(str[i])) continue;
+    *tmp = str[i];
+    tmp++;
   }
-  return n;
+  *tmp = '\0';
+  return strtoll(c, NULL, 0);
 }
 
-m_uint btol(const char* str) {
+long long otoll(char* str, const size_t sz) {
+  char *c = str, *tmp = str;
+  for(size_t i = 2; i < sz; i++) {
+    if(isspace(str[i])) continue;
+    *tmp = str[i];
+    tmp++;
+  }
+  *tmp = '\0';
+  return strtoull(c, NULL, 8);
+}
+
+long long btoll(const char* str) {
   m_uint n = 0;
   str += 2;
 
-  for (; *str; str++)
-    n = (n * 2) + ((unsigned char)*str - '0');
+  for (; *str; str++) {
+    if(*str != ' ')
+      n = (n * 2) + ((unsigned char)*str - '0');
+  }
 
   return n;
 }

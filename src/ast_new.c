@@ -121,9 +121,9 @@ static AST_NEW(Exp, prim, const struct loc_t_ pos) {
 }
 
 AST_NEW(Exp, prim_int, const unsigned long i, const struct loc_t_ pos) {
-  Exp a               = new_prim(p, pos);
-  a->d.prim.prim_type = ae_prim_num;
-  a->d.prim.d.num     = i;
+  Exp a                 = new_prim(p, pos);
+  a->d.prim.prim_type   = ae_prim_num;
+  a->d.prim.d.gwint.num = i;
   return a;
 }
 

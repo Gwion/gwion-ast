@@ -195,11 +195,30 @@ typedef struct {
   Exp args;
 } Exp_Decl;
 
+enum gwint_type {
+  gwint_decimal,
+  gwint_binary,
+  gwint_hexa,
+  gwint_octal
+};
+
+struct gwint {
+  m_int num;
+  enum gwint_type int_type;
+};
+#define GWINT(a, b) ((struct gwint){ .num = a, .int_type = b})
+
+//! a gwint with a larger int type for parsing
+struct yyint {
+  long long num;
+  enum gwint_type int_type;
+};
+
 typedef struct {
   struct Value_ *value;
   union prim_data {
     struct Symbol_  *var;
-    m_int            num;
+    struct gwint gwint;
     m_float          fnum;
     m_str            chr;
     struct AstString string;
@@ -529,7 +548,7 @@ typedef struct Stmt_Try_ {
 
 typedef struct EnumValue {
   Symbol xid;
-  m_uint num;
+  struct gwint gwint;
   bool set;
 } EnumValue;
 typedef MP_Vector *Enum_List;
