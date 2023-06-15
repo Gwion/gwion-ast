@@ -95,7 +95,7 @@ void lex_spread(void *data);
   LATE "late"
 
 %token<yyint> DECIMAL BINARY HEXA OCTAL 
-%type<gwint> integer number "<integer>"
+%type<gwint> decimal integer number "<integer>"
 %type<stmt_t> flow breaks
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
@@ -278,7 +278,14 @@ number: integer {
   $$ = $1;
 }
 
-prim_def: "primitive" class_flag ID DECIMAL ";"
+decimal: number {
+  if($1.int_type != gwint_decimal) {
+    parser_error(&@1, arg, "only decimals accepted here", 0); YYERROR;
+  }
+  $$ = $1;
+}
+
+prim_def: "primitive" class_flag ID decimal ";"
     {
       $$ = new_prim_def(mpool(arg), $3, $4.num, @3, $2);
     }
@@ -727,7 +734,7 @@ jump_stmt
       .pos = @1
     };
   }
-  | breaks DECIMAL ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
+  | breaks decimal ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
       .d = { .stmt_index = { .idx = $2.num }},
       .pos = @1
     };

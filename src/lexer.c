@@ -3883,14 +3883,28 @@ char* alloc_str(void *data, const char* str) {
 }
 
 long long htoll(char* str, const size_t sz) {
-  char *c = str, *tmp = str;
-  for(size_t i = 0; i < sz; i++) {
-    if(isspace(str[i])) continue;
-    *tmp = str[i];
-    tmp++;
+  unsigned char * c = (unsigned char*)str;
+  long long n = 0;
+
+  c += 2;
+  while(*c) {
+    if (!isspace(*c)) {
+      n <<= 4;
+      switch(*c) {
+        case '0' ... '9':
+          n += (uint)(*c - '0');
+          break;
+        case 'a' ... 'f':
+          n += (uint)(*c - 'a' + 10);
+          break;
+        case 'A' ... 'F':
+          n += (uint)(*c - 'A' + 10);
+          break;
+      }
+    }
+    c++;
   }
-  *tmp = '\0';
-  return strtoll(c, NULL, 0);
+  return n;
 }
 
 long long otoll(char* str, const size_t sz) {
