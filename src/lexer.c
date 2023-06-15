@@ -2634,7 +2634,7 @@ YY_RULE_SETUP
 {
   adjust(yyscanner);
   yylval->yyint = (struct yyint) { .num = atoll_space(yytext, yyleng), .int_type = gwint_decimal };
-  return DECIMAL;
+  return INTEGER;
 }
 	YY_BREAK
 case 127:
@@ -2643,7 +2643,7 @@ YY_RULE_SETUP
 {
   adjust(yyscanner);
   yylval->yyint = (struct yyint){ .num = btoll(yytext), .int_type = gwint_binary };
-  return BINARY;
+  return INTEGER;
 }
 	YY_BREAK
 case 128:
@@ -2652,7 +2652,7 @@ YY_RULE_SETUP
 {
   adjust(yyscanner); 
   yylval->yyint = (struct yyint) { .num =htoll_space(yytext), .int_type = gwint_hexa };
-  return HEXA;
+  return INTEGER;
 }
 	YY_BREAK
 case 129:
@@ -2661,7 +2661,7 @@ YY_RULE_SETUP
 {
   adjust(yyscanner);
   yylval->yyint = (struct yyint){ .num = otoll_space(yytext), .int_type = gwint_octal };
-  return OCTAL;
+  return INTEGER;
 }
 	YY_BREAK
 case 130:

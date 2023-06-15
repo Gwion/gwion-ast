@@ -402,22 +402,22 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 {NUM}+{IS}?                         {
   adjust(yyscanner);
   yylval->yyint = (struct yyint) { .num = atoll_space(yytext, yyleng), .int_type = gwint_decimal };
-  return DECIMAL;
+  return INTEGER;
 }
 0[bB]([0-1]{4}+({SPACE}*[0-1]{4})*)+{IS}?                {
   adjust(yyscanner);
   yylval->yyint = (struct yyint){ .num = btoll(yytext), .int_type = gwint_binary };
-  return BINARY;
+  return INTEGER;
 }
 0[xX]([0-9a-fA-F]{2}+({SPACE}*[0-9a-fA-F]{2})*)+{IS}?    {
   adjust(yyscanner); 
   yylval->yyint = (struct yyint) { .num =htoll_space(yytext), .int_type = gwint_hexa };
-  return HEXA;
+  return INTEGER;
 }
 0[oO]([0-7]{3}+({SPACE}*[0-7]{3})*)+{IS}?              {
   adjust(yyscanner);
   yylval->yyint = (struct yyint){ .num = otoll_space(yytext), .int_type = gwint_octal };
-  return OCTAL;
+  return INTEGER;
 }
 (({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+))[eE][\+\-]{NUM}+ { adjust(yyscanner); yylval->fval = (m_float)exponent_not(yytext, yyleng);  return FLOATT; }
 ({NUM}+"."{NUM}*)|({NUM}*"."{NUM}+) { adjust(yyscanner); yylval->fval = (m_float)atof_space(yytext, yyleng);  return FLOATT; }

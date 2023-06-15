@@ -94,8 +94,8 @@ void lex_spread(void *data);
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
   LATE "late"
 
-%token<yyint> DECIMAL BINARY HEXA OCTAL 
-%type<gwint> decimal integer number "<integer>"
+%token<yyint> INTEGER
+%type<gwint> decimal number "<integer>"
 %type<stmt_t> flow breaks
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
@@ -266,16 +266,11 @@ trait_def: "trait" opt_global ID traits trait_body
       $$->traits = $4;
     };
 
-integer: DECIMAL { $$ = GWINT($1.num, $1.int_type); } | 
-         BINARY  { $$ = GWINT($1.num, $1.int_type); } | 
-         HEXA    { $$ = GWINT($1.num, $1.int_type); } |
-         OCTAL   { $$ = GWINT($1.num, $1.int_type); };
-
-number: integer {
+number: INTEGER {
   if($1.num < 0 || $1.num > INTPTR_MAX) {
     parser_error(&@1, arg, "number too big", 0); YYERROR;
   }
-  $$ = $1;
+  $$ = GWINT($1.num, $1.int_type);
 }
 
 decimal: number {
