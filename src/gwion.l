@@ -73,7 +73,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 #define GWYY_COMMENT     /*if(GWYY_ISLINT)*/{ yymore(); continue; }
 #define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END BEGIN(INITIAL); /*if(GWYY_ISLINT) */ if(*yytext == '+' || *yytext == '-') { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
+#define GWYY_COMMENT_END BEGIN(INITIAL); /*if(GWYY_ISLINT) */ if(*yytext == '+' || *yytext == '-') { yylval->sval = strndup(yytext, yyleng -1); return PP_COMMENT; }
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
@@ -207,7 +207,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <define>.           { YY_USER_ACTION; adjust(yyscanner); yymore(); continue; };
 
 ^{SPACE}*"#pragma"{SPACE}+ { adjust(yyscanner); BEGIN(pragma); }
-<pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
+<pragma>.*\n { newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, yyleng - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 
 ^#ifn?def{SPACE}+{LEX_ID} {
   adjust(yyscanner);
