@@ -129,10 +129,10 @@ void lex_spread(void *data);
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt defer_stmt spread_stmt
-%type<stmt> match_case_stmt match_stmt stmt_pp trait_stmt
+%type<stmt> match_case_stmt match_stmt stmt_pp
 %type<handler> handler
 %type<handler_list> handler_list
-%type<stmt_list> stmt_list match_list trait_stmt_list code_list
+%type<stmt_list> stmt_list match_list code_list
 %type<arg> fptr_arg
 %type<arg_list> lambda_arg lambda_list fptr_list fptr_args
 %type<default_args> arg arg_list func_args locale_arg locale_list
@@ -146,18 +146,18 @@ void lex_spread(void *data);
 %type<union_def> union_def
 %type<fptr_def> fptr_def
 %type<type_def> type_def
-%type<section> section trait_section
+%type<section> section
 %type<extend_def> extend_def
 %type<class_def> class_def
 %type<trait_def> trait_def
-%type<ast> class_body trait_body
+%type<ast> class_body
 %type<id_list> id_list traits
 %type<specialized_list> specialized_list decl_template
 %type<type_list> type_list call_template
 %type<union_member> union_decl
 %type<union_list> union_list
 %type<prim_def> prim_def
-%type<ast> ast prg trait_ast
+%type<ast> ast prg
 
 %start prg
 
@@ -213,54 +213,25 @@ section
 
 class_flag: flag modifier { $$ = $1 | $2; }
 class_def
-  : "class" class_flag ID decl_template class_ext traits "{" class_body "}"
+  : "class" class_flag ID decl_template class_ext traits class_body
     {
-      $$ = new_class_def(mpool(arg), $2, $3, $5, $8, @3);
+      $$ = new_class_def(mpool(arg), $2, $3, $5, $7, @3);
       if($4)
         $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->traits = $6;
     }
-  | "struct" class_flag ID decl_template traits "{" class_body "}"
+  | "struct" class_flag ID decl_template traits class_body
     {
-      $$ = new_class_def(mpool(arg), $2, $3, NULL, $7, @3);
+      $$ = new_class_def(mpool(arg), $2, $3, NULL, $6, @3);
       if($4)
         $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->cflag |= cflag_struct;
       $$->traits = $5;
     };
 
-trait_stmt: exp_stmt {
-    if($1.d.stmt_exp.val->exp_type != ae_exp_decl)
-    { parser_error(&@$, arg, "trait can only contains variable requests and functions", 0211); YYERROR;}
-    $$ = $1;
-  } | stmt_pp;
-trait_stmt_list: trait_stmt  {
-  $$ = new_mp_vector(mpool(arg), struct Stmt_, 1);
-  mp_vector_set($$, struct Stmt_, 0, $1);
-} |
-  trait_stmt_list trait_stmt {
-    mp_vector_add(mpool(arg), &($1), struct Stmt_, $2);
-    $$ = $1;
-  };
+class_body : "{" ast "}"  { $$ = $2; } | "{" "}" { $$ = NULL; } | ";" { $$ = NULL; };
 
-trait_section
-  : trait_stmt_list    { $$ = MK_SECTION(stmt, stmt_list, $1); }
-  | func_def           { $$ = MK_SECTION(func, func_def, $1); }
-  ;
-
-trait_ast
-  : trait_section {
-    $$ = new_mp_vector(mpool(arg), Section, 1);
-    mp_vector_set($$, Section, 0, $1);
-  }
-  | trait_ast trait_section {
-    mp_vector_add(mpool(arg), &$1, Section, $2);
-    $$ = $1;
-  };
-
-trait_body : "{" trait_ast "}"  { $$ = $2; } | ";" { $$ = NULL; };
-
-trait_def: "trait" opt_global ID traits trait_body
+trait_def: "trait" opt_global ID traits class_body
     {
       $$ = new_trait_def(mpool(arg), $2, $3, $5, @3);
       $$->traits = $4;
@@ -291,8 +262,6 @@ extend_def: "extends" type_decl_empty ":" id_list ";" {
   $$ = new_extend_def(mpool(arg), $2, $4);
 }
 
-
-class_body : ast | { $$ = NULL; };
 
 id_list: ID
   {
