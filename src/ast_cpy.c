@@ -78,17 +78,26 @@ ANN Specialized_List cpy_specialized_list(MemPool                p,
     Specialized *_src = mp_vector_at(src, Specialized, i);
     Specialized *_tgt = mp_vector_at(tgt, Specialized, i);
     _tgt->xid = _src->xid;
+    if (_src->td) _tgt->td = cpy_type_decl(p, _src->td);
     if (_src->traits) _tgt->traits = cpy_id_list(p, _src->traits);
     _tgt->pos = _src->pos;
   }
   return tgt;
 }
 
+ANN void cpy_tmplarg(MemPool p, const TmplArg *src, TmplArg *tgt) {
+  tgt->type = src->type;
+  if(src->type == tmplarg_td)
+    tgt->d.td = cpy_type_decl(p, src->d.td);
+  else tgt->d.exp = cpy_exp(p, src->d.exp);
+}
+
 ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
-  Type_List a = new_mp_vector(p, Type_Decl*, src->len);
+  Type_List a = new_mp_vector(p, TmplArg, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
-    Type_Decl *_src = *mp_vector_at(src, Type_Decl*, i);
-    mp_vector_set(a, Type_Decl*, i, cpy_type_decl(p, _src));
+    TmplArg *_src = mp_vector_at(src, TmplArg, i);
+    TmplArg *_tgt = mp_vector_at(a, TmplArg, i);
+    cpy_tmplarg(p, _src, _tgt);
   }
   return a;
 }

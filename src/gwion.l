@@ -557,8 +557,9 @@ long long btoll(const char* str) {
   unsigned char c;
   while((c = *str)) {
     if (unlikely(isspace(c))) continue;
-    n <<= 2;
-    n = c - '0';
+    n <<= 1;
+    n += c - '0';
+    str++;
   }
   return n;
 }

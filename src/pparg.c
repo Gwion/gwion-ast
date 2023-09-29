@@ -50,7 +50,6 @@ ANN2(1) m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   if (arg) m->base = pparg_arg(ppa, arg + 1);
   const m_str body = strchr(str, '=');
   if (body) m->text = pparg_body(ppa, body + 1);
-  printf("test %s\n", m->text->str);
   m->file = "command line";
   return GW_OK;
 }

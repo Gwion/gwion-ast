@@ -18,9 +18,10 @@ typedef struct Exp_ *          Exp;
 typedef struct Stmt_ *         Stmt;
 typedef struct Array_Sub_ *    Array_Sub;
 typedef MP_Vector *ID_List;
-typedef MP_Vector *Type_List;
 typedef MP_Vector *Capture_List;
 typedef struct Fptr_Def_ *     Fptr_Def;
+typedef MP_Vector *     Arg_List;
+typedef MP_Vector *Type_List;
 
 typedef struct Type_Decl_ {
   Symbol             xid;
@@ -45,8 +46,27 @@ typedef struct Var_Decl_ {
   loc_t   pos;   ///< position
 } Var_Decl;
 
-typedef MP_Vector *     Arg_List;
+enum tmplarg_t {
+  tmplarg_td,
+  tmplarg_exp
+};
 
+typedef struct TmplArg {
+  union {
+    Type_Decl *td;
+    Exp exp;
+  } d;
+  enum tmplarg_t type;
+} TmplArg;
+
+ANN static inline uint32_t tmplarg_ntypes(Type_List tl) {
+  uint32_t ret = 0;
+  for(uint32_t i = 0; i < tl->len; i++) {
+    TmplArg *ta = mp_vector_at(tl, TmplArg, i);
+    if(ta->type == tmplarg_td) i++;
+  }
+  return ret;
+}
 
 typedef struct Arg_ {
   Type_Decl *   td;
@@ -138,9 +158,10 @@ ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range *, const loc_t pos);
 ANN void free_id_list(MemPool p, ID_List);
 
 typedef struct Specialized {
-  struct Symbol_ *          xid;
-  ID_List                   traits;
-  loc_t                     pos;
+  struct Symbol_ *xid;
+  Type_Decl      *td;
+  ID_List         traits;
+  loc_t           pos;
 } Specialized;
 
 typedef MP_Vector *Specialized_List;
@@ -391,7 +412,7 @@ static inline loc_t prim_pos(const void *data) {
 
 ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_ *, const loc_t);
 ANEW ANN2(1) AST_NEW(Exp, prim_perform, struct Symbol_ *, const loc_t);
-ANEW     AST_NEW(Exp, prim_int, const unsigned long, const loc_t);
+ANEW     AST_NEW(Exp, prim_int, const m_uint, const loc_t);
 ANEW     AST_NEW(Exp, prim_float, const m_float, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_string, const m_str, const uint16_t delim, const loc_t);
 ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);

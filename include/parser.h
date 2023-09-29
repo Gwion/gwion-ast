@@ -351,7 +351,9 @@ union YYSTYPE
   Type_Def type_def;
   Section section;
   ID_List id_list;
+  Specialized specialized;
   Specialized_List specialized_list;
+  TmplArg tmplarg;
   Type_List type_list;
   Union_Member union_member;
   Union_List union_list;
@@ -361,7 +363,7 @@ union YYSTYPE
   Prim_Def prim_def;
   Ast ast;
 
-#line 365 "include/parser.h"
+#line 367 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

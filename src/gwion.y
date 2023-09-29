@@ -67,7 +67,9 @@ void lex_spread(void *data);
   Type_Def type_def;
   Section section;
   ID_List id_list;
+  Specialized specialized;
   Specialized_List specialized_list;
+  TmplArg tmplarg;
   Type_List type_list;
   Union_Member union_member;
   Union_List union_list;
@@ -82,6 +84,7 @@ void lex_spread(void *data);
 %token SEMICOLON ";" COMMA ","
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" RBRACK2 ",]" LBRACE "{" RBRACE "}"
   FUNCTION "fun" VAR "var"
+
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue" TRY "try" PERFORM "perform" HANDLET "handle" RETRY "retry"
@@ -125,7 +128,7 @@ void lex_spread(void *data);
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp dict_list
-%type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when
+%type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when basic_exp tmplarg_dot tmplarg_exp
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt defer_stmt spread_stmt
@@ -152,7 +155,9 @@ void lex_spread(void *data);
 %type<trait_def> trait_def
 %type<ast> class_body
 %type<id_list> id_list traits
+%type<specialized> specialized
 %type<specialized_list> specialized_list decl_template
+%type<tmplarg> tmplarg;
 %type<type_list> type_list call_template
 %type<union_member> union_decl
 %type<union_list> union_list
@@ -274,17 +279,27 @@ id_list: ID
     $$ = $1;
   };
 
-specialized_list: ID traits {
-    $$ = new_mp_vector(mpool(arg), Specialized, 1);
-    mp_vector_set($$, Specialized, 0, ((Specialized) {
+specialized: ID traits {
+    $$ = (Specialized) {
         .xid = $1,
         .traits = $2,
         .pos = @1
-      }));
+      };
   }
-  | specialized_list "," ID  traits {
-    Specialized spec = { .xid = $3, .traits = $4, .pos = @3 };
-    mp_vector_add(mpool(arg), &$1, Specialized, spec);
+  | "const" type_decl_empty ID {
+    $$ = (Specialized) {
+        .xid = $3,
+        .td = $2,
+        .pos = @2
+      };
+  }
+
+specialized_list: specialized {
+    $$ = new_mp_vector(mpool(arg), Specialized, 1);
+    mp_vector_set($$, Specialized, 0, $1);
+  }
+  | specialized_list "," specialized {
+    mp_vector_add(mpool(arg), &$1, Specialized, $3);
     $$ = $1;
   };
 
@@ -1043,13 +1058,27 @@ lambda_list:
 }
 lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
-type_list
-  : type_decl_empty {
-    $$ = new_mp_vector(mpool(arg), Type_Decl*, 1);
-    mp_vector_set($$, Type_Decl*, 0, $1);
+tmplarg_dot: ID {
+  $$ = new_prim_id(mpool(arg), $1, @1);
+}
+ | tmplarg_dot "." ID {
+  $$ = new_exp_dot(mpool(arg), $1, $3, @3);
+};
+tmplarg_exp: basic_exp;
+tmplarg: type_decl_empty {
+    $$ = (TmplArg) { .d = { .td = $1}, .type = tmplarg_td};
   }
-  | type_list "," type_decl_empty {
-    mp_vector_add(mpool(arg), &$1, Type_Decl*, $3);
+  | tmplarg_exp {
+    $$ = (TmplArg) { .d = { .exp = $1}, .type = tmplarg_exp};
+  }
+
+type_list
+  : tmplarg {
+    $$ = new_mp_vector(mpool(arg), TmplArg, 1);
+    mp_vector_set($$, TmplArg, 0, $1);
+  }
+  | type_list "," tmplarg {
+    mp_vector_add(mpool(arg), &$1, TmplArg, $3);
     $$ = $1;
   };
 
@@ -1103,15 +1132,20 @@ _captures: capture { $$ = new_mp_vector(mpool(arg), Capture, 1); mp_vector_set($
         | _captures capture { mp_vector_add(mpool(arg), &$1, Capture, $2); $$ = $1; }
 captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
 array_lit_end: ",]" | "]"
-prim_exp
-  : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
-  | number               { $$ = new_prim_int(    mpool(arg), $1.num, @$);
-    $$->d.prim.d.gwint.int_type = $1.int_type;
+
+basic_exp
+  : number               {
+  $$ = new_prim_int(    mpool(arg), $1.num, @$); 
+  $$->d.prim.d.gwint.int_type = $1.int_type;
   }
   | FLOATT               { $$ = new_prim_float(  mpool(arg), $1, @$); }
-  | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }
   | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
+
+prim_exp
+  : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
+  | basic_exp
+  | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | "[" opt_exp array_lit_end { 
     if(!$2) {
       parser_error(&@1, arg, "must provide values/expressions for array [...]", 0);

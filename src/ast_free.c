@@ -330,10 +330,11 @@ ANN static AST_FREE(Section *, section) {
 
 AST_FREE(Type_List, type_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    Type_Decl *td = *mp_vector_at(a, Type_Decl*, i);
-    free_type_decl(p, td);
+    TmplArg arg = *mp_vector_at(a, TmplArg, i);
+    if(arg.type == tmplarg_td) free_type_decl(p, arg.d.td);
+    else free_exp(p, arg.d.exp);
   }
-  free_mp_vector(p, Type_Decl*, a);
+  free_mp_vector(p, TmplArg, a);
 }
 
 AST_FREE(Ast, ast) {

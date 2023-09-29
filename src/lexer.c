@@ -1482,7 +1482,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 #define GWYY_COMMENT     /*if(GWYY_ISLINT)*/{ yymore(); continue; }
 #define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END BEGIN(INITIAL); /*if(GWYY_ISLINT) */ if(*yytext == '+' || *yytext == '-') { yylval->sval = strndup(yytext, strlen(yytext) -1); return PP_COMMENT; }
+#define GWYY_COMMENT_END BEGIN(INITIAL); /*if(GWYY_ISLINT) */ if(*yytext == '+' || *yytext == '-') { yylval->sval = strndup(yytext, yyleng -1); return PP_COMMENT; }
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(handle_include(yyscanner, yytext, YY_CURRENT_BUFFER) < 0)yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(rem_macro(yyscanner, yytext) < 0) yyterminate();
@@ -2072,7 +2072,7 @@ case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
 #line 210 "src/gwion.l"
-{ newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, strlen(yytext) - 1); BEGIN(INITIAL); return PP_PRAGMA; }
+{ newline(yyscanner); YY_USER_ACTION; yylval->sval = strndup(yytext, yyleng - 1); BEGIN(INITIAL); return PP_PRAGMA; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
@@ -3925,8 +3925,9 @@ long long btoll(const char* str) {
   unsigned char c;
   while((c = *str)) {
     if (unlikely(isspace(c))) continue;
-    n <<= 2;
-    n = c - '0';
+    n <<= 1;
+    n += c - '0';
+    str++;
   }
   return n;
 }
