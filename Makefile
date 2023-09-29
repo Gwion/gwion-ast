@@ -35,11 +35,11 @@ libgwion_ast.a: ${obj}
 
 include/lexer.h src/lexer.c: src/gwion.l
 	$(info generating lexer)
-	@${LEX} --header-file=include/lexer.h -o $@ $<
+	@${LEX} ${LEX_OPT} --header-file=include/lexer.h -o $@ $<
 
 include/parser.h src/parser.c: src/gwion.y
 	$(info generating parser)
-	@${YACC} --defines=include/parser.h -Wno-yacc -o $@ $<
+	@${YACC} ${YACC_OPT} --defines=include/parser.h -Wno-yacc -o $@ $<
 
 clean:
 	$(info cleaning)
