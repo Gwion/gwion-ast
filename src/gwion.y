@@ -205,7 +205,16 @@ ast
 
 section
   : stmt_list    { $$ = MK_SECTION(stmt, stmt_list, $1); }
-  | func_def     { $$ = MK_SECTION(func, func_def, $1); }
+  | func_def     {
+    // temporarly disallow const generics in templates func
+    if($1->base->tmpl) {
+      if($1->base->tmpl->list->len != tmplarg_ntypes($1->base->tmpl->list)) {
+        parser_error(&@1, arg, "const generics not allowed in templates (for now)", 0);
+        YYERROR;
+      }
+    }
+    $$ = MK_SECTION(func, func_def, $1);
+  }
   | class_def    { $$ = MK_SECTION(class, class_def, $1); }
   | trait_def    { $$ = MK_SECTION(trait, trait_def, $1); }
   | extend_def   { $$ = MK_SECTION(extend, extend_def, $1); }
@@ -1141,11 +1150,11 @@ basic_exp
   | FLOATT               { $$ = new_prim_float(  mpool(arg), $1, @$); }
   | STRING_LIT           { $$ = new_prim_string( mpool(arg), $1, 0, @$); }
   | CHAR_LIT             { $$ = new_prim_char(   mpool(arg), $1, @$); }
+  | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
 
 prim_exp
   : ID                   { $$ = new_prim_id(     mpool(arg), $1, @$); }
   | basic_exp
-  | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | "[" opt_exp array_lit_end { 
     if(!$2) {
       parser_error(&@1, arg, "must provide values/expressions for array [...]", 0);
