@@ -63,7 +63,7 @@ ANN static inline uint32_t tmplarg_ntypes(Type_List tl) {
   uint32_t ret = 0;
   for(uint32_t i = 0; i < tl->len; i++) {
     TmplArg *ta = mp_vector_at(tl, TmplArg, i);
-    if(ta->type == tmplarg_td) i++;
+    if(ta->type == tmplarg_td) ret++;
   }
   return ret;
 }

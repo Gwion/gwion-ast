@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.6.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -387,6 +387,8 @@ struct YYLTYPE
 
 
 
+
 int gwion_parse (Scanner* arg);
+
 
 #endif /* !YY_GWION_INCLUDE_PARSER_H_INCLUDED  */

@@ -208,9 +208,13 @@ section
   | func_def     {
     // temporarly disallow const generics in templates func
     if($1->base->tmpl) {
-      if($1->base->tmpl->list->len != tmplarg_ntypes($1->base->tmpl->list)) {
-        parser_error(&@1, arg, "const generics not allowed in templates (for now)", 0);
-        YYERROR;
+      for(uint32_t i = 0; i < $1->base->tmpl->list->len; i++) {
+        TmplArg *ta = mp_vector_at($1->base->tmpl->list, TmplArg, i);
+//printf("%u %u\n", $1->base->tmpl->list->len, tmplarg_ntypes($1->base->tmpl->list));
+//        if(ta->type == tmplarg_exp) {
+//          parser_error(&@1, arg, "const generics not allowed in templates (for now)", 0);
+//          YYERROR;
+//        }
       }
     }
     $$ = MK_SECTION(func, func_def, $1);
