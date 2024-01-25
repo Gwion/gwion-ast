@@ -9,7 +9,6 @@ struct AstGetter_ {
   FILE *         f;
   SymTable *     st;
   struct PPArg_ *ppa;
-  bool           global;
 };
 
 ANN Ast parse_pos(struct AstGetter_ *const, const pos_t);
