@@ -576,7 +576,7 @@ static uint get_currline(void* data) {
 }
 
 static uint get_currpos(void* data) {
-  const Scanner* scan = yyget_extra(data);
+  /*const */Scanner* scan = yyget_extra(data);
   return scan->pos.column;
 }
 

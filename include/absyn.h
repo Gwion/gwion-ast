@@ -120,7 +120,6 @@ ANN2(1,2,4) AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt_Li
             const loc_t);
 AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
         const struct loc_t_ pos);
-ANN Symbol lambda_name(SymTable *const st, const pos_t pos);
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
   Exp           exp;

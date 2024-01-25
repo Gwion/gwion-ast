@@ -22,6 +22,7 @@
 
 ANN static int parser_error(const loc_t*, Scanner*const, const char *, const uint);
 ANN Symbol sig_name(const Scanner*, const pos_t);
+static ANN Symbol lambda_name(const Scanner *arg, const pos_t pos);
 void lex_spread(void *data);
 
 %}
@@ -1177,13 +1178,20 @@ prim_exp
     $$ = new_prim_id(mpool(arg), $1, loc);
     $$->d.prim.prim_type = ae_prim_locale;
   }
-  | lambda_arg captures code_list { $$ = new_exp_lambda( mpool(arg), lambda_name(arg->st, @1.first), $1, $3, @1); $$->d.exp_lambda.def->captures = $2;};
-  | lambda_arg captures "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg->st, @1.first), $1, $4, @1); $$->d.exp_lambda.def->captures = $2;};
+  | lambda_arg captures code_list { $$ = new_exp_lambda( mpool(arg), lambda_name(arg, @1.first), $1, $3, @1); $$->d.exp_lambda.def->captures = $2;};
+  | lambda_arg captures "{" binary_exp "}" { $$ = new_exp_lambda2( mpool(arg), lambda_name(arg, @1.first), $1, $4, @1); $$->d.exp_lambda.def->captures = $2;};
   | "(" op_op ")"        { $$ = new_prim_id(     mpool(arg), $2, @$); $$->paren = true; }
   | "perform" opt_id     { $$ = new_prim_perform(mpool(arg), $2, @2); }
   | "(" ")"              { $$ = new_prim_nil(    mpool(arg),     @$); }
   ;
 %%
+static
+ANN Symbol lambda_name(const Scanner *arg, const pos_t pos) {
+  char c[6 + 1 + num_digit(pos.line) + num_digit(pos.column) + 2];
+  sprintf(c, "lambda:%u:%u", pos.line, pos.column);
+  return insert_symbol(c);
+}
+
 #undef scan
 ANN static int parser_error(const loc_t *loc, Scanner *const scan, const char* diagnostic, const uint error_code) {
   char _main[strlen(diagnostic) + 1];
