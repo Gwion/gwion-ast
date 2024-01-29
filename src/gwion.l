@@ -24,7 +24,7 @@ NUM      ([0-9]{1,3}+({SPACE}*[0-9]{3})*)
 // there was yynoreturn
 ANN void lexer_error(yyscan_t yyscanner, const char*, const uint errorcode);
 ANN void lex_spread(void *data);
-ANN static char* strip_lit(char* str);
+ANN static char* strip_lit(char* str, const size_t);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
 ANN static long long btoll(const char* str);
@@ -218,7 +218,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   while(isspace(*s))++s;
   GWYY_LINT(strdup(s), def ? PP_IFNDEF : PP_IFDEF)
   while(isspace(*s))++s;
-  size_t sz = strlen(s);
+  size_t sz = yyleng;
   while(isspace(s[--sz]));
   char c[sz + 2];
   strncpy(c, s, sz + 1);
@@ -440,7 +440,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
     continue;
 }
 
-'(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext)); return CHAR_LIT;   }
+'(\\.|[^\\'])'                      { adjust(yyscanner); yylval->sval = alloc_str(yyscanner, strip_lit(yytext, yyleng)); return CHAR_LIT;   }
 .                                   { adjust(yyscanner); lexer_error(yyscanner, _("Stray in program"), 102); return 1;}
 
 %% // LCOV_EXCL_LINE
@@ -488,9 +488,9 @@ ANN void lexer_error(yyscan_t yyscanner, const char *msg, const uint error_code)
   scanner_error(scan, msg, NULL, NULL, *yyget_lloc(yyscanner), error_code);
 }
 
-char* strip_lit(char* str){
-  str[strlen(str)-1] = '\0';
-  return str+1;
+char* strip_lit(char* str, const size_t len){
+  str[len-1] = '\0';
+  return str + 1;
 }
 
 Symbol alloc_sym(void *data, const char* str) {
