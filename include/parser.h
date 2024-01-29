@@ -309,7 +309,7 @@ extern int gwion_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 29 "src/gwion.y"
+#line 30 "src/gwion.y"
 
   bool yybool;
   ae_stmt_t stmt_t;
@@ -355,8 +355,8 @@ union YYSTYPE
   Specialized_List specialized_list;
   TmplArg tmplarg;
   Type_List type_list;
-  Union_Member union_member;
-  Union_List union_list;
+  Variable variable;
+  Variable_List variable_list;
   Extend_Def extend_def;
   Class_Def class_def;
   Trait_Def trait_def;

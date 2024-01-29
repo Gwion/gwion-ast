@@ -15,6 +15,7 @@ ANEW static Scanner *new_scanner(const struct AstGetter_ *arg) {
   scan->st  = arg->st;
   scan->ppa = arg->ppa;
   pos_ini(&scan->pos);
+//  pos_ini(&scan->old);
   scan->ppa->ast = NULL; // ???
   return scan;
 }
@@ -73,7 +74,7 @@ int scanner_error(Scanner *scan, const char *main, const char *explain,
   const m_str filename = get_filename(scan, ppstate);
   gwerr_basic(main, explain, fix, filename, pos, error_code);
   secondary(scan);
-  scan->error = true;
+//  scan->error = true;
   return 0;
 }
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos) {
@@ -81,6 +82,6 @@ ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos) {
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
   gwerr_secondary(main, filename, pos);
-  scan->error = true;
+//  scan->error = true;
   return 0;
 }

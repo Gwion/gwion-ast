@@ -23,28 +23,39 @@ typedef struct Fptr_Def_ *     Fptr_Def;
 typedef MP_Vector *     Arg_List;
 typedef MP_Vector *Type_List;
 
-typedef struct Type_Decl_ {
-  Symbol             xid;
-  Array_Sub          array;
-  Type_List          types;
-  struct Type_Decl_ *next;
-  Fptr_Def           fptr;
-  loc_t      pos; ///< position
-  uint8_t            option;
-  ae_flag            flag;
-  bool               ref;
-} Type_Decl;
+typedef struct Tag {
+  Symbol sym;
+  loc_t  loc;
+} Tag;
+#define MK_TAG(a, b) (Tag){ .sym = (a), .loc = (b) }
 
+typedef struct Type_Decl_  Type_Decl;
+struct Type_Decl_ {
+  Tag        tag;
+  Array_Sub  array;
+  Type_List  types;
+  Type_Decl *next;
+  Fptr_Def   fptr;
+  uint8_t    option;
+  ae_flag    flag;
+  bool       ref;
+};
 ANEW ANN AST_NEW(Type_Decl *, type_decl, const Symbol, const loc_t pos);
 ANN void free_type_decl(MemPool p, Type_Decl *);
-ANN Type_Decl *add_type_decl_array(Type_Decl *, const Array_Sub);
 
 /** variable declaration **/
 typedef struct Var_Decl_ {
-  struct Symbol_ *xid;   ///< variable name
+  Tag tag;
   struct Value_ * value; ///< corresponding value
-  loc_t   pos;   ///< position
 } Var_Decl;
+
+typedef struct Variable_ {
+  Type_Decl *td;
+  Var_Decl   vd;
+} Variable;
+#define MK_VAR(a, b) (Variable){ .td = (a), .vd = (b) }
+typedef MP_Vector *Variable_List;
+ANN void free_variable_list(MemPool p, Variable_List);
 
 enum tmplarg_t {
   tmplarg_td,
@@ -69,8 +80,7 @@ ANN static inline uint32_t tmplarg_ntypes(Type_List tl) {
 }
 
 typedef struct Arg_ {
-  Type_Decl *   td;
-  struct Var_Decl_ var_decl;
+  Variable      var;
   Exp           exp;
   struct Type_ *type; // can be removed by using var_decl.value->type
 } Arg;
@@ -96,16 +106,15 @@ struct ParserArg {
 
 /** a dot expression. @code object.member @endcode */
 typedef struct {
-  Exp             base;
+  Exp    base;
   Symbol xid;
 } Exp_Dot;
 
 
 typedef struct Capture {
-  Symbol xid;
+  Tag tag;
   struct Value_ *orig;
   struct Value_ *temp;
-  loc_t pos;
   uint32_t offset;
   bool is_ref;
 } Capture;
@@ -157,10 +166,9 @@ ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range *, const loc_t pos);
 ANN void free_id_list(MemPool p, ID_List);
 
 typedef struct Specialized {
-  struct Symbol_ *xid;
-  Type_Decl      *td;
-  ID_List         traits;
-  loc_t           pos;
+  Tag        tag;
+  Type_Decl *td;
+  ID_List    traits;
 } Specialized;
 
 typedef MP_Vector *Specialized_List;
@@ -209,9 +217,8 @@ typedef enum {
 } ae_prim_t;
 
 typedef struct {
-  Type_Decl *   td;
+  Variable   var;
   struct Type_ *type;
-  Var_Decl vd;
   Exp args;
 } Exp_Decl;
 
@@ -238,7 +245,7 @@ typedef struct {
   struct Value_ *value;
   union prim_data {
     struct Symbol_  *var;
-    struct gwint gwint;
+    struct gwint     gwint;
     m_float          fnum;
     m_str            chr;
     struct AstString string;
@@ -275,7 +282,8 @@ typedef struct {
   Exp        exp;
 } Exp_Cast;
 typedef struct {
-  Exp    lhs, rhs;
+  Exp    lhs;
+  Exp    rhs;
   Symbol op;
 } Exp_Binary;
 typedef struct {
@@ -449,10 +457,9 @@ static inline Exp take_exp(const Exp exp, const uint32_t n) {
 ANN void free_exp(MemPool p, Exp);
 
 typedef struct Spread_Def_ {
-  Symbol  xid;
+  Tag     tag;
   ID_List list;
   m_str   data;
-  pos_t   pos;
 } *Spread_Def;
 
 typedef enum {
@@ -522,19 +529,17 @@ struct Stmt_For_ {
 };
 
 struct EachIdx_ {
-  struct Symbol_ *sym;
+  Tag             tag;
   struct Value_  *v;
-  loc_t           pos;
   bool            is_var;
 };
 
 struct Stmt_Each_ {
-  struct Symbol_ * sym;
+  Tag             tag;
   Exp              exp;
   Stmt             body;
   struct EachIdx_ *idx;
   struct Value_ *  v;
-  loc_t            vpos;
 };
 
 struct Stmt_Loop_ {
@@ -550,9 +555,8 @@ struct Stmt_If_ {
 };
 
 typedef struct Handler_ {
-  Stmt                  stmt;
-  Symbol                xid;
-  loc_t                 pos;
+  Tag  tag;
+  Stmt stmt;
 } Handler;
 typedef MP_Vector *Handler_List;
 
@@ -567,17 +571,16 @@ typedef struct Stmt_Try_ {
 } * Stmt_Try;
 
 typedef struct EnumValue {
-  Symbol xid;
+  Tag          tag;
   struct gwint gwint;
-  bool set;
+  bool         set;
 } EnumValue;
 typedef MP_Vector *Enum_List;
 typedef struct Enum_Def_ {
-  ID_List         list;
-  struct Symbol_ *xid;
-  struct Type_ *  type;
-  loc_t   pos; ///< position
-  ae_flag         flag;
+  Tag           tag;
+  ID_List       list;
+  struct Type_ *type;
+  ae_flag       flag;
 } *Enum_Def;
 ANN2(1, 2)
 ANEW     AST_NEW(Enum_Def, enum_def, const Enum_List, struct Symbol_ *,
@@ -591,7 +594,7 @@ typedef struct Upvalues {
 
 typedef struct Func_Base_ {
   Type_Decl *     td;
-  struct Symbol_ *xid;
+  Tag             tag;
   Arg_List        args;
   struct Func_ *  func;
   struct Type_ *  ret_type;
@@ -600,7 +603,6 @@ typedef struct Func_Base_ {
   struct Vector_  effects;
   ae_flag         flag;
   enum fbflag     fbflag;
-  loc_t           pos;
 } Func_Base;
 
 FLAG_FUNC(Func_Base *, fb)
@@ -618,34 +620,25 @@ ANN void free_fptr_def(MemPool p, Fptr_Def);
 
 typedef struct Type_Def_ *Type_Def;
 struct Type_Def_ {
-  Type_Decl *     ext;
-  struct Type_ *  type;
-  struct Symbol_ *xid;
-  Tmpl *          tmpl;
-  Exp             when;
-  Func_Def        when_def;
-  loc_t           pos;
-  bool            distinct;
+  Type_Decl *   ext;
+  struct Type_ *type;
+  Tag           tag;
+  Tmpl *        tmpl;
+  Exp           when;
+  Func_Def      when_def;
+  bool          distinct;
 };
 ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl *, const Symbol, const loc_t);
 ANN void free_type_def(MemPool p, Type_Def);
 
-typedef struct Union_Member_ {
-  Type_Decl *td;
-  Var_Decl   vd;
-} Union_Member;
-typedef MP_Vector *Union_List;
-ANN void free_union_list(MemPool p, Union_List);
-
 typedef struct Union_Def_ {
-  Union_List      l;
-  struct Symbol_ *xid;
+  Variable_List      l;
+  Tag tag;
   struct Type_ *  type;
   Tmpl *          tmpl;
-  loc_t   pos; ///< position
   ae_flag         flag;
 } * Union_Def;
-ANEW ANN AST_NEW(Union_Def, union_def, const Union_List, const loc_t);
+ANEW ANN AST_NEW(Union_Def, union_def, const Variable_List, const loc_t);
 ANN void free_union_def(MemPool p, Union_Def);
 
 enum ae_pp_type {
@@ -663,8 +656,8 @@ enum ae_pp_type {
   ae_pp_nl
 };
 
-#define MK_STMT_PP(_type, _data, _pos) (struct Stmt_){ .stmt_type = ae_stmt_pp, \
-  .d = { .stmt_pp = { .data = _data, .pp_type = ae_pp_##_type, }}, .pos = _pos }
+#define MK_STMT_PP(_type, _pos, ...) (struct Stmt_){ .stmt_type = ae_stmt_pp, \
+  .d = { .stmt_pp = { __VA_ARGS__, .pp_type = ae_pp_##_type, }}, .pos = _pos }
 struct Stmt_PP_ {
   m_str data;
   Exp   exp;
@@ -717,8 +710,6 @@ ANEW ANN2(1, 3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str,
                         const loc_t);
 ANEW ANN AST_NEW(Stmt, stmt_defer, const Stmt, const loc_t);
 ANEW ANN AST_NEW(Stmt, stmt_try, const Stmt, const Handler_List);
-ANEW ANN2(1, 3) AST_NEW(Handler_List, handler_list, const Symbol, const Stmt,
-                        const loc_t);
 
 ANN void free_stmt(MemPool p, Stmt);
 
@@ -739,20 +730,18 @@ ANN void free_func_base(MemPool p, Func_Base *);
 ANN void free_func_def(MemPool p, Func_Def);
 
 typedef struct Trait_Def_ {
-  Symbol        xid;
-  Ast           body;
-  ID_List       traits;
-  loc_t pos; ///< position
-  ae_flag       flag;
+  Tag     tag;
+  Ast     body;
+  ID_List traits;
+  ae_flag flag;
 } * Trait_Def;
 ANN ANEW Trait_Def new_trait_def(MemPool p, const ae_flag, const Symbol,
                                  const Ast, const loc_t);
 ANN void           free_trait_def(MemPool p, Trait_Def);
 
 typedef struct Prim_Def_ {
-  Symbol name;
+  Tag tag;
   m_uint size;
-  loc_t loc;
   ae_flag flag;
 } *Prim_Def;
 
@@ -826,7 +815,6 @@ struct Class_Def_ {
   struct Type_Def_ base;
   Ast              body;
   ID_List          traits;
-  loc_t    pos; ///< position
   enum cflag       cflag;
   ae_flag          flag;
 };

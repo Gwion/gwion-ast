@@ -44,16 +44,14 @@ ANN static void cpy_exp_slice(MemPool p, Exp_Slice *a, const Exp_Slice *src) {
 }
 
 ANN static void cpy_var_decl(MemPool p NUSED, Var_Decl *a, const Var_Decl *src) {
-  a->xid     = src->xid;                                   // 1
-  a->pos = src->pos;                                       // 1
+  a->tag = src->tag;
 }
 
 ANN Type_Decl *cpy_type_decl(MemPool p, const Type_Decl *src) {
   Type_Decl *a = mp_calloc(p, Type_Decl);
-  a->xid       = src->xid;
+  a->tag       = src->tag;
   if (src->array) a->array = cpy_array_sub(p, src->array); // 1
   if (src->types) a->types = cpy_type_list(p, src->types); // 1
-  a->pos  = src->pos;
   a->flag = src->flag; // 1
   if (src->next) a->next = cpy_type_decl(p, src->next);
   if (src->fptr) a->fptr = cpy_fptr_def(p, src->fptr);
@@ -77,10 +75,9 @@ ANN Specialized_List cpy_specialized_list(MemPool                p,
   for(uint32_t i = 0; i < src->len; i++) {
     Specialized *_src = mp_vector_at(src, Specialized, i);
     Specialized *_tgt = mp_vector_at(tgt, Specialized, i);
-    _tgt->xid = _src->xid;
+    _tgt->tag = _src->tag;
     if (_src->td) _tgt->td = cpy_type_decl(p, _src->td);
     if (_src->traits) _tgt->traits = cpy_id_list(p, _src->traits);
-    _tgt->pos = _src->pos;
   }
   return tgt;
 }
@@ -102,21 +99,24 @@ ANN Type_List cpy_type_list(MemPool p, const Type_List src) {
   return a;
 }
 
+ANN static void cpy_variable(MemPool p, Variable *a, const Variable *src) {
+  if (src->td) a->td = cpy_type_decl(p, src->td);
+  cpy_var_decl(p, &a->vd, &src->vd);
+}
+
 ANN Arg_List cpy_arg_list(MemPool p, const Arg_List src) {
   Arg_List arg = new_mp_vector(p, Arg, src->len);
   for(m_uint i = 0; i < src->len; i++) {
     Arg *_src = mp_vector_at(src, Arg, i);
     Arg *_arg = mp_vector_at(arg, Arg, i);
-    if (_src->td) _arg->td = cpy_type_decl(p, _src->td);
-    cpy_var_decl(p, &_arg->var_decl, &_src->var_decl);
+    cpy_variable(p, &_arg->var, &_src->var);
     if (_src->exp) _arg->exp = cpy_exp(p, _src->exp);
   }
   return arg;
 }
 
 ANN static void cpy_exp_decl(MemPool p, Exp_Decl *a, const Exp_Decl *src) {
-  a->td   = cpy_type_decl(p, src->td);
-  cpy_var_decl(p, &a->vd, &src->vd);
+  cpy_variable(p, &a->var, &src->var);
   if(src->args) a->args = cpy_exp(p, src->args);
 }
 
@@ -301,17 +301,15 @@ ANN static void cpy_stmt_for(MemPool p, Stmt_For a, const Stmt_For src) {
 
 ANN static struct EachIdx_ *cpy_eachidx(MemPool p, const struct EachIdx_ *src) {
   struct EachIdx_ *a = mp_malloc(p, EachIdx);
-  a->sym             = src->sym;
-  a->pos             = src->pos;
+  a->tag = src->tag;
   return a;
 }
 
 ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
-  a->sym  = src->sym;
+  a->tag  = src->tag;
   a->exp  = cpy_exp(p, src->exp);
   a->body = cpy_stmt(p, src->body);
   if (src->idx) a->idx = cpy_eachidx(p, src->idx);
-  a->vpos = src->vpos;
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {
@@ -355,8 +353,7 @@ ANN static Handler_List cpy_handler_list(MemPool p, const Handler_List src) {
     Handler *src_handler = mp_vector_at(src, Handler, i);
     Handler *tgt_handler = mp_vector_at(tgt, Handler, i);
     tgt_handler->stmt        = cpy_stmt(p, src_handler->stmt);
-    tgt_handler->xid         = src_handler->xid;
-    tgt_handler->pos = src_handler->pos;
+    tgt_handler->tag         = src_handler->tag;
   }
   return tgt;
 }
@@ -382,8 +379,7 @@ ANN static Enum_List cpy_enum_list(MemPool p, const Enum_List src) {
 ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
   Enum_Def a = mp_calloc(p, Enum_Def);
   a->list    = cpy_enum_list(p, src->list);
-  a->xid     = src->xid;
-  a->pos     = src->pos;
+  a->tag     = src->tag;
   a->flag    = src->flag;
   return a;
 }
@@ -391,14 +387,13 @@ ANN static Enum_Def cpy_enum_def(MemPool p, const Enum_Def src) {
 ANN Func_Base *cpy_func_base(MemPool p, const Func_Base *src) {
  Func_Base *a = mp_calloc(p, Func_Base);
   if (src->td) a->td = cpy_type_decl(p, src->td);      // 1
-  a->xid = src->xid;                     // 1
+  a->tag = src->tag;                     // 1
   if (src->args) a->args = cpy_arg_list(p, src->args); // 1
   if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl); // 1
   //  if(src->effects.ptr)
   //    vector_copy2((Vector)&src->effects, &a->effects);
   a->flag   = src->flag;
   a->fbflag = src->fbflag;
-  a->pos    = src->pos;
   return a;
 }
 
@@ -409,11 +404,10 @@ ANN /*static */ Fptr_Def cpy_fptr_def(MemPool p, const Fptr_Def src) {
 }
 
 ANN static void cpy_type_def2(MemPool p, Type_Def a, const Type_Def src) {
+  a->tag = src->tag;
   if (src->ext) a->ext = cpy_type_decl(p, src->ext);
-  a->xid = src->xid;
   if (src->when) a->when = cpy_exp(p, src->when);
   if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl);
-  a->pos = src->pos;
 }
 
 ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
@@ -422,27 +416,23 @@ ANN static Type_Def cpy_type_def(MemPool p, const Type_Def src) {
   return a;
 }
 
-ANN static void cpy_union_member(MemPool p, Union_Member *a, Union_Member *src) {
-  a->td        = cpy_type_decl(p, src->td);
-  cpy_var_decl(p, &a->vd, &src->vd);
-}
-
-ANN Union_List cpy_union_list(MemPool p, const Union_List src) {
-  Union_List a = new_mp_vector(p, Union_Member, src->len);
+ANN Variable_List cpy_variable_list(MemPool p, const Variable_List src) {
+  Variable_List a = new_mp_vector(p, Variable, src->len);
   for(uint32_t i = 0; i < src->len; i++) {
-    Union_Member *_src = mp_vector_at(src, Union_Member, i);
-    Union_Member *_tgt = mp_vector_at(a, Union_Member, i);
-    cpy_union_member(p, _tgt, _src);
+    Variable *_src = mp_vector_at(src, Variable, i);
+    Variable *_tgt = mp_vector_at(a, Variable, i);
+    cpy_variable(p, _tgt, _src);
   }
   return a;
 }
 
 ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   Union_Def a = mp_calloc(p, Union_Def);
-  a->l        = cpy_union_list(p, src->l);         // 1
-  if (src->xid) a->xid = src->xid;                 // 1
+  a->tag = src->tag;
+  a->l        = cpy_variable_list(p, src->l);         // 1
+//  if (src->xid) a->xid = src->xid;                 // 1
   if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl); // 1
-  a->pos  = src->pos;
+//  a->pos  = src->pos;
   a->flag = src->flag; // 1
   return a;
 }
@@ -460,10 +450,9 @@ ANN Stmt cpy_stmt3(MemPool p, const Stmt src) {
 }
 
 ANN static void cpy_stmt_spread(MemPool p, Spread_Def a, const Spread_Def src) {
-  a->xid = src->xid;
+  a->tag = src->tag;
   a->list = cpy_id_list(p, src->list);
   a->data = mstrdup(p, src->data);
-  a->pos  = src->pos;
 }
 
 ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
@@ -541,19 +530,18 @@ ANN Stmt_List cpy_stmt_list(MemPool p, Stmt_List src) {
 
 ANN static Trait_Def cpy_trait_def(MemPool p, const Trait_Def src) {
   Trait_Def a = mp_calloc(p, Trait_Def);
+  a->tag = src->tag;
   if (src->body) a->body = cpy_ast(p, src->body);
   if (src->traits) a->traits = cpy_id_list(p, src->traits);
   a->flag = src->flag;
-  a->pos  = src->pos;
   return a;
 }
 
 ANN static Prim_Def cpy_prim_def(MemPool p, const Prim_Def src) {
   Prim_Def a = mp_calloc(p, Prim_Def);
-  a->name = src->name;
+  a->tag = src->tag;
   a->size = src->size;
   a->flag = src->flag;
-  a->loc = src->loc;
   return a;
 }
 
@@ -610,7 +598,6 @@ ANN Class_Def cpy_class_def(MemPool p, const Class_Def src) {
   if (src->traits) a->traits = cpy_id_list(p, src->traits);
   a->flag  = src->flag;
   a->cflag = src->cflag;
-  a->pos   = src->pos;
   return a;
 }
 

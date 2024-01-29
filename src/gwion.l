@@ -23,6 +23,7 @@ NUM      ([0-9]{1,3}+({SPACE}*[0-9]{3})*)
 
 // there was yynoreturn
 ANN void lexer_error(yyscan_t yyscanner, const char*, const uint errorcode);
+ANN void lex_spread(void *data);
 ANN static char* strip_lit(char* str);
 ANN static char* alloc_str(void *, const char* str);
 ANN static Symbol alloc_sym(void *, const char* str);
@@ -481,18 +482,6 @@ ANN static double exponent_not(m_str str, size_t sz) {
   return strtod(base, NULL);
 }
 
-ANN Symbol lambda_name(SymTable *const st, const pos_t pos) {
-  char c[6 + 1 + num_digit(pos.line) + num_digit(pos.column) + 2];
-  sprintf(c, "lambda:%u:%u", pos.line, pos.column);
-  return insert_symbol(st, c);
-}
-
-ANN Symbol sig_name(const Scanner *scan, const pos_t pos) {
-  char c[6 + 1 + num_digit(pos.line) + num_digit(pos.column) + 2];
-  sprintf(c, "@sig_%u_%u", pos.line, pos.column);
-  return insert_symbol(scan->st, c);
-}
-
 ANN void lexer_error(yyscan_t yyscanner, const char *msg, const uint error_code) {
   struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
@@ -566,6 +555,10 @@ long long btoll(const char* str) {
 
 static void newline(void* data) {
   Scanner* scan = yyget_extra(data);
+  scan->old.line = scan->tmp.line;
+  scan->old.column = scan->tmp.column;
+  scan->tmp.line = scan->pos.line;
+  scan->tmp.column = scan->pos.column;
   ++scan->pos.line;
   scan->pos.column = 1;
 }
@@ -582,6 +575,10 @@ static uint get_currpos(void* data) {
 
 static void adjust(void* data) {
   Scanner *scan = yyget_extra(data);
+  scan->old.line = scan->tmp.line;
+  scan->old.column = scan->tmp.column;
+  scan->tmp.line = scan->pos.line;
+  scan->tmp.column = scan->pos.column;
   scan->pos.column += (uint)gwion_get_leng((void*)data);
 }
 
@@ -660,10 +657,10 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
 }
 
 static m_str pp_data(void* data, const m_str id) {
-  Scanner* scan = yyget_extra(data);
   const m_str arg = get_arg_text(data, id);
   if(arg)
     return arg;
+  Scanner* scan = yyget_extra(data);
   Macro e = scan_has_macro(scan, id);
   if(e)
     return e->text->str;
@@ -874,8 +871,10 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
               return 1;
             }
           } else {
-            if(!strcmp(arg->name, "__VA_ARGS__"))exit(16);// not enough args ?
+            if(!strcmp(arg->name, "__VA_ARGS__")) {
+              lexer_error(data, "Not enough arguments", ERRORCODE(107));
               return 0;
+            }
           }
         }
         return 1;

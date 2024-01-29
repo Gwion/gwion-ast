@@ -2,7 +2,9 @@ typedef struct {
 
 } XXX;
 
+ANN static void xxx_loc(XXX *a, loc_t b);
 ANN static void xxx_symbol(XXX *a, Symbol b);
+ANN static void xxx_tag(XXX *a, Tag *tag);
 ANN static void xxx_array_sub(XXX *a, Array_Sub b);
 ANN static void xxx_specialized(XXX *a, Specialized *b);
 ANN static void xxx_tmpl(XXX *a, Tmpl *b);
@@ -23,6 +25,7 @@ ANN static void xxx_prim_nil(XXX *a, void *b);
 ANN static void xxx_prim_perform(XXX *a, Symbol *b);
 ANN static void xxx_prim(XXX *a, Exp_Primary *b);
 ANN static void xxx_var_decl(XXX *a, Var_Decl *b);
+ANN static void xxx_variable(XXX *a, Variable *b);
 ANN static void xxx_exp_decl(XXX *a, Exp_Decl *b);
 ANN static void xxx_exp_binary(XXX *a, Exp_Binary *b);
 ANN static void xxx_exp_unary(XXX *a, Exp_Unary *b);
@@ -57,7 +60,7 @@ ANN static void xxx_stmt_try(XXX *a, Stmt_Try b);
 ANN static void xxx_stmt_defer(XXX *a, Stmt_Defer b);
 ANN static void xxx_stmt(XXX *a, Stmt b);
 ANN static void xxx_arg(XXX *a, Arg *b);
-ANN static void xxx_union_list(XXX *a, Union_List b);
+ANN static void xxx_variable_list(XXX *a, Variable_List b);
 ANN static void xxx_stmt_list(XXX *a, Stmt_List b);
 ANN static void xxx_func_base(XXX *a, Func_Base *b);
 ANN static void xxx_func_def(XXX *a, Func_Def b);

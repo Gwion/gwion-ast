@@ -3,8 +3,7 @@
 
 AST_NEW(Type_Decl *, type_decl, const Symbol xid, const struct loc_t_ pos) {
   Type_Decl *a = mp_calloc(p, Type_Decl);
-  a->xid       = xid;
-  a->pos       = pos;
+  a->tag       = MK_TAG(xid, pos);
   return a;
 }
 
@@ -77,8 +76,7 @@ AST_NEW(Exp, exp_slice, const Exp base, Range *range, const struct loc_t_ pos) {
 AST_NEW(Exp, exp_decl, Type_Decl *td, const Var_Decl *vd,
         const struct loc_t_ pos) {
   Exp a              = new_exp(p, ae_exp_decl, pos);
-  a->d.exp_decl.td   = td;
-  a->d.exp_decl.vd = *vd;
+  a->d.exp_decl.var  = MK_VAR(td, *vd);
   return a;
 }
 
@@ -270,10 +268,9 @@ AST_NEW(Func_Base *, func_base, Type_Decl *td, const Symbol xid,
         const Arg_List args, const ae_flag flag, const loc_t pos) {
   Func_Base *a = (Func_Base *)mp_calloc(p, Func_Base);
   a->td        = td;
-  a->xid       = xid;
+  a->tag       = MK_TAG(xid, pos);
   a->args      = args;
   a->flag      = flag;
-  a->pos       = pos;
   return a;
 }
 
@@ -286,8 +283,7 @@ AST_NEW(Fptr_Def, fptr_def, Func_Base *base) {
 AST_NEW(Type_Def, type_def, Type_Decl *ext, const Symbol xid, const loc_t pos) {
   Type_Def a = mp_calloc(p, Type_Def);
   a->ext     = ext;
-  a->xid     = xid;
-  a->pos     = pos;
+  a->tag     = MK_TAG(xid, pos);
   return a;
 }
 
@@ -365,7 +361,7 @@ AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2,
 AST_NEW(Stmt, stmt_each, struct Symbol_ *sym, const Exp exp, const Stmt body,
         const struct loc_t_ pos) {
   Stmt a              = new_stmt(p, ae_stmt_each, pos);
-  a->d.stmt_each.sym  = sym;
+  a->d.stmt_each.tag  = MK_TAG(sym,pos);
   a->d.stmt_each.exp  = exp;
   a->d.stmt_each.body = body;
   return a;
@@ -397,17 +393,16 @@ AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body,
 AST_NEW(Enum_Def, enum_def, const Enum_List list, struct Symbol_ *xid,
         const struct loc_t_ pos) {
   Enum_Def a = mp_calloc(p, Enum_Def);
-  a->xid     = xid;
+  a->tag     = MK_TAG(xid, pos);
   a->list    = list;
-  a->pos     = pos;
   //  vector_init(&a->values);
   return a;
 }
 
-AST_NEW(Union_Def, union_def, const Union_List l, const struct loc_t_ pos) {
+AST_NEW(Union_Def, union_def, const Variable_List l, const struct loc_t_ pos) {
   Union_Def a = mp_calloc(p, Union_Def);
   a->l        = l;
-  a->pos      = pos;
+  a->tag.loc  = pos; // change ctor
   return a;
 }
 
@@ -452,29 +447,25 @@ AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Symbol xid,
         Type_Decl *ext, const Ast body, const struct loc_t_ pos) {
   Class_Def a = mp_calloc(p, Class_Def);
   a->flag     = class_decl;
-  a->base.xid = xid;
+  a->base.tag = MK_TAG(xid, pos);
   a->base.ext = ext;
   a->body     = body;
-  a->pos      = pos; // remove me
-  a->base.pos = pos;
   return a;
 }
 
 AST_NEW(Trait_Def, trait_def, const ae_flag class_decl, const Symbol xid,
         const Ast body, const struct loc_t_ pos) {
   Trait_Def a = mp_calloc(p, Trait_Def);
+  a->tag      = MK_TAG(xid, pos);
   a->flag     = class_decl;
-  a->xid      = xid;
   a->body     = body;
-  a->pos      = pos;
   return a;
 }
 
 AST_NEW(Prim_Def, prim_def, const Symbol name, const m_uint size, const loc_t loc, const ae_flag flag) {
   Prim_Def a = mp_calloc(p, Prim_Def);
-  a->name    = name;
+  a->tag      = MK_TAG(name, loc);
   a->size    = size;
-  a->loc     = loc;
   a->flag    = flag;
   return a;
 }

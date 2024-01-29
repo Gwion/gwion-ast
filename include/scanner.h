@@ -11,6 +11,8 @@ typedef struct Scanner_ {
   struct PPArg_ *ppa;
   struct Vector_ hashes;
   struct pos_t   pos;
+  struct pos_t   tmp;
+  struct pos_t   old;
   short int      interp_state;
   short int      spread_state;
   bool           error;

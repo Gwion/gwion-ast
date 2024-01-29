@@ -60,6 +60,8 @@ uninstall: translation-uninstall
 gwparse: main.o
 	${CC} -o $@ $< -lfl libgwion_ast.a libprettyerr/libprettyerr.a ../util/libgwion_util.a -lpthread -lm
 
+test: pass/xxx.o
+	rm $<
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/locale.mk
 

@@ -47,8 +47,12 @@ AST_FREE(Type_Decl *, type_decl) {
   mp_free(p, Type_Decl, a);
 }
 
+static AST_FREE(Variable*, variable) {
+  if (a->td) free_type_decl(p, a->td);
+}
+
 ANN AST_FREE(Exp_Decl *, exp_decl) {
-  free_type_decl(p, a->td);
+  free_variable(p, &a->var);
   if(a->args) free_exp(p, a->args);
 }
 
@@ -154,7 +158,7 @@ AST_FREE(Exp, exp) {
 AST_FREE(Arg_List, arg_list) {
   for(uint32_t i = 0; i < a->len; i++) {
     Arg *arg = mp_vector_at(a, Arg, i);
-    if (arg->td) free_type_decl(p, arg->td);
+    free_variable(p, &arg->var);
     if (arg->exp) free_exp(p, arg->exp);
   }
 }
@@ -238,16 +242,16 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
 
 ANN static AST_FREE(Stmt_Defer, stmt_defer) { free_stmt(p, a->stmt); }
 
-ANN AST_FREE(Union_List, union_list) {
+ANN AST_FREE(Variable_List, variable_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    Union_Member *tgt = mp_vector_at(a, Union_Member, i);
+    Variable *tgt = mp_vector_at(a, Variable, i);
     free_type_decl(p, tgt->td);
   }
-  free_mp_vector(p, Union_Member, a);
+  free_mp_vector(p, Variable, a);
 }
 
 ANN AST_FREE(Union_Def, union_def) {
-  free_union_list(p, a->l);
+  free_variable_list(p, a->l);
   mp_free(p, Union_Def, a);
 }
 

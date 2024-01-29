@@ -3,6 +3,18 @@
 #include "xxx.h"
 
 ANN static void xxx_symbol(XXX *a, Symbol b) {
+  (void)a;
+  (void)b;
+}
+
+ANN static void xxx_loc(XXX *a, loc_t b) {
+  (void)a;
+  (void)b;
+}
+
+ANN static void xxx_tag(XXX *a, Tag *b) {
+  if(b->sym) xxx_symbol(a, b->sym);
+  xxx_loc(a, b->loc);
 }
 
 ANN static void xxx_array_sub(XXX *a, Array_Sub b) {
@@ -17,7 +29,7 @@ ANN static void xxx_id_list(XXX *a, ID_List b) {
 }
 
 ANN static void xxx_specialized(XXX *a, Specialized *b) {
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
   if(b->traits) xxx_id_list(a, b->traits);
 }
 
@@ -46,7 +58,7 @@ ANN static void xxx_range(XXX *a, Range *b) {
 }
 
 ANN static void xxx_type_decl(XXX *a, Type_Decl *b) {
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
   if(b->array) xxx_array_sub(a, b->array);
   if(b->types) xxx_type_list(a, b->types);
 }
@@ -56,12 +68,18 @@ ANN static void xxx_prim_id(XXX *a, Symbol *b) {
 }
 
 ANN static void xxx_prim_num(XXX *a, m_uint *b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_prim_float(XXX *a, m_float *b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_prim_str(XXX *a, m_str *b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_prim_array(XXX *a, Array_Sub *b) {
@@ -89,9 +107,13 @@ ANN static void xxx_prim_interp(XXX *a, Exp *b) {
 }
 
 ANN static void xxx_prim_char(XXX *a, m_str *b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_prim_nil(XXX *a, void *b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_prim_perform(XXX *a, Symbol *b) {
@@ -108,12 +130,16 @@ ANN static void xxx_prim(XXX *a, Exp_Primary *b) {
 }
 
 ANN static void xxx_var_decl(XXX *a, Var_Decl *b) {
-  if(b->xid) xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
+}
+
+ANN static void xxx_variable(XXX *a, Variable *b) {
+  if(b->td) xxx_type_decl(a, b->td);
+  xxx_var_decl(a, &b->vd);
 }
 
 ANN static void xxx_exp_decl(XXX *a, Exp_Decl *b) {
-  if(b->td) xxx_type_decl(a, b->td);
-  xxx_var_decl(a, &b->vd);
+  xxx_variable(a, &b->var);
 }
 
 ANN static void xxx_exp_binary(XXX *a, Exp_Binary *b) {
@@ -123,7 +149,7 @@ ANN static void xxx_exp_binary(XXX *a, Exp_Binary *b) {
 }
 
 ANN static void xxx_capture(XXX *a, Capture *b) {
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
 }
 
 ANN static void xxx_captures(XXX *a, Capture_List b) {
@@ -217,7 +243,7 @@ ANN static void xxx_stmt_for(XXX *a, Stmt_For b) {
 }
 
 ANN static void xxx_stmt_each(XXX *a, Stmt_Each b) {
-  xxx_symbol(a, b->sym);
+  xxx_tag(a, &b->tag);
   xxx_exp(a, b->exp);
   xxx_stmt(a, b->body);
 }
@@ -238,9 +264,13 @@ ANN static void xxx_stmt_code(XXX *a, Stmt_Code b) {
 }
 
 ANN static void xxx_stmt_break(XXX *a, Stmt_Exp b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_stmt_continue(XXX *a, Stmt_Exp b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_stmt_return(XXX *a, Stmt_Exp b) {
@@ -251,7 +281,7 @@ ANN static void xxx_case_list(XXX *a, Stmt_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
     Stmt c = mp_vector_at(b, struct Stmt_, i);
     xxx_stmt_case(a, &c->d.stmt_match);
-  } 
+  }
 }
 
 ANN static void xxx_stmt_match(XXX *a, Stmt_Match b) {
@@ -267,12 +297,18 @@ ANN static void xxx_stmt_case(XXX *a, Stmt_Match b) {
 }
 
 ANN static void xxx_stmt_index(XXX *a, Stmt_Index b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_stmt_pp(XXX *a, Stmt_PP b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_stmt_retry(XXX *a, Stmt_Exp b) {
+  (void)a;
+  (void)b;
 }
 
 ANN static void xxx_stmt_try(XXX *a, Stmt_Try b) {
@@ -284,7 +320,7 @@ ANN static void xxx_stmt_defer(XXX *a, Stmt_Defer b) {
 }
 
 ANN static void xxx_stmt_spread(XXX *a, Spread_Def b) {
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
   xxx_id_list(a, b->list);
 }
 DECL_STMT_FUNC(xxx, void, XXX*)
@@ -293,8 +329,7 @@ ANN static void xxx_stmt(XXX *a, Stmt b) {
 }
 
 ANN static void xxx_arg(XXX *a, Arg *b) {
-  if(b->td) xxx_type_decl(a, b->td);
-  xxx_var_decl(a, &b->var_decl);
+  xxx_variable(a, &b->var);
 }
 
 ANN static void xxx_arg_list(XXX *a, Arg_List b) {
@@ -304,15 +339,10 @@ ANN static void xxx_arg_list(XXX *a, Arg_List b) {
   }
 }
 
-ANN static void xxx_union_member(XXX *a, Union_Member *b) {
-  xxx_type_decl(a, b->td);
-  xxx_var_decl(a, &b->vd);
-}
-
-ANN static void xxx_union_list(XXX *a, Union_List b) {
+ANN static void xxx_variable_list(XXX *a, Variable_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Union_Member *c = mp_vector_at(b, Union_Member, i);
-    xxx_union_member(a, c);
+    Variable *c = mp_vector_at(b, Variable, i);
+    xxx_variable(a, c);
   }
 }
 
@@ -325,7 +355,7 @@ ANN static void xxx_stmt_list(XXX *a, Stmt_List b) {
 
 ANN static void xxx_func_base(XXX *a, Func_Base *b) {
   if(b->td) xxx_type_decl(a, b->td);
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
   if(b->args) xxx_arg_list(a, b->args);
   if(b->tmpl) xxx_tmpl(a, b->tmpl);
 }
@@ -345,21 +375,26 @@ ANN static void xxx_trait_def(XXX *a, Trait_Def b) {
   if(b->body) xxx_ast(a, b->body);
 }
 
+ANN static void xxx_enumvalue(XXX *a, EnumValue *b) {
+  (void)a;
+  (void)b;
+}
+
 ANN static void xxx_enum_list(XXX *a, Enum_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Stmt c = mp_vector_at(b, EnumValue, i);
-    //xxx_enumvalue(a, c);
+    EnumValue *c = mp_vector_at(b, EnumValue, i);
+    xxx_enumvalue(a, c);
   }
 }
 
 ANN static void xxx_enum_def(XXX *a, Enum_Def b) {
   xxx_enum_list(a, b->list);
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
 }
 
 ANN static void xxx_union_def(XXX *a, Union_Def b) {
-  xxx_union_list(a, b->l);
-  if(b->xid) xxx_symbol(a, b->xid);
+  xxx_variable_list(a, b->l);
+  xxx_tag(a, &b->tag);
   if(b->tmpl) xxx_tmpl(a, b->tmpl);
 }
 
@@ -369,7 +404,7 @@ ANN static void xxx_fptr_def(XXX *a, Fptr_Def b) {
 
 ANN static void xxx_type_def(XXX *a, Type_Def b) {
   if(b->ext) xxx_type_decl(a, b->ext);
-  xxx_symbol(a, b->xid);
+  xxx_tag(a, &b->tag);
   if(b->tmpl) xxx_tmpl(a, b->tmpl);
 }
 
@@ -379,7 +414,7 @@ ANN static void xxx_extend_def(XXX *a, Extend_Def b) {
 }
 
 ANN static void xxx_prim_def(XXX *a, Prim_Def b) {
-  xxx_symbol(a, b->name);
+  xxx_tag(a, &b->tag);
 }
 
 DECL_SECTION_FUNC(xxx, void, XXX*)
