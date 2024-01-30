@@ -1050,7 +1050,7 @@ interp: INTERP_START interp_exp { $$ = $2; }
     char c[strlen($1->d.prim.d.string.data) + strlen($3->d.prim.d.string.data) + 1];
     sprintf(c, "%s%s\n", $1->d.prim.d.string.data, $3->d.prim.d.string.data);
     $1->d.prim.d.string.data = s_name(insert_symbol(c));
-    $1->pos.last = $3->pos.last;
+    $1->loc.last = $3->loc.last;
     free_exp(mpool(arg), $3);
   } else
   $1->next = $3;

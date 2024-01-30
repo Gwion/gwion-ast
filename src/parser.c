@@ -4459,7 +4459,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
     char c[strlen((yyvsp[-2].exp)->d.prim.d.string.data) + strlen((yyvsp[0].exp)->d.prim.d.string.data) + 1];
     sprintf(c, "%s%s\n", (yyvsp[-2].exp)->d.prim.d.string.data, (yyvsp[0].exp)->d.prim.d.string.data);
     (yyvsp[-2].exp)->d.prim.d.string.data = s_name(insert_symbol(c));
-    (yyvsp[-2].exp)->pos.last = (yyvsp[0].exp)->pos.last;
+    (yyvsp[-2].exp)->loc.last = (yyvsp[0].exp)->loc.last;
     free_exp(mpool(arg), (yyvsp[0].exp));
   } else
   (yyvsp[-2].exp)->next = (yyvsp[0].exp);

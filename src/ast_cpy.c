@@ -270,7 +270,7 @@ ANN Exp cpy_exp(MemPool p, const Exp src) {
   a->exp_type = src->exp_type;
   a->emit_var = src->emit_var;
   //  a->meta = src->meta;// maybe meta shoyuld be set as in constructors
-  a->pos = src->pos;
+  a->loc = src->loc;
   return a;
 }
 

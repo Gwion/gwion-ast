@@ -33,7 +33,7 @@ Array_Sub prepend_array_sub(const Array_Sub a, const Exp exp) {
 ANN static AST_NEW(Exp, exp, const ae_exp_t type, const loc_t loc) {
   Exp a       = mp_calloc(p, Exp);
   a->exp_type = type;
-  a->pos      = loc;
+  a->loc      = loc;
   return a;
 }
 

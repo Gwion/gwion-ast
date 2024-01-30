@@ -343,7 +343,7 @@ struct Exp_ {
   Exp           next;
   Exp ref;
   void *data;
-  loc_t pos; ///< position
+  loc_t loc;
   ae_exp_t exp_type;
   int16_t  emit_var;
   enum exp_comptime comptime;
@@ -412,7 +412,7 @@ static inline Exp prim_exp(const void *data) {
 }
 static inline loc_t prim_pos(const void *data) {
   const Exp e = prim_exp(data);
-  return e->pos;
+  return e->loc;
 }
 
 ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_ *, const loc_t);
