@@ -2,7 +2,7 @@
 #include "gwion_ast.h"
 
 ANN static loc_t defer_stmt_list(Stmt_List list);
-ANN loc_t defer_stmt(Stmt stmt);
+ANN loc_t defer_stmt(Stmt* stmt);
 
 #define CHECK_B(a) { const loc_t loc = a; if(loc.first.line) return loc; }
 
@@ -10,7 +10,7 @@ ANN static inline loc_t defer_stmt_match(const Stmt_Match stmt) {
   if (stmt->where) CHECK_B(defer_stmt(stmt->where));
   Stmt_List l = stmt->list;
   for(m_uint i = 0; i < l->len; i++) {
-    const Stmt s = mp_vector_at(l, struct Stmt_, i);
+    const Stmt* s = mp_vector_at(l, struct Stmt_, i);
     CHECK_B(defer_stmt_list(s->d.stmt_match.list));
   }
   return (loc_t){};
@@ -94,13 +94,13 @@ const _defer_stmt_func defer_stmt_func[] = {
       (_defer_stmt_func)defer_stmt_defer,                              \
       (_defer_stmt_func)defer_stmt_spread};
 
-ANN loc_t defer_stmt(const Stmt stmt) {
+ANN loc_t defer_stmt(Stmt* stmt) {
   return defer_stmt_func[stmt->stmt_type](&stmt->d);
 }
 
 ANN static loc_t defer_stmt_list(Stmt_List l) {
   for(m_uint i = 0; i < l->len; i++) {
-    const Stmt s = mp_vector_at(l, struct Stmt_, i);
+    Stmt* s = mp_vector_at(l, struct Stmt_, i);
     CHECK_B(defer_stmt(s));
   }
   return (loc_t){};

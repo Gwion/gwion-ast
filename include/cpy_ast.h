@@ -20,5 +20,5 @@ ANN TmplArg_List          cpy_tmplarg_list(MemPool p, const TmplArg_List src);
 ANN ID_List            cpy_id_list(MemPool p, const ID_List src);
 ANN Tmpl *cpy_tmpl(MemPool p, const Tmpl *src);
 ANN Ast cpy_ast(MemPool p, Ast src);
-ANN Stmt   cpy_stmt3(MemPool p, const Stmt);
+ANN Stmt*   cpy_stmt3(MemPool p, Stmt*);
 #endif

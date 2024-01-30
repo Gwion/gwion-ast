@@ -2,7 +2,7 @@
 #include "gwion_ast.h"
 
 AST_FREE(Stmt_List, stmt_list);
-static AST_FREE(Stmt, stmt2);
+static AST_FREE(Stmt*, stmt2);
 
 AST_FREE(Array_Sub, array_sub) {
   if (a->exp) free_exp(p, a->exp);
@@ -198,7 +198,7 @@ ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
 ANN static AST_FREE(struct Stmt_Match_ *, stmt_match) {
   free_exp(p, a->cond);
   for(m_uint i = 0; i  < a->list->len; i++) {
-    const Stmt stmt = mp_vector_at(a->list, struct Stmt_, i);
+    Stmt* stmt = mp_vector_at(a->list, struct Stmt_, i);
     free_stmt_case(p, &stmt->d.stmt_match);
   }
   free_mp_vector(p, struct Stmt_, a->list);
@@ -268,18 +268,18 @@ AST_FREE(Spread_Def, stmt_spread) {
 }
 
 DECL_STMT_FUNC(free, void, MemPool);
-static AST_FREE(Stmt, stmt2) {
+static AST_FREE(Stmt*, stmt2) {
   free_stmt_func[a->stmt_type](p, &a->d);
 }
 
-AST_FREE(Stmt, stmt) {
+AST_FREE(Stmt*, stmt) {
   free_stmt_func[a->stmt_type](p, &a->d);
   mp_free(p, Stmt, a);
 }
 
 AST_FREE(Stmt_List, stmt_list) {
   for(m_uint i = 0; i  < a->len; i++) {
-    const Stmt stmt = mp_vector_at(a, struct Stmt_, i);
+    Stmt* stmt = mp_vector_at(a, struct Stmt_, i);
     free_stmt2(p, stmt);
   }
   free_mp_vector(p, struct Stmt_, a);

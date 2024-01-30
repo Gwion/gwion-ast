@@ -58,7 +58,7 @@ ANN void lex_spread(void *data);
   Exp   exp;
   struct Func_Base_ *func_base;
   struct Stmt_ stmt;
-  Stmt stmt_ptr;
+  Stmt* stmt_ptr;
   Handler handler;
   ParserHandler handler_list;
   Stmt_List stmt_list;

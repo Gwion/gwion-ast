@@ -15,7 +15,7 @@ typedef struct Extend_Def_ *   Extend_Def;
 typedef struct Func_Def_ *     Func_Def;
 typedef struct MP_Vector *Stmt_List;
 typedef struct Exp_ *          Exp;
-typedef struct Stmt_ *         Stmt;
+typedef struct Stmt_          Stmt;
 typedef struct Array_Sub_ *    Array_Sub;
 typedef MP_Vector *ID_List;
 typedef MP_Vector *Capture_List;
@@ -497,7 +497,7 @@ typedef struct Stmt_Index_ {
 
 typedef struct Stmt_Flow_ {
   Exp  cond;
-  Stmt body;
+  Stmt* body;
   bool is_do;
 } *Stmt_Flow;
 
@@ -505,7 +505,7 @@ typedef struct Stmt_Match_ {
   Exp       cond;
   Stmt_List list;
   union {
-    Stmt where;
+    Stmt* where;
     Exp  when;
   };
 } *Stmt_Match;
@@ -515,10 +515,10 @@ typedef struct Stmt_Code_ {
 } *Stmt_Code;
 
 struct Stmt_For_ {
-  Stmt c1;
-  Stmt c2;
+  Stmt* c1;
+  Stmt* c2;
   Exp  c3;
-  Stmt body;
+  Stmt* body;
 };
 
 typedef struct EachIdx_ {
@@ -530,25 +530,25 @@ struct Stmt_Each_ {
   Var_Decl var;
   Tag      tag;
   Exp      exp;
-  Stmt     body;
+  Stmt*     body;
   EachIdx *idx;
 };
 
 struct Stmt_Loop_ {
   Exp      cond;
-  Stmt     body;
+  Stmt*     body;
   EachIdx *idx;
 };
 
 struct Stmt_If_ {
   Exp  cond;
-  Stmt if_body;
-  Stmt else_body;
+  Stmt* if_body;
+  Stmt* else_body;
 };
 
 typedef struct Handler_ {
   Tag  tag;
-  Stmt stmt;
+  Stmt* stmt;
 } Handler;
 typedef MP_Vector *Handler_List;
 
@@ -558,7 +558,7 @@ typedef struct ParserHandler {
 } ParserHandler;
 
 typedef struct Stmt_Try_ {
-  Stmt         stmt;
+  Stmt*         stmt;
   Handler_List handler;
 } * Stmt_Try;
 
@@ -658,7 +658,7 @@ struct Stmt_PP_ {
 };
 
 struct Stmt_Defer_ {
-  Stmt stmt;
+  Stmt* stmt;
 };
 
 struct Stmt_ {
@@ -681,29 +681,29 @@ struct Stmt_ {
   ae_stmt_t stmt_type;
 };
 
-static inline Stmt stmt_self(const void *data) {
+static inline Stmt* stmt_self(const void *data) {
   return container_of((char *)data, struct Stmt_, d);
 }
 
-ANEW     AST_NEW(Stmt, stmt, const ae_stmt_t, const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_exp, const ae_stmt_t, const Exp,
+ANEW     AST_NEW(Stmt*, stmt, const ae_stmt_t, const loc_t);
+ANN ANEW AST_NEW(Stmt*, stmt_exp, const ae_stmt_t, const Exp,
                  const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_code, const Stmt_List, const loc_t);
-ANN ANEW AST_NEW(Stmt, stmt_if, const Exp, const Stmt, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_flow, const ae_stmt_t, const Exp, const Stmt,
+ANN ANEW AST_NEW(Stmt*, stmt_code, const Stmt_List, const loc_t);
+ANN ANEW AST_NEW(Stmt*, stmt_if, const Exp, Stmt*, const loc_t);
+ANEW ANN AST_NEW(Stmt*, stmt_flow, const ae_stmt_t, const Exp, Stmt*,
                  const bool, const loc_t);
 ANN2(1, 2, 3, 5)
-ANEW     AST_NEW(Stmt, stmt_for, const Stmt, const Stmt, const Exp, const Stmt,
+ANEW     AST_NEW(Stmt*, stmt_for, Stmt*, Stmt*, const Exp, Stmt*,
                  const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_each, struct Symbol_ *, const Exp, const Stmt,
+ANEW ANN AST_NEW(Stmt*, stmt_each, struct Symbol_ *, const Exp, Stmt*,
                  const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_loop, const Exp, const Stmt, const loc_t);
-ANEW ANN2(1, 3) AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str,
+ANEW ANN AST_NEW(Stmt*, stmt_loop, const Exp, Stmt*, const loc_t);
+ANEW ANN2(1, 3) AST_NEW(Stmt*, stmt_pp, const enum ae_pp_type type, const m_str,
                         const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_defer, const Stmt, const loc_t);
-ANEW ANN AST_NEW(Stmt, stmt_try, const Stmt, const Handler_List);
+ANEW ANN AST_NEW(Stmt*, stmt_defer, Stmt*, const loc_t);
+ANEW ANN AST_NEW(Stmt*, stmt_try, Stmt*, const Handler_List);
 
-ANN void free_stmt(MemPool p, Stmt);
+ANN void free_stmt(MemPool p, Stmt*);
 
 struct Func_Def_ {
   Func_Base *base;

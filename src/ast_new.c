@@ -319,38 +319,38 @@ AST_NEW(Arg_List, arg_list, Type_Decl *td, const Var_Decl var_decl,
   return a;
 }
 */
-AST_NEW(Stmt, stmt_exp, const ae_stmt_t type, const Exp exp,
+AST_NEW(Stmt*, stmt_exp, const ae_stmt_t type, const Exp exp,
         const loc_t loc) {
-  Stmt a            = new_stmt(p, type, loc);
+  Stmt* a            = new_stmt(p, type, loc);
   a->d.stmt_exp.val = exp;
   return a;
 }
 
-AST_NEW(Stmt, stmt_code, const Stmt_List list, const loc_t loc) {
-  Stmt a                   = new_stmt(p, ae_stmt_code, loc);
+AST_NEW(Stmt*, stmt_code, const Stmt_List list, const loc_t loc) {
+  Stmt* a                   = new_stmt(p, ae_stmt_code, loc);
   a->d.stmt_code.stmt_list = list;
   return a;
 }
 
-AST_NEW(Stmt, stmt, const ae_stmt_t type, const loc_t loc) {
-  Stmt a       = mp_calloc(p, Stmt);
+AST_NEW(Stmt*, stmt, const ae_stmt_t type, const loc_t loc) {
+  Stmt* a       = mp_calloc(p, Stmt);
   a->stmt_type = type;
   a->loc       = loc;
   return a;
 }
 
-AST_NEW(Stmt, stmt_flow, const ae_stmt_t type, const Exp cond, const Stmt body,
+AST_NEW(Stmt*, stmt_flow, const ae_stmt_t type, const Exp cond, Stmt* body,
         const bool is_do, const loc_t loc) {
-  Stmt a               = new_stmt(p, type, loc);
+  Stmt* a               = new_stmt(p, type, loc);
   a->d.stmt_flow.is_do = !!is_do;
   a->d.stmt_flow.cond  = cond;
   a->d.stmt_flow.body  = body;
   return a;
 }
 
-AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2,
-        const restrict Exp c3, const Stmt body, const loc_t loc) {
-  Stmt a             = new_stmt(p, ae_stmt_for, loc);
+AST_NEW(Stmt*, stmt_for, Stmt* c1, Stmt* c2,
+        const restrict Exp c3, Stmt* body, const loc_t loc) {
+  Stmt* a            = new_stmt(p, ae_stmt_for, loc);
   a->d.stmt_for.c1   = c1;
   a->d.stmt_for.c2   = c2;
   a->d.stmt_for.c3   = c3;
@@ -358,33 +358,33 @@ AST_NEW(Stmt, stmt_for, const restrict Stmt c1, const restrict Stmt c2,
   return a;
 }
 
-AST_NEW(Stmt, stmt_each, struct Symbol_ *sym, const Exp exp, const Stmt body,
+AST_NEW(Stmt*, stmt_each, struct Symbol_ *sym, const Exp exp, Stmt* body,
         const loc_t loc) {
-  Stmt a              = new_stmt(p, ae_stmt_each, loc);
+  Stmt* a              = new_stmt(p, ae_stmt_each, loc);
   a->d.stmt_each.tag  = MK_TAG(sym, loc);
   a->d.stmt_each.exp  = exp;
   a->d.stmt_each.body = body;
   return a;
 }
 
-AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body,
+AST_NEW(Stmt*, stmt_loop, const Exp cond, Stmt* body,
         const loc_t loc) {
-  Stmt a              = new_stmt(p, ae_stmt_loop, loc);
+  Stmt* a              = new_stmt(p, ae_stmt_loop, loc);
   a->d.stmt_loop.cond = cond;
   a->d.stmt_loop.body = body;
   return a;
 }
 
-AST_NEW(Stmt, stmt_try, const restrict Stmt stmt, const Handler_List handler) {
-  Stmt a                = new_stmt(p, ae_stmt_try, stmt->loc);
+AST_NEW(Stmt*, stmt_try, Stmt* stmt, const Handler_List handler) {
+  Stmt* a                = new_stmt(p, ae_stmt_try, stmt->loc);
   a->d.stmt_try.stmt    = cpy_stmt3(p, stmt);
   a->d.stmt_try.handler = handler;
   return a;
 }
 
-AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body,
+AST_NEW(Stmt*, stmt_if, const Exp cond, Stmt* if_body,
         const loc_t loc) {
-  Stmt a               = new_stmt(p, ae_stmt_if, loc);
+  Stmt* a               = new_stmt(p, ae_stmt_if, loc);
   a->d.stmt_if.cond    = cond;
   a->d.stmt_if.if_body = cpy_stmt3(p, if_body);
   return a;
@@ -406,16 +406,16 @@ AST_NEW(Union_Def, union_def, const Variable_List l, const loc_t loc) {
   return a;
 }
 
-AST_NEW(Stmt, stmt_pp, const enum ae_pp_type type, const m_str data,
+AST_NEW(Stmt*, stmt_pp, const enum ae_pp_type type, const m_str data,
         const loc_t loc) {
-  Stmt a               = new_stmt(p, ae_stmt_pp, loc);
+  Stmt* a               = new_stmt(p, ae_stmt_pp, loc);
   a->d.stmt_pp.pp_type = type;
   a->d.stmt_pp.data    = data;
   return a;
 }
 
-AST_NEW(Stmt, stmt_defer, const Stmt stmt, const loc_t loc) {
-  Stmt a               = new_stmt(p, ae_stmt_defer, loc);
+AST_NEW(Stmt*, stmt_defer, Stmt* stmt, const loc_t loc) {
+  Stmt* a               = new_stmt(p, ae_stmt_defer, loc);
   a->d.stmt_defer.stmt = stmt;
   return a;
 }

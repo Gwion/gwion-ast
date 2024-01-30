@@ -1,8 +1,8 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-ANN Stmt      cpy_stmt(MemPool p, const Stmt src);
-ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src);
+ANN Stmt*      cpy_stmt(MemPool p, Stmt* src);
+ANN static void cpy_stmt2(MemPool p, Stmt* a, Stmt* src);
 ANN Exp              cpy_exp(MemPool p, const Exp src);
 ANN TmplArg_List        cpy_tmplarg_list(MemPool p, const TmplArg_List src);
 ANN Arg_List         cpy_arg_list(MemPool p, const Arg_List src);
@@ -341,8 +341,8 @@ ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
   Stmt_List a = new_mp_vector(p, struct Stmt_, sz);
   for(m_uint i = 0; i < sz; i++) {
-    const Stmt a_stmt   = mp_vector_at(a, struct Stmt_, i);
-    const Stmt src_stmt = mp_vector_at(src, struct Stmt_, i);
+    Stmt* a_stmt   = mp_vector_at(a, struct Stmt_, i);
+    Stmt* src_stmt = mp_vector_at(src, struct Stmt_, i);
     cpy_stmt_case(p, &a_stmt->d.stmt_match, &src_stmt->d.stmt_match);
   }
   return a;
@@ -438,14 +438,14 @@ ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   return a;
 }
 
-ANN Stmt cpy_stmt(MemPool p, const Stmt src) {
-  const Stmt a = mp_calloc(p, Stmt);
+ANN Stmt* cpy_stmt(MemPool p, Stmt* src) {
+  Stmt* a = mp_calloc(p, Stmt);
   cpy_stmt2(p, a, src);
   return a;
 }
 
-ANN Stmt cpy_stmt3(MemPool p, const Stmt src) {
-  const Stmt a = mp_calloc(p, Stmt);
+ANN Stmt* cpy_stmt3(MemPool p, Stmt* src) {
+  Stmt* a = mp_calloc(p, Stmt);
   memcpy(a, src, sizeof(struct Stmt_));
   return a;
 }
@@ -456,7 +456,7 @@ ANN static void cpy_stmt_spread(MemPool p, Spread_Def a, const Spread_Def src) {
   a->data = mstrdup(p, src->data);
 }
 
-ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
+ANN static void cpy_stmt2(MemPool p, Stmt* a, Stmt* src) {
   switch (src->stmt_type) {
   case ae_stmt_exp:
   case ae_stmt_return:
@@ -522,8 +522,8 @@ ANN Stmt_List cpy_stmt_list(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
   Stmt_List a = new_mp_vector(p, struct Stmt_, sz);
   for(m_uint i = 0; i < sz; i++) {
-    const Stmt astmt = mp_vector_at(a, struct Stmt_, i);
-    const Stmt sstmt = mp_vector_at(src, struct Stmt_, i);
+    Stmt* astmt = mp_vector_at(a, struct Stmt_, i);
+    Stmt* sstmt = mp_vector_at(src, struct Stmt_, i);
     cpy_stmt2(p, astmt, sstmt);
   }
   return a;
