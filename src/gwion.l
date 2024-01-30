@@ -599,8 +599,8 @@ static Macro add_macro(void* data, const m_str line) {
   }
   PPState *const ppstate = (PPState*)vector_back(&scan->pp->state);
   scan->pp->entry->file = ppstate->filename;
-  ppstate->pos.first = scan->pos;
-  ppstate->pos.last = scan->pos;
+  ppstate->loc.first = scan->pos;
+  ppstate->loc.last = scan->pos;
   scan->pp->entry->pos = yyget_lloc(data)->first;//scan->pos;
   scan->pp->entry->text = new_text(scan->ppa->hash.p);
   return scan->pp->entry;
@@ -679,8 +679,8 @@ static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt,
   PPState *ppstate = new_ppstate(scan->st->p, str);
   ppstate->state = state;
   ppstate->data = opt;
-  ppstate->pos.first = scan->pos;
-  ppstate->pos.last = scan->pos;
+  ppstate->loc.first = scan->pos;
+  ppstate->loc.last = scan->pos;
   ppstate->type = type;
   vector_add(&scan->pp->state, (vtype)ppstate);
 }
@@ -862,7 +862,7 @@ static m_bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle) {
         if(arg->text.str) {
           if(!is_str) {
             SCAN_NOLINT {
-              if(ppstate->pos.first.line == arg->pos.line)
+              if(ppstate->loc.first.line == arg->pos.line)
                 break;
               const m_str str = concat("@argument", arg->name);
               gwpp_stack(scan, handle, arg->orig, str, pptype_handle);// should be reference
@@ -990,7 +990,7 @@ int yywrap(void* data) {
       clean_macroarg(ppstate->arg);
     if(strlen(ppstate->filename))
       xfree(ppstate->filename);
-    scan->pos = ppstate->pos.last;
+    scan->pos = ppstate->loc.last;
     void* yyscanner = data;
     YY_USER_ACTION
     return 0;
@@ -1006,7 +1006,7 @@ static m_bool handle_comma(void* data) {
     if(!(scan->pp->entry->args = a->next)) {
       loc_t *loc = yyget_lloc(data);
       const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
-      *loc = ppstate->pos;
+      *loc = ppstate->loc;
       loc->first.column++;
       loc->last.column++;
       lexer_error(data, "Too many arguments", ERRORCODE(108));
@@ -1032,7 +1032,7 @@ static m_bool handle_rpar(void* data) {
   if(scan->pp->npar > 1) { handle_char(data, ")"); return 0;}
   if(scan->pp->entry->args->next) {
     PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
-    loc_t loc = ppstate->pos;
+    loc_t loc = ppstate->loc;
     loc.first.column++;
     loc.last.column++;
     scanner_error(scan, "not enough arguments", NULL, NULL, loc, ERRORCODE(110));

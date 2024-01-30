@@ -17,7 +17,7 @@ ANEW PP *new_pp(MemPool p, const uint size, const m_str name) {
   vector_init(&pp->state);
   vector_init(&pp->global_undef);
   PPState *pps = new_ppstate(p, name);
-  pps->pos = (loc_t) {{1, 1},  {1, 1}};
+  pps->loc = (loc_t) {{1, 1},  {1, 1}};
   vector_add(&pp->state, (vtype)pps);
   return pp;
 }

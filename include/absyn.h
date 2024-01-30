@@ -54,7 +54,7 @@ struct Type_Decl_ {
   ae_flag    flag;
   bool       ref;
 };
-ANEW ANN AST_NEW(Type_Decl *, type_decl, const Symbol, const loc_t pos);
+ANEW ANN AST_NEW(Type_Decl *, type_decl, const Symbol, const loc_t);
 ANN void free_type_decl(MemPool p, Type_Decl *);
 
 enum tmplarg_t {
@@ -126,7 +126,7 @@ typedef struct {
 ANN2(1,2,4) AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt_List,
             const loc_t);
 AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
-        const struct loc_t_ pos);
+        const loc_t);
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
   Exp           exp;
@@ -143,7 +143,7 @@ typedef struct {
   Array_Sub array;
 } Exp_Array;
 ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub,
-                 const loc_t pos);
+                 const loc_t);
 
 /** range. @code [12:12] @endcode or @code [1:] @endcode or @code [:12]
  * @endcode*/
@@ -159,7 +159,7 @@ typedef struct {
   Exp    base;
   Range *range;
 } Exp_Slice;
-ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range *, const loc_t pos);
+ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range *, const loc_t);
 
 ANN void free_id_list(MemPool p, ID_List);
 
@@ -737,7 +737,7 @@ typedef struct Prim_Def_ {
   ae_flag flag;
 } *Prim_Def;
 
-AST_NEW(Prim_Def, prim_def, const Symbol name, const m_uint size, const loc_t loc, const ae_flag flag);
+AST_NEW(Prim_Def, prim_def, const Symbol name, const m_uint size, const loc_t, const ae_flag flag);
 ANN void free_prim_def(MemPool p, Prim_Def);
 
 static inline bool is_prim(const Exp e) { return e->exp_type == ae_exp_primary; }

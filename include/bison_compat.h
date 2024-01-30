@@ -4,7 +4,7 @@
 #ifndef __BISON_COMPAT
 #define __BISON_COMPAT
 
-#define YYLTYPE struct loc_t_
+#define YYLTYPE loc_t
 
 #define YYLTYPE_IS_DECLARED
 

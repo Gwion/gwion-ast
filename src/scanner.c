@@ -62,26 +62,26 @@ ANN static char *get_filename(Scanner *scan, const PPState *ppstate) {
 ANN static void secondary(Scanner *scan) {
   for (m_uint i = 0; i < vector_size(&scan->pp->state) - 1; i++) {
     const PPState *pp = (PPState*)vector_at(&scan->pp->state, i);
-    gwerr_secondary("expanded from here", get_filename(scan, pp), pp->pos);
+    gwerr_secondary("expanded from here", get_filename(scan, pp), pp->loc);
   }
 }
 
 ANN2(1, 2)
 int scanner_error(Scanner *scan, const char *main, const char *explain,
-                  const char *fix, const loc_t pos, const uint error_code) {
+                  const char *fix, const loc_t loc, const uint error_code) {
   if (scan->error) return 0;
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
-  gwerr_basic(main, explain, fix, filename, pos, error_code);
+  gwerr_basic(main, explain, fix, filename, loc, error_code);
   secondary(scan);
 //  scan->error = true;
   return 0;
 }
-ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos) {
+ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t loc) {
   if (scan->error) return 0;
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
-  gwerr_secondary(main, filename, pos);
+  gwerr_secondary(main, filename, loc);
 //  scan->error = true;
   return 0;
 }
