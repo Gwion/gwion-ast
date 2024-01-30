@@ -332,7 +332,7 @@ union YYSTYPE
   Type_Decl* type_decl;
   Exp   exp;
   struct Func_Base_ *func_base;
-  struct Stmt_ stmt;
+  Stmt stmt;
   Stmt* stmt_ptr;
   Handler handler;
   ParserHandler handler_list;

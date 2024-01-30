@@ -198,10 +198,10 @@ ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
 ANN static AST_FREE(struct Stmt_Match_ *, stmt_match) {
   free_exp(p, a->cond);
   for(m_uint i = 0; i  < a->list->len; i++) {
-    Stmt* stmt = mp_vector_at(a->list, struct Stmt_, i);
+    Stmt* stmt = mp_vector_at(a->list, Stmt, i);
     free_stmt_case(p, &stmt->d.stmt_match);
   }
-  free_mp_vector(p, struct Stmt_, a->list);
+  free_mp_vector(p, Stmt, a->list);
   if (a->where) free_stmt(p, a->where);
 }
 
@@ -274,15 +274,15 @@ static AST_FREE(Stmt*, stmt2) {
 
 AST_FREE(Stmt*, stmt) {
   free_stmt_func[a->stmt_type](p, &a->d);
-  mp_free(p, Stmt, a);
+  mp_free2(p, sizeof(Stmt), a);
 }
 
 AST_FREE(Stmt_List, stmt_list) {
   for(m_uint i = 0; i  < a->len; i++) {
-    Stmt* stmt = mp_vector_at(a, struct Stmt_, i);
+    Stmt* stmt = mp_vector_at(a, Stmt, i);
     free_stmt2(p, stmt);
   }
-  free_mp_vector(p, struct Stmt_, a);
+  free_mp_vector(p, Stmt, a);
 }
 
 AST_FREE(Extend_Def, extend_def) {

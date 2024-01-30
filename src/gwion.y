@@ -57,7 +57,7 @@ ANN void lex_spread(void *data);
   Type_Decl* type_decl;
   Exp   exp;
   struct Func_Base_ *func_base;
-  struct Stmt_ stmt;
+  Stmt stmt;
   Stmt* stmt_ptr;
   Handler handler;
   ParserHandler handler_list;
@@ -290,8 +290,8 @@ specialized: ID traits {
 specialized_list: specialized { YYLIST_INI(Specialized, $$, $1); }
   | specialized_list "," specialized { YYLIST_END(Specialized, $$, $1, $3); }
 
-stmt_list:  stmt   { YYLIST_INI(struct Stmt_, $$, $1); } 
-| stmt_list stmt   { YYLIST_END(struct Stmt_, $$, $1, $2); }
+stmt_list:  stmt   { YYLIST_INI(Stmt, $$, $1); } 
+| stmt_list stmt   { YYLIST_END(Stmt, $$, $1, $2); }
 
 fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
   if($4) { $$->tmpl = new_tmpl(mpool(arg), $4); } }
@@ -391,12 +391,12 @@ fptr_list:      fptr_arg { YYLIST_INI(Arg, $$, $1); }
 
 code_stmt
   : "{" "}" {
-    $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .loc = @$}; }
+    $$ = (Stmt) { .stmt_type = ae_stmt_code, .loc = @$}; }
   | "{" stmt_list "}" {
-    $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .loc = @$}; };
+    $$ = (Stmt) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .loc = @$}; };
 
 code_list
-  : "{" "}" { $$ = new_mp_vector(mpool(arg), struct Stmt_, 0); }
+  : "{" "}" { $$ = new_mp_vector(mpool(arg), Stmt, 0); }
   | "{" stmt_list "}" { $$ = $2; }
 
 stmt_pp
@@ -435,13 +435,13 @@ spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
     .list = $4,
     .data = $7,
   };
-  $$ = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .loc = @2};
+  $$ = (Stmt) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .loc = @2};
 }
 
 retry_stmt: "retry" ";" {
   if(!arg->handling)
     { parser_error(&@1, arg, "`retry` outside of `handle` block", 0); YYERROR; }
-  $$ = (struct Stmt_){ .stmt_type=ae_stmt_retry, .loc=@1};
+  $$ = (Stmt){ .stmt_type=ae_stmt_retry, .loc=@1};
 };
 handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .tag = MK_TAG($3, $3 ? @3 :@1), .stmt = cpy_stmt3(mpool(arg), &$4) }; arg->handling = false; };
 handler_list: handler {
@@ -464,7 +464,7 @@ mp_vector_add(mpool(arg), &$1.handlers, Handler, $2);
         $$ = $1;
 //        $1->next = $2;
   }
-try_stmt: "try" stmt handler_list { $$ = (struct Stmt_){ .stmt_type = ae_stmt_try,
+try_stmt: "try" stmt handler_list { $$ = (Stmt){ .stmt_type = ae_stmt_try,
   .d = { .stmt_try = { .stmt = cpy_stmt3(mpool(arg), &$2), .handler = $3.handlers, }},
   .loc = @1};
 };
@@ -494,7 +494,7 @@ when_exp: "when" exp { $$ = $2; } | { $$ = NULL; }
 
 match_case_stmt
   : "case" exp when_exp ":" stmt_list {
-    $$ = (struct Stmt_) {
+    $$ = (Stmt) {
       .stmt_type = 0,//ae_stmt_match, // ????
       .d = { .stmt_match = {
         .cond = $2,
@@ -505,11 +505,11 @@ match_case_stmt
     };
 };
 
-match_list: match_case_stmt { YYLIST_INI(struct Stmt_, $$, $1); }
-| match_list match_case_stmt { YYLIST_END(struct Stmt_, $$, $1, $2); }
+match_list: match_case_stmt { YYLIST_INI(Stmt, $$, $1); }
+| match_list match_case_stmt { YYLIST_END(Stmt, $$, $1, $2); }
 
 match_stmt: "match" exp "{" match_list "}" "where" stmt {
-  $$ = (struct Stmt_) { .stmt_type = ae_stmt_match,
+  $$ = (Stmt) { .stmt_type = ae_stmt_match,
     .d = { .stmt_match = {
       .cond  = $2,
       .list  = $4,
@@ -520,7 +520,7 @@ match_stmt: "match" exp "{" match_list "}" "where" stmt {
 }
 |
 "match" exp "{" match_list "}" {
-  $$ = (struct Stmt_) { .stmt_type = ae_stmt_match,
+  $$ = (Stmt) { .stmt_type = ae_stmt_match,
     .d = { .stmt_match = {
       .cond  = $2,
       .list  = $4,
@@ -536,7 +536,7 @@ flow
 
 loop_stmt
   : flow "(" exp ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = $1,
+    { $$ = (Stmt) { .stmt_type = $1,
       .d = { .stmt_flow = {
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
@@ -545,7 +545,7 @@ loop_stmt
     };
   }
   | "do" stmt flow exp ";"
-    { $$ = (struct Stmt_) { .stmt_type = $3,
+    { $$ = (Stmt) { .stmt_type = $3,
       .d = { .stmt_flow = {
         .cond = $4,
         .body = cpy_stmt3(mpool(arg), &$2),
@@ -555,7 +555,7 @@ loop_stmt
     };
   }
   | "for" "(" exp_stmt exp_stmt ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_for,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_for,
       .d = { .stmt_for = {
         .c1 = cpy_stmt3(mpool(arg), &$3),
         .c2 = cpy_stmt3(mpool(arg), &$4),
@@ -565,7 +565,7 @@ loop_stmt
     };
   }
   | "for" "(" exp_stmt exp_stmt exp ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_for,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_for,
       .d = { .stmt_for = {
         .c1 = cpy_stmt3(mpool(arg), &$3),
         .c2 = cpy_stmt3(mpool(arg), &$4),
@@ -576,7 +576,7 @@ loop_stmt
     };
   }
   | "foreach" "(" ID ":" opt_var binary_exp ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_each,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_each,
       .d = { .stmt_each = {
         .tag = MK_TAG($3, @3),
         .exp = $6,
@@ -588,7 +588,7 @@ loop_stmt
 // list rem?
   }
   | "foreach" "(" ID "," ID ":" opt_var binary_exp ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_each,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_each,
       .d = { .stmt_each = {
         .tag = MK_TAG($5, @3),
         .exp = $8,
@@ -603,7 +603,7 @@ loop_stmt
 // list rem?
   }
   | "repeat" "(" binary_exp ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_loop,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_loop,
       . d = { .stmt_loop = {
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
@@ -612,7 +612,7 @@ loop_stmt
     };
   }
   | "repeat" "(" ID "," binary_exp ")" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_loop,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_loop,
       . d = { .stmt_loop = {
         .cond = $5,
         .body = cpy_stmt3(mpool(arg), &$7)
@@ -630,7 +630,7 @@ defer_stmt: "defer" stmt {
       parser_error(&loc, arg, "return statement in defer", 0x0209);
       YYERROR;
     }
-    $$ = (struct Stmt_) { .stmt_type = ae_stmt_defer,
+    $$ = (Stmt) { .stmt_type = ae_stmt_defer,
     .d = { .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) }},
     .loc = @1
   };
@@ -638,7 +638,7 @@ defer_stmt: "defer" stmt {
 
 selection_stmt
   : "if" "(" exp ")" stmt %prec NOELSE
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_if,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_if,
       .d = { .stmt_if = {
         .cond = $3,
         .if_body = cpy_stmt3(mpool(arg), &$5)
@@ -647,7 +647,7 @@ selection_stmt
     };
   }
   | "if" "(" exp ")" stmt "else" stmt
-    { $$ = (struct Stmt_) { .stmt_type = ae_stmt_if,
+    { $$ = (Stmt) { .stmt_type = ae_stmt_if,
       .d = { .stmt_if = {
         .cond = $3,
         .if_body = cpy_stmt3(mpool(arg), &$5),
@@ -659,32 +659,32 @@ selection_stmt
 
 breaks: "break"     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : "return" exp ";" { $$ = (struct Stmt_) { .stmt_type = ae_stmt_return,
+  : "return" exp ";" { $$ = (Stmt) { .stmt_type = ae_stmt_return,
       .d = { .stmt_exp = { .val = $2 }},
       .loc = @1
     };
   }
-  | "return" ";"     { $$ = (struct Stmt_) { .stmt_type = ae_stmt_return,
+  | "return" ";"     { $$ = (Stmt) { .stmt_type = ae_stmt_return,
       .loc = @1
     };
   }
-  | breaks decimal ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
+  | breaks decimal ";"   { $$ = (Stmt) { .stmt_type = $1,
       .d = { .stmt_index = { .idx = $2.num }},
       .loc = @1
     };
   }
-  | breaks ";" { $$ = (struct Stmt_) { .stmt_type = $1,
+  | breaks ";" { $$ = (Stmt) { .stmt_type = $1,
       .d = { .stmt_index = { .idx = -1 }},
       .loc = @1 };
   };
 
 exp_stmt
-  : exp ";" { $$ = (struct Stmt_) { .stmt_type = ae_stmt_exp,
+  : exp ";" { $$ = (Stmt) { .stmt_type = ae_stmt_exp,
       .d = { .stmt_exp = { .val = $1 }},
       .loc = @1
     };
   }
-  | ";"     { $$ = (struct Stmt_) { .stmt_type = ae_stmt_exp,
+  | ";"     { $$ = (Stmt) { .stmt_type = ae_stmt_exp,
       .loc = @1
     };
   };

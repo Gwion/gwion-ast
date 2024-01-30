@@ -15,7 +15,7 @@ typedef struct Extend_Def_ *   Extend_Def;
 typedef struct Func_Def_ *     Func_Def;
 typedef struct MP_Vector *Stmt_List;
 typedef struct Exp_ *          Exp;
-typedef struct Stmt_          Stmt;
+typedef struct Stmt          Stmt;
 typedef struct Array_Sub_ *    Array_Sub;
 typedef MP_Vector *ID_List;
 typedef MP_Vector *Capture_List;
@@ -648,7 +648,7 @@ enum ae_pp_type {
   ae_pp_nl
 };
 
-#define MK_STMT_PP(_type, _pos, ...) (struct Stmt_){ .stmt_type = ae_stmt_pp, \
+#define MK_STMT_PP(_type, _pos, ...) (Stmt){ .stmt_type = ae_stmt_pp, \
   .d = { .stmt_pp = { __VA_ARGS__, .pp_type = ae_pp_##_type, }}, .loc = _pos }
 struct Stmt_PP_ {
   m_str data;
@@ -661,7 +661,7 @@ struct Stmt_Defer_ {
   Stmt* stmt;
 };
 
-struct Stmt_ {
+struct Stmt {
   union stmt_data {
     struct Stmt_Exp_     stmt_exp;
     struct Stmt_Code_    stmt_code;
@@ -682,7 +682,7 @@ struct Stmt_ {
 };
 
 static inline Stmt* stmt_self(const void *data) {
-  return container_of((char *)data, struct Stmt_, d);
+  return container_of((char *)data, Stmt, d);
 }
 
 ANEW     AST_NEW(Stmt*, stmt, const ae_stmt_t, const loc_t);

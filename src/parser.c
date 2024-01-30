@@ -2815,13 +2815,13 @@ yyreduce:
 
   case 37: /* stmt_list: stmt  */
 #line 293 "src/gwion.y"
-                   { YYLIST_INI(struct Stmt_, (yyval.stmt_list), (yyvsp[0].stmt)); }
+                   { YYLIST_INI(Stmt, (yyval.stmt_list), (yyvsp[0].stmt)); }
 #line 2820 "src/parser.c"
     break;
 
   case 38: /* stmt_list: stmt_list stmt  */
 #line 294 "src/gwion.y"
-                   { YYLIST_END(struct Stmt_, (yyval.stmt_list), (yyvsp[-1].stmt_list), (yyvsp[0].stmt)); }
+                   { YYLIST_END(Stmt, (yyval.stmt_list), (yyvsp[-1].stmt_list), (yyvsp[0].stmt)); }
 #line 2826 "src/parser.c"
     break;
 
@@ -3036,20 +3036,20 @@ yyreduce:
   case 66: /* code_stmt: "{" "}"  */
 #line 393 "src/gwion.y"
             {
-    (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_code, .loc = (yyloc)}; }
+    (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_code, .loc = (yyloc)}; }
 #line 3041 "src/parser.c"
     break;
 
   case 67: /* code_stmt: "{" stmt_list "}"  */
 #line 395 "src/gwion.y"
                       {
-    (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = (yyvsp[-1].stmt_list) }}, .loc = (yyloc)}; }
+    (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = (yyvsp[-1].stmt_list) }}, .loc = (yyloc)}; }
 #line 3048 "src/parser.c"
     break;
 
   case 68: /* code_list: "{" "}"  */
 #line 399 "src/gwion.y"
-            { (yyval.stmt_list) = new_mp_vector(mpool(arg), struct Stmt_, 0); }
+            { (yyval.stmt_list) = new_mp_vector(mpool(arg), Stmt, 0); }
 #line 3054 "src/parser.c"
     break;
 
@@ -3145,7 +3145,7 @@ yyreduce:
     .list = (yyvsp[-3].id_list),
     .data = (yyvsp[0].sval),
   };
-  (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .loc = (yylsp[-5])};
+  (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .loc = (yylsp[-5])};
 }
 #line 3151 "src/parser.c"
     break;
@@ -3155,7 +3155,7 @@ yyreduce:
                         {
   if(!arg->handling)
     { parser_error(&(yylsp[-1]), arg, "`retry` outside of `handle` block", 0); YYERROR; }
-  (yyval.stmt) = (struct Stmt_){ .stmt_type=ae_stmt_retry, .loc=(yylsp[-1])};
+  (yyval.stmt) = (Stmt){ .stmt_type=ae_stmt_retry, .loc=(yylsp[-1])};
 }
 #line 3161 "src/parser.c"
     break;
@@ -3204,7 +3204,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 100: /* try_stmt: "try" stmt handler_list  */
 #line 467 "src/gwion.y"
-                                  { (yyval.stmt) = (struct Stmt_){ .stmt_type = ae_stmt_try,
+                                  { (yyval.stmt) = (Stmt){ .stmt_type = ae_stmt_try,
   .d = { .stmt_try = { .stmt = cpy_stmt3(mpool(arg), &(yyvsp[-1].stmt)), .handler = (yyvsp[0].handler_list).handlers, }},
   .loc = (yylsp[-2])};
 }
@@ -3276,7 +3276,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
   case 112: /* match_case_stmt: "case" exp when_exp ":" stmt_list  */
 #line 496 "src/gwion.y"
                                       {
-    (yyval.stmt) = (struct Stmt_) {
+    (yyval.stmt) = (Stmt) {
       .stmt_type = 0,//ae_stmt_match, // ????
       .d = { .stmt_match = {
         .cond = (yyvsp[-3].exp),
@@ -3291,20 +3291,20 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 113: /* match_list: match_case_stmt  */
 #line 508 "src/gwion.y"
-                            { YYLIST_INI(struct Stmt_, (yyval.stmt_list), (yyvsp[0].stmt)); }
+                            { YYLIST_INI(Stmt, (yyval.stmt_list), (yyvsp[0].stmt)); }
 #line 3296 "src/parser.c"
     break;
 
   case 114: /* match_list: match_list match_case_stmt  */
 #line 509 "src/gwion.y"
-                             { YYLIST_END(struct Stmt_, (yyval.stmt_list), (yyvsp[-1].stmt_list), (yyvsp[0].stmt)); }
+                             { YYLIST_END(Stmt, (yyval.stmt_list), (yyvsp[-1].stmt_list), (yyvsp[0].stmt)); }
 #line 3302 "src/parser.c"
     break;
 
   case 115: /* match_stmt: "match" exp "{" match_list "}" "where" stmt  */
 #line 511 "src/gwion.y"
                                                         {
-  (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_match,
+  (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_match,
     .d = { .stmt_match = {
       .cond  = (yyvsp[-5].exp),
       .list  = (yyvsp[-3].stmt_list),
@@ -3319,7 +3319,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
   case 116: /* match_stmt: "match" exp "{" match_list "}"  */
 #line 522 "src/gwion.y"
                                {
-  (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_match,
+  (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_match,
     .d = { .stmt_match = {
       .cond  = (yyvsp[-3].exp),
       .list  = (yyvsp[-1].stmt_list),
@@ -3344,7 +3344,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 119: /* loop_stmt: flow "(" exp ")" stmt  */
 #line 539 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = (yyvsp[-4].stmt_t),
+    { (yyval.stmt) = (Stmt) { .stmt_type = (yyvsp[-4].stmt_t),
       .d = { .stmt_flow = {
         .cond = (yyvsp[-2].exp),
         .body = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
@@ -3357,7 +3357,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 120: /* loop_stmt: "do" stmt flow exp ";"  */
 #line 548 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = (yyvsp[-2].stmt_t),
+    { (yyval.stmt) = (Stmt) { .stmt_type = (yyvsp[-2].stmt_t),
       .d = { .stmt_flow = {
         .cond = (yyvsp[-1].exp),
         .body = cpy_stmt3(mpool(arg), &(yyvsp[-3].stmt)),
@@ -3371,7 +3371,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 121: /* loop_stmt: "for" "(" exp_stmt exp_stmt ")" stmt  */
 #line 558 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_for,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_for,
       .d = { .stmt_for = {
         .c1 = cpy_stmt3(mpool(arg), &(yyvsp[-3].stmt)),
         .c2 = cpy_stmt3(mpool(arg), &(yyvsp[-2].stmt)),
@@ -3385,7 +3385,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 122: /* loop_stmt: "for" "(" exp_stmt exp_stmt exp ")" stmt  */
 #line 568 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_for,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_for,
       .d = { .stmt_for = {
         .c1 = cpy_stmt3(mpool(arg), &(yyvsp[-4].stmt)),
         .c2 = cpy_stmt3(mpool(arg), &(yyvsp[-3].stmt)),
@@ -3400,7 +3400,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 123: /* loop_stmt: "foreach" "(" "<identifier>" ":" opt_var binary_exp ")" stmt  */
 #line 579 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_each,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_each,
       .d = { .stmt_each = {
         .tag = MK_TAG((yyvsp[-5].sym), (yylsp[-5])),
         .exp = (yyvsp[-2].exp),
@@ -3416,7 +3416,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 124: /* loop_stmt: "foreach" "(" "<identifier>" "," "<identifier>" ":" opt_var binary_exp ")" stmt  */
 #line 591 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_each,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_each,
       .d = { .stmt_each = {
         .tag = MK_TAG((yyvsp[-5].sym), (yylsp[-7])),
         .exp = (yyvsp[-2].exp),
@@ -3435,7 +3435,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 125: /* loop_stmt: "repeat" "(" binary_exp ")" stmt  */
 #line 606 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_loop,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_loop,
       . d = { .stmt_loop = {
         .cond = (yyvsp[-2].exp),
         .body = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
@@ -3448,7 +3448,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 126: /* loop_stmt: "repeat" "(" "<identifier>" "," binary_exp ")" stmt  */
 #line 615 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_loop,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_loop,
       . d = { .stmt_loop = {
         .cond = (yyvsp[-2].exp),
         .body = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
@@ -3470,7 +3470,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
       parser_error(&loc, arg, "return statement in defer", 0x0209);
       YYERROR;
     }
-    (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_defer,
+    (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_defer,
     .d = { .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt)) }},
     .loc = (yylsp[-1])
   };
@@ -3480,7 +3480,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 128: /* selection_stmt: "if" "(" exp ")" stmt  */
 #line 641 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_if,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_if,
       .d = { .stmt_if = {
         .cond = (yyvsp[-2].exp),
         .if_body = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
@@ -3493,7 +3493,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 129: /* selection_stmt: "if" "(" exp ")" stmt "else" stmt  */
 #line 650 "src/gwion.y"
-    { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_if,
+    { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_if,
       .d = { .stmt_if = {
         .cond = (yyvsp[-4].exp),
         .if_body = cpy_stmt3(mpool(arg), &(yyvsp[-2].stmt)),
@@ -3519,7 +3519,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 132: /* jump_stmt: "return" exp ";"  */
 #line 662 "src/gwion.y"
-                     { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_return,
+                     { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_return,
       .d = { .stmt_exp = { .val = (yyvsp[-1].exp) }},
       .loc = (yylsp[-2])
     };
@@ -3529,7 +3529,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 133: /* jump_stmt: "return" ";"  */
 #line 667 "src/gwion.y"
-                     { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_return,
+                     { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_return,
       .loc = (yylsp[-1])
     };
   }
@@ -3538,7 +3538,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 134: /* jump_stmt: breaks decimal ";"  */
 #line 671 "src/gwion.y"
-                         { (yyval.stmt) = (struct Stmt_) { .stmt_type = (yyvsp[-2].stmt_t),
+                         { (yyval.stmt) = (Stmt) { .stmt_type = (yyvsp[-2].stmt_t),
       .d = { .stmt_index = { .idx = (yyvsp[-1].gwint).num }},
       .loc = (yylsp[-2])
     };
@@ -3548,7 +3548,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 135: /* jump_stmt: breaks ";"  */
 #line 676 "src/gwion.y"
-               { (yyval.stmt) = (struct Stmt_) { .stmt_type = (yyvsp[-1].stmt_t),
+               { (yyval.stmt) = (Stmt) { .stmt_type = (yyvsp[-1].stmt_t),
       .d = { .stmt_index = { .idx = -1 }},
       .loc = (yylsp[-1]) };
   }
@@ -3557,7 +3557,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 136: /* exp_stmt: exp ";"  */
 #line 682 "src/gwion.y"
-            { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_exp,
+            { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_exp,
       .d = { .stmt_exp = { .val = (yyvsp[-1].exp) }},
       .loc = (yylsp[-1])
     };
@@ -3567,7 +3567,7 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 137: /* exp_stmt: ";"  */
 #line 687 "src/gwion.y"
-            { (yyval.stmt) = (struct Stmt_) { .stmt_type = ae_stmt_exp,
+            { (yyval.stmt) = (Stmt) { .stmt_type = ae_stmt_exp,
       .loc = (yylsp[0])
     };
   }

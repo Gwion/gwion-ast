@@ -10,7 +10,7 @@ ANN static inline loc_t defer_stmt_match(const Stmt_Match stmt) {
   if (stmt->where) CHECK_B(defer_stmt(stmt->where));
   Stmt_List l = stmt->list;
   for(m_uint i = 0; i < l->len; i++) {
-    const Stmt* s = mp_vector_at(l, struct Stmt_, i);
+    const Stmt* s = mp_vector_at(l, Stmt, i);
     CHECK_B(defer_stmt_list(s->d.stmt_match.list));
   }
   return (loc_t){};
@@ -100,7 +100,7 @@ ANN loc_t defer_stmt(Stmt* stmt) {
 
 ANN static loc_t defer_stmt_list(Stmt_List l) {
   for(m_uint i = 0; i < l->len; i++) {
-    Stmt* s = mp_vector_at(l, struct Stmt_, i);
+    Stmt* s = mp_vector_at(l, Stmt, i);
     CHECK_B(defer_stmt(s));
   }
   return (loc_t){};

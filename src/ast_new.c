@@ -51,9 +51,9 @@ AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
   Exp        a    = new_exp(p, ae_exp_lambda, loc);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, loc);
   base->fbflag |= fbflag_lambda;
-  Stmt_List code = new_mp_vector(p, struct Stmt_, 1);
-  struct Stmt_ stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .loc = loc };
-  mp_vector_set(code, struct Stmt_, 0, stmt);
+  Stmt_List code = new_mp_vector(p, Stmt, 1);
+  Stmt stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .loc = loc };
+  mp_vector_set(code, Stmt, 0, stmt);
   a->d.exp_lambda.def = new_func_def(p, base, code);
   return a;
 }
@@ -333,7 +333,7 @@ AST_NEW(Stmt*, stmt_code, const Stmt_List list, const loc_t loc) {
 }
 
 AST_NEW(Stmt*, stmt, const ae_stmt_t type, const loc_t loc) {
-  Stmt* a       = mp_calloc(p, Stmt);
+  Stmt* a       = mp_calloc2(p, sizeof(Stmt));
   a->stmt_type = type;
   a->loc       = loc;
   return a;

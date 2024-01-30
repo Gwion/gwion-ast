@@ -339,10 +339,10 @@ ANN static void cpy_stmt_pp(MemPool p NUSED, Stmt_PP a, const Stmt_PP src) {
 
 ANN static Stmt_List cpy_stmt_cases(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
-  Stmt_List a = new_mp_vector(p, struct Stmt_, sz);
+  Stmt_List a = new_mp_vector(p, Stmt, sz);
   for(m_uint i = 0; i < sz; i++) {
-    Stmt* a_stmt   = mp_vector_at(a, struct Stmt_, i);
-    Stmt* src_stmt = mp_vector_at(src, struct Stmt_, i);
+    Stmt* a_stmt   = mp_vector_at(a, Stmt, i);
+    Stmt* src_stmt = mp_vector_at(src, Stmt, i);
     cpy_stmt_case(p, &a_stmt->d.stmt_match, &src_stmt->d.stmt_match);
   }
   return a;
@@ -439,14 +439,14 @@ ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
 }
 
 ANN Stmt* cpy_stmt(MemPool p, Stmt* src) {
-  Stmt* a = mp_calloc(p, Stmt);
+  Stmt* a = mp_calloc2(p, sizeof(Stmt));
   cpy_stmt2(p, a, src);
   return a;
 }
 
 ANN Stmt* cpy_stmt3(MemPool p, Stmt* src) {
-  Stmt* a = mp_calloc(p, Stmt);
-  memcpy(a, src, sizeof(struct Stmt_));
+  Stmt* a = mp_calloc2(p, sizeof(Stmt));
+  memcpy(a, src, sizeof(Stmt));
   return a;
 }
 
@@ -520,10 +520,10 @@ ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {
 
 ANN Stmt_List cpy_stmt_list(MemPool p, Stmt_List src) {
   const m_uint sz = src->len;
-  Stmt_List a = new_mp_vector(p, struct Stmt_, sz);
+  Stmt_List a = new_mp_vector(p, Stmt, sz);
   for(m_uint i = 0; i < sz; i++) {
-    Stmt* astmt = mp_vector_at(a, struct Stmt_, i);
-    Stmt* sstmt = mp_vector_at(src, struct Stmt_, i);
+    Stmt* astmt = mp_vector_at(a, Stmt, i);
+    Stmt* sstmt = mp_vector_at(src, Stmt, i);
     cpy_stmt2(p, astmt, sstmt);
   }
   return a;
