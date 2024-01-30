@@ -52,7 +52,7 @@ AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, loc);
   base->fbflag |= fbflag_lambda;
   Stmt_List code = new_mp_vector(p, struct Stmt_, 1);
-  struct Stmt_ stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .pos = loc };
+  struct Stmt_ stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .loc = loc };
   mp_vector_set(code, struct Stmt_, 0, stmt);
   a->d.exp_lambda.def = new_func_def(p, base, code);
   return a;
@@ -335,7 +335,7 @@ AST_NEW(Stmt, stmt_code, const Stmt_List list, const loc_t loc) {
 AST_NEW(Stmt, stmt, const ae_stmt_t type, const loc_t loc) {
   Stmt a       = mp_calloc(p, Stmt);
   a->stmt_type = type;
-  a->pos       = loc;
+  a->loc       = loc;
   return a;
 }
 
@@ -376,7 +376,7 @@ AST_NEW(Stmt, stmt_loop, const Exp cond, const Stmt body,
 }
 
 AST_NEW(Stmt, stmt_try, const restrict Stmt stmt, const Handler_List handler) {
-  Stmt a                = new_stmt(p, ae_stmt_try, stmt->pos);
+  Stmt a                = new_stmt(p, ae_stmt_try, stmt->loc);
   a->d.stmt_try.stmt    = cpy_stmt3(p, stmt);
   a->d.stmt_try.handler = handler;
   return a;

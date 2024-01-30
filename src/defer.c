@@ -67,7 +67,7 @@ static loc_t defer_func(void* arg NUSED) { return (loc_t){}; }
 #define defer_stmt_exp      defer_func
 
 ANN static loc_t defer_stmt_return(const Stmt_Exp stmt) {
-  return stmt_self(stmt)->pos;
+  return stmt_self(stmt)->loc;
 }
 
 ANN static loc_t defer_stmt_defer(const Stmt_Defer stmt) {

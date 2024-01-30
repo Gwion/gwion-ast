@@ -391,9 +391,9 @@ fptr_list:      fptr_arg { YYLIST_INI(Arg, $$, $1); }
 
 code_stmt
   : "{" "}" {
-    $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .pos = @$}; }
+    $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .loc = @$}; }
   | "{" stmt_list "}" {
-    $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .pos = @$}; };
+    $$ = (struct Stmt_) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .loc = @$}; };
 
 code_list
   : "{" "}" { $$ = new_mp_vector(mpool(arg), struct Stmt_, 0); }
@@ -435,13 +435,13 @@ spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
     .list = $4,
     .data = $7,
   };
-  $$ = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .pos = @2};
+  $$ = (struct Stmt_) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .loc = @2};
 }
 
 retry_stmt: "retry" ";" {
   if(!arg->handling)
     { parser_error(&@1, arg, "`retry` outside of `handle` block", 0); YYERROR; }
-  $$ = (struct Stmt_){ .stmt_type=ae_stmt_retry, .pos=@1};
+  $$ = (struct Stmt_){ .stmt_type=ae_stmt_retry, .loc=@1};
 };
 handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .tag = MK_TAG($3, $3 ? @3 :@1), .stmt = cpy_stmt3(mpool(arg), &$4) }; arg->handling = false; };
 handler_list: handler {
@@ -466,7 +466,7 @@ mp_vector_add(mpool(arg), &$1.handlers, Handler, $2);
   }
 try_stmt: "try" stmt handler_list { $$ = (struct Stmt_){ .stmt_type = ae_stmt_try,
   .d = { .stmt_try = { .stmt = cpy_stmt3(mpool(arg), &$2), .handler = $3.handlers, }},
-  .pos = @1};
+  .loc = @1};
 };
 
 opt_id: ID | { $$ = NULL; };
@@ -501,7 +501,7 @@ match_case_stmt
         .when = $3,
         .list = $5
       }},
-      .pos = @1
+      .loc = @1
     };
 };
 
@@ -515,7 +515,7 @@ match_stmt: "match" exp "{" match_list "}" "where" stmt {
       .list  = $4,
       .where = cpy_stmt3(mpool(arg), &$7)
     }},
-    .pos = @1
+    .loc = @1
   };
 }
 |
@@ -525,7 +525,7 @@ match_stmt: "match" exp "{" match_list "}" "where" stmt {
       .cond  = $2,
       .list  = $4,
     }},
-    .pos = @1
+    .loc = @1
   };
 };
 
@@ -541,7 +541,7 @@ loop_stmt
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
       }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "do" stmt flow exp ";"
@@ -551,7 +551,7 @@ loop_stmt
         .body = cpy_stmt3(mpool(arg), &$2),
         .is_do = true
       }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "for" "(" exp_stmt exp_stmt ")" stmt
@@ -561,7 +561,7 @@ loop_stmt
         .c2 = cpy_stmt3(mpool(arg), &$4),
         .body = cpy_stmt3(mpool(arg), &$6),
       }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "for" "(" exp_stmt exp_stmt exp ")" stmt
@@ -572,7 +572,7 @@ loop_stmt
         .c3 = $5,
         .body = cpy_stmt3(mpool(arg), &$7),
       }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "foreach" "(" ID ":" opt_var binary_exp ")" stmt
@@ -582,7 +582,7 @@ loop_stmt
         .exp = $6,
         .body = cpy_stmt3(mpool(arg), &$8),
       }},
-      .pos = @1
+      .loc = @1
     };
 // what to do with opt_var?
 // list rem?
@@ -594,7 +594,7 @@ loop_stmt
         .exp = $8,
         .body = cpy_stmt3(mpool(arg), &$10),
       }},
-      .pos = @1
+      .loc = @1
     };
     $$.d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
     $$.d.stmt_each.idx->var = (Var_Decl){.tag=MK_TAG($3, @3)};
@@ -608,7 +608,7 @@ loop_stmt
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
       }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "repeat" "(" ID "," binary_exp ")" stmt
@@ -617,7 +617,7 @@ loop_stmt
         .cond = $5,
         .body = cpy_stmt3(mpool(arg), &$7)
       }},
-      .pos = @1
+      .loc = @1
     };
     $$.d.stmt_loop.idx = mp_malloc(mpool(arg), EachIdx);
     $$.d.stmt_loop.idx->var = (Var_Decl){ .tag = MK_TAG($3, @3) };
@@ -632,7 +632,7 @@ defer_stmt: "defer" stmt {
     }
     $$ = (struct Stmt_) { .stmt_type = ae_stmt_defer,
     .d = { .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) }},
-    .pos = @1
+    .loc = @1
   };
 };
 
@@ -643,7 +643,7 @@ selection_stmt
         .cond = $3,
         .if_body = cpy_stmt3(mpool(arg), &$5)
       }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "if" "(" exp ")" stmt "else" stmt
@@ -653,7 +653,7 @@ selection_stmt
         .if_body = cpy_stmt3(mpool(arg), &$5),
         .else_body = cpy_stmt3(mpool(arg), &$7)
       }},
-      .pos = @1
+      .loc = @1
     };
   };
 
@@ -661,31 +661,31 @@ breaks: "break"     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue;
 jump_stmt
   : "return" exp ";" { $$ = (struct Stmt_) { .stmt_type = ae_stmt_return,
       .d = { .stmt_exp = { .val = $2 }},
-      .pos = @1
+      .loc = @1
     };
   }
   | "return" ";"     { $$ = (struct Stmt_) { .stmt_type = ae_stmt_return,
-      .pos = @1
+      .loc = @1
     };
   }
   | breaks decimal ";"   { $$ = (struct Stmt_) { .stmt_type = $1,
       .d = { .stmt_index = { .idx = $2.num }},
-      .pos = @1
+      .loc = @1
     };
   }
   | breaks ";" { $$ = (struct Stmt_) { .stmt_type = $1,
       .d = { .stmt_index = { .idx = -1 }},
-      .pos = @1 };
+      .loc = @1 };
   };
 
 exp_stmt
   : exp ";" { $$ = (struct Stmt_) { .stmt_type = ae_stmt_exp,
       .d = { .stmt_exp = { .val = $1 }},
-      .pos = @1
+      .loc = @1
     };
   }
   | ";"     { $$ = (struct Stmt_) { .stmt_type = ae_stmt_exp,
-      .pos = @1
+      .loc = @1
     };
   };
 

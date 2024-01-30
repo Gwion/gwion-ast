@@ -502,7 +502,7 @@ ANN static void cpy_stmt2(MemPool p, const Stmt a, const Stmt src) {
     break;
   }
   a->stmt_type = src->stmt_type;
-  a->pos       = src->pos;
+  a->loc       = src->loc;
 }
 
 ANN Func_Def cpy_func_def(MemPool p, const Func_Def src) {

@@ -649,7 +649,7 @@ enum ae_pp_type {
 };
 
 #define MK_STMT_PP(_type, _pos, ...) (struct Stmt_){ .stmt_type = ae_stmt_pp, \
-  .d = { .stmt_pp = { __VA_ARGS__, .pp_type = ae_pp_##_type, }}, .pos = _pos }
+  .d = { .stmt_pp = { __VA_ARGS__, .pp_type = ae_pp_##_type, }}, .loc = _pos }
 struct Stmt_PP_ {
   m_str data;
   Exp   exp;
@@ -677,8 +677,8 @@ struct Stmt_ {
     struct Stmt_Defer_   stmt_defer;
     struct Spread_Def_    stmt_spread;
   } d;
-  loc_t pos; ///< position
-  ae_stmt_t     stmt_type;
+  loc_t loc; ///< position
+  ae_stmt_t stmt_type;
 };
 
 static inline Stmt stmt_self(const void *data) {
