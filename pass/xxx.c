@@ -278,7 +278,7 @@ ANN static void xxx_stmt_return(XXX *a, Stmt_Exp b) {
 
 ANN static void xxx_case_list(XXX *a, Stmt_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Stmt c = mp_vector_at(b, struct Stmt_, i);
+    Stmt c = mp_vector_at(b, Stmt, i);
     xxx_stmt_case(a, &c->d.stmt_match);
   }
 }
@@ -360,7 +360,7 @@ ANN static void xxx_variable_list(XXX *a, Variable_List b) {
 
 ANN static void xxx_stmt_list(XXX *a, Stmt_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Stmt c = mp_vector_at(b, struct Stmt_, i);
+    Stmt c = mp_vector_at(b, Stmt, i);
     xxx_stmt(a, c);
   }
 }
