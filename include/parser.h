@@ -309,7 +309,7 @@ extern int gwion_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 30 "src/gwion.y"
+#line 38 "src/gwion.y"
 
   bool yybool;
   ae_stmt_t stmt_t;
@@ -344,7 +344,7 @@ union YYSTYPE
   Arg arg;
   Func_Def func_def;
   EnumValue enum_value;
-  Enum_List enum_list;
+  EnumValue_List enum_list;
   Enum_Def enum_def;
   Union_Def union_def;
   Fptr_Def fptr_def;
@@ -354,7 +354,7 @@ union YYSTYPE
   Specialized specialized;
   Specialized_List specialized_list;
   TmplArg tmplarg;
-  Type_List type_list;
+  TmplArg_List tmplarg_list;
   Variable variable;
   Variable_List variable_list;
   Extend_Def extend_def;

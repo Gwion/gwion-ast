@@ -40,16 +40,21 @@ ANN static void xxx_specialized_list(XXX *a, Specialized_List b) {
   }
 }
 
-ANN static void xxx_type_list(XXX *a, Type_List b) {
+ANN static void xxx_tmplarg(XXX *a, TmplArg *b) {
+  if (b->type == tmplarg_td) xxx_type_decl(a, b->d.td);
+  else xxx_exp(a, b->d.exp);
+}
+
+ANN static void xxx_tmplarg_list(XXX *a, TmplArg_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Type_Decl * c = *mp_vector_at(b, Type_Decl*, i);
-    xxx_type_decl(a, c);
+    TmplArg * c = mp_vector_at(b, TmplArg, i);
+    xxx_tmplarg(a, c);
   }
 }
 
 ANN static void xxx_tmpl(XXX *a, Tmpl *b) {
-  if(b->list) xxx_id_list(a, b->list);
-  if(b->call) xxx_type_list(a, b->call);
+  if(b->list) xxx_specialized_list(a, b->list);
+  if(b->call) xxx_tmplarg_list(a, b->call);
 }
 
 ANN static void xxx_range(XXX *a, Range *b) {
@@ -60,7 +65,7 @@ ANN static void xxx_range(XXX *a, Range *b) {
 ANN static void xxx_type_decl(XXX *a, Type_Decl *b) {
   xxx_tag(a, &b->tag);
   if(b->array) xxx_array_sub(a, b->array);
-  if(b->types) xxx_type_list(a, b->types);
+  if(b->types) xxx_tmplarg_list(a, b->types);
 }
 
 ANN static void xxx_prim_id(XXX *a, Symbol *b) {
@@ -95,10 +100,6 @@ ANN static void xxx_prim_dict(XXX *a, Exp *b) {
 }
 
 ANN static void xxx_prim_hack(XXX *a, Exp *b) {
-  xxx_exp(a, *b);
-}
-
-ANN static void xxx_prim_typeof(XXX *a, Exp *b) {
   xxx_exp(a, *b);
 }
 
@@ -149,7 +150,7 @@ ANN static void xxx_exp_binary(XXX *a, Exp_Binary *b) {
 }
 
 ANN static void xxx_capture(XXX *a, Capture *b) {
-  xxx_tag(a, &b->tag);
+  xxx_tag(a, &b->var.tag);
 }
 
 ANN static void xxx_captures(XXX *a, Capture_List b) {
@@ -263,14 +264,12 @@ ANN static void xxx_stmt_code(XXX *a, Stmt_Code b) {
   if(b->stmt_list) xxx_stmt_list(a, b->stmt_list);
 }
 
-ANN static void xxx_stmt_break(XXX *a, Stmt_Exp b) {
-  (void)a;
-  (void)b;
+ANN static void xxx_stmt_break(XXX *a, Stmt_Index b) {
+  xxx_stmt_index(a, b);
 }
 
-ANN static void xxx_stmt_continue(XXX *a, Stmt_Exp b) {
-  (void)a;
-  (void)b;
+ANN static void xxx_stmt_continue(XXX *a, Stmt_Index b) {
+  xxx_stmt_index(a, b);
 }
 
 ANN static void xxx_stmt_return(XXX *a, Stmt_Exp b) {
@@ -311,8 +310,21 @@ ANN static void xxx_stmt_retry(XXX *a, Stmt_Exp b) {
   (void)b;
 }
 
+ANN static void xxx_handler(XXX *a, Handler *b) {
+  xxx_tag(a, &b->tag);
+  xxx_stmt(a, b->stmt);
+}
+
+ANN static void xxx_handler_list(XXX *a, Handler_List b) {
+  for(uint32_t i = 0; i < b->len; i++) {
+    Handler *handler = mp_vector_at(b, Handler, i);
+    xxx_handler(a, handler);
+  }
+}
+
 ANN static void xxx_stmt_try(XXX *a, Stmt_Try b) {
   xxx_stmt(a, b->stmt);
+  xxx_handler_list(a, b->handler);
 }
 
 ANN static void xxx_stmt_defer(XXX *a, Stmt_Defer b) {
@@ -376,11 +388,11 @@ ANN static void xxx_trait_def(XXX *a, Trait_Def b) {
 }
 
 ANN static void xxx_enumvalue(XXX *a, EnumValue *b) {
-  (void)a;
-  (void)b;
+  xxx_tag(a, &b->tag);
+  // gwint, set
 }
 
-ANN static void xxx_enum_list(XXX *a, Enum_List b) {
+ANN static void xxx_enum_list(XXX *a, EnumValue_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
     EnumValue *c = mp_vector_at(b, EnumValue, i);
     xxx_enumvalue(a, c);

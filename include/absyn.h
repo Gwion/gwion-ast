@@ -21,27 +21,14 @@ typedef MP_Vector *ID_List;
 typedef MP_Vector *Capture_List;
 typedef struct Fptr_Def_ *     Fptr_Def;
 typedef MP_Vector *     Arg_List;
-typedef MP_Vector *Type_List;
+typedef MP_Vector *TmplArg_List;
+typedef struct Type_Decl_  Type_Decl;
 
 typedef struct Tag {
   Symbol sym;
   loc_t  loc;
 } Tag;
 #define MK_TAG(a, b) (Tag){ .sym = (a), .loc = (b) }
-
-typedef struct Type_Decl_  Type_Decl;
-struct Type_Decl_ {
-  Tag        tag;
-  Array_Sub  array;
-  Type_List  types;
-  Type_Decl *next;
-  Fptr_Def   fptr;
-  uint8_t    option;
-  ae_flag    flag;
-  bool       ref;
-};
-ANEW ANN AST_NEW(Type_Decl *, type_decl, const Symbol, const loc_t pos);
-ANN void free_type_decl(MemPool p, Type_Decl *);
 
 /** variable declaration **/
 typedef struct Var_Decl_ {
@@ -57,6 +44,19 @@ typedef struct Variable_ {
 typedef MP_Vector *Variable_List;
 ANN void free_variable_list(MemPool p, Variable_List);
 
+struct Type_Decl_ {
+  Tag        tag;
+  Array_Sub  array;
+  TmplArg_List  types;
+  Type_Decl *next;
+  Fptr_Def   fptr;
+  uint8_t    option;
+  ae_flag    flag;
+  bool       ref;
+};
+ANEW ANN AST_NEW(Type_Decl *, type_decl, const Symbol, const loc_t pos);
+ANN void free_type_decl(MemPool p, Type_Decl *);
+
 enum tmplarg_t {
   tmplarg_td,
   tmplarg_exp
@@ -70,7 +70,7 @@ typedef struct TmplArg {
   enum tmplarg_t type;
 } TmplArg;
 
-ANN static inline uint32_t tmplarg_ntypes(Type_List tl) {
+ANN static inline uint32_t tmplarg_ntypes(TmplArg_List tl) {
   uint32_t ret = 0;
   for(uint32_t i = 0; i < tl->len; i++) {
     TmplArg *ta = mp_vector_at(tl, TmplArg, i);
@@ -110,10 +110,8 @@ typedef struct {
   Symbol xid;
 } Exp_Dot;
 
-
 typedef struct Capture {
-  Tag tag;
-  struct Value_ *orig;
+  Var_Decl var;
   struct Value_ *temp;
   uint32_t offset;
   bool is_ref;
@@ -174,7 +172,7 @@ typedef struct Specialized {
 typedef MP_Vector *Specialized_List;
 ANN void free_specialized_list(MemPool p, Specialized_List);
 
-ANN void free_type_list(MemPool p, Type_List);
+ANN void free_tmplarg_list(MemPool p, TmplArg_List);
 
 ANN void free_arg_list(MemPool p, Arg_List);
 
@@ -258,11 +256,11 @@ typedef struct {
 
 typedef struct Tmpl_ {
   Specialized_List list;
-  Type_List        call;
+  TmplArg_List        call;
 } Tmpl;
 
 ANN ANEW AST_NEW(Tmpl *, tmpl, const Specialized_List);
-ANN ANEW AST_NEW(Tmpl *, tmpl_call, Type_List);
+ANN ANEW AST_NEW(Tmpl *, tmpl_call, TmplArg_List);
 ANN void free_tmpl(MemPool p, Tmpl *);
 
 static inline bool tmpl_base(const Tmpl *a) {
@@ -482,44 +480,39 @@ typedef enum {
   ae_stmt_spread
 } ae_stmt_t;
 
-typedef struct Stmt_Exp_ *    Stmt_Exp;
-typedef struct Stmt_Code_ *   Stmt_Code;
 typedef struct Stmt_For_ *    Stmt_For;
-typedef struct Stmt_Flow_ *   Stmt_Flow;
 typedef struct Stmt_Each_ *   Stmt_Each;
 typedef struct Stmt_Loop_ *   Stmt_Loop;
 typedef struct Stmt_If_ *     Stmt_If;
-typedef struct Stmt_Match_ *  Stmt_Match;
-typedef struct Stmt_Index_ *  Stmt_Index;
 typedef struct Stmt_PP_ *     Stmt_PP;
 typedef struct Stmt_Defer_ *  Stmt_Defer;
 
-struct Stmt_Exp_ {
+typedef struct Stmt_Exp_ {
   Exp val;
-};
+} *Stmt_Exp;
 
-struct Stmt_Index_ {
+typedef struct Stmt_Index_ {
   m_int idx;
-};
+} *Stmt_Index;
 
-struct Stmt_Flow_ {
+typedef struct Stmt_Flow_ {
   Exp  cond;
   Stmt body;
   bool is_do;
-};
+} *Stmt_Flow;
 
-struct Stmt_Match_ {
+typedef struct Stmt_Match_ {
   Exp       cond;
   Stmt_List list;
   union {
     Stmt where;
     Exp  when;
   };
-};
+} *Stmt_Match;
 
-struct Stmt_Code_ {
+typedef struct Stmt_Code_ {
   Stmt_List stmt_list;
-};
+} *Stmt_Code;
 
 struct Stmt_For_ {
   Stmt c1;
@@ -528,24 +521,23 @@ struct Stmt_For_ {
   Stmt body;
 };
 
-struct EachIdx_ {
-  Tag             tag;
-  struct Value_  *v;
+typedef struct EachIdx_ {
+  Var_Decl var;
   bool            is_var;
-};
+} EachIdx;
 
 struct Stmt_Each_ {
-  Tag             tag;
-  Exp              exp;
-  Stmt             body;
-  struct EachIdx_ *idx;
-  struct Value_ *  v;
+  Var_Decl var;
+  Tag      tag;
+  Exp      exp;
+  Stmt     body;
+  EachIdx *idx;
 };
 
 struct Stmt_Loop_ {
-  Exp              cond;
-  Stmt             body;
-  struct EachIdx_ *idx;
+  Exp      cond;
+  Stmt     body;
+  EachIdx *idx;
 };
 
 struct Stmt_If_ {
@@ -575,15 +567,15 @@ typedef struct EnumValue {
   struct gwint gwint;
   bool         set;
 } EnumValue;
-typedef MP_Vector *Enum_List;
+typedef MP_Vector *EnumValue_List;
 typedef struct Enum_Def_ {
-  Tag           tag;
-  ID_List       list;
-  struct Type_ *type;
-  ae_flag       flag;
+  Tag            tag;
+  EnumValue_List list;
+  struct Type_  *type;
+  ae_flag        flag;
 } *Enum_Def;
 ANN2(1, 2)
-ANEW     AST_NEW(Enum_Def, enum_def, const Enum_List, struct Symbol_ *,
+ANEW     AST_NEW(Enum_Def, enum_def, const EnumValue_List, struct Symbol_ *,
                  const loc_t);
 ANN void free_enum_def(MemPool p, Enum_Def);
 

@@ -287,7 +287,7 @@ AST_NEW(Type_Def, type_def, Type_Decl *ext, const Symbol xid, const loc_t pos) {
   return a;
 }
 
-AST_NEW(Tmpl *, tmpl_call, const Type_List tl) {
+AST_NEW(Tmpl *, tmpl_call, const TmplArg_List tl) {
   Tmpl *a = mp_calloc(p, Tmpl);
   a->call = tl;
   return a;
@@ -390,7 +390,7 @@ AST_NEW(Stmt, stmt_if, const Exp cond, const restrict Stmt if_body,
   return a;
 }
 
-AST_NEW(Enum_Def, enum_def, const Enum_List list, struct Symbol_ *xid,
+AST_NEW(Enum_Def, enum_def, const EnumValue_List list, struct Symbol_ *xid,
         const struct loc_t_ pos) {
   Enum_Def a = mp_calloc(p, Enum_Def);
   a->tag     = MK_TAG(xid, pos);

@@ -16,7 +16,7 @@ ANN Class_Def          cpy_class_def(MemPool, Class_Def);
 ANN Extend_Def         cpy_extend_def(MemPool, Extend_Def);
 ANN Fptr_Def           cpy_fptr_def(MemPool p, const Fptr_Def src);
 ANN Union_Def          cpy_union_def(MemPool, Union_Def);
-ANN Type_List          cpy_type_list(MemPool p, const Type_List src);
+ANN TmplArg_List          cpy_tmplarg_list(MemPool p, const TmplArg_List src);
 ANN ID_List            cpy_id_list(MemPool p, const ID_List src);
 ANN Tmpl *cpy_tmpl(MemPool p, const Tmpl *src);
 ANN Ast cpy_ast(MemPool p, Ast src);

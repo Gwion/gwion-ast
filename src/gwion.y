@@ -25,6 +25,14 @@ ANN static Symbol sig_name(const Scanner*, const pos_t);
 ANN static Symbol lambda_name(const Scanner*, const pos_t);
 ANN void lex_spread(void *data);
 
+#define YYLIST_INI(type, dest, src)          \
+  dest = new_mp_vector(mpool(arg), type, 1); \
+  mp_vector_set(dest, type, 0, src);
+
+#define YYLIST_END(type, dest, src, new )          \
+    mp_vector_add(mpool(arg), &(src), type, new);  \
+    dest = src;
+
 %}
 
 %union {
@@ -61,7 +69,7 @@ ANN void lex_spread(void *data);
   Arg arg;
   Func_Def func_def;
   EnumValue enum_value;
-  Enum_List enum_list;
+  EnumValue_List enum_list;
   Enum_Def enum_def;
   Union_Def union_def;
   Fptr_Def fptr_def;
@@ -71,7 +79,7 @@ ANN void lex_spread(void *data);
   Specialized specialized;
   Specialized_List specialized_list;
   TmplArg tmplarg;
-  Type_List type_list;
+  TmplArg_List tmplarg_list;
   Variable variable;
   Variable_List variable_list;
   Extend_Def extend_def;
@@ -141,7 +149,7 @@ ANN void lex_spread(void *data);
 %type<arg_list> lambda_arg lambda_list fptr_list fptr_args
 %type<default_args> arg arg_list func_args locale_arg locale_list
 %type<capture> capture
-%type<captures> captures _captures
+%type<captures> capture_list captures
 %type<func_def> func_def op_def func_def_base abstract_fdef
 %type<func_base> func_base fptr_base op_base
 %type<enum_value> enum_value
@@ -159,13 +167,13 @@ ANN void lex_spread(void *data);
 %type<specialized> specialized
 %type<specialized_list> specialized_list decl_template
 %type<tmplarg> tmplarg;
-%type<type_list> type_list call_template
-%type<variable> union_decl
+%type<tmplarg_list> tmplarg_list call_template
+%type<variable> variable
 %type<variable_list> variable_list
 %type<prim_def> prim_def
-%type<ast> ast prg
+%type<ast> ast section_list
 
-%start prg
+%start ast
 
 %right RANGE_EMPTY
 
@@ -191,21 +199,12 @@ ANN void lex_spread(void *data);
 
 %%
 
-prg: ast { arg->ppa->ast = $$ = $1; }
+ast: section_list { arg->ppa->ast = $$ = $1; }
   | /* empty */ { loc_t loc = { {1, 1}, {1,1} }; parser_error(&loc, arg, "file is empty.", 0201); YYERROR; }
-ast
-  : section {
-    $$ = new_mp_vector(mpool(arg), Section, 1);
-    mp_vector_set($$, Section, 0, $1);
-  }
-  | ast section {
-    mp_vector_add(mpool(arg), &($1), Section, $2);
-    $$ = $1;
-  }
-  | ast error { $$ = $1; };
 
-
-;
+section_list
+  : section { YYLIST_INI(Section, $$, $1); }
+  | section_list section { YYLIST_END(Section, $$, $1, $2); }
 
 section
   : stmt_list    { $$ = MK_SECTION(stmt, stmt_list, $1); }
@@ -238,7 +237,7 @@ class_def
       $$->traits = $5;
     };
 
-class_body : "{" ast "}"  { $$ = $2; } | "{" "}" { $$ = NULL; } | ";" { $$ = NULL; };
+class_body : "{" section_list "}"  { $$ = $2; } | "{" "}" { $$ = NULL; } | ";" { $$ = NULL; };
 
 trait_def: "trait" opt_global ID traits class_body
     {
@@ -272,16 +271,8 @@ extend_def: "extends" type_decl_empty ":" id_list ";" {
 }
 
 
-id_list: ID
-  {
-    $$ = new_mp_vector(mpool(arg), Symbol, 1);
-    mp_vector_set($$, Symbol, 0, $1);
-  }
-       | id_list "," ID
-  {
-    mp_vector_add(mpool(arg), &$1, Symbol, $3);
-    $$ = $1;
-  };
+id_list:      ID { YYLIST_INI(Symbol, $$, $1); }
+| id_list "," ID { YYLIST_END(Symbol, $$, $1, $3); }
 
 specialized: ID traits {
     $$ = (Specialized) {
@@ -296,23 +287,11 @@ specialized: ID traits {
       };
   }
 
-specialized_list: specialized {
-    $$ = new_mp_vector(mpool(arg), Specialized, 1);
-    mp_vector_set($$, Specialized, 0, $1);
-  }
-  | specialized_list "," specialized {
-    mp_vector_add(mpool(arg), &$1, Specialized, $3);
-    $$ = $1;
-  };
+specialized_list: specialized { YYLIST_INI(Specialized, $$, $1); }
+  | specialized_list "," specialized { YYLIST_END(Specialized, $$, $1, $3); }
 
-stmt_list: stmt {
-  $$ = new_mp_vector(mpool(arg), struct Stmt_, 1);
-  mp_vector_set($$, struct Stmt_, 0, $1);
-} |
-  stmt_list stmt {
-  mp_vector_add(mpool(arg), &$1, struct Stmt_, $2);
-  $$ = $1;
-  };
+stmt_list:  stmt   { YYLIST_INI(struct Stmt_, $$, $1); } 
+| stmt_list stmt   { YYLIST_END(struct Stmt_, $$, $1, $2); }
 
 fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
   if($4) { $$->tmpl = new_tmpl(mpool(arg), $4); } }
@@ -361,8 +340,7 @@ arg
   };
 arg_list:
      arg {
-       $$.args = new_mp_vector(mpool(arg), Arg, 1);
-       mp_vector_set($$.args, Arg, 0, $1.arg);
+       YYLIST_INI(Arg, $$.args, $1.arg);
        $$.flag = $1.flag;
      }
 	  |  arg_list "," arg {
@@ -403,20 +381,13 @@ locale_list:
           ),
          .exp = NULL
        };
-       $$.args = new_mp_vector(mpool(arg), Arg, 1);
-       mp_vector_set($$.args, Arg, 0, self);
+       YYLIST_INI(Arg, $$.args, self);
     }
 
 fptr_arg: type_decl_empty fptr_arg_decl { $$ = (Arg) { .var = MK_VAR($1, $2) }; }
-fptr_list:
-  fptr_arg {
-    $$ = new_mp_vector(mpool(arg), Arg, 1);
-    mp_vector_set($$, Arg, 0, $1);
-  }
-  | fptr_list "," fptr_arg {
-    mp_vector_add(mpool(arg), &$1, Arg, $3);
-    $$ = $1;
-  };
+
+fptr_list:      fptr_arg { YYLIST_INI(Arg, $$, $1); }
+| fptr_list "," fptr_arg { YYLIST_END(Arg, $$, $1, $3); }
 
 code_stmt
   : "{" "}" {
@@ -474,8 +445,7 @@ retry_stmt: "retry" ";" {
 };
 handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .tag = MK_TAG($3, $3 ? @3 :@1), .stmt = cpy_stmt3(mpool(arg), &$4) }; arg->handling = false; };
 handler_list: handler {
-    $$.handlers = new_mp_vector(mpool(arg), Handler, 1);
-    mp_vector_set($$.handlers, Handler, 0, $1);
+    YYLIST_INI(Handler, $$.handlers, $1);
     $$.has_xid = !!$1.tag.sym;
   }
   | handler_list handler  {
@@ -510,15 +480,10 @@ enum_value: ID { $$ = (EnumValue) { .tag = MK_TAG($1, @1) }; }
           }
             $$ = (EnumValue) {.tag = MK_TAG($3, @3), .gwint = $1, .set = true };
           }
-enum_list: enum_value  {
-    $$ = new_mp_vector(mpool(arg), EnumValue, 1);
-    mp_vector_set($$, EnumValue, 0, $1);
-  }
-       | enum_list "," enum_value
-  {
-    mp_vector_add(mpool(arg), &$1, EnumValue, $3);
-    $$ = $1;
-  };
+
+enum_list:      enum_value  { YYLIST_INI(EnumValue, $$, $1); }
+| enum_list "," enum_value  { YYLIST_END(EnumValue, $$, $1, $3) ;}
+
 enum_def
   : "enum" flag ID "{" enum_list opt_comma "}" {
     $$ = new_enum_def(mpool(arg), $5, $3, @$);
@@ -540,14 +505,8 @@ match_case_stmt
     };
 };
 
-match_list: match_case_stmt {
-  $$ = new_mp_vector(mpool(arg), struct Stmt_, 1);
-  mp_vector_set($$, struct Stmt_, 0, $1);
-} |
-  match_list match_case_stmt {
-    mp_vector_add(mpool(arg), &($1), struct Stmt_, $2);
-    $$ = $1;
-  };
+match_list: match_case_stmt { YYLIST_INI(struct Stmt_, $$, $1); }
+| match_list match_case_stmt { YYLIST_END(struct Stmt_, $$, $1, $2); }
 
 match_stmt: "match" exp "{" match_list "}" "where" stmt {
   $$ = (struct Stmt_) { .stmt_type = ae_stmt_match,
@@ -638,9 +597,8 @@ loop_stmt
       .pos = @1
     };
     $$.d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
-    $$.d.stmt_each.idx->tag = MK_TAG($3, @3);
+    $$.d.stmt_each.idx->var = (Var_Decl){.tag=MK_TAG($3, @3)};
     $$.d.stmt_each.idx->is_var = $7;
-    $$.d.stmt_each.idx->v = NULL;
 // what to do with opt_var?
 // list rem?
   }
@@ -662,8 +620,7 @@ loop_stmt
       .pos = @1
     };
     $$.d.stmt_loop.idx = mp_malloc(mpool(arg), EachIdx);
-    $$.d.stmt_loop.idx->tag = MK_TAG($3, @3);
-    $$.d.stmt_loop.idx->v = NULL;
+    $$.d.stmt_loop.idx->var = (Var_Decl){ .tag = MK_TAG($3, @3) };
   };
 
 defer_stmt: "defer" stmt {
@@ -749,7 +706,7 @@ binary_exp
   | binary_exp DYNOP   decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
 
-call_template: ":[" type_list "]" { $$ = $2; } | { $$ = NULL; };
+call_template: ":[" tmplarg_list "]" { $$ = $2; } | { $$ = NULL; };
 
 op: "==" | "!=" | "@" | DYNOP | OPTIONS;
 
@@ -781,10 +738,10 @@ range
 array: array_exp | array_empty;
 decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.var.td->flag |= $1 | $2; };
-  | type_decl_flag2 flag type_decl_array "(" opt_exp ")" var_decl {
-      $$ = new_exp_decl(mpool(arg), $3, &$7, @7);
+  | type_decl_flag2 flag type_decl_array call_paren var_decl {
+      $$ = new_exp_decl(mpool(arg), $3, &$5, @5);
       $$->d.exp_decl.var.td->flag |= $1 | $2;
-      $$->d.exp_decl.args = $5 ?: new_prim_nil(mpool(arg), @5);
+      $$->d.exp_decl.args = $4 ?: new_prim_nil(mpool(arg), @4);
   };
 
 func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = (struct ParserArg){}; };
@@ -792,15 +749,12 @@ fptr_args: "(" fptr_list ")" { $$ = $2; } | "(" ")" { $$ = NULL; };
 
 decl_template: ":[" specialized_list "]" { $$ = $2; }
  |              ":[" specialized_list "," "..." "]" {
-  $$ = $2;
   Specialized spec = { .tag = MK_TAG(insert_symbol("..."), @4) };
-  mp_vector_add(mpool(arg), &$$, Specialized, spec);
-
+  YYLIST_END(Specialized, $$, $2, spec);
 }
 |                ":[" "..." "]" {
   Specialized spec = { .tag = MK_TAG(insert_symbol("..."), @2) };
-  $$ = new_mp_vector(mpool(arg), Specialized, 1);
-  mp_vector_set($$, Specialized, 0, spec);
+  YYLIST_INI(Specialized, $$, spec);
 }
              | { $$ = NULL; };
 
@@ -964,21 +918,15 @@ opt_var: "var" { $$ = true; } | { $$ = false; };
 
 type_decl_flag2: "var"  { $$ = ae_flag_none; } | type_decl_flag
 
-union_decl:
+variable:
             ID ";" {
   Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("None"), @1);
   $$ = (Variable) { .td = td, .vd = { .tag = MK_TAG($1, @1)}};
 }
 | type_decl_empty ID ";" { $$ = (Variable) { .td = $1, .vd = { .tag = MK_TAG($2, @2)}};}
 
-variable_list: union_decl {
-    $$ = new_mp_vector(mpool(arg), Variable, 1);
-    mp_vector_set($$, Variable, 0, $1);
-  }
-  | variable_list union_decl {
-    mp_vector_add(mpool(arg), &$1, Variable, $2);
-    $$ = $1;
-  };
+variable_list:  variable { YYLIST_INI(Variable, $$, $1); }
+| variable_list variable { YYLIST_END(Variable, $$, $1, $2); }
 
 union_def
   : "union" flag ID decl_template "{" variable_list "}" {
@@ -1031,8 +979,8 @@ unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
   | "spork" unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @1); }
   | "fork" unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @1); }
-  | "new" type_decl_exp "(" opt_exp ")" {
-       $$ = new_exp_unary2(mpool(arg), $1, $2, $4 ?: new_prim_nil(mpool(arg), @4), @$);
+  | "new" type_decl_exp call_paren {
+       $$ = new_exp_unary2(mpool(arg), $1, $2, $3 ?: new_prim_nil(mpool(arg), @3), @$);
   }
   | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
   | "spork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
@@ -1044,14 +992,12 @@ unary_exp : post_exp
 lambda_list:
  ID {
   Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){.tag = MK_TAG($1, @1)})};
-    $$ = new_mp_vector(mpool(arg), Arg, 1);
-    mp_vector_set($$, Arg, 0, a);
-}
+  YYLIST_INI(Arg, $$, a); }
 |    lambda_list ID {
   Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){ .tag = MK_TAG($2, @2)})};
-  mp_vector_add(mpool(arg), &$1, Arg, a);
-  $$ = $1;
+  YYLIST_END(Arg, $$, $1, a);
 }
+
 lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 tmplarg_exp: basic_exp;
@@ -1062,16 +1008,8 @@ tmplarg: type_decl_empty {
     $$ = (TmplArg) { .d = { .exp = $1}, .type = tmplarg_exp};
   }
 
-type_list
-  : tmplarg {
-    $$ = new_mp_vector(mpool(arg), TmplArg, 1);
-    mp_vector_set($$, TmplArg, 0, $1);
-  }
-  | type_list "," tmplarg {
-    mp_vector_add(mpool(arg), &$1, TmplArg, $3);
-    $$ = $1;
-  };
-
+tmplarg_list:      tmplarg { YYLIST_INI(TmplArg, $$, $1); }
+| tmplarg_list "," tmplarg { YYLIST_END(TmplArg, $$, $1, $3); }
 
 call_paren :
 "(" exp ")" { $$ = $2; } | 
@@ -1118,11 +1056,11 @@ interp: INTERP_START interp_exp { $$ = $2; }
   $1->next = $3;
 }
 
-capture: ID { $$ = (Capture){ .tag = MK_TAG($1, @1) };} | "&" ID { $$ = (Capture){ .tag = MK_TAG($2, @2), .is_ref = true }; };
+capture: ID { $$ = (Capture){ .var = { .tag = MK_TAG($1, @1) }};} | "&" ID { $$ = (Capture){ .var = { .tag = MK_TAG($2, @2) }, .is_ref = true }; };
 
-_captures: capture { $$ = new_mp_vector(mpool(arg), Capture, 1); mp_vector_set($$, Capture, 0, $1); }
-        | _captures capture { mp_vector_add(mpool(arg), &$1, Capture, $2); $$ = $1; }
-captures: ":" _captures ":" { $$ = $2; } |  { $$ = NULL; };
+capture_list:  capture { YYLIST_INI(Capture, $$, $1); }
+| capture_list capture { YYLIST_END(Capture, $$, $1, $2); }
+captures: ":" capture_list ":" { $$ = $2; } |  { $$ = NULL; };
 array_lit_ed: ",]" | "]"
 
 basic_exp

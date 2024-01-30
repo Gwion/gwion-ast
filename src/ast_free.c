@@ -40,7 +40,7 @@ AST_FREE(Specialized_List, specialized_list) {
 }
 
 AST_FREE(Type_Decl *, type_decl) {
-  if (a->types) free_type_list(p, a->types);
+  if (a->types) free_tmplarg_list(p, a->types);
   if (a->array) free_array_sub(p, a->array);
   if (a->fptr) free_fptr_def(p, a->fptr);
   if (a->next) free_type_decl(p, a->next);
@@ -93,7 +93,7 @@ ANN static AST_FREE(Exp_If *, exp_if) {
 
 AST_FREE(Tmpl *, tmpl) {
   if (!a->call) free_specialized_list(p, a->list);
-  else free_type_list(p, a->call);
+  else free_tmplarg_list(p, a->call);
   mp_free(p, Tmpl, a);
 }
 
@@ -332,7 +332,7 @@ ANN static AST_FREE(Section *, section) {
     free_prim_def(p, a->d.prim_def);
 }
 
-AST_FREE(Type_List, type_list) {
+AST_FREE(TmplArg_List, tmplarg_list) {
   for(uint32_t i = 0; i < a->len; i++) {
     TmplArg arg = *mp_vector_at(a, TmplArg, i);
     if(arg.type == tmplarg_td) free_type_decl(p, arg.d.td);
