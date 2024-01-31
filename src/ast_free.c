@@ -148,10 +148,10 @@ ANN static AST_FREE(Exp_Primary *, prim) {
 ANN static AST_FREE(Type_Decl **, exp_td) { free_type_decl(p, *a); }
 DECL_EXP_FUNC(free, void, MemPool)
 
-AST_FREE(Exp, exp) {
+AST_FREE(Exp*, exp) {
   free_exp_func[a->exp_type](p, &a->d);
-  const Exp next = a->next;
-  mp_free(p, Exp, a);
+  Exp* next = a->next;
+  mp_free2(p, sizeof(Exp), a);
   if (next) free_exp(p, next);
 }
 

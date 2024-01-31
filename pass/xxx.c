@@ -95,15 +95,15 @@ ANN static void xxx_prim_range(XXX *a, Range* *b) {
   xxx_range(a, *b);
 }
 
-ANN static void xxx_prim_dict(XXX *a, Exp *b) {
+ANN static void xxx_prim_dict(XXX *a, Exp* *b) {
   xxx_exp(a, *b);
 }
 
-ANN static void xxx_prim_hack(XXX *a, Exp *b) {
+ANN static void xxx_prim_hack(XXX *a, Exp* *b) {
   xxx_exp(a, *b);
 }
 
-ANN static void xxx_prim_interp(XXX *a, Exp *b) {
+ANN static void xxx_prim_interp(XXX *a, Exp* *b) {
   xxx_exp(a, *b);
 }
 
@@ -217,7 +217,7 @@ ANN static void xxx_exp_td(XXX *a, Type_Decl *b) {
 }
 
 DECL_EXP_FUNC(xxx, void, XXX*)
-ANN static void xxx_exp(XXX *a, Exp b) {
+ANN static void xxx_exp(XXX *a, Exp* b) {
   xxx_exp_func[b->exp_type](a, &b->d);
   if(b->next) return xxx_exp(a, b ->next);
 }
@@ -278,7 +278,7 @@ ANN static void xxx_stmt_return(XXX *a, Stmt_Exp b) {
 
 ANN static void xxx_case_list(XXX *a, Stmt_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Stmt c = mp_vector_at(b, Stmt, i);
+    Stmt* c = mp_vector_at(b, Stmt, i);
     xxx_stmt_case(a, &c->d.stmt_match);
   }
 }
@@ -336,7 +336,7 @@ ANN static void xxx_stmt_spread(XXX *a, Spread_Def b) {
   xxx_id_list(a, b->list);
 }
 DECL_STMT_FUNC(xxx, void, XXX*)
-ANN static void xxx_stmt(XXX *a, Stmt b) {
+ANN static void xxx_stmt(XXX *a, Stmt* b) {
   xxx_stmt_func[b->stmt_type](a, &b->d);
 }
 
@@ -360,7 +360,7 @@ ANN static void xxx_variable_list(XXX *a, Variable_List b) {
 
 ANN static void xxx_stmt_list(XXX *a, Stmt_List b) {
   for(uint32_t i = 0; i < b->len; i++) {
-    Stmt c = mp_vector_at(b, Stmt, i);
+    Stmt* c = mp_vector_at(b, Stmt, i);
     xxx_stmt(a, c);
   }
 }
@@ -442,7 +442,7 @@ ANN static void xxx_ast(XXX *a, Ast b) {
 }
 
 int main(int argc, char **argv) {
-  MemPool mp = mempool_ini(sizeof(struct Exp_));
+  MemPool mp = mempool_ini(sizeof(Exp));
   SymTable* st = new_symbol_table(mp, 65347);
   struct PPArg_ ppa = {};
   XXX xxx = {};

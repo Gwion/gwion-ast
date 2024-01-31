@@ -3,7 +3,7 @@
 
 ANN Stmt*      cpy_stmt(MemPool p, Stmt* src);
 ANN static void cpy_stmt2(MemPool p, Stmt* a, Stmt* src);
-ANN Exp              cpy_exp(MemPool p, const Exp src);
+ANN Exp*              cpy_exp(MemPool p, const Exp* src);
 ANN TmplArg_List        cpy_tmplarg_list(MemPool p, const TmplArg_List src);
 ANN Arg_List         cpy_arg_list(MemPool p, const Arg_List src);
 ANN Class_Def        cpy_class_def(MemPool p, const Class_Def src);
@@ -223,8 +223,8 @@ ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
     a->captures = cpy_captures(p, src->captures);
 }
 
-ANN Exp cpy_exp(MemPool p, const Exp src) {
-  Exp a = mp_calloc(p, Exp);
+ANN Exp* cpy_exp(MemPool p, const Exp* src) {
+  Exp* a = mp_calloc2(p, sizeof(Exp));
   if (src->next) a->next = cpy_exp(p, src->next);
   switch (src->exp_type) {
   case ae_exp_post: // !! naming

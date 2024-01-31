@@ -4,7 +4,7 @@
 
 #ifndef __CPY_AST
 #define __CPY_AST
-ANN Exp       cpy_exp(MemPool, Exp);
+ANN Exp*       cpy_exp(MemPool, const Exp*);
 ANN Array_Sub cpy_array_sub(MemPool, Array_Sub);
 ANN Arg_List  cpy_arg_list(MemPool, Arg_List);
 ANN Type_Decl *        cpy_type_decl(MemPool, const Type_Decl *);

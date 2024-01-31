@@ -14,7 +14,7 @@ typedef struct Class_Def_ *    Class_Def;
 typedef struct Extend_Def_ *   Extend_Def;
 typedef struct Func_Def_ *     Func_Def;
 typedef struct MP_Vector *Stmt_List;
-typedef struct Exp_ *          Exp;
+typedef struct Exp          Exp;
 typedef struct Stmt          Stmt;
 typedef struct Array_Sub_ *    Array_Sub;
 typedef MP_Vector *ID_List;
@@ -65,7 +65,7 @@ enum tmplarg_t {
 typedef struct TmplArg {
   union {
     Type_Decl *td;
-    Exp exp;
+    Exp* exp;
   } d;
   enum tmplarg_t type;
 } TmplArg;
@@ -81,7 +81,7 @@ ANN static inline uint32_t tmplarg_ntypes(TmplArg_List tl) {
 
 typedef struct Arg_ {
   Variable      var;
-  Exp           exp;
+  Exp*           exp;
   struct Type_ *type; // can be removed by using var_decl.value->type
 } Arg;
 
@@ -106,7 +106,7 @@ struct ParserArg {
 
 /** a dot expression. @code object.member @endcode */
 typedef struct {
-  Exp    base;
+  Exp*    base;
   Symbol xid;
 } Exp_Dot;
 
@@ -123,43 +123,43 @@ typedef struct {
   Func_Def      def;
   struct Type_ *owner;
 } Exp_Lambda;
-ANN2(1,2,4) AST_NEW(Exp, exp_lambda, const Symbol, const Arg_List, const Stmt_List,
+ANN2(1,2,4) AST_NEW(Exp*, exp_lambda, const Symbol, const Arg_List, const Stmt_List,
             const loc_t);
-AST_NEW(Exp, exp_lambda2, const Symbol xid, const Arg_List args, const Exp exp,
+AST_NEW(Exp*, exp_lambda2, const Symbol xid, const Arg_List args, Exp* exp,
         const loc_t);
 /** array_subscript. @code [0][0] @endcode */
 struct Array_Sub_ {
-  Exp           exp;
+  Exp*           exp;
   struct Type_ *type;
   uint16_t      depth;
 };
-ANEW AST_NEW(Array_Sub, array_sub, const Exp);
-ANN2(1) Array_Sub prepend_array_sub(const Array_Sub, const Exp);
+ANEW AST_NEW(Array_Sub, array_sub, Exp*);
+ANN2(1) Array_Sub prepend_array_sub(const Array_Sub, Exp*);
 ANN void free_array_sub(MemPool p, Array_Sub);
 
 /** array expression. @code instrument_list[1][2] @endcode */
 typedef struct {
-  Exp       base;
+  Exp*       base;
   Array_Sub array;
 } Exp_Array;
-ANEW ANN AST_NEW(Exp, exp_array, const Exp, const Array_Sub,
+ANEW ANN AST_NEW(Exp*, exp_array, Exp*, const Array_Sub,
                  const loc_t);
 
 /** range. @code [12:12] @endcode or @code [1:] @endcode or @code [:12]
  * @endcode*/
 typedef struct Range_ {
-  Exp start; ///< start of range expression
-  Exp end;   ///< end   of range expression
+  Exp* start; ///< start of range expression
+  Exp* end;   ///< end   of range expression
   bool inclusive;
 } Range;
-AST_NEW(Range *, range, const Exp, const Exp);
+AST_NEW(Range *, range, Exp*, Exp*);
 
 /** slice. @code "test"[12:12] @endcode see \ref Range_ */
 typedef struct {
-  Exp    base;
+  Exp*    base;
   Range *range;
 } Exp_Slice;
-ANEW ANN AST_NEW(Exp, exp_slice, const Exp, Range *, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_slice, Exp*, Range *, const loc_t);
 
 ANN void free_id_list(MemPool p, ID_List);
 
@@ -217,7 +217,7 @@ typedef enum {
 typedef struct {
   Variable   var;
   struct Type_ *type;
-  Exp args;
+  Exp* args;
 } Exp_Decl;
 
 enum gwint_type {
@@ -249,7 +249,7 @@ typedef struct {
     struct AstString string;
     Array_Sub        array;
     Range *          range;
-    Exp              exp;
+    Exp*              exp;
   } d;
   ae_prim_t prim_type;
 } Exp_Primary;
@@ -269,39 +269,39 @@ static inline bool tmpl_base(const Tmpl *a) {
 }
 
 typedef struct Exp_Call_ {
-  Exp   func;
-  Exp   args;
+  Exp*   func;
+  Exp*   args;
   Tmpl *tmpl;
-  Exp   other;
+  Exp*   other;
   bool checked;
 } Exp_Call;
 typedef struct {
   Type_Decl *td;
-  Exp        exp;
+  Exp*        exp;
 } Exp_Cast;
 typedef struct {
-  Exp    lhs;
-  Exp    rhs;
+  Exp*    lhs;
+  Exp*    rhs;
   Symbol op;
 } Exp_Binary;
 typedef struct {
   Symbol op;
-  Exp    exp;
+  Exp*    exp;
 } Exp_Postfix;
 typedef struct {
-  Exp cond;
-  Exp if_exp;
-  Exp else_exp;
+  Exp* cond;
+  Exp* if_exp;
+  Exp* else_exp;
 } Exp_If;
 enum unary_type { unary_exp, unary_td, unary_code };
 struct UnaryNew {
   Type_Decl *td;
-  Exp exp;
+  Exp* exp;
 };
 typedef struct {
   Symbol op;
   union {
-    Exp        exp;
+    Exp*        exp;
     Stmt_List  code;
     struct UnaryNew ctor;
   };
@@ -322,7 +322,7 @@ enum exp_comptime {
   comptime_need
 };
 
-struct Exp_ {
+struct Exp {
   union exp_data {
     Exp_Postfix exp_post;
     Exp_Primary prim;
@@ -340,8 +340,8 @@ struct Exp_ {
   } d;
   struct Type_ *type;
   struct Type_ *cast_to;
-  Exp           next;
-  Exp ref;
+  Exp*           next;
+  Exp* ref;
   void *data;
   loc_t loc;
   ae_exp_t exp_type;
@@ -351,108 +351,108 @@ struct Exp_ {
   bool is_call;
 };
 
-ANN static inline int exp_getuse(const Exp e) {
+ANN static inline int exp_getuse(const Exp* e) {
   return (e->emit_var & (1 << exp_state_use)) == (1 << exp_state_use);
 }
 
-ANN static inline void exp_setuse(const Exp e, const bool val) {
+ANN static inline void exp_setuse(Exp* e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_use;
   else
     e->emit_var &= ~(1 << exp_state_use);
 }
 
-ANN static inline int exp_getvar(const Exp e) {
+ANN static inline int exp_getvar(const Exp* e) {
   return (e->emit_var & (1 << exp_state_addr)) == (1 << exp_state_addr);
 }
 
-ANN static inline void exp_setvar(const Exp e, const bool val) {
+ANN static inline void exp_setvar(Exp* e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_addr;
   else
     e->emit_var &= ~(1 << exp_state_addr);
 }
 
-ANN static inline int exp_getprot(const Exp e) {
+ANN static inline int exp_getprot(const Exp* e) {
   return (e->emit_var & (1 << exp_state_prot)) == (1 << exp_state_prot);
 }
 
-ANN static inline void exp_setprot(const Exp e, const bool val) {
+ANN static inline void exp_setprot(Exp* e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_prot;
   else
     e->emit_var &= ~(1 << exp_state_prot);
 }
 
-ANN static inline int exp_getmeta(const Exp e) {
+ANN static inline int exp_getmeta(const Exp* e) {
   return (e->emit_var & (1 << exp_state_meta)) == (1 << exp_state_meta);
 }
 
-ANN static inline void exp_setmeta(const Exp e, const bool val) {
+ANN static inline void exp_setmeta(Exp* e, const bool val) {
   if (val)
     e->emit_var |= 1 << exp_state_meta;
   else
     e->emit_var &= ~(1 << exp_state_meta);
 }
 
-ANN static inline m_str exp_access(const Exp e) {
+ANN static inline m_str exp_access(const Exp* e) {
   if (exp_getmeta(e)) return (m_str) "non-mutable";
   return !exp_getprot(e) ? NULL : (m_str) "protected";
 }
 
-static inline Exp exp_self(const void *data) {
-  return container_of((char *)data, struct Exp_, d);
+static inline Exp* exp_self(const void *data) {
+  return container_of((char *)data, Exp, d);
 }
 static inline Exp_Primary *prim_self(const void *data) {
   return container_of((char *)data, Exp_Primary, d);
 }
-static inline Exp prim_exp(const void *data) {
+static inline Exp* prim_exp(const void *data) {
   const Exp_Primary *p = prim_self(data);
   return exp_self(p);
 }
 static inline loc_t prim_pos(const void *data) {
-  const Exp e = prim_exp(data);
+  const Exp* e = prim_exp(data);
   return e->loc;
 }
 
-ANEW ANN AST_NEW(Exp, prim_id, struct Symbol_ *, const loc_t);
-ANEW ANN2(1) AST_NEW(Exp, prim_perform, struct Symbol_ *, const loc_t);
-ANEW     AST_NEW(Exp, prim_int, const m_uint, const loc_t);
-ANEW     AST_NEW(Exp, prim_float, const m_float, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_string, const m_str, const uint16_t delim, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_array, const Array_Sub, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_range, Range *, const loc_t);
-ANEW     AST_NEW(Exp, prim_dict, const Exp, const loc_t);
-ANEW     AST_NEW(Exp, prim_hack, const Exp, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_char, const m_str, const loc_t);
-ANEW     AST_NEW(Exp, prim_nil, const loc_t);
-ANEW ANN AST_NEW(Exp, prim_interp, const Exp exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_decl, Type_Decl *, const Var_Decl*,
+ANEW ANN AST_NEW(Exp*, prim_id, struct Symbol_ *, const loc_t);
+ANEW ANN2(1) AST_NEW(Exp*, prim_perform, struct Symbol_ *, const loc_t);
+ANEW     AST_NEW(Exp*, prim_int, const m_uint, const loc_t);
+ANEW     AST_NEW(Exp*, prim_float, const m_float, const loc_t);
+ANEW ANN AST_NEW(Exp*, prim_string, const m_str, const uint16_t delim, const loc_t);
+ANEW ANN AST_NEW(Exp*, prim_array, const Array_Sub, const loc_t);
+ANEW ANN AST_NEW(Exp*, prim_range, Range *, const loc_t);
+ANEW     AST_NEW(Exp*, prim_dict, Exp*, const loc_t);
+ANEW     AST_NEW(Exp*, prim_hack, Exp*, const loc_t);
+ANEW ANN AST_NEW(Exp*, prim_char, const m_str, const loc_t);
+ANEW     AST_NEW(Exp*, prim_nil, const loc_t);
+ANEW ANN AST_NEW(Exp*, prim_interp, Exp* exp, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_decl, Type_Decl *, const Var_Decl*,
                  const loc_t);
-ANEW ANN AST_NEW(Exp, exp_binary, const Exp, const Symbol, const Exp,
+ANEW ANN AST_NEW(Exp*, exp_binary, Exp*, const Symbol, Exp*,
                  const loc_t);
-ANEW ANN AST_NEW(Exp, exp_post, const Exp, const Symbol, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_post, Exp*, const Symbol, const loc_t);
 ANN2(1, 2)
-ANEW     AST_NEW(Exp, exp_call, const Exp, const Exp args, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_cast, Type_Decl *, const Exp, const loc_t);
+ANEW     AST_NEW(Exp*, exp_call, Exp*, Exp* args, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_cast, Type_Decl *, Exp*, const loc_t);
 ANN2(1, 2, 4)
-ANEW AST_NEW(Exp, exp_if, const Exp, const Exp, const Exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_dot, const Exp, struct Symbol_ *,
+ANEW AST_NEW(Exp*, exp_if, Exp*, Exp*, Exp*, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_dot, Exp*, struct Symbol_ *,
                  const loc_t);
-ANEW ANN AST_NEW(Exp, exp_unary, const Symbol, const Exp, const loc_t);
-ANEW ANN2(1,2,3) AST_NEW(Exp, exp_unary2, const Symbol, Type_Decl *,
-                 const Exp exp, const loc_t);
-ANEW ANN AST_NEW(Exp, exp_unary3, const Symbol, const Stmt_List,
+ANEW ANN AST_NEW(Exp*, exp_unary, const Symbol, Exp*, const loc_t);
+ANEW ANN2(1,2,3) AST_NEW(Exp*, exp_unary2, const Symbol, Type_Decl *,
+                 Exp* exp, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_unary3, const Symbol, const Stmt_List,
                  const loc_t);
-ANEW ANN AST_NEW(Exp, exp_td, Type_Decl *, const loc_t);
+ANEW ANN AST_NEW(Exp*, exp_td, Type_Decl *, const loc_t);
 
-static inline Exp take_exp(const Exp exp, const uint32_t n) {
-  Exp e = exp;
+static inline Exp* take_exp(Exp* exp, const uint32_t n) {
+  Exp* e = exp;
   for (uint32_t i = 1; i < n; i++) CHECK_OO((e = e->next));
   return e;
 }
 
-ANN void free_exp(MemPool p, Exp);
+ANN void free_exp(MemPool p, Exp*);
 
 typedef struct Spread_Def_ {
   Tag     tag;
@@ -488,7 +488,7 @@ typedef struct Stmt_PP_ *     Stmt_PP;
 typedef struct Stmt_Defer_ *  Stmt_Defer;
 
 typedef struct Stmt_Exp_ {
-  Exp val;
+  Exp* val;
 } *Stmt_Exp;
 
 typedef struct Stmt_Index_ {
@@ -496,17 +496,17 @@ typedef struct Stmt_Index_ {
 } *Stmt_Index;
 
 typedef struct Stmt_Flow_ {
-  Exp  cond;
+  Exp*  cond;
   Stmt* body;
   bool is_do;
 } *Stmt_Flow;
 
 typedef struct Stmt_Match_ {
-  Exp       cond;
+  Exp*       cond;
   Stmt_List list;
   union {
     Stmt* where;
-    Exp  when;
+    Exp*  when;
   };
 } *Stmt_Match;
 
@@ -517,7 +517,7 @@ typedef struct Stmt_Code_ {
 struct Stmt_For_ {
   Stmt* c1;
   Stmt* c2;
-  Exp  c3;
+  Exp*  c3;
   Stmt* body;
 };
 
@@ -529,19 +529,19 @@ typedef struct EachIdx_ {
 struct Stmt_Each_ {
   Var_Decl var;
   Tag      tag;
-  Exp      exp;
+  Exp*      exp;
   Stmt*     body;
   EachIdx *idx;
 };
 
 struct Stmt_Loop_ {
-  Exp      cond;
+  Exp*      cond;
   Stmt*     body;
   EachIdx *idx;
 };
 
 struct Stmt_If_ {
-  Exp  cond;
+  Exp*  cond;
   Stmt* if_body;
   Stmt* else_body;
 };
@@ -616,7 +616,7 @@ struct Type_Def_ {
   struct Type_ *type;
   Tag           tag;
   Tmpl *        tmpl;
-  Exp           when;
+  Exp*           when;
   Func_Def      when_def;
   bool          distinct;
 };
@@ -650,7 +650,7 @@ enum ae_pp_type {
 
 struct Stmt_PP_ {
   m_str data;
-  Exp   exp;
+  Exp*   exp;
   Symbol xid;
   enum ae_pp_type pp_type;
 };
@@ -688,18 +688,18 @@ static inline Stmt* stmt_self(const void *data) {
 }
 
 ANEW     AST_NEW(Stmt*, stmt, const ae_stmt_t, const loc_t);
-ANN ANEW AST_NEW(Stmt*, stmt_exp, const ae_stmt_t, const Exp,
+ANN ANEW AST_NEW(Stmt*, stmt_exp, const ae_stmt_t, Exp*,
                  const loc_t);
 ANN ANEW AST_NEW(Stmt*, stmt_code, const Stmt_List, const loc_t);
-ANN ANEW AST_NEW(Stmt*, stmt_if, const Exp, Stmt*, const loc_t);
-ANEW ANN AST_NEW(Stmt*, stmt_flow, const ae_stmt_t, const Exp, Stmt*,
+ANN ANEW AST_NEW(Stmt*, stmt_if, Exp*, Stmt*, const loc_t);
+ANEW ANN AST_NEW(Stmt*, stmt_flow, const ae_stmt_t, Exp*, Stmt*,
                  const bool, const loc_t);
 ANN2(1, 2, 3, 5)
-ANEW     AST_NEW(Stmt*, stmt_for, Stmt*, Stmt*, const Exp, Stmt*,
+ANEW     AST_NEW(Stmt*, stmt_for, Stmt*, Stmt*, Exp*, Stmt*,
                  const loc_t);
-ANEW ANN AST_NEW(Stmt*, stmt_each, struct Symbol_ *, const Exp, Stmt*,
+ANEW ANN AST_NEW(Stmt*, stmt_each, struct Symbol_ *, Exp*, Stmt*,
                  const loc_t);
-ANEW ANN AST_NEW(Stmt*, stmt_loop, const Exp, Stmt*, const loc_t);
+ANEW ANN AST_NEW(Stmt*, stmt_loop, Exp*, Stmt*, const loc_t);
 ANEW ANN2(1, 3) AST_NEW(Stmt*, stmt_pp, const enum ae_pp_type type, const m_str,
                         const loc_t);
 ANEW ANN AST_NEW(Stmt*, stmt_defer, Stmt*, const loc_t);
@@ -742,13 +742,13 @@ typedef struct Prim_Def_ {
 AST_NEW(Prim_Def, prim_def, const Symbol name, const m_uint size, const loc_t, const ae_flag flag);
 ANN void free_prim_def(MemPool p, Prim_Def);
 
-static inline bool is_prim(const Exp e) { return e->exp_type == ae_exp_primary; }
+static inline bool is_prim(const Exp* e) { return e->exp_type == ae_exp_primary; }
 
-static inline bool is_prim_int(const Exp e) {
+static inline bool is_prim_int(const Exp* e) {
   return (is_prim(e) && e->d.prim.prim_type == ae_prim_num);
 }
 
-static inline bool is_prim_float(const Exp e) {
+static inline bool is_prim_float(const Exp* e) {
   return (is_prim(e) && e->d.prim.prim_type == ae_prim_float);
 }
 

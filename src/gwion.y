@@ -55,7 +55,7 @@ ANN void lex_spread(void *data);
   Range* range;
   struct Var_Decl_ var_decl;
   Type_Decl* type_decl;
-  Exp   exp;
+  Exp*   exp;
   struct Func_Base_ *func_base;
   Stmt stmt;
   Stmt* stmt_ptr;
