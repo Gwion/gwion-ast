@@ -52,7 +52,7 @@ AST_NEW(Exp*, exp_lambda2, const Symbol xid, const Arg_List args, Exp* exp,
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, loc);
   base->fbflag |= fbflag_lambda;
   Stmt_List code = new_mp_vector(p, Stmt, 1);
-  Stmt stmt = { .d = { .stmt_exp = { .val = exp }}, .stmt_type=ae_stmt_return, .loc = loc };
+  Stmt stmt = MK_STMT_RETURN(loc, exp);
   mp_vector_set(code, Stmt, 0, stmt);
   a->d.exp_lambda.def = new_func_def(p, base, code);
   return a;

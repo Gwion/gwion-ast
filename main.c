@@ -2,7 +2,7 @@
 #include "gwion_ast.h"
 #include "parser.h"
 int main(int argc, char **argv) {
-//  MemPool p = mempool_ini(sizeof(struct Exp_));
+//  MemPool p = mempool_ini(sizeof(Exp));
   MemPool p = mempool_ini(1024);
   SymTable *st = new_symbol_table(p, 65536);
   struct PPArg_ ppa;

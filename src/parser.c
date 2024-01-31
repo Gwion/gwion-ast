@@ -3487,13 +3487,13 @@ mp_vector_add(mpool(arg), &(yyvsp[-1].handler_list).handlers, Handler, (yyvsp[0]
 
   case 132: /* jump_stmt: "return" exp ";"  */
 #line 631 "src/gwion.y"
-                     { (yyval.stmt) = MK_STMT(ae_stmt_return, (yylsp[-2]), .stmt_exp = { .val = (yyvsp[-1].exp)}); }
+                     { (yyval.stmt) = MK_STMT_RETURN((yylsp[-2]), (yyvsp[-1].exp)); }
 #line 3492 "src/parser.c"
     break;
 
   case 133: /* jump_stmt: "return" ";"  */
 #line 632 "src/gwion.y"
-                     { (yyval.stmt) = MK_STMT(ae_stmt_return, (yylsp[-1])); }
+                     { (yyval.stmt) = MK_STMT_RETURN((yylsp[-1]), NULL); }
 #line 3498 "src/parser.c"
     break;
 

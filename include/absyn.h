@@ -682,6 +682,7 @@ struct Stmt {
   .d = { __VA_ARGS__ }, .loc = _loc }
 #define MK_STMT_PP(_type, _pos, ...) MK_STMT(ae_stmt_pp, _pos, .stmt_pp = { .pp_type = ae_pp_##_type, __VA_ARGS__ })
 #define MK_STMT_EXP(_pos, _exp) MK_STMT(ae_stmt_exp, _pos, .stmt_exp = { .val = _exp })
+#define MK_STMT_RETURN(_pos, _exp) MK_STMT(ae_stmt_return, _pos, .stmt_exp = { .val = _exp })
 
 static inline Stmt* stmt_self(const void *data) {
   return container_of((char *)data, Stmt, d);

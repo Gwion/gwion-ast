@@ -628,8 +628,8 @@ selection_stmt
 
 breaks: "break"     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : "return" exp ";" { $$ = MK_STMT(ae_stmt_return, @1, .stmt_exp = { .val = $2}); }
-  | "return" ";"     { $$ = MK_STMT(ae_stmt_return, @1); }
+  : "return" exp ";" { $$ = MK_STMT_RETURN(@1, $2); }
+  | "return" ";"     { $$ = MK_STMT_RETURN(@1, NULL); }
   | breaks decimal ";"   { $$ = MK_STMT($1, @1, .stmt_index = { .idx = $2.num });}
   | breaks ";" { $$ = MK_STMT($1, @1, .stmt_index = { .idx = -1 });}
 
