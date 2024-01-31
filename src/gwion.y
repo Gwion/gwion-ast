@@ -391,9 +391,9 @@ fptr_list:      fptr_arg { YYLIST_INI(Arg, $$, $1); }
 
 code_stmt
   : "{" "}" {
-    $$ = (Stmt) { .stmt_type = ae_stmt_code, .loc = @$}; }
+    $$ = MK_STMT(ae_stmt_code, @$); }
   | "{" stmt_list "}" {
-    $$ = (Stmt) { .stmt_type = ae_stmt_code, .d = { .stmt_code = { .stmt_list = $2 }}, .loc = @$}; };
+    $$ = MK_STMT(ae_stmt_code, @$, .stmt_code = { .stmt_list = $2 });}
 
 code_list
   : "{" "}" { $$ = new_mp_vector(mpool(arg), Stmt, 0); }
@@ -435,14 +435,14 @@ spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
     .list = $4,
     .data = $7,
   };
-  $$ = (Stmt) { .stmt_type = ae_stmt_spread, .d = { .stmt_spread = spread }, .loc = @2};
+  $$ = MK_STMT(ae_stmt_spread, @2, .stmt_spread = spread);
 }
 
 retry_stmt: "retry" ";" {
   if(!arg->handling)
     { parser_error(&@1, arg, "`retry` outside of `handle` block", 0); YYERROR; }
-  $$ = (Stmt){ .stmt_type=ae_stmt_retry, .loc=@1};
-};
+  $$ = MK_STMT(ae_stmt_retry, @1);}
+
 handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .tag = MK_TAG($3, $3 ? @3 :@1), .stmt = cpy_stmt3(mpool(arg), &$4) }; arg->handling = false; };
 handler_list: handler {
     YYLIST_INI(Handler, $$.handlers, $1);
@@ -464,10 +464,8 @@ mp_vector_add(mpool(arg), &$1.handlers, Handler, $2);
         $$ = $1;
 //        $1->next = $2;
   }
-try_stmt: "try" stmt handler_list { $$ = (Stmt){ .stmt_type = ae_stmt_try,
-  .d = { .stmt_try = { .stmt = cpy_stmt3(mpool(arg), &$2), .handler = $3.handlers, }},
-  .loc = @1};
-};
+try_stmt: "try" stmt handler_list { $$ = MK_STMT(ae_stmt_try, @1,
+   .stmt_try = { .stmt = cpy_stmt3(mpool(arg), &$2), .handler = $3.handlers});}
 
 opt_id: ID | { $$ = NULL; };
 opt_comma: "," | {}
@@ -494,39 +492,32 @@ when_exp: "when" exp { $$ = $2; } | { $$ = NULL; }
 
 match_case_stmt
   : "case" exp when_exp ":" stmt_list {
-    $$ = (Stmt) {
-      .stmt_type = 0,//ae_stmt_match, // ????
-      .d = { .stmt_match = {
+    $$ = MK_STMT(0 /*ae_stmt_match*/, @1,
+      .stmt_match = {
         .cond = $2,
         .when = $3,
         .list = $5
-      }},
-      .loc = @1
-    };
-};
+    });
+}
 
 match_list: match_case_stmt { YYLIST_INI(Stmt, $$, $1); }
 | match_list match_case_stmt { YYLIST_END(Stmt, $$, $1, $2); }
 
 match_stmt: "match" exp "{" match_list "}" "where" stmt {
-  $$ = (Stmt) { .stmt_type = ae_stmt_match,
-    .d = { .stmt_match = {
+  $$ = MK_STMT(ae_stmt_match, @1,
+    .stmt_match = {
       .cond  = $2,
       .list  = $4,
       .where = cpy_stmt3(mpool(arg), &$7)
-    }},
-    .loc = @1
-  };
+  });
 }
 |
 "match" exp "{" match_list "}" {
-  $$ = (Stmt) { .stmt_type = ae_stmt_match,
-    .d = { .stmt_match = {
+  $$ = MK_STMT(ae_stmt_match, @1,
+    .stmt_match = {
       .cond  = $2,
       .list  = $4,
-    }},
-    .loc = @1
-  };
+  });
 };
 
 flow
@@ -536,66 +527,54 @@ flow
 
 loop_stmt
   : flow "(" exp ")" stmt
-    { $$ = (Stmt) { .stmt_type = $1,
-      .d = { .stmt_flow = {
+    { $$ = MK_STMT($1, @1,
+      .stmt_flow = {
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
-      }},
-      .loc = @1
-    };
+    });
   }
   | "do" stmt flow exp ";"
-    { $$ = (Stmt) { .stmt_type = $3,
-      .d = { .stmt_flow = {
+    { $$ = MK_STMT($3, @1,
+      .stmt_flow = {
         .cond = $4,
         .body = cpy_stmt3(mpool(arg), &$2),
         .is_do = true
-      }},
-      .loc = @1
-    };
+    });
   }
   | "for" "(" exp_stmt exp_stmt ")" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_for,
-      .d = { .stmt_for = {
+    { $$ = MK_STMT(ae_stmt_for, @1,
+      .stmt_for = {
         .c1 = cpy_stmt3(mpool(arg), &$3),
         .c2 = cpy_stmt3(mpool(arg), &$4),
         .body = cpy_stmt3(mpool(arg), &$6),
-      }},
-      .loc = @1
-    };
+    });
   }
   | "for" "(" exp_stmt exp_stmt exp ")" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_for,
-      .d = { .stmt_for = {
+    { $$ = MK_STMT(ae_stmt_for, @1,
+      .stmt_for = {
         .c1 = cpy_stmt3(mpool(arg), &$3),
         .c2 = cpy_stmt3(mpool(arg), &$4),
         .c3 = $5,
         .body = cpy_stmt3(mpool(arg), &$7),
-      }},
-      .loc = @1
-    };
+    });
   }
   | "foreach" "(" ID ":" opt_var binary_exp ")" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_each,
-      .d = { .stmt_each = {
+    { $$ = MK_STMT(ae_stmt_each, @1,
+      .stmt_each = {
         .tag = MK_TAG($3, @3),
         .exp = $6,
         .body = cpy_stmt3(mpool(arg), &$8),
-      }},
-      .loc = @1
-    };
+    });
 // what to do with opt_var?
 // list rem?
   }
   | "foreach" "(" ID "," ID ":" opt_var binary_exp ")" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_each,
-      .d = { .stmt_each = {
+    { $$ = MK_STMT(ae_stmt_each, @1,
+      .stmt_each = {
         .tag = MK_TAG($5, @3),
         .exp = $8,
         .body = cpy_stmt3(mpool(arg), &$10),
-      }},
-      .loc = @1
-    };
+    });
     $$.d.stmt_each.idx = mp_malloc(mpool(arg), EachIdx);
     $$.d.stmt_each.idx->var = (Var_Decl){.tag=MK_TAG($3, @3)};
     $$.d.stmt_each.idx->is_var = $7;
@@ -603,22 +582,18 @@ loop_stmt
 // list rem?
   }
   | "repeat" "(" binary_exp ")" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_loop,
-      . d = { .stmt_loop = {
+    { $$ = MK_STMT(ae_stmt_loop, @1,
+      .stmt_loop = {
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
-      }},
-      .loc = @1
-    };
+      });
   }
   | "repeat" "(" ID "," binary_exp ")" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_loop,
-      . d = { .stmt_loop = {
+    { $$ = MK_STMT(ae_stmt_loop, @1,
+      .stmt_loop = {
         .cond = $5,
         .body = cpy_stmt3(mpool(arg), &$7)
-      }},
-      .loc = @1
-    };
+      });
     $$.d.stmt_loop.idx = mp_malloc(mpool(arg), EachIdx);
     $$.d.stmt_loop.idx->var = (Var_Decl){ .tag = MK_TAG($3, @3) };
   };
@@ -630,64 +605,37 @@ defer_stmt: "defer" stmt {
       parser_error(&loc, arg, "return statement in defer", 0x0209);
       YYERROR;
     }
-    $$ = (Stmt) { .stmt_type = ae_stmt_defer,
-    .d = { .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) }},
-    .loc = @1
-  };
-};
+    $$ = MK_STMT(ae_stmt_defer, @1,
+    .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) });
+}
 
 selection_stmt
   : "if" "(" exp ")" stmt %prec NOELSE
-    { $$ = (Stmt) { .stmt_type = ae_stmt_if,
-      .d = { .stmt_if = {
+    { $$ = MK_STMT(ae_stmt_if, @1,
+      .stmt_if = {
         .cond = $3,
         .if_body = cpy_stmt3(mpool(arg), &$5)
-      }},
-      .loc = @1
-    };
+    });
   }
   | "if" "(" exp ")" stmt "else" stmt
-    { $$ = (Stmt) { .stmt_type = ae_stmt_if,
-      .d = { .stmt_if = {
+    { $$ = MK_STMT(ae_stmt_if, @1,
+      .stmt_if = {
         .cond = $3,
         .if_body = cpy_stmt3(mpool(arg), &$5),
         .else_body = cpy_stmt3(mpool(arg), &$7)
-      }},
-      .loc = @1
-    };
+    });
   };
 
 breaks: "break"     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : "return" exp ";" { $$ = (Stmt) { .stmt_type = ae_stmt_return,
-      .d = { .stmt_exp = { .val = $2 }},
-      .loc = @1
-    };
-  }
-  | "return" ";"     { $$ = (Stmt) { .stmt_type = ae_stmt_return,
-      .loc = @1
-    };
-  }
-  | breaks decimal ";"   { $$ = (Stmt) { .stmt_type = $1,
-      .d = { .stmt_index = { .idx = $2.num }},
-      .loc = @1
-    };
-  }
-  | breaks ";" { $$ = (Stmt) { .stmt_type = $1,
-      .d = { .stmt_index = { .idx = -1 }},
-      .loc = @1 };
-  };
+  : "return" exp ";" { $$ = MK_STMT(ae_stmt_return, @1, .stmt_exp = { .val = $2}); }
+  | "return" ";"     { $$ = MK_STMT(ae_stmt_return, @1); }
+  | breaks decimal ";"   { $$ = MK_STMT($1, @1, .stmt_index = { .idx = $2.num });}
+  | breaks ";" { $$ = MK_STMT($1, @1, .stmt_index = { .idx = -1 });}
 
 exp_stmt
-  : exp ";" { $$ = (Stmt) { .stmt_type = ae_stmt_exp,
-      .d = { .stmt_exp = { .val = $1 }},
-      .loc = @1
-    };
-  }
-  | ";"     { $$ = (Stmt) { .stmt_type = ae_stmt_exp,
-      .loc = @1
-    };
-  };
+  : exp ";" { $$ = MK_STMT_EXP(@1, $1); }
+  | ";"     { $$ = MK_STMT(ae_stmt_exp, @1); }
 
 exp:
     binary_exp           { $$ = $1; }

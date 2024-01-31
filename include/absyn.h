@@ -648,8 +648,6 @@ enum ae_pp_type {
   ae_pp_nl
 };
 
-#define MK_STMT_PP(_type, _pos, ...) (Stmt){ .stmt_type = ae_stmt_pp, \
-  .d = { .stmt_pp = { __VA_ARGS__, .pp_type = ae_pp_##_type, }}, .loc = _pos }
 struct Stmt_PP_ {
   m_str data;
   Exp   exp;
@@ -680,6 +678,10 @@ struct Stmt {
   loc_t loc; ///< position
   ae_stmt_t stmt_type;
 };
+#define MK_STMT(_type, _loc, ...) (Stmt){ .stmt_type = _type, \
+  .d = { __VA_ARGS__ }, .loc = _loc }
+#define MK_STMT_PP(_type, _pos, ...) MK_STMT(ae_stmt_pp, _pos, .stmt_pp = { .pp_type = ae_pp_##_type, __VA_ARGS__ })
+#define MK_STMT_EXP(_pos, _exp) MK_STMT(ae_stmt_exp, _pos, .stmt_exp = { .val = _exp })
 
 static inline Stmt* stmt_self(const void *data) {
   return container_of((char *)data, Stmt, d);
