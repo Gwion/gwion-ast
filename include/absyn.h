@@ -70,6 +70,14 @@ typedef struct TmplArg {
   enum tmplarg_t type;
 } TmplArg;
 
+ANN static inline uint32_t tmplarg_has_const(TmplArg_List tl) {
+  for(uint32_t i = 0; i < tl->len; i++) {
+    TmplArg *ta = mp_vector_at(tl, TmplArg, i);
+    if(ta->type == tmplarg_exp) return true;
+  }
+  return false;
+}
+
 ANN static inline uint32_t tmplarg_ntypes(TmplArg_List tl) {
   uint32_t ret = 0;
   for(uint32_t i = 0; i < tl->len; i++) {

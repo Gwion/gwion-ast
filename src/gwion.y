@@ -695,9 +695,10 @@ decl_exp: con_exp
 func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = (struct ParserArg){}; };
 fptr_args: "(" fptr_list ")" { $$ = $2; } | "(" ")" { $$ = NULL; };
 
-decl_template: ":[" specialized_list "]" { $$ = $2; }
- |              ":[" specialized_list "," "..." "]" {
-  Specialized spec = { .tag = MK_TAG(insert_symbol("..."), @4) };
+decl_template
+: ":[" specialized_list "]" { $$ = $2; }
+|             ":[" specialized_list "..." "]" {
+  Specialized spec = { .tag = MK_TAG(insert_symbol("..."), @3) };
   YYLIST_END(Specialized, $$, $2, spec);
 }
 |                ":[" "..." "]" {
@@ -742,7 +743,7 @@ func_def_base
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @3);
     Func_Base *base = new_func_base(mpool(arg), td, $3, $5.args, $2, @3);
     base->fbflag |= fbflag_locale | $5.flag;
-    $$ = new_func_def(mpool(arg), base, $7);
+   $$ = new_func_def(mpool(arg), base, $7);
   }
   | LOCALE ID LPAREN locale_list RPAREN code_list {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @2);
