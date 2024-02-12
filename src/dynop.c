@@ -80,7 +80,7 @@ ANN enum yytokentype op2(const m_str str) {
   return DYNOP;
 }
 
-static inline m_bool match(m_str str, char c) {
+static inline bool match(m_str str, char c) {
   return str[0] == c && str[1] == c && str[2] == c;
 }
 

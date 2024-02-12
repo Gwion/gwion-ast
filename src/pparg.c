@@ -43,15 +43,15 @@ ANN static GwText *pparg_body(struct PPArg_ *ppa, const m_str str) {
   return text;
 }
 
-ANN2(1) m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
+ANN2(1) bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   if (!ppa->hash.table) hini(&ppa->hash, 127);
-  DECL_OB(const Macro, m, = pparg_def(ppa, str));
+  DECL_B(const Macro, m, = pparg_def(ppa, str));
   const m_str arg = strchr(str, '(');
   if (arg) m->base = pparg_arg(ppa, arg + 1);
   const m_str body = strchr(str, '=');
   if (body) m->text = pparg_body(ppa, body + 1);
   m->file = "command line";
-  return GW_OK;
+  return true;
 }
 
 ANN void pparg_ini(MemPool mp, struct PPArg_ *a) {

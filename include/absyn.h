@@ -355,6 +355,7 @@ struct Exp {
   ae_exp_t exp_type;
   int16_t  emit_var;
   enum exp_comptime comptime;
+  bool poison;
   bool paren;
   bool is_call;
 };
@@ -788,6 +789,7 @@ typedef struct Section_ {
     Prim_Def   prim_def;
   } d;
   ae_section_t section_type;
+  bool poison;
 } Section;
 ANEW ANN AST_NEW(Section *, section_stmt_list, const Stmt_List);
 ANEW ANN AST_NEW(Section *, section_func_def, const Func_Def);

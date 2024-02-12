@@ -8,6 +8,10 @@ static inline m_bool dummy_func(const void *a NUSED, const void *b NUSED) {
   return 1;
 }
 
+static inline bool bdummy_func(const void *a NUSED, const void *b NUSED) {
+  return 1;
+}
+
 #define DECL_PRIM_FUNC(prefix, type, arg)                                      \
   typedef type (*_##prefix##_prim_func)(arg, union prim_data *);               \
   const _##prefix##_prim_func prefix##_prim_func[] = {                         \

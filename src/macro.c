@@ -37,13 +37,13 @@ static inline Macro mkentry(MemPool p, const m_str name, const Macro next) {
   return s;
 }
 
-hstraction(Macro, Macro, has, , return sym;, , return 0)
+hstraction(Macro, Macro, has, , return sym;, , return NULL)
     hstraction(Macro, Macro, add, , return NULL;
                , , return h->table[idx] = mkentry(h->p, arg, sym);)
-        hstraction(Macro, int, rem, Macro prev = NULL;
+        hstraction(Macro, bool, rem, Macro prev = NULL;
                    , if (prev) prev->next = s->next; else h->table[idx] = NULL;
-                   s->next = NULL; free_entry(h->p, s); return 0;, prev = s;
-                   , return GW_OK;)
+                   s->next = NULL; free_entry(h->p, s); return false;, prev = s;
+                   , return true;)
 
             ANN void macro_del(const Hash h) {
   hdel(h, free_entry);
