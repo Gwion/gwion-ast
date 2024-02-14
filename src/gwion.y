@@ -205,6 +205,7 @@ ast: section_list { arg->ppa->ast = $$ = $1; }
 section_list
   : section { YYLIST_INI(Section, $$, $1); }
   | section_list section { YYLIST_END(Section, $$, $1, $2); }
+  | section_list error
 
 section
   : stmt_list    { $$ = MK_SECTION(stmt, stmt_list, $1); }
@@ -223,14 +224,14 @@ class_flag: flag modifier { $$ = $1 | $2; }
 class_def
   : "class" class_flag ID decl_template class_ext traits class_body
     {
-      $$ = new_class_def(mpool(arg), $2, $3, $5, $7, @3);
+      $$ = new_class_def(mpool(arg), $2, MK_TAG($3, @3), $5, $7);
       if($4)
         $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->traits = $6;
     }
   | "struct" class_flag ID decl_template traits class_body
     {
-      $$ = new_class_def(mpool(arg), $2, $3, NULL, $6, @3);
+      $$ = new_class_def(mpool(arg), $2, MK_TAG($3, @3), NULL, $6);
       if($4)
         $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->cflag |= cflag_struct;

@@ -443,11 +443,11 @@ AST_NEW(Extend_Def, extend_def, Type_Decl *const td, const ID_List trait) {
   return a;
 }
 
-AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Symbol xid,
-        Type_Decl *ext, const Ast body, const loc_t loc) {
+AST_NEW(Class_Def, class_def, const ae_flag class_decl, const Tag tag,
+        Type_Decl *ext, const Ast body) {
   Class_Def a = mp_calloc(p, Class_Def);
   a->flag     = class_decl;
-  a->base.tag = MK_TAG(xid, loc);
+  a->base.tag = tag;
   a->base.ext = ext;
   a->body     = body;
   return a;

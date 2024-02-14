@@ -829,9 +829,9 @@ ANN static inline int cflag(const Class_Def c, const enum cflag flag) {
   return (c->cflag & flag) == flag;
 }
 
-ANN2(1, 3)
-ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Symbol,
-                             Type_Decl *, const Ast, const loc_t);
+ANN2(1)
+ANEW Class_Def new_class_def(MemPool p, const ae_flag, const Tag,
+                             Type_Decl *, const Ast);
 ANN void free_class_def(MemPool p, Class_Def);
 
 ANN void free_ast(MemPool p, Ast);
