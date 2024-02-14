@@ -686,6 +686,7 @@ struct Stmt {
   } d;
   loc_t loc; ///< position
   ae_stmt_t stmt_type;
+  bool poison;
 };
 #define MK_STMT(_type, _loc, ...) (Stmt){ .stmt_type = _type, \
   .d = { __VA_ARGS__ }, .loc = _loc }
