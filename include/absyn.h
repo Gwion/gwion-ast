@@ -457,7 +457,7 @@ ANEW ANN AST_NEW(Exp*, exp_td, Type_Decl *, const loc_t);
 
 static inline Exp* take_exp(Exp* exp, const uint32_t n) {
   Exp* e = exp;
-  for (uint32_t i = 1; i < n; i++) CHECK_OO((e = e->next));
+  for (uint32_t i = 1; i < n; i++) CHECK_O((e = e->next));
   return e;
 }
 

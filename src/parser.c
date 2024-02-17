@@ -2794,7 +2794,7 @@ yyreduce:
 #line 284 "src/gwion.y"
                                {
     (yyval.specialized) = (Specialized) {
-        .tag = MK_TAG((yyvsp[0].sym), (yylsp[-1])),
+        .tag = MK_TAG((yyvsp[0].sym), (yylsp[0])),
         .td = (yyvsp[-1].type_decl),
       };
   }

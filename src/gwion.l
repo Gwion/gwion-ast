@@ -630,7 +630,7 @@ static inline bool scan_rem_macro(Scanner *scan, const m_str id) {
       vector_add(&scan->pp->global_undef, (vtype)sym);
     return ret;
   }
-  return GW_OK;
+  return true;
 }
 
 static bool rem_macro(void* data, const m_str str) {
@@ -642,13 +642,13 @@ static bool rem_macro(void* data, const m_str str) {
   if(ret)
     return true;
   lexer_error(data, "Undefined", ERRORCODE(104));
-  return GW_ERROR;
+  return false;
 }
 
 static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
   const Symbol sym = insert_symbol(scan->st, id);
-  const m_int ret = vector_size(&scan->pp->global_undef) ? vector_find(&scan->pp->global_undef, (vtype)sym) : GW_ERROR;
-  if(ret != GW_ERROR)
+  const m_int ret = vector_size(&scan->pp->global_undef) ? vector_find(&scan->pp->global_undef, (vtype)sym) : -1;
+  if(ret != -1)
     return NULL;
   const Macro global = ppa_has_macro(scan->ppa, insert_symbol(scan->st, id));
   if(global)
@@ -1003,7 +1003,7 @@ int yywrap(void* data) {
 static bool handle_comma(void* data) {
   const Scanner *scan = yyget_extra(data);
   const MacroArg a = scan->pp->entry->args;
-  if(scan->pp->npar > 1) { handle_char(data, ","); return GW_OK;}
+  if(scan->pp->npar > 1) { handle_char(data, ","); return true;}
   if(strcmp(a->name, "__VA_ARGS__")) {
     if(!(scan->pp->entry->args = a->next)) {
       loc_t *loc = yyget_lloc(data);

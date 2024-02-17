@@ -4,12 +4,8 @@
 #ifndef __AST_PASS
 #define __AST_PASS
 
-static inline m_bool dummy_func(const void *a NUSED, const void *b NUSED) {
-  return 1;
-}
-
-static inline bool bdummy_func(const void *a NUSED, const void *b NUSED) {
-  return 1;
+static inline bool dummy_func(const void *a NUSED, const void *b NUSED) {
+  return true;
 }
 
 #define DECL_PRIM_FUNC(prefix, type, arg)                                      \

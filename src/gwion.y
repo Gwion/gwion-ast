@@ -283,7 +283,7 @@ specialized: ID traits {
   }
   | "const" type_decl_empty ID {
     $$ = (Specialized) {
-        .tag = MK_TAG($3, @2),
+        .tag = MK_TAG($3, @3),
         .td = $2,
       };
   }
