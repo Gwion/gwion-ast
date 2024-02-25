@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['macro_5f_0',['Macro_',['../structMacro__.html',1,'']]],
-  ['macroarg_5f_1',['MacroArg_',['../structMacroArg__.html',1,'']]]
+  ['loc_5ft_5f_0',['loc_t_',['../structloc__t__.html',1,'']]]
 ];

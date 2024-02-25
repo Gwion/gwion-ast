@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['pptype_5farg_0',['pptype_arg',['../pp_8h.html#a4d8d8e0fa5af5843ace2e59f6950cf6dabdd98d0c5e17cae650ed3a94f721a229',1,'pp.h']]],
-  ['pptype_5ffile_1',['pptype_file',['../pp_8h.html#a4d8d8e0fa5af5843ace2e59f6950cf6daf663cc3626bc2157e960f8ea6c279fb8',1,'pp.h']]],
-  ['pptype_5fhandle_2',['pptype_handle',['../pp_8h.html#a4d8d8e0fa5af5843ace2e59f6950cf6daaf12767c30ab77058fca795f6d5f0f29',1,'pp.h']]]
+  ['gwint_5fbinary_0',['gwint_binary',['../absyn_8h.html#a17659d814ad9c72912b0b44107f0a618a8be404343d61cdffa000ed88b3908655',1,'absyn.h']]],
+  ['gwint_5fdecimal_1',['gwint_decimal',['../absyn_8h.html#a17659d814ad9c72912b0b44107f0a618ac62df210921af65bdb03ee8deb8ded9c',1,'absyn.h']]],
+  ['gwint_5fhexa_2',['gwint_hexa',['../absyn_8h.html#a17659d814ad9c72912b0b44107f0a618a38388ac820a0b48b0e4a1d0d3de701e9',1,'absyn.h']]],
+  ['gwint_5foctal_3',['gwint_octal',['../absyn_8h.html#a17659d814ad9c72912b0b44107f0a618a889ae53ace584bf4b2e68e711a9b971c',1,'absyn.h']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hstraction_0',['hstraction',['../macro_8c.html#ab81b4ec044dc28c83f4f8cae280820d2',1,'hstraction(Macro, Macro, has,, return sym;,, return 0) hstraction(Macro:&#160;macro.c'],['../macro_8c.html#a74b555a18553b9bf25d76e0953647396',1,'hstraction(Macro, int, rem, Macro prev=NULL;, if(prev) prev-&gt;next=s-&gt;next;else h-&gt;table[idx]=NULL;s-&gt;next=NULL;free_entry(h-&gt;p, s);return 0;, prev=s;, return GW_OK;) ANN void macro_del(const Hash h):&#160;macro.c']]]
+  ['hstraction_0',['hstraction',['../macro_8c.html#a5166c96f212f31c80aa701fcbb9ef82a',1,'hstraction(Macro, Macro, has,, return sym;,, return NULL) hstraction(Macro:&#160;macro.c'],['../macro_8c.html#ab64debb4716cf915a30841bd2424e038',1,'hstraction(Macro, bool, rem, Macro prev=NULL;, if(prev) prev-&gt;next=s-&gt;next;else h-&gt;table[idx]=NULL;s-&gt;next=NULL;free_entry(h-&gt;p, s);return false;, prev=s;, return true;) ANN void macro_del(const Hash h):&#160;macro.c']]]
 ];

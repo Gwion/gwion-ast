@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['unary_5fcode_0',['unary_code',['../absyn_8h.html#aa045c793e21e1549352f7c1516a50bacacd9291bd5be7238c91d24bbb02368e87',1,'absyn.h']]],
-  ['unary_5fexp_1',['unary_exp',['../absyn_8h.html#aa045c793e21e1549352f7c1516a50bacaea153c66115f1e799fb55735030e27aa',1,'absyn.h']]],
-  ['unary_5ftd_2',['unary_td',['../absyn_8h.html#aa045c793e21e1549352f7c1516a50bacaf62194cbb32cd7b36f58e74d1524fa27',1,'absyn.h']]]
+  ['pptype_5farg_0',['pptype_arg',['../pp_8h.html#a4d8d8e0fa5af5843ace2e59f6950cf6dabdd98d0c5e17cae650ed3a94f721a229',1,'pp.h']]],
+  ['pptype_5ffile_1',['pptype_file',['../pp_8h.html#a4d8d8e0fa5af5843ace2e59f6950cf6daf663cc3626bc2157e960f8ea6c279fb8',1,'pp.h']]],
+  ['pptype_5fhandle_2',['pptype_handle',['../pp_8h.html#a4d8d8e0fa5af5843ace2e59f6950cf6daaf12767c30ab77058fca795f6d5f0f29',1,'pp.h']]]
 ];

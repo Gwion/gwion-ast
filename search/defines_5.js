@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['macro_5fdefined_0',['MACRO_DEFINED',['../macro_8h.html#aa6c9425285131d231ea83b4215167a32',1,'macro.h']]],
-  ['mk_5fsection_1',['MK_SECTION',['../absyn_8h.html#a71afb8e3675550889673bd3c93ab4890',1,'absyn.h']]],
-  ['mk_5fsection_2',['mk_section',['../ast__new_8c.html#ab4bb5f2dd595bd2eb9059168c345e7aa',1,'ast_new.c']]],
-  ['mk_5fstmt_5fpp_3',['MK_STMT_PP',['../absyn_8h.html#a7219fdbcf834e21ee980ef4f42c8ff1c',1,'absyn.h']]]
+  ['get_5fflag_0',['GET_FLAG',['../flags_8h.html#a60f4871e59540db27a2a6992336cf52b',1,'flags.h']]],
+  ['gwint_1',['GWINT',['../absyn_8h.html#ab5c84bdaacce6bcdcbe1e3d228f1909f',1,'absyn.h']]]
 ];
