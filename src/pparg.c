@@ -9,7 +9,10 @@ ANN static Macro pparg_def(struct PPArg_ *ppa, const m_str str) {
   strncpy(base, str, idx);
   base[idx] = '\0';
   Macro m   = macro_add(&ppa->hash, base);
-  if (m) return m;
+  if (m) {
+    m->pos = (pos_t){ 1, 1};
+    return m;
+  }
   gw_err(MACRO_DEFINED);
   return NULL;
 }
@@ -35,21 +38,20 @@ ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
 }
 
 ANN static GwText *pparg_body(struct PPArg_ *ppa, const m_str str) {
-  GwText *text = mp_calloc(ppa->hash.p, GwText);
-  text->mp     = ppa->hash.p;
+  GwText *text = new_text(ppa->hash.p);
   text_add(text, str);
   return text;
 }
 
-ANN2(1) m_bool pparg_add(struct PPArg_ *ppa, const m_str str) {
+ANN2(1) bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   if (!ppa->hash.table) hini(&ppa->hash, 127);
-  DECL_OB(const Macro, m, = pparg_def(ppa, str));
+  DECL_B(const Macro, m, = pparg_def(ppa, str));
   const m_str arg = strchr(str, '(');
   if (arg) m->base = pparg_arg(ppa, arg + 1);
   const m_str body = strchr(str, '=');
   if (body) m->text = pparg_body(ppa, body + 1);
   m->file = "command line";
-  return GW_OK;
+  return true;
 }
 
 ANN void pparg_ini(MemPool mp, struct PPArg_ *a) {

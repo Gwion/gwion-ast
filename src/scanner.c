@@ -15,6 +15,7 @@ ANEW static Scanner *new_scanner(const struct AstGetter_ *arg) {
   scan->st  = arg->st;
   scan->ppa = arg->ppa;
   pos_ini(&scan->pos);
+//  pos_ini(&scan->old);
   scan->ppa->ast = NULL; // ???
   return scan;
 }
@@ -32,10 +33,10 @@ ANN static Ast get_ast(MemPool mp, Scanner *s) {
   return NULL;
 }
 
-Ast parse(struct AstGetter_ *const arg) {
+ANN Ast parse_pos(struct AstGetter_ *const arg, const pos_t pos) {
   Scanner * s   = new_scanner(arg);
+  s->pos = pos;
   const Ast ast = get_ast(arg->ppa->hash.p, s);
-  //arg->global   = s->global;
   free_scanner(s);
   return ast;
 }
@@ -47,13 +48,13 @@ ANN static char *get_filename(Scanner *scan, const PPState *ppstate) {
     if (*filename == '@') {
       while (*filename == '@') {
         --i;
-        const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i);
-        filename = ppstate->filename;
+        const PPState *pps = (PPState*)vector_at(&scan->pp->state, i);
+        filename = pps->filename;
       }
     }
   } else {
-    const PPState *ppstate = (PPState*)vector_front(&scan->pp->state);
-    filename = ppstate->filename;
+    const PPState *pps = (PPState*)vector_front(&scan->pp->state);
+    filename = pps->filename;
   }
   return filename;
 }
@@ -61,26 +62,26 @@ ANN static char *get_filename(Scanner *scan, const PPState *ppstate) {
 ANN static void secondary(Scanner *scan) {
   for (m_uint i = 0; i < vector_size(&scan->pp->state) - 1; i++) {
     const PPState *pp = (PPState*)vector_at(&scan->pp->state, i);
-    gwerr_secondary("expanded from here", get_filename(scan, pp), pp->pos);
+    gwerr_secondary("expanded from here", get_filename(scan, pp), pp->loc);
   }
 }
 
 ANN2(1, 2)
 int scanner_error(Scanner *scan, const char *main, const char *explain,
-                  const char *fix, const loc_t pos, const uint error_code) {
+                  const char *fix, const loc_t loc, const uint error_code) {
   if (scan->error) return 0;
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
-  gwerr_basic(main, explain, fix, filename, pos, error_code);
+  gwerr_basic(main, explain, fix, filename, loc, error_code);
   secondary(scan);
-  scan->error = true;
+//  scan->error = true;
   return 0;
 }
-ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t pos) {
+ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t loc) {
   if (scan->error) return 0;
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
-  gwerr_secondary(main, filename, pos);
-  scan->error = true;
+  gwerr_secondary(main, filename, loc);
+//  scan->error = true;
   return 0;
 }

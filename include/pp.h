@@ -19,7 +19,7 @@ typedef struct PPState_ {
     void *   data;
   };
   m_str       filename;
-  loc_t       pos;
+  loc_t       loc;
   enum pptype type;
 } PPState;
 

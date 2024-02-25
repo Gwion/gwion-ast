@@ -31,6 +31,6 @@ struct Macro_ {
 
 void  macro_del(const Hash);
 Macro macro_add(const Hash, m_str);
-int   macro_rem(const Hash, m_str);
+bool  macro_rem(const Hash, m_str);
 Macro macro_has(const Hash, m_str);
 #endif

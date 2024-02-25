@@ -9,9 +9,12 @@ struct AstGetter_ {
   FILE *         f;
   SymTable *     st;
   struct PPArg_ *ppa;
-  bool           global;
 };
 
-ANN Ast parse(struct AstGetter_ *const);
-
+ANN Ast parse_pos(struct AstGetter_ *const, const pos_t);
+ANN static inline Ast parse(struct AstGetter_ *const arg) {
+  pos_t pos;
+  pos_ini(&pos);
+  return parse_pos(arg, pos);
+}
 #endif

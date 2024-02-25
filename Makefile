@@ -17,7 +17,7 @@ endif
 obj    := $(src:.c=.o)
 obj += src/lexer.o src/parser.o
 
-CFLAGS += -Iinclude -D_GNU_SOURCE
+CFLAGS += -Iinclude -D_GNU_SOURCE -I${UTIL_DIR}/libtermcolor/include
 
 # (parser) internationalization (linux only for now)
 ifeq ($(shell uname), Linux)
@@ -35,11 +35,11 @@ libgwion_ast.a: ${obj}
 
 include/lexer.h src/lexer.c: src/gwion.l
 	$(info generating lexer)
-	@${LEX} --header-file=include/lexer.h -o $@ $<
+	@${LEX} ${LEX_OPT} --header-file=include/lexer.h -o $@ $<
 
 include/parser.h src/parser.c: src/gwion.y
 	$(info generating parser)
-	@${YACC} --defines=include/parser.h -Wno-yacc -o $@ $<
+	@${YACC} ${YACC_OPT} --defines=include/parser.h -Wno-yacc -o $@ $<
 
 clean:
 	$(info cleaning)
@@ -57,5 +57,12 @@ uninstall: translation-uninstall
 	rm ${DESTDIR}/${PREFIX}/bin/lib${PACKAGE}.a
 	rm -r ${DESTDIR}/${PREFIX}/include/gwion/ast
 
+gwparse: main.o
+	${CC} -o $@ $< -lfl libgwion_ast.a libprettyerr/libprettyerr.a ../util/libgwion_util.a -lpthread -lm
+
+test: pass/xxx.o
+	rm $<
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/locale.mk
+
+

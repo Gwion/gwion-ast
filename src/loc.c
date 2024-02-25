@@ -1,7 +1,28 @@
-#include "prettyerr.h"
+#include "prettyerr_export.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "parser.h"
+
+static pos_t default_pos = { .line = 1, .column = 1 };
+
+void gwion_parser_set_default_pos(const pos_t pos) {
+  default_pos = pos;
+}
+
+ANN void pos_ini(pos_t *pos) { *pos = default_pos; }
+
+static void _gwerr_basic(const char *main, const char *explain, const char *fix,
+                 const char *filename, const loc_t loc, const uint error_code,
+                 const enum libprettyerr_errtype errtype);
+ANN static void _gwerr_secondary(const char *main, const char *filename,
+                         const loc_t loc);
+
+static gwerr_basic_function_t _basic = _gwerr_basic;
+static gwerr_secondary_function_t _secondary = _gwerr_secondary;
+ANN void gwerr_set_func(gwerr_basic_function_t basic, gwerr_secondary_function_t secondary) {
+  _basic = basic;
+  _secondary = secondary;
+}
 
 ANN static char *get_src(const char *filename, const loc_t loc) {
   char * line = NULL;
@@ -9,7 +30,7 @@ ANN static char *get_src(const char *filename, const loc_t loc) {
   uint   i    = 0;
   FILE * f    = fopen(filename, "r");
   if (!f) return NULL;
-  fseek(f, SEEK_SET, 0);
+  fseek(f, 0, SEEK_SET);
   ssize_t ret;
   while ((ret = getline(&line, &len, f)) != -1 && ++i < loc.first.line);
   fclose(f);
@@ -21,6 +42,7 @@ ANN static char *get_src(const char *filename, const loc_t loc) {
 static inline const char *get_filename(const char *filename) {
 #ifndef BUILD_ON_WINDOWS
   const char *pwd = getenv("PWD");
+  if(!pwd) return filename;
 #else
   TCHAR pwd[MAX_PATH];
   GetCurrentDirectory(MAX_PATH, pwd);
@@ -41,6 +63,7 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
     color[0] = 0;
   else
     color[len] = 0;
+  gw_err("[internal]\n");
   perr_print_line_number(printer, err, color);
   gw_err("%s\n", main);
   if (explain) gw_err("%s\n", explain);
@@ -82,7 +105,7 @@ void gwerr_basic(const char *main, const char *explain, const char *fix,
 #ifdef __FUZZING__
   return;
 #endif
-  _gwerr_basic(main, explain, fix, filename, loc, error_code, PERR_ERROR);
+  _basic(main, explain, fix, filename, loc, error_code, PERR_ERROR);
 }
 
 void gwerr_warn(const char *main, const char *explain, const char *fix,
@@ -90,10 +113,10 @@ void gwerr_warn(const char *main, const char *explain, const char *fix,
 #ifdef __FUZZING__
   return;
 #endif
-  _gwerr_basic(main, explain, fix, filename, loc, 0, PERR_WARNING);
+  _basic(main, explain, fix, filename, loc, 0, PERR_WARNING);
 }
 
-ANN void gwerr_secondary(const char *main, const char *filename,
+ANN static void _gwerr_secondary(const char *main, const char *filename,
                          const loc_t loc) {
 #ifdef __FUZZING__
   return;
@@ -115,4 +138,8 @@ ANN void gwerr_secondary(const char *main, const char *filename,
     xfree(line);
   } else
     nosrc(&printer, &err, main, NULL, NULL);
+}
+ANN void gwerr_secondary(const char *main, const char *filename,
+                         const loc_t loc) {
+  _secondary(main, filename, loc);
 }

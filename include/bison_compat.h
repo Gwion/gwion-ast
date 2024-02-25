@@ -4,13 +4,13 @@
 #ifndef __BISON_COMPAT
 #define __BISON_COMPAT
 
-#define YYLTYPE struct loc_t_
+#define YYLTYPE loc_t
 
 #define YYLTYPE_IS_DECLARED
 
 #define YY_USER_INIT                         \
-  yylloc->first.line   = yylloc->last.line = \
-  yylloc->first.column = yylloc->last.column = 1;
+  yylloc->first.line   = yylloc->last.line = get_currline(yyscanner);\
+  yylloc->first.column = yylloc->last.column = get_currpos(yyscanner);
 
 #define YY_USER_ACTION                                                         \
   yylloc->first.line   = yylloc->last.line;                                    \
