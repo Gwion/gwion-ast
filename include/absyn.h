@@ -530,23 +530,18 @@ struct Stmt_For_ {
   Stmt* body;
 };
 
-typedef struct EachIdx_ {
-  Var_Decl var;
-  bool            is_var;
-} EachIdx;
-
 struct Stmt_Each_ {
   Var_Decl var;
-  Tag      tag;
-  Exp*      exp;
-  Stmt*     body;
-  EachIdx *idx;
+  Exp*     exp;
+  Stmt*    body;
+  Var_Decl idx;
+  bool     is_ref;
 };
 
 struct Stmt_Loop_ {
   Exp*      cond;
   Stmt*     body;
-  EachIdx *idx;
+  Var_Decl  idx;
 };
 
 struct Stmt_If_ {
@@ -763,7 +758,7 @@ static inline bool is_prim_float(const Exp* e) {
   return (is_prim(e) && e->d.prim.prim_type == ae_prim_float);
 }
 
-#define MK_SECTION(_type, _target, _data) (Section){ .section_type = ae_section_##_type, .d = { ._target = _data } }
+#define MK_SECTION(_type, _target, _data, _loc) (Section){ .section_type = ae_section_##_type, .d = { ._target = _data }, .loc = _loc }
 typedef enum {
   ae_section_stmt,
   ae_section_func,
@@ -789,6 +784,7 @@ typedef struct Section_ {
     Type_Def   type_def;
     Prim_Def   prim_def;
   } d;
+  loc_t loc;
   ae_section_t section_type;
   bool poison;
 } Section;

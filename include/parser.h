@@ -173,8 +173,10 @@ extern int gwion_debug;
     RANGE_EMPTY = 376,             /* RANGE_EMPTY  */
     UMINUS = 377,                  /* UMINUS  */
     UTIMES = 378,                  /* UTIMES  */
-    STMT_ASSOC = 380,              /* STMT_ASSOC  */
-    STMT_NOASSOC = 381             /* STMT_NOASSOC  */
+    SECTION_LIST = 380,            /* SECTION_LIST  */
+    STMT_LIST3 = 381,              /* STMT_LIST3  */
+    STMT_LIST2 = 382,              /* STMT_LIST2  */
+    STMT_LIST1 = 383               /* STMT_LIST1  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -302,8 +304,10 @@ extern int gwion_debug;
 #define RANGE_EMPTY 376
 #define UMINUS 377
 #define UTIMES 378
-#define STMT_ASSOC 380
-#define STMT_NOASSOC 381
+#define SECTION_LIST 380
+#define STMT_LIST3 381
+#define STMT_LIST2 382
+#define STMT_LIST1 383
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -363,7 +367,7 @@ union YYSTYPE
   Prim_Def prim_def;
   Ast ast;
 
-#line 367 "include/parser.h"
+#line 371 "include/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

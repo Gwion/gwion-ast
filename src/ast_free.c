@@ -215,13 +215,11 @@ ANN static AST_FREE(Stmt_For, stmt_for) {
 ANN static AST_FREE(Stmt_Each, stmt_each) {
   free_exp(p, a->exp);
   free_stmt(p, a->body);
-  if (a->idx) mp_free(p, EachIdx, a->idx);
 }
 
 ANN static AST_FREE(Stmt_Loop, stmt_loop) {
   free_exp(p, a->cond);
   free_stmt(p, a->body);
-  if (a->idx) mp_free(p, EachIdx, a->idx);
 }
 
 ANN static AST_FREE(Stmt_If, stmt_if) {

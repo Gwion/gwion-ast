@@ -9,7 +9,8 @@ typedef struct pos_t {
   short unsigned int column;
 } pos_t;
 
-static inline void pos_ini(pos_t *pos) { pos->line = pos->column = 1; }
+ANN void pos_ini(pos_t*);
+void gwion_parser_set_default_pos(const pos_t);
 
 typedef struct loc_t_ {
   struct pos_t first;

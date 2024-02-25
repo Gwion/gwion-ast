@@ -299,24 +299,18 @@ ANN static void cpy_stmt_for(MemPool p, Stmt_For a, const Stmt_For src) {
   if (src->body) a->body = cpy_stmt(p, src->body);
 }
 
-ANN static struct EachIdx_ *cpy_eachidx(MemPool p, const struct EachIdx_ *src) {
-  struct EachIdx_ *a = mp_malloc(p, EachIdx);
-  a->var = src->var;
-  a->is_var = a->is_var;
-  return a;
-}
-
 ANN static void cpy_stmt_each(MemPool p, Stmt_Each a, const Stmt_Each src) {
-  a->tag  = src->tag;
+  a->var  = src->var;
   a->exp  = cpy_exp(p, src->exp);
   a->body = cpy_stmt(p, src->body);
-  if (src->idx) a->idx = cpy_eachidx(p, src->idx);
+  a->is_ref = src->is_ref;
+  if (src->idx.tag.sym) a->idx = src->idx;
 }
 
 ANN static void cpy_stmt_loop(MemPool p, Stmt_Loop a, const Stmt_Loop src) {
   a->cond = cpy_exp(p, src->cond);
   a->body = cpy_stmt(p, src->body);
-  if (src->idx) a->idx = cpy_eachidx(p, src->idx);
+  if (src->idx.tag.sym) a->idx = src->idx;
 }
 
 ANN static void cpy_stmt_if(MemPool p, Stmt_If a, const Stmt_If src) {

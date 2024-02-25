@@ -3,6 +3,14 @@
 #include "gwion_ast.h"
 #include "parser.h"
 
+static pos_t default_pos = { .line = 1, .column = 1 };
+
+void gwion_parser_set_default_pos(const pos_t pos) {
+  default_pos = pos;
+}
+
+ANN void pos_ini(pos_t *pos) { *pos = default_pos; }
+
 static void _gwerr_basic(const char *main, const char *explain, const char *fix,
                  const char *filename, const loc_t loc, const uint error_code,
                  const enum libprettyerr_errtype errtype);

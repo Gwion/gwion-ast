@@ -361,7 +361,7 @@ AST_NEW(Stmt*, stmt_for, Stmt* c1, Stmt* c2,
 AST_NEW(Stmt*, stmt_each, struct Symbol_ *sym, Exp* exp, Stmt* body,
         const loc_t loc) {
   Stmt* a              = new_stmt(p, ae_stmt_each, loc);
-  a->d.stmt_each.tag  = MK_TAG(sym, loc);
+  a->d.stmt_each.var  = (Var_Decl) { .tag = MK_TAG(sym, loc) };
   a->d.stmt_each.exp  = exp;
   a->d.stmt_each.body = body;
   return a;
