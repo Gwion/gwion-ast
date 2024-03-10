@@ -244,7 +244,7 @@ ANN static void xxx_stmt_for(XXX *a, Stmt_For b) {
 }
 
 ANN static void xxx_stmt_each(XXX *a, Stmt_Each b) {
-  xxx_tag(a, &b->tag);
+  xxx_var_decl(a, &b->var);
   xxx_exp(a, b->exp);
   xxx_stmt(a, b->body);
 }

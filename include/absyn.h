@@ -104,14 +104,6 @@ enum fbflag {
   fbflag_locale   = 1 << 8,
 } __attribute__((packed));
 
-struct ParserArg {
-  union {
-    Arg      arg;
-    Arg_List args;
-  };
-  enum fbflag flag;
-};
-
 /** a dot expression. @code object.member @endcode */
 typedef struct {
   Exp*    base;
@@ -270,6 +262,11 @@ typedef struct Tmpl_ {
 ANN ANEW AST_NEW(Tmpl *, tmpl, const Specialized_List);
 ANN ANEW AST_NEW(Tmpl *, tmpl_call, TmplArg_List);
 ANN void free_tmpl(MemPool p, Tmpl *);
+ANN static inline bool is_spread_tmpl(const Tmpl *tmpl) {
+  const Specialized *spec = mp_vector_at(tmpl->list, Specialized, tmpl->list->len - 1);
+  return !strcmp(s_name(spec->tag.sym), "...");
+}
+
 
 static inline bool tmpl_base(const Tmpl *a) {
   if (a && !a->call) return true;
@@ -453,6 +450,7 @@ ANEW ANN2(1,2,3) AST_NEW(Exp*, exp_unary2, const Symbol, Type_Decl *,
                  Exp* exp, const loc_t);
 ANEW ANN AST_NEW(Exp*, exp_unary3, const Symbol, const Stmt_List,
                  const loc_t);
+ANN void free_stmt_list(MemPool, Stmt_List);
 ANEW ANN AST_NEW(Exp*, exp_td, Type_Decl *, const loc_t);
 
 static inline Exp* take_exp(Exp* exp, const uint32_t n) {

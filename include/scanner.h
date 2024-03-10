@@ -15,8 +15,7 @@ typedef struct Scanner_ {
   struct pos_t   old;
   short int      interp_state;
   short int      spread_state;
-  bool           error;
-  bool           handling;
+//  bool           error;
   bool           locale; // handle \n in the lexer
 } Scanner;
 

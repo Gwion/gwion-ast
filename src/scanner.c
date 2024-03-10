@@ -69,19 +69,15 @@ ANN static void secondary(Scanner *scan) {
 ANN2(1, 2)
 int scanner_error(Scanner *scan, const char *main, const char *explain,
                   const char *fix, const loc_t loc, const uint error_code) {
-  if (scan->error) return 0;
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
   gwerr_basic(main, explain, fix, filename, loc, error_code);
   secondary(scan);
-//  scan->error = true;
   return 0;
 }
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t loc) {
-  if (scan->error) return 0;
   const PPState *ppstate = (PPState*)vector_back(&scan->pp->state);
   const m_str filename = get_filename(scan, ppstate);
   gwerr_secondary(main, filename, loc);
-//  scan->error = true;
   return 0;
 }

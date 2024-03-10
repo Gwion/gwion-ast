@@ -915,6 +915,7 @@ static bool is_macro(void* data, const m_str s, YY_BUFFER_STATE handle, bool *in
         gwpp_stack(scan, handle, e->base, str, pptype_arg);
         scan->pos = e->pos;
         yy_scan_string(e->text->str, data);
+        *in_macro = true;
         return true;
       }
     }

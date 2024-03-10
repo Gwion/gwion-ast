@@ -65,7 +65,6 @@ ANN void lex_spread(void *data);
   Arg_List arg_list;
   Capture capture;
   Capture_List captures;
-  struct ParserArg default_args;
   Arg arg;
   Func_Def func_def;
   EnumValue enum_value;
@@ -131,8 +130,8 @@ ANN void lex_spread(void *data);
   global opt_global storage_flag access_flag type_decl_flag type_decl_flag2
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
-%type<var_decl> var_decl arg_decl fptr_arg_decl
-%type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array type_decl_empty type_decl_exp class_ext
+%type<var_decl> var_decl arg_decl
+%type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array class_ext
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp dict_list
@@ -144,9 +143,9 @@ ANN void lex_spread(void *data);
 %type<handler> handler
 %type<handler_list> handler_list
 %type<stmt_list> stmt_list match_list code_list
-%type<arg> fptr_arg
-%type<arg_list> lambda_arg lambda_list fptr_list fptr_args
-%type<default_args> arg arg_list func_args locale_arg locale_list
+%type<arg> arg 
+%type<arg_list> lambda_arg lambda_list
+%type<arg_list> arg_list func_args locale_arg locale_list
 %type<capture> capture
 %type<captures> capture_list captures
 %type<func_def> func_def op_def func_def_base abstract_fdef
@@ -202,7 +201,7 @@ ANN void lex_spread(void *data);
 %%
 
 ast: section_list { arg->ppa->ast = $$ = $1; }
-  | %empty { loc_t loc = { {1, 1}, {1,1} }; parser_error(&loc, arg, "file is empty.", 0201); YYERROR; }
+  | %empty { $$ = NULL; }
 
 section_list
   : section { YYLIST_INI(Section, $$, $1); }
@@ -266,10 +265,10 @@ prim_def: "primitive" class_flag ID decimal ";"
     {
       $$ = new_prim_def(mpool(arg), $3, $4.num, @3, $2);
     }
-class_ext : "extends" type_decl_exp { $$ = $2; } | %empty { $$ = NULL; };
+class_ext : "extends" type_decl_array { $$ = $2; } | %empty { $$ = NULL; };
 traits: %empty { $$ = NULL; } | ":" id_list { $$ = $2; };
 
-extend_def: "extends" type_decl_empty ":" id_list ";" {
+extend_def: "extends" type_decl_array ":" id_list ";" {
   $$ = new_extend_def(mpool(arg), $2, $4);
 }
 
@@ -283,7 +282,7 @@ specialized: ID traits {
         .traits = $2,
       };
   }
-  | "const" type_decl_empty ID {
+  | "const" type_decl_array ID {
     $$ = (Specialized) {
         .tag = MK_TAG($3, @3),
         .td = $2,
@@ -296,22 +295,22 @@ specialized_list: specialized { YYLIST_INI(Specialized, $$, $1); }
 stmt_list:  stmt %prec STMT_LIST2  { YYLIST_INI(Stmt, $$, $1); } 
 | stmt_list stmt %prec STMT_LIST1  { YYLIST_END(Stmt, $$, $1, $2); }
 
-fptr_base: flag type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
+fptr_base: flag type_decl_array ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
   if($4) { $$->tmpl = new_tmpl(mpool(arg), $4); } }
 
 _func_effects: "perform" ID { vector_init(&$$); vector_add(&$$, (m_uint)$2); } | _func_effects ID { vector_add(&$$, (m_uint)$2); }
 func_effects: %empty { $$.ptr = NULL; } | _func_effects { $$.ptr = $1.ptr; }
 
-func_base: flag final type_decl_empty ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
+func_base: flag final type_decl_array ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
   if($5) { $$->tmpl = new_tmpl(mpool(arg), $5); } }
 
-fptr_def: "funptr" fptr_base fptr_args func_effects ";" {
+fptr_def: "funptr" fptr_base func_args func_effects ";" {
   $2->args = $3;
   $$ = new_fptr_def(mpool(arg), $2);
   $$->base->effects.ptr = $4.ptr;
 };
 
-typedef_when: %empty { $$ = NULL;} | "when" binary_exp { $$ = $2; }
+typedef_when: %empty { $$ = NULL;} | "when" exp { $$ = $2; }
 type_def_type: "typedef" { $$ = false; } | "distinct" { $$ = true; };
 type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
   $$ = new_type_def(mpool(arg), $3, $4, @4);
@@ -324,54 +323,36 @@ type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
 
 type_decl_array: type_decl array { $1->array = $2; } | type_decl
 
-type_decl_exp: type_decl_array { if($1->array && !$1->array->exp)
-    { parser_error(&@$, arg, "can't instantiate with empty `[]`", 0203); YYERROR;}
-  $$ = $1; }
-
-type_decl_empty: type_decl_array { if($1->array && $1->array->exp)
-    { parser_error(&@$, arg, "type must be defined with empty []'s", 0204); YYERROR;}
-  $$ = $1; }
-
 arg
-  : type_decl_empty arg_decl ":" binary_exp {
-    $$.arg = (Arg) { .var = MK_VAR($1, $2), .exp = $4 };
-    $$.flag = fbflag_default;
+  : type_decl_array arg_decl ":" binary_exp {
+    $$ = (Arg) { .var = MK_VAR($1, $2), .exp = $4 };
   }
-  | type_decl_empty arg_decl {
-    $$.arg = (Arg) { .var = MK_VAR($1, $2) };
-    $$.flag = fbflag_none;
+  | type_decl_array arg_decl {
+    $$ = (Arg) { .var = MK_VAR($1, $2) };
   };
 arg_list:
      arg {
-       YYLIST_INI(Arg, $$.args, $1.arg);
-       $$.flag = $1.flag;
+       YYLIST_INI(Arg, $$, $1);
      }
 	  |  arg_list "," arg {
-     if($1.flag == fbflag_default && !$3.arg.exp)
-        { parser_error(&@3, arg, "missing default argument", 0205); YYERROR;}
-     else $1.flag = $3.flag;
-     mp_vector_add(mpool(arg), &$1.args, Arg, $3.arg);
+     mp_vector_add(mpool(arg), &$1, Arg, $3);
      $$ = $1;
    };
 
 locale_arg:
     arg {
-       $$.args = new_mp_vector(mpool(arg), Arg, 2);
+       $$ = new_mp_vector(mpool(arg), Arg, 2);
        Arg self = {
          .var = MK_VAR(
             new_type_decl(mpool(arg), insert_symbol("string"), @$),
             (struct Var_Decl_) { .tag = MK_TAG(insert_symbol("self"), @$)}),
          .exp = NULL
        };
-       mp_vector_set($$.args, Arg, 0, self);
-       mp_vector_set($$.args, Arg, 1, $1.arg);
-       $$.flag = $1.flag;
+       mp_vector_set($$, Arg, 0, self);
+       mp_vector_set($$, Arg, 1, $1);
      }
 	  |  locale_arg "," arg {
-     if($1.flag == fbflag_default && !$3.arg.exp)
-        { parser_error(&@3, arg, "missing default argument", 0205); YYERROR;}
-     else $1.flag = $3.flag;
-     mp_vector_add(mpool(arg), &$1.args, Arg, $3.arg);
+     mp_vector_add(mpool(arg), &$1, Arg, $3);
      $$ = $1;
    };
 locale_list:
@@ -384,13 +365,8 @@ locale_list:
           ),
          .exp = NULL
        };
-       YYLIST_INI(Arg, $$.args, self);
+       YYLIST_INI(Arg, $$, self);
     }
-
-fptr_arg: type_decl_empty fptr_arg_decl { $$ = (Arg) { .var = MK_VAR($1, $2) }; }
-
-fptr_list:      fptr_arg { YYLIST_INI(Arg, $$, $1); }
-| fptr_list "," fptr_arg { YYLIST_END(Arg, $$, $1, $3); }
 
 code_stmt
   : "{" "}" {
@@ -434,38 +410,23 @@ stmt
 
 spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
   struct Spread_Def_ spread = {
-    .tag = MK_TAG($2, @5),
+    .tag = MK_TAG($2, @2),
     .list = $4,
     .data = $7,
   };
   $$ = MK_STMT(ae_stmt_spread, @2, .stmt_spread = spread);
 }
 
-retry_stmt: "retry" ";" {
-  if(!arg->handling)
-    { parser_error(&@1, arg, "`retry` outside of `handle` block", 0); YYERROR; }
-  $$ = MK_STMT(ae_stmt_retry, @1);}
+retry_stmt: "retry" ";" { $$ = MK_STMT(ae_stmt_retry, @1); }
 
-handler: "handle" { arg->handling = true; } opt_id stmt { $$ = (Handler){ .tag = MK_TAG($3, $3 ? @3 :@1), .stmt = cpy_stmt3(mpool(arg), &$4) }; arg->handling = false; };
+handler: "handle" opt_id stmt { $$ = (Handler){ .tag = MK_TAG($2, $2 ? @2 :@1), .stmt = cpy_stmt3(mpool(arg), &$3) }; };
 handler_list: handler {
     YYLIST_INI(Handler, $$.handlers, $1);
     $$.has_xid = !!$1.tag.sym;
   }
   | handler_list handler  {
-        if(!$1.has_xid)
-        { parser_error(&@2, arg, "`handle` after a catch-all block", 0); YYERROR; }
-// handle duplicates in scan0
-/*
-        Handler_List list = $2;
-        while(list) {
-          if(list->xid == $1->xid)
-          { parser_error(&@2, arg, "duplicated `handle`", 0); YYERROR; }
-          list = list->next;
-        }
-*/
-mp_vector_add(mpool(arg), &$1.handlers, Handler, $2);
-        $$ = $1;
-//        $1->next = $2;
+    mp_vector_add(mpool(arg), &$1.handlers, Handler, $2);
+    $$ = $1;
   }
 try_stmt: "try" stmt handler_list { $$ = MK_STMT(ae_stmt_try, @1,
    .stmt_try = { .stmt = cpy_stmt3(mpool(arg), &$2), .handler = $3.handlers});}
@@ -475,11 +436,8 @@ opt_comma: "," | %empty {}
 
 
 enum_value: ID { $$ = (EnumValue) { .tag = MK_TAG($1, @1) }; }
-          | number "<dynamic_operator>" ID { 
-            if (strcmp(s_name($2), ":=>")) {
-              parser_error(&@1, arg, "enum value must be set with :=>", 0x0240); YYERROR;
-          }
-            $$ = (EnumValue) {.tag = MK_TAG($3, @3), .gwint = $1, .set = true };
+          | ID ":" number { 
+            $$ = (EnumValue) {.tag = MK_TAG($1, @1), .gwint = $3, .set = true };
           }
 
 enum_list:      enum_value  { YYLIST_INI(EnumValue, $$, $1); }
@@ -561,7 +519,7 @@ loop_stmt
         .body = cpy_stmt3(mpool(arg), &$7),
     });
   }
-  | "foreach" "(" capture ":" binary_exp ")" stmt
+  | "foreach" "(" capture ":" exp ")" stmt
     { $$ = MK_STMT(ae_stmt_each, @1,
       .stmt_each = {
         .var = $3.var,
@@ -570,7 +528,7 @@ loop_stmt
         .is_ref = $3.is_ref
     });
   }
-  | "foreach" "(" ID "," capture ":" binary_exp ")" stmt
+  | "foreach" "(" ID "," capture ":" exp ")" stmt
     { $$ = MK_STMT(ae_stmt_each, @1,
       .stmt_each = {
         .var = $5.var,
@@ -580,14 +538,14 @@ loop_stmt
         .is_ref = $5.is_ref
     });
   }
-  | "repeat" "(" binary_exp ")" stmt
+  | "repeat" "(" exp ")" stmt
     { $$ = MK_STMT(ae_stmt_loop, @1,
       .stmt_loop = {
         .cond = $3,
         .body = cpy_stmt3(mpool(arg), &$5)
       });
   }
-  | "repeat" "(" ID "," binary_exp ")" stmt
+  | "repeat" "(" ID "," exp ")" stmt
     { $$ = MK_STMT(ae_stmt_loop, @1,
       .stmt_loop = {
         .cond = $5,
@@ -690,8 +648,7 @@ decl_exp: con_exp
       $$->d.exp_decl.args = $4 ?: new_prim_nil(mpool(arg), @4);
   };
 
-func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = (struct ParserArg){}; };
-fptr_args: "(" fptr_list ")" { $$ = $2; } | "(" ")" { $$ = NULL; };
+func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = NULL; };
 
 decl_template
 : ":[" specialized_list "]" { $$ = $2; }
@@ -726,32 +683,29 @@ modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 
 func_def_base
   : FUNCTION func_base func_args code_list {
-    $2->args = $3.args;
-    $2->fbflag |= $3.flag;
+    $2->args = $3;
     $$ = new_func_def(mpool(arg), $2, $4);
   }
   | FUNCTION func_base func_args ";" {
-    if($3.flag == fbflag_default)
-    { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
-    $2->args = $3.args;
+    $2->args = $3;
     SET_FLAG($2, abstract);
     $$ = new_func_def(mpool(arg), $2, NULL);
   }
   | LOCALE global ID LPAREN locale_list RPAREN code_list {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @3);
-    Func_Base *base = new_func_base(mpool(arg), td, $3, $5.args, $2, @3);
-    base->fbflag |= fbflag_locale | $5.flag;
+    Func_Base *base = new_func_base(mpool(arg), td, $3, $5, $2, @3);
+    base->fbflag |= fbflag_locale;
    $$ = new_func_def(mpool(arg), base, $7);
   }
   | LOCALE ID LPAREN locale_list RPAREN code_list {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @2);
-    Func_Base *base = new_func_base(mpool(arg), td, $2, $4.args, ae_flag_none, @2);
-    base->fbflag |= fbflag_locale | $4.flag;
+    Func_Base *base = new_func_base(mpool(arg), td, $2, $4, ae_flag_none, @2);
+    base->fbflag |= fbflag_locale;
     $$ = new_func_def(mpool(arg), base, $6);
   }
 
 abstract_fdef
-  : FUNCTION flag "abstract" type_decl_empty ID decl_template fptr_args ";"
+  : FUNCTION flag "abstract" type_decl_array ID decl_template func_args ";"
     {
       Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
       if($6)
@@ -762,38 +716,32 @@ abstract_fdef
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
-  :  type_decl_empty op_op decl_template "(" arg "," arg ")"
+  :  type_decl_array op_op decl_template "(" arg "," arg ")"
     {
-      if($5.flag == fbflag_default || $7.flag == fbflag_default)
-      { parser_error(&@2, arg, "default arguments not allowed in binary operators", 0210); YYERROR; };
       MP_Vector *args = new_mp_vector(mpool(arg), Arg, 2);
-      *(Arg*)args->ptr = $5.arg;
-      *(Arg*)(args->ptr + sizeof(Arg)) = $7.arg;
+      *(Arg*)args->ptr = $5;
+      *(Arg*)(args->ptr + sizeof(Arg)) = $7;
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
-  |  type_decl_empty post_op decl_template "(" arg ")"
+  |  type_decl_array post_op decl_template "(" arg ")"
     {
-      if($5.flag == fbflag_default)
-      { parser_error(&@2, arg, "default arguments not allowed in postfix operators", 0210); YYERROR; };
       Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
-      mp_vector_set(args, Arg, 0, $5.arg);
+      mp_vector_set(args, Arg, 0, $5);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
-  |  unary_op type_decl_empty decl_template "(" arg ")"
+  |  unary_op type_decl_array decl_template "(" arg ")"
     {
-      if($5.flag == fbflag_default)
-      { parser_error(&@2, arg, "default arguments not allowed in unary operators", 0210); YYERROR; };
       Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
-      mp_vector_set(args, Arg, 0, $5.arg);
+      mp_vector_set(args, Arg, 0, $5);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
-  | type_decl_empty OPID_A func_args
+  | type_decl_array OPID_A func_args
     {
-      $$ = new_func_base(mpool(arg), $1, $2, $3.args, ae_flag_none, @2);
+      $$ = new_func_base(mpool(arg), $1, $2, $3, ae_flag_none, @2);
       $$->fbflag |= fbflag_internal;
     };
 
@@ -809,28 +757,23 @@ op_def
 func_def: func_def_base | abstract_fdef | op_def
   |  operator "new" func_args code_list
     {
-      Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1, @2);
-      base->fbflag = $3.flag;
+      Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3, $1, @2);
       $$ = new_func_def(mpool(arg), base, $4);
     }
   |  operator "new" func_args ";"
     {
-      if($3.flag == fbflag_default)
-      { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
-      Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3.args, $1 | ae_flag_abstract, @2);
+      Func_Base *const base = new_func_base(mpool(arg), NULL, $2, $3, $1 | ae_flag_abstract, @2);
       $$ = new_func_def(mpool(arg), base, NULL);
     }
   |  operator "abstract" "new" func_args ";"
     {
-      if($4.flag == fbflag_default)
-      { parser_error(&@2, arg, "default arguments not allowed in abstract operators", 0210); YYERROR; };
-      Func_Base *const base = new_func_base(mpool(arg), NULL, $3, $4.args, $1 | ae_flag_abstract, @3);
+      Func_Base *const base = new_func_base(mpool(arg), NULL, $3, $4, $1 | ae_flag_abstract, @3);
       $$ =new_func_def(mpool(arg), base, NULL);
     }
 
 type_decl_base
   : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
-  | "(" flag type_decl_empty decl_template fptr_args func_effects ")" {
+  | "(" flag type_decl_array decl_template func_args func_effects ")" {
       const Symbol name = sig_name(arg, @3.first);
       $$ = new_type_decl(mpool(arg), name, @1);
       Func_Base *fb = new_func_base(mpool(arg), $3, name, NULL, $2, @1);
@@ -868,7 +811,7 @@ variable:
   Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("None"), @1);
   $$ = MK_VAR(td, (Var_Decl){ .tag = MK_TAG($1, @1)});
 }
-| type_decl_empty ID ";" { $$ = MK_VAR($1, (Var_Decl){ .tag = MK_TAG($2, @2)});}
+| type_decl_array ID ";" { $$ = MK_VAR($1, (Var_Decl){ .tag = MK_TAG($2, @2)});}
 
 variable_list:  variable { YYLIST_INI(Variable, $$, $1); }
 | variable_list variable { YYLIST_END(Variable, $$, $1, $2); }
@@ -886,7 +829,9 @@ union_def
 var_decl: ID { $$ = (struct Var_Decl_) { .tag = MK_TAG($1, @1)}; };
 
 arg_decl: ID { $$ = (struct Var_Decl_) { .tag = MK_TAG($1, @1)}; };
-fptr_arg_decl: arg_decl | %empty { $$ = (struct Var_Decl_){}; }
+        | %empty { $$ = (struct Var_Decl_) {
+            .tag = { .loc = {.first = arg->pos, .last = arg->pos }}};
+        };
 
 eq_op : "==" | "!=";
 rel_op: "<" | ">" | "<=" | ">=";
@@ -913,7 +858,7 @@ add_exp: mul_exp | add_exp add_op mul_exp              { $$ = new_exp_binary(mpo
 mul_exp: dur_exp | mul_exp mul_op dur_exp              { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 dur_exp: cast_exp | dur_exp "::" cast_exp              { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); };
 
-cast_exp: unary_exp | cast_exp "$" type_decl_empty
+cast_exp: unary_exp | cast_exp "$" type_decl_array
     { $$ = new_exp_cast(mpool(arg), $3, $1, @$); };
 
 unary_op : %prec UMINUS "-" | "*" %prec UTIMES | post_op
@@ -924,15 +869,15 @@ unary_exp : post_exp
   | unary_op unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @$); }
   | "spork" unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @1); }
   | "fork" unary_exp { $$ = new_exp_unary(mpool(arg), $1, $2, @1); }
-  | "new" type_decl_exp call_paren {
+  | "new" type_decl_array call_paren {
        $$ = new_exp_unary2(mpool(arg), $1, $2, $3 ?: new_prim_nil(mpool(arg), @3), @$);
   }
-  | "new" type_decl_exp {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
+  | "new" type_decl_array {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
   | "spork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
   | "fork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
   | "spork" captures code_list   { $$ = new_exp_unary3(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; };
   | "fork"  captures code_list   { $$ = new_exp_unary3(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; };
-  | "$" type_decl_empty { $$ = new_exp_td(mpool(arg), $2, @2); };
+  | "$" type_decl_array { $$ = new_exp_td(mpool(arg), $2, @2); };
 
 lambda_list:
  ID {
@@ -946,7 +891,7 @@ lambda_list:
 lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
 tmplarg_exp: basic_exp;
-tmplarg: type_decl_empty {
+tmplarg: type_decl_array {
     $$ = (TmplArg) { .d = { .td = $1}, .type = tmplarg_td};
   }
   | tmplarg_exp {
@@ -963,16 +908,11 @@ call_paren :
 post_op : "++" | "--";
 
 dot_exp: post_exp "." ID {
-  if($1->next) {
-    parser_error(&@1, arg, "can't use multiple expressions"
-      " in dot member base expression", 0211);
-    YYERROR;
-  };
   $$ = new_exp_dot(mpool(arg), $1, $3, @$);
 };
 
 post_exp: prim_exp
-  | post_exp array_exp
+  | post_exp array
     { $$ = new_exp_array(mpool(arg), $1, $2, @$); }
   | post_exp range
     { $$ = new_exp_slice(mpool(arg), $1, $2, @$); }
@@ -1022,10 +962,6 @@ prim_exp
   | basic_exp
   | interp               { $$ = !$1->next ? $1 : new_prim_interp(mpool(arg), $1, @$); }
   | "[" opt_exp array_lit_ed { 
-    if(!$2) {
-      parser_error(&@1, arg, "must provide values/expressions for array [...]", 0);
-      YYERROR;
-    }
     Array_Sub array = new_array_sub(mpool(arg), $2);
     $$ = new_prim_array(  mpool(arg), array, @$);
   }
@@ -1055,7 +991,6 @@ ANN static Symbol sig_name(const Scanner *scan, const pos_t pos) {
   return insert_symbol(scan->st, c);
 }
 
-
 ANN static Symbol lambda_name(const Scanner *scan, const pos_t pos) {
   char c[6 + 1 + num_digit(pos.line) + num_digit(pos.column) + 2];
   sprintf(c, "lambda:%u:%u", pos.line, pos.column);
@@ -1077,8 +1012,7 @@ ANN static int parser_error(const loc_t *loc, Scanner *const scan, const char* d
     }
   }
   scanner_error(scan, _main, _explain, _fix, *loc, error_code);
-loc_t _loc = { scan->old, scan->old};
-scan->error = 0;
+  loc_t _loc = { scan->old, scan->old};
   const char *syntaxerr = YY_("syntax error");
   if(!strncmp(_main, syntaxerr, strlen(syntaxerr)))
     scanner_secondary(scan, "check around here", _loc);
