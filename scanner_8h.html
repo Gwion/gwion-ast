@@ -147,7 +147,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   98</span>  <span class="keywordflow">return</span> <a class="code hl_variable" href="defer_8c.html#a1201e7c311a291d852ab9d5ecbdd41b0">defer_stmt_func</a>[stmt-&gt;<a class="code hl_variable" href="structStmt.html#ac117446db99a8e22b4924e4ee24ccb43">stmt_type</a>](&amp;stmt-&gt;<a class="code hl_variable" href="structStmt.html#ae3592eeb232cc75fe7850f773032a0b3">d</a>);</div>
 <div class="line"><span class="lineno">   99</span>}</div>
 <div class="ttc" id="adefer_8c_html_a1201e7c311a291d852ab9d5ecbdd41b0"><div class="ttname"><a href="defer_8c.html#a1201e7c311a291d852ab9d5ecbdd41b0">defer_stmt_func</a></div><div class="ttdeci">const _defer_stmt_func defer_stmt_func[]</div><div class="ttdef"><b>Definition</b> <a href="defer_8c_source.html#l00078">defer.c:78</a></div></div>
-<div class="ttc" id="astructStmt_html_ac117446db99a8e22b4924e4ee24ccb43"><div class="ttname"><a href="structStmt.html#ac117446db99a8e22b4924e4ee24ccb43">Stmt::stmt_type</a></div><div class="ttdeci">ae_stmt_t stmt_type</div><div class="ttdef"><b>Definition</b> <a href="absyn_8h_source.html#l00683">absyn.h:683</a></div></div>
+<div class="ttc" id="astructStmt_html_ac117446db99a8e22b4924e4ee24ccb43"><div class="ttname"><a href="structStmt.html#ac117446db99a8e22b4924e4ee24ccb43">Stmt::stmt_type</a></div><div class="ttdeci">ae_stmt_t stmt_type</div><div class="ttdef"><b>Definition</b> <a href="absyn_8h_source.html#l00681">absyn.h:681</a></div></div>
 <div class="ttc" id="astructStmt_html_ae3592eeb232cc75fe7850f773032a0b3"><div class="ttname"><a href="structStmt.html#ae3592eeb232cc75fe7850f773032a0b3">Stmt::d</a></div><div class="ttdeci">union Stmt::stmt_data d</div></div>
 </div><!-- fragment -->
 </div>
@@ -193,14 +193,12 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00070">70</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   71</span>                                                                           {</div>
-<div class="line"><span class="lineno">   72</span>  <span class="keywordflow">if</span> (scan-&gt;<a class="code hl_variable" href="structScanner__.html#a81a02579f4182decd2459d04df840fd7">error</a>) <span class="keywordflow">return</span> 0;</div>
-<div class="line"><span class="lineno">   73</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structPPState__.html">PPState</a> *ppstate = (<a class="code hl_struct" href="structPPState__.html">PPState</a>*)vector_back(&amp;scan-&gt;<a class="code hl_variable" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code hl_variable" href="structPP__.html#aa8c713af0892c6689609764cd51bf939">state</a>);</div>
-<div class="line"><span class="lineno">   74</span>  <span class="keyword">const</span> m_str filename = <a class="code hl_function" href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a>(scan, ppstate);</div>
-<div class="line"><span class="lineno">   75</span>  <a class="code hl_function" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, fix, filename, loc, error_code);</div>
-<div class="line"><span class="lineno">   76</span>  <a class="code hl_function" href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a>(scan);</div>
-<div class="line"><span class="lineno">   77</span><span class="comment">//  scan-&gt;error = true;</span></div>
-<div class="line"><span class="lineno">   78</span>  <span class="keywordflow">return</span> 0;</div>
-<div class="line"><span class="lineno">   79</span>}</div>
+<div class="line"><span class="lineno">   72</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structPPState__.html">PPState</a> *ppstate = (<a class="code hl_struct" href="structPPState__.html">PPState</a>*)vector_back(&amp;scan-&gt;<a class="code hl_variable" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code hl_variable" href="structPP__.html#aa8c713af0892c6689609764cd51bf939">state</a>);</div>
+<div class="line"><span class="lineno">   73</span>  <span class="keyword">const</span> m_str filename = <a class="code hl_function" href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a>(scan, ppstate);</div>
+<div class="line"><span class="lineno">   74</span>  <a class="code hl_function" href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, fix, filename, loc, error_code);</div>
+<div class="line"><span class="lineno">   75</span>  <a class="code hl_function" href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a>(scan);</div>
+<div class="line"><span class="lineno">   76</span>  <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">   77</span>}</div>
 <div class="ttc" id="aloc_8c_html_af1282b97059964476298bbe0ec17a173"><div class="ttname"><a href="loc_8c.html#af1282b97059964476298bbe0ec17a173">gwerr_basic</a></div><div class="ttdeci">void gwerr_basic(const char *main, const char *explain, const char *fix, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition</b> <a href="loc_8c_source.html#l00103">loc.c:103</a></div></div>
 <div class="ttc" id="amain_8c_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8c_source.html#l00004">main.c:4</a></div></div>
 <div class="ttc" id="ascanner_8c_html_a8362650680765e7516e32ea47c022abb"><div class="ttname"><a href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a></div><div class="ttdeci">static ANN char * get_filename(Scanner *scan, const PPState *ppstate)</div><div class="ttdef"><b>Definition</b> <a href="scanner_8c_source.html#l00044">scanner.c:44</a></div></div>
@@ -208,7 +206,6 @@ Functions</h2></td></tr>
 <div class="ttc" id="astructPPState___html"><div class="ttname"><a href="structPPState__.html">PPState_</a></div><div class="ttdef"><b>Definition</b> <a href="pp_8h_source.html#l00014">pp.h:14</a></div></div>
 <div class="ttc" id="astructPP___html_aa8c713af0892c6689609764cd51bf939"><div class="ttname"><a href="structPP__.html#aa8c713af0892c6689609764cd51bf939">PP_::state</a></div><div class="ttdeci">struct Vector_ state</div><div class="ttdef"><b>Definition</b> <a href="pp_8h_source.html#l00027">pp.h:27</a></div></div>
 <div class="ttc" id="astructScanner___html_a07a2dea3f79d47bd6dab8658c6c8e4d4"><div class="ttname"><a href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">Scanner_::pp</a></div><div class="ttdeci">struct PP_ * pp</div><div class="ttdef"><b>Definition</b> <a href="scanner_8h_source.html#l00010">scanner.h:10</a></div></div>
-<div class="ttc" id="astructScanner___html_a81a02579f4182decd2459d04df840fd7"><div class="ttname"><a href="structScanner__.html#a81a02579f4182decd2459d04df840fd7">Scanner_::error</a></div><div class="ttdeci">bool error</div><div class="ttdef"><b>Definition</b> <a href="scanner_8h_source.html#l00018">scanner.h:18</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -236,15 +233,13 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00080">80</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   80</span>                                                                            {</div>
-<div class="line"><span class="lineno">   81</span>  <span class="keywordflow">if</span> (scan-&gt;<a class="code hl_variable" href="structScanner__.html#a81a02579f4182decd2459d04df840fd7">error</a>) <span class="keywordflow">return</span> 0;</div>
-<div class="line"><span class="lineno">   82</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structPPState__.html">PPState</a> *ppstate = (<a class="code hl_struct" href="structPPState__.html">PPState</a>*)vector_back(&amp;scan-&gt;<a class="code hl_variable" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code hl_variable" href="structPP__.html#aa8c713af0892c6689609764cd51bf939">state</a>);</div>
-<div class="line"><span class="lineno">   83</span>  <span class="keyword">const</span> m_str filename = <a class="code hl_function" href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a>(scan, ppstate);</div>
-<div class="line"><span class="lineno">   84</span>  <a class="code hl_function" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
-<div class="line"><span class="lineno">   85</span><span class="comment">//  scan-&gt;error = true;</span></div>
-<div class="line"><span class="lineno">   86</span>  <span class="keywordflow">return</span> 0;</div>
-<div class="line"><span class="lineno">   87</span>}</div>
+<p class="definition">Definition at line <a class="el" href="scanner_8c_source.html#l00078">78</a> of file <a class="el" href="scanner_8c_source.html">scanner.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   78</span>                                                                            {</div>
+<div class="line"><span class="lineno">   79</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structPPState__.html">PPState</a> *ppstate = (<a class="code hl_struct" href="structPPState__.html">PPState</a>*)vector_back(&amp;scan-&gt;<a class="code hl_variable" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code hl_variable" href="structPP__.html#aa8c713af0892c6689609764cd51bf939">state</a>);</div>
+<div class="line"><span class="lineno">   80</span>  <span class="keyword">const</span> m_str filename = <a class="code hl_function" href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a>(scan, ppstate);</div>
+<div class="line"><span class="lineno">   81</span>  <a class="code hl_function" href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
+<div class="line"><span class="lineno">   82</span>  <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">   83</span>}</div>
 <div class="ttc" id="aloc_8c_html_ac61492d32908071a1d549f0a9c220696"><div class="ttname"><a href="loc_8c.html#ac61492d32908071a1d549f0a9c220696">gwerr_secondary</a></div><div class="ttdeci">ANN void gwerr_secondary(const char *main, const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="loc_8c_source.html#l00142">loc.c:142</a></div></div>
 </div><!-- fragment -->
 </div>

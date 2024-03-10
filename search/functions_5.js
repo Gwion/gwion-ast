@@ -18,11 +18,12 @@ var searchData=
   ['free_5fscanner_15',['free_scanner',['../scanner_8c.html#a9e1f3129d9f754aefe401c9a246b990c',1,'scanner.c']]],
   ['free_5fspecialized_5flist_16',['free_specialized_list',['../absyn_8h.html#a87ba01e6e78bdec856b11ceee79a3f0e',1,'absyn.h']]],
   ['free_5fstmt_17',['free_stmt',['../absyn_8h.html#a602b41d62c55934fcb392be62e70c6fe',1,'absyn.h']]],
-  ['free_5ftmpl_18',['free_tmpl',['../absyn_8h.html#a3738c0ea24940b5ab6c033e95e65e2dd',1,'absyn.h']]],
-  ['free_5ftmplarg_5flist_19',['free_tmplarg_list',['../absyn_8h.html#a82a94c73ad1defdf23f8a4245b03d5e8',1,'absyn.h']]],
-  ['free_5ftrait_5fdef_20',['free_trait_def',['../absyn_8h.html#a58be56f5b06872bd1a6af658ba17576e',1,'absyn.h']]],
-  ['free_5ftype_5fdecl_21',['free_type_decl',['../absyn_8h.html#a72b02e225616a4edb22ca1fae49536c7',1,'absyn.h']]],
-  ['free_5ftype_5fdef_22',['free_type_def',['../absyn_8h.html#aa6a90807ae1abd0395bde9c894ab1c1d',1,'absyn.h']]],
-  ['free_5funion_5fdef_23',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]],
-  ['free_5fvariable_5flist_24',['free_variable_list',['../absyn_8h.html#a416ebf9a1dbfc49461f33f6167f96300',1,'absyn.h']]]
+  ['free_5fstmt_5flist_18',['free_stmt_list',['../absyn_8h.html#a43f5d74e69a120948ff31847bbeb364b',1,'absyn.h']]],
+  ['free_5ftmpl_19',['free_tmpl',['../absyn_8h.html#a3738c0ea24940b5ab6c033e95e65e2dd',1,'absyn.h']]],
+  ['free_5ftmplarg_5flist_20',['free_tmplarg_list',['../absyn_8h.html#a82a94c73ad1defdf23f8a4245b03d5e8',1,'absyn.h']]],
+  ['free_5ftrait_5fdef_21',['free_trait_def',['../absyn_8h.html#a58be56f5b06872bd1a6af658ba17576e',1,'absyn.h']]],
+  ['free_5ftype_5fdecl_22',['free_type_decl',['../absyn_8h.html#a72b02e225616a4edb22ca1fae49536c7',1,'absyn.h']]],
+  ['free_5ftype_5fdef_23',['free_type_def',['../absyn_8h.html#aa6a90807ae1abd0395bde9c894ab1c1d',1,'absyn.h']]],
+  ['free_5funion_5fdef_24',['free_union_def',['../absyn_8h.html#a6934b3c11d00c5fe60367d64ca8bb331',1,'absyn.h']]],
+  ['free_5fvariable_5flist_25',['free_variable_list',['../absyn_8h.html#a416ebf9a1dbfc49461f33f6167f96300',1,'absyn.h']]]
 ];
