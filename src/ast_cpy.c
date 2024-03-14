@@ -203,7 +203,6 @@ ANN static MP_Vector *cpy_captures(MemPool p, const Capture_List src) {
   return a;
 }
 
-// TODO check me
 ANN static void cpy_exp_unary(MemPool p, Exp_Unary *a, const Exp_Unary *src) {
   a->op = src->op;
   switch ((a->unary_type = src->unary_type)) {

@@ -555,14 +555,9 @@ loop_stmt
   };
 
 defer_stmt: "defer" stmt {
-    const loc_t loc = defer_stmt(&$2);
-    if(loc.first.line) {
-      // defer could maybe return the position
-      parser_error(&loc, arg, "return statement in defer", 0x0209);
-      YYERROR;
-    }
     $$ = MK_STMT(ae_stmt_defer, @1,
-    .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2) });
+      .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &$2)
+    });
 }
 
 selection_stmt

@@ -806,29 +806,29 @@ static const yytype_int16 yyrline[] =
      411,   420,   422,   423,   427,   431,   434,   434,   435,   435,
      438,   439,   443,   444,   447,   452,   452,   455,   464,   465,
      467,   476,   485,   486,   490,   497,   505,   513,   522,   531,
-     541,   548,   557,   569,   576,   585,   585,   587,   588,   589,
-     590,   593,   594,   597,   598,   608,   609,   610,   611,   613,
-     613,   615,   615,   615,   615,   615,   618,   619,   622,   626,
-     627,   628,   632,   633,   636,   637,   638,   642,   642,   643,
-     644,   645,   651,   651,   654,   655,   659,   663,   665,   666,
-     666,   668,   668,   670,   671,   674,   675,   676,   677,   680,
-     680,   682,   682,   685,   689,   694,   700,   708,   717,   717,
-     717,   717,   717,   719,   727,   734,   742,   748,   748,   750,
-     752,   754,   757,   757,   757,   758,   763,   768,   775,   776,
-     790,   791,   795,   796,   799,   799,   799,   800,   801,   801,
-     804,   805,   807,   807,   810,   814,   816,   817,   820,   829,
-     831,   832,   836,   836,   837,   837,   837,   837,   838,   838,
-     839,   839,   840,   840,   840,   842,   842,   843,   844,   846,
+     541,   548,   557,   564,   571,   580,   580,   582,   583,   584,
+     585,   588,   589,   592,   593,   603,   604,   605,   606,   608,
+     608,   610,   610,   610,   610,   610,   613,   614,   617,   621,
+     622,   623,   627,   628,   631,   632,   633,   637,   637,   638,
+     639,   640,   646,   646,   649,   650,   654,   658,   660,   661,
+     661,   663,   663,   665,   666,   669,   670,   671,   672,   675,
+     675,   677,   677,   680,   684,   689,   695,   703,   712,   712,
+     712,   712,   712,   714,   722,   729,   737,   743,   743,   745,
+     747,   749,   752,   752,   752,   753,   758,   763,   770,   771,
+     785,   786,   790,   791,   794,   794,   794,   795,   796,   796,
+     799,   800,   802,   802,   805,   809,   811,   812,   815,   824,
+     826,   827,   831,   831,   832,   832,   832,   832,   833,   833,
+     834,   834,   835,   835,   835,   837,   837,   838,   839,   841,
+     844,   844,   845,   845,   846,   846,   847,   847,   848,   848,
      849,   849,   850,   850,   851,   851,   852,   852,   853,   853,
-     854,   854,   855,   855,   856,   856,   857,   857,   858,   858,
-     859,   859,   861,   861,   864,   864,   864,   865,   865,   868,
-     869,   870,   871,   872,   875,   876,   877,   878,   879,   880,
-     883,   886,   891,   891,   893,   894,   897,   901,   902,   905,
-     906,   908,   908,   910,   914,   915,   917,   919,   922,   924,
-     928,   929,   930,   932,   933,   944,   944,   946,   947,   948,
-     948,   949,   949,   952,   956,   957,   958,   961,   962,   963,
-     964,   968,   969,   970,   971,   972,   978,   979,   980,   981,
-     982
+     854,   854,   856,   856,   859,   859,   859,   860,   860,   863,
+     864,   865,   866,   867,   870,   871,   872,   873,   874,   875,
+     878,   881,   886,   886,   888,   889,   892,   896,   897,   900,
+     901,   903,   903,   905,   909,   910,   912,   914,   917,   919,
+     923,   924,   925,   927,   928,   939,   939,   941,   942,   943,
+     943,   944,   944,   947,   951,   952,   953,   956,   957,   958,
+     959,   963,   964,   965,   966,   967,   973,   974,   975,   976,
+     977
 };
 #endif
 
@@ -3398,31 +3398,26 @@ yyreduce:
   case 122: /* defer_stmt: "defer" stmt  */
 #line 557 "src/gwion.y"
                          {
-    const loc_t loc = defer_stmt(&(yyvsp[0].stmt));
-    if(loc.first.line) {
-      // defer could maybe return the position
-      parser_error(&loc, arg, "return statement in defer", 0x0209);
-      YYERROR;
-    }
     (yyval.stmt) = MK_STMT(ae_stmt_defer, (yylsp[-1]),
-    .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt)) });
+      .stmt_defer = { .stmt = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
+    });
 }
-#line 3411 "src/parser.c"
+#line 3406 "src/parser.c"
     break;
 
   case 123: /* selection_stmt: "if" "(" exp ")" stmt  */
-#line 570 "src/gwion.y"
+#line 565 "src/gwion.y"
     { (yyval.stmt) = MK_STMT(ae_stmt_if, (yylsp[-4]),
       .stmt_if = {
         .cond = (yyvsp[-2].exp),
         .if_body = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
     });
   }
-#line 3422 "src/parser.c"
+#line 3417 "src/parser.c"
     break;
 
   case 124: /* selection_stmt: "if" "(" exp ")" stmt "else" stmt  */
-#line 577 "src/gwion.y"
+#line 572 "src/gwion.y"
     { (yyval.stmt) = MK_STMT(ae_stmt_if, (yylsp[-6]),
       .stmt_if = {
         .cond = (yyvsp[-4].exp),
@@ -3430,65 +3425,65 @@ yyreduce:
         .else_body = cpy_stmt3(mpool(arg), &(yyvsp[0].stmt))
     });
   }
-#line 3434 "src/parser.c"
+#line 3429 "src/parser.c"
     break;
 
   case 125: /* breaks: "break"  */
-#line 585 "src/gwion.y"
+#line 580 "src/gwion.y"
                     { (yyval.stmt_t) = ae_stmt_break; }
-#line 3440 "src/parser.c"
+#line 3435 "src/parser.c"
     break;
 
   case 126: /* breaks: "continue"  */
-#line 585 "src/gwion.y"
+#line 580 "src/gwion.y"
                                                         { (yyval.stmt_t) = ae_stmt_continue; }
-#line 3446 "src/parser.c"
+#line 3441 "src/parser.c"
     break;
 
   case 127: /* jump_stmt: "return" exp ";"  */
-#line 587 "src/gwion.y"
+#line 582 "src/gwion.y"
                      { (yyval.stmt) = MK_STMT_RETURN((yylsp[-2]), (yyvsp[-1].exp)); }
-#line 3452 "src/parser.c"
+#line 3447 "src/parser.c"
     break;
 
   case 128: /* jump_stmt: "return" ";"  */
-#line 588 "src/gwion.y"
+#line 583 "src/gwion.y"
                      { (yyval.stmt) = MK_STMT_RETURN((yylsp[-1]), NULL); }
-#line 3458 "src/parser.c"
+#line 3453 "src/parser.c"
     break;
 
   case 129: /* jump_stmt: breaks decimal ";"  */
-#line 589 "src/gwion.y"
+#line 584 "src/gwion.y"
                          { (yyval.stmt) = MK_STMT((yyvsp[-2].stmt_t), (yylsp[-2]), .stmt_index = { .idx = (yyvsp[-1].gwint).num });}
-#line 3464 "src/parser.c"
+#line 3459 "src/parser.c"
     break;
 
   case 130: /* jump_stmt: breaks ";"  */
-#line 590 "src/gwion.y"
+#line 585 "src/gwion.y"
                { (yyval.stmt) = MK_STMT((yyvsp[-1].stmt_t), (yylsp[-1]), .stmt_index = { .idx = -1 });}
-#line 3470 "src/parser.c"
+#line 3465 "src/parser.c"
     break;
 
   case 131: /* exp_stmt: exp ";"  */
-#line 593 "src/gwion.y"
+#line 588 "src/gwion.y"
             { (yyval.stmt) = MK_STMT_EXP((yylsp[-1]), (yyvsp[-1].exp)); }
-#line 3476 "src/parser.c"
+#line 3471 "src/parser.c"
     break;
 
   case 132: /* exp_stmt: ";"  */
-#line 594 "src/gwion.y"
+#line 589 "src/gwion.y"
             { (yyval.stmt) = MK_STMT(ae_stmt_exp, (yylsp[0])); }
-#line 3482 "src/parser.c"
+#line 3477 "src/parser.c"
     break;
 
   case 133: /* exp: binary_exp  */
-#line 597 "src/gwion.y"
+#line 592 "src/gwion.y"
                          { (yyval.exp) = (yyvsp[0].exp); }
-#line 3488 "src/parser.c"
+#line 3483 "src/parser.c"
     break;
 
   case 134: /* exp: binary_exp "," exp  */
-#line 599 "src/gwion.y"
+#line 594 "src/gwion.y"
     {
       if((yyvsp[-2].exp)->next) {
         parser_error(&(yylsp[0]), arg, "invalid format for expression", 0);
@@ -3496,280 +3491,280 @@ yyreduce:
       }
       (yyvsp[-2].exp)->next = (yyvsp[0].exp);
     }
-#line 3500 "src/parser.c"
+#line 3495 "src/parser.c"
     break;
 
   case 136: /* binary_exp: binary_exp "@" decl_exp  */
-#line 609 "src/gwion.y"
+#line 604 "src/gwion.y"
                                   { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yylsp[-1])); }
-#line 3506 "src/parser.c"
+#line 3501 "src/parser.c"
     break;
 
   case 137: /* binary_exp: binary_exp "<dynamic_operator>" decl_exp  */
-#line 610 "src/gwion.y"
+#line 605 "src/gwion.y"
                                   { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yylsp[-1])); }
-#line 3512 "src/parser.c"
+#line 3507 "src/parser.c"
     break;
 
   case 138: /* binary_exp: binary_exp OPTIONS decl_exp  */
-#line 611 "src/gwion.y"
+#line 606 "src/gwion.y"
                                 { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yylsp[-1])); }
-#line 3518 "src/parser.c"
+#line 3513 "src/parser.c"
     break;
 
   case 139: /* call_template: ":[" tmplarg_list "]"  */
-#line 613 "src/gwion.y"
+#line 608 "src/gwion.y"
                                      { (yyval.tmplarg_list) = (yyvsp[-1].tmplarg_list); }
-#line 3524 "src/parser.c"
+#line 3519 "src/parser.c"
     break;
 
   case 140: /* call_template: %empty  */
-#line 613 "src/gwion.y"
+#line 608 "src/gwion.y"
                                                            { (yyval.tmplarg_list) = NULL; }
-#line 3530 "src/parser.c"
+#line 3525 "src/parser.c"
     break;
 
   case 146: /* array_exp: "[" exp "]"  */
-#line 618 "src/gwion.y"
+#line 613 "src/gwion.y"
                           { (yyval.array_sub) = new_array_sub(mpool(arg), (yyvsp[-1].exp)); }
-#line 3536 "src/parser.c"
+#line 3531 "src/parser.c"
     break;
 
   case 147: /* array_exp: "[" exp "]" array_exp  */
-#line 619 "src/gwion.y"
+#line 614 "src/gwion.y"
                           {
     if((yyvsp[-2].exp)->next){ parser_error(&(yylsp[-2]), arg, "invalid format for array init [...][...]...", 0x0208); YYERROR; } (yyval.array_sub) = prepend_array_sub((yyvsp[0].array_sub), (yyvsp[-2].exp));
   }
-#line 3544 "src/parser.c"
+#line 3539 "src/parser.c"
     break;
 
   case 148: /* array_exp: "[" exp "]" "[" "]"  */
-#line 622 "src/gwion.y"
+#line 617 "src/gwion.y"
                          { parser_error(&(yylsp[-2]), arg, "partially empty array init [...][]...", 0x0209); YYERROR; }
-#line 3550 "src/parser.c"
+#line 3545 "src/parser.c"
     break;
 
   case 149: /* array_empty: "[" "]"  */
-#line 626 "src/gwion.y"
+#line 621 "src/gwion.y"
                           { (yyval.array_sub) = new_array_sub(mpool(arg), NULL); }
-#line 3556 "src/parser.c"
+#line 3551 "src/parser.c"
     break;
 
   case 150: /* array_empty: array_empty "[" "]"  */
-#line 627 "src/gwion.y"
+#line 622 "src/gwion.y"
                           { (yyval.array_sub) = prepend_array_sub((yyvsp[-2].array_sub), NULL); }
-#line 3562 "src/parser.c"
+#line 3557 "src/parser.c"
     break;
 
   case 151: /* array_empty: array_empty array_exp  */
-#line 628 "src/gwion.y"
+#line 623 "src/gwion.y"
                           { parser_error(&(yylsp[-1]), arg, "partially empty array init [][...]", 0x0210); YYERROR; }
-#line 3568 "src/parser.c"
+#line 3563 "src/parser.c"
     break;
 
   case 152: /* dict_list: binary_exp ":" binary_exp  */
-#line 632 "src/gwion.y"
+#line 627 "src/gwion.y"
                               { (yyvsp[-2].exp)->next = (yyvsp[0].exp); (yyval.exp) = (yyvsp[-2].exp); }
-#line 3574 "src/parser.c"
+#line 3569 "src/parser.c"
     break;
 
   case 153: /* dict_list: dict_list "," binary_exp ":" binary_exp  */
-#line 633 "src/gwion.y"
+#line 628 "src/gwion.y"
                                             { (yyvsp[-4].exp)->next->next = (yyvsp[-2].exp); (yyvsp[-2].exp)-> next = (yyvsp[0].exp); (yyval.exp) = (yyvsp[-4].exp); }
-#line 3580 "src/parser.c"
+#line 3575 "src/parser.c"
     break;
 
   case 154: /* range: "[" exp ":" exp "]"  */
-#line 636 "src/gwion.y"
+#line 631 "src/gwion.y"
                         { (yyval.range) = new_range(mpool(arg), (yyvsp[-3].exp), (yyvsp[-1].exp)); }
-#line 3586 "src/parser.c"
+#line 3581 "src/parser.c"
     break;
 
   case 155: /* range: "[" exp ":" "]"  */
-#line 637 "src/gwion.y"
+#line 632 "src/gwion.y"
                         { (yyval.range) = new_range(mpool(arg), (yyvsp[-2].exp), NULL); }
-#line 3592 "src/parser.c"
+#line 3587 "src/parser.c"
     break;
 
   case 156: /* range: "[" ":" exp "]"  */
-#line 638 "src/gwion.y"
+#line 633 "src/gwion.y"
                                           { (yyval.range) = new_range(mpool(arg), NULL, (yyvsp[-1].exp)); }
-#line 3598 "src/parser.c"
+#line 3593 "src/parser.c"
     break;
 
   case 160: /* decl_exp: type_decl_flag2 flag type_decl_array var_decl  */
-#line 644 "src/gwion.y"
+#line 639 "src/gwion.y"
                                                   { (yyval.exp)= new_exp_decl(mpool(arg), (yyvsp[-1].type_decl), &(yyvsp[0].var_decl), (yyloc)); (yyval.exp)->d.exp_decl.var.td->flag |= (yyvsp[-3].flag) | (yyvsp[-2].flag); }
-#line 3604 "src/parser.c"
+#line 3599 "src/parser.c"
     break;
 
   case 161: /* decl_exp: type_decl_flag2 flag type_decl_array call_paren var_decl  */
-#line 645 "src/gwion.y"
+#line 640 "src/gwion.y"
                                                              {
       (yyval.exp) = new_exp_decl(mpool(arg), (yyvsp[-2].type_decl), &(yyvsp[0].var_decl), (yylsp[0]));
       (yyval.exp)->d.exp_decl.var.td->flag |= (yyvsp[-4].flag) | (yyvsp[-3].flag);
       (yyval.exp)->d.exp_decl.args = (yyvsp[-1].exp) ?: new_prim_nil(mpool(arg), (yylsp[-1]));
   }
-#line 3614 "src/parser.c"
+#line 3609 "src/parser.c"
     break;
 
   case 162: /* func_args: "(" arg_list ")"  */
-#line 651 "src/gwion.y"
+#line 646 "src/gwion.y"
                              { (yyval.arg_list) = (yyvsp[-1].arg_list); }
-#line 3620 "src/parser.c"
+#line 3615 "src/parser.c"
     break;
 
   case 163: /* func_args: "(" ")"  */
-#line 651 "src/gwion.y"
+#line 646 "src/gwion.y"
                                                    { (yyval.arg_list) = NULL; }
-#line 3626 "src/parser.c"
+#line 3621 "src/parser.c"
     break;
 
   case 164: /* decl_template: ":[" specialized_list "]"  */
-#line 654 "src/gwion.y"
+#line 649 "src/gwion.y"
                             { (yyval.specialized_list) = (yyvsp[-1].specialized_list); }
-#line 3632 "src/parser.c"
+#line 3627 "src/parser.c"
     break;
 
   case 165: /* decl_template: ":[" specialized_list "..." "]"  */
-#line 655 "src/gwion.y"
+#line 650 "src/gwion.y"
                                               {
   Specialized spec = { .tag = MK_TAG(insert_symbol("..."), (yylsp[-1])) };
   YYLIST_END(Specialized, (yyval.specialized_list), (yyvsp[-2].specialized_list), spec);
 }
-#line 3641 "src/parser.c"
+#line 3636 "src/parser.c"
     break;
 
   case 166: /* decl_template: ":[" "..." "]"  */
-#line 659 "src/gwion.y"
+#line 654 "src/gwion.y"
                                 {
   Specialized spec = { .tag = MK_TAG(insert_symbol("..."), (yylsp[-1])) };
   YYLIST_INI(Specialized, (yyval.specialized_list), spec);
 }
-#line 3650 "src/parser.c"
+#line 3645 "src/parser.c"
     break;
 
   case 167: /* decl_template: %empty  */
-#line 663 "src/gwion.y"
+#line 658 "src/gwion.y"
                       { (yyval.specialized_list) = NULL; }
-#line 3656 "src/parser.c"
+#line 3651 "src/parser.c"
     break;
 
   case 168: /* global: "global"  */
-#line 665 "src/gwion.y"
+#line 660 "src/gwion.y"
                { (yyval.flag) = ae_flag_global; /*arg->global = true;*/ }
-#line 3662 "src/parser.c"
+#line 3657 "src/parser.c"
     break;
 
   case 170: /* opt_global: %empty  */
-#line 666 "src/gwion.y"
+#line 661 "src/gwion.y"
                             { (yyval.flag) = ae_flag_none; }
-#line 3668 "src/parser.c"
+#line 3663 "src/parser.c"
     break;
 
   case 171: /* storage_flag: "static"  */
-#line 668 "src/gwion.y"
+#line 663 "src/gwion.y"
                      { (yyval.flag) = ae_flag_static; }
-#line 3674 "src/parser.c"
+#line 3669 "src/parser.c"
     break;
 
   case 173: /* access_flag: "private"  */
-#line 670 "src/gwion.y"
+#line 665 "src/gwion.y"
                      { (yyval.flag) = ae_flag_private; }
-#line 3680 "src/parser.c"
+#line 3675 "src/parser.c"
     break;
 
   case 174: /* access_flag: "protect"  */
-#line 671 "src/gwion.y"
+#line 666 "src/gwion.y"
             { (yyval.flag) = ae_flag_protect; }
-#line 3686 "src/parser.c"
+#line 3681 "src/parser.c"
     break;
 
   case 175: /* flag: access_flag  */
-#line 674 "src/gwion.y"
+#line 669 "src/gwion.y"
                   { (yyval.flag) = (yyvsp[0].flag); }
-#line 3692 "src/parser.c"
+#line 3687 "src/parser.c"
     break;
 
   case 176: /* flag: storage_flag  */
-#line 675 "src/gwion.y"
+#line 670 "src/gwion.y"
                   { (yyval.flag) = (yyvsp[0].flag); }
-#line 3698 "src/parser.c"
+#line 3693 "src/parser.c"
     break;
 
   case 177: /* flag: access_flag storage_flag  */
-#line 676 "src/gwion.y"
+#line 671 "src/gwion.y"
                               { (yyval.flag) = (yyvsp[-1].flag) | (yyvsp[0].flag); }
-#line 3704 "src/parser.c"
+#line 3699 "src/parser.c"
     break;
 
   case 178: /* flag: %empty  */
-#line 677 "src/gwion.y"
+#line 672 "src/gwion.y"
            { (yyval.flag) = ae_flag_none; }
-#line 3710 "src/parser.c"
+#line 3705 "src/parser.c"
     break;
 
   case 179: /* final: "final"  */
-#line 680 "src/gwion.y"
+#line 675 "src/gwion.y"
                { (yyval.flag) = ae_flag_final; }
-#line 3716 "src/parser.c"
+#line 3711 "src/parser.c"
     break;
 
   case 180: /* final: %empty  */
-#line 680 "src/gwion.y"
+#line 675 "src/gwion.y"
                                                 { (yyval.flag) = ae_flag_none; }
-#line 3722 "src/parser.c"
+#line 3717 "src/parser.c"
     break;
 
   case 181: /* modifier: "abstract" final  */
-#line 682 "src/gwion.y"
+#line 677 "src/gwion.y"
                            { (yyval.flag) = ae_flag_abstract | (yyvsp[0].flag); }
-#line 3728 "src/parser.c"
+#line 3723 "src/parser.c"
     break;
 
   case 183: /* func_def_base: "fun" func_base func_args code_list  */
-#line 685 "src/gwion.y"
+#line 680 "src/gwion.y"
                                            {
     (yyvsp[-2].func_base)->args = (yyvsp[-1].arg_list);
     (yyval.func_def) = new_func_def(mpool(arg), (yyvsp[-2].func_base), (yyvsp[0].stmt_list));
   }
-#line 3737 "src/parser.c"
+#line 3732 "src/parser.c"
     break;
 
   case 184: /* func_def_base: "fun" func_base func_args ";"  */
-#line 689 "src/gwion.y"
+#line 684 "src/gwion.y"
                                      {
     (yyvsp[-2].func_base)->args = (yyvsp[-1].arg_list);
     SET_FLAG((yyvsp[-2].func_base), abstract);
     (yyval.func_def) = new_func_def(mpool(arg), (yyvsp[-2].func_base), NULL);
   }
-#line 3747 "src/parser.c"
+#line 3742 "src/parser.c"
     break;
 
   case 185: /* func_def_base: LOCALE global "<identifier>" "(" locale_list ")" code_list  */
-#line 694 "src/gwion.y"
+#line 689 "src/gwion.y"
                                                          {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), (yylsp[-4]));
     Func_Base *base = new_func_base(mpool(arg), td, (yyvsp[-4].sym), (yyvsp[-2].arg_list), (yyvsp[-5].flag), (yylsp[-4]));
     base->fbflag |= fbflag_locale;
    (yyval.func_def) = new_func_def(mpool(arg), base, (yyvsp[0].stmt_list));
   }
-#line 3758 "src/parser.c"
+#line 3753 "src/parser.c"
     break;
 
   case 186: /* func_def_base: LOCALE "<identifier>" "(" locale_list ")" code_list  */
-#line 700 "src/gwion.y"
+#line 695 "src/gwion.y"
                                                   {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), (yylsp[-4]));
     Func_Base *base = new_func_base(mpool(arg), td, (yyvsp[-4].sym), (yyvsp[-2].arg_list), ae_flag_none, (yylsp[-4]));
     base->fbflag |= fbflag_locale;
     (yyval.func_def) = new_func_def(mpool(arg), base, (yyvsp[0].stmt_list));
   }
-#line 3769 "src/parser.c"
+#line 3764 "src/parser.c"
     break;
 
   case 187: /* abstract_fdef: "fun" flag "abstract" type_decl_array "<identifier>" decl_template func_args ";"  */
-#line 709 "src/gwion.y"
+#line 704 "src/gwion.y"
     {
       Func_Base *base = new_func_base(mpool(arg), (yyvsp[-4].type_decl), (yyvsp[-3].sym), NULL, (yyvsp[-6].flag) | ae_flag_abstract, (yylsp[-3]));
       if((yyvsp[-2].specialized_list))
@@ -3777,11 +3772,11 @@ yyreduce:
       base->args = (yyvsp[-1].arg_list);
       (yyval.func_def) = new_func_def(mpool(arg), base, NULL);
     }
-#line 3781 "src/parser.c"
+#line 3776 "src/parser.c"
     break;
 
   case 193: /* op_base: type_decl_array op_op decl_template "(" arg "," arg ")"  */
-#line 720 "src/gwion.y"
+#line 715 "src/gwion.y"
     {
       MP_Vector *args = new_mp_vector(mpool(arg), Arg, 2);
       *(Arg*)args->ptr = (yyvsp[-3].arg);
@@ -3789,22 +3784,22 @@ yyreduce:
       (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-7].type_decl), (yyvsp[-6].sym), args, ae_flag_none, (yylsp[-6]));
       if((yyvsp[-5].specialized_list))(yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[-5].specialized_list));
     }
-#line 3793 "src/parser.c"
+#line 3788 "src/parser.c"
     break;
 
   case 194: /* op_base: type_decl_array post_op decl_template "(" arg ")"  */
-#line 728 "src/gwion.y"
+#line 723 "src/gwion.y"
     {
       Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
       mp_vector_set(args, Arg, 0, (yyvsp[-1].arg));
       (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-5].type_decl), (yyvsp[-4].sym), args, ae_flag_none, (yylsp[-4]));
       if((yyvsp[-3].specialized_list))(yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
     }
-#line 3804 "src/parser.c"
+#line 3799 "src/parser.c"
     break;
 
   case 195: /* op_base: unary_op type_decl_array decl_template "(" arg ")"  */
-#line 735 "src/gwion.y"
+#line 730 "src/gwion.y"
     {
       Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
       mp_vector_set(args, Arg, 0, (yyvsp[-1].arg));
@@ -3812,83 +3807,83 @@ yyreduce:
       (yyval.func_base)->fbflag |= fbflag_unary;
       if((yyvsp[-3].specialized_list))(yyval.func_base)->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
     }
-#line 3816 "src/parser.c"
+#line 3811 "src/parser.c"
     break;
 
   case 196: /* op_base: type_decl_array OPID_A func_args  */
-#line 743 "src/gwion.y"
+#line 738 "src/gwion.y"
     {
       (yyval.func_base) = new_func_base(mpool(arg), (yyvsp[-2].type_decl), (yyvsp[-1].sym), (yyvsp[0].arg_list), ae_flag_none, (yylsp[-1]));
       (yyval.func_base)->fbflag |= fbflag_internal;
     }
-#line 3825 "src/parser.c"
+#line 3820 "src/parser.c"
     break;
 
   case 197: /* operator: "operator"  */
-#line 748 "src/gwion.y"
+#line 743 "src/gwion.y"
                      { (yyval.flag) = ae_flag_none; }
-#line 3831 "src/parser.c"
+#line 3826 "src/parser.c"
     break;
 
   case 198: /* operator: "operator" global  */
-#line 748 "src/gwion.y"
+#line 743 "src/gwion.y"
                                                                 { (yyval.flag) = (yyvsp[0].flag); }
-#line 3837 "src/parser.c"
+#line 3832 "src/parser.c"
     break;
 
   case 199: /* op_def: operator op_base code_list  */
-#line 751 "src/gwion.y"
+#line 746 "src/gwion.y"
   { (yyval.func_def) = new_func_def(mpool(arg), (yyvsp[-1].func_base), (yyvsp[0].stmt_list)); (yyvsp[-1].func_base)->fbflag |= fbflag_op; (yyvsp[-1].func_base)->flag |= (yyvsp[-2].flag); }
-#line 3843 "src/parser.c"
+#line 3838 "src/parser.c"
     break;
 
   case 200: /* op_def: operator op_base ";"  */
-#line 753 "src/gwion.y"
+#line 748 "src/gwion.y"
   { (yyval.func_def) = new_func_def(mpool(arg), (yyvsp[-1].func_base), NULL); (yyvsp[-1].func_base)->fbflag |= fbflag_op; (yyvsp[-1].func_base)->flag |= (yyvsp[-2].flag) | ae_flag_abstract; }
-#line 3849 "src/parser.c"
+#line 3844 "src/parser.c"
     break;
 
   case 201: /* op_def: operator "abstract" op_base ";"  */
-#line 755 "src/gwion.y"
+#line 750 "src/gwion.y"
   { (yyval.func_def) = new_func_def(mpool(arg), (yyvsp[-1].func_base), NULL); (yyvsp[-1].func_base)->fbflag |= fbflag_op; (yyvsp[-1].func_base)->flag |= (yyvsp[-3].flag) | ae_flag_abstract; }
-#line 3855 "src/parser.c"
+#line 3850 "src/parser.c"
     break;
 
   case 205: /* func_def: operator "new" func_args code_list  */
-#line 759 "src/gwion.y"
+#line 754 "src/gwion.y"
     {
       Func_Base *const base = new_func_base(mpool(arg), NULL, (yyvsp[-2].sym), (yyvsp[-1].arg_list), (yyvsp[-3].flag), (yylsp[-2]));
       (yyval.func_def) = new_func_def(mpool(arg), base, (yyvsp[0].stmt_list));
     }
-#line 3864 "src/parser.c"
+#line 3859 "src/parser.c"
     break;
 
   case 206: /* func_def: operator "new" func_args ";"  */
-#line 764 "src/gwion.y"
+#line 759 "src/gwion.y"
     {
       Func_Base *const base = new_func_base(mpool(arg), NULL, (yyvsp[-2].sym), (yyvsp[-1].arg_list), (yyvsp[-3].flag) | ae_flag_abstract, (yylsp[-2]));
       (yyval.func_def) = new_func_def(mpool(arg), base, NULL);
     }
-#line 3873 "src/parser.c"
+#line 3868 "src/parser.c"
     break;
 
   case 207: /* func_def: operator "abstract" "new" func_args ";"  */
-#line 769 "src/gwion.y"
+#line 764 "src/gwion.y"
     {
       Func_Base *const base = new_func_base(mpool(arg), NULL, (yyvsp[-2].sym), (yyvsp[-1].arg_list), (yyvsp[-4].flag) | ae_flag_abstract, (yylsp[-2]));
       (yyval.func_def) =new_func_def(mpool(arg), base, NULL);
     }
-#line 3882 "src/parser.c"
+#line 3877 "src/parser.c"
     break;
 
   case 208: /* type_decl_base: "<identifier>"  */
-#line 775 "src/gwion.y"
+#line 770 "src/gwion.y"
        { (yyval.type_decl) = new_type_decl(mpool(arg), (yyvsp[0].sym), (yyloc)); }
-#line 3888 "src/parser.c"
+#line 3883 "src/parser.c"
     break;
 
   case 209: /* type_decl_base: "(" flag type_decl_array decl_template func_args func_effects ")"  */
-#line 776 "src/gwion.y"
+#line 771 "src/gwion.y"
                                                                       {
       const Symbol name = sig_name(arg, (yylsp[-4]).first);
       (yyval.type_decl) = new_type_decl(mpool(arg), name, (yylsp[-6]));
@@ -3900,104 +3895,104 @@ yyreduce:
       fptr->base->effects.ptr = (yyvsp[-1].vector).ptr;
       (yyval.type_decl)->fptr = fptr;
   }
-#line 3904 "src/parser.c"
+#line 3899 "src/parser.c"
     break;
 
   case 210: /* type_decl_tmpl: type_decl_base call_template  */
-#line 790 "src/gwion.y"
+#line 785 "src/gwion.y"
                                  { (yyval.type_decl) = (yyvsp[-1].type_decl); (yyval.type_decl)->types = (yyvsp[0].tmplarg_list); }
-#line 3910 "src/parser.c"
+#line 3905 "src/parser.c"
     break;
 
   case 211: /* type_decl_tmpl: "&" type_decl_base call_template  */
-#line 791 "src/gwion.y"
+#line 786 "src/gwion.y"
                                      { (yyval.type_decl) = (yyvsp[-1].type_decl); (yyval.type_decl)->ref = true; (yyval.type_decl)->types = (yyvsp[0].tmplarg_list); }
-#line 3916 "src/parser.c"
+#line 3911 "src/parser.c"
     break;
 
   case 213: /* type_decl_noflag: type_decl_tmpl "." type_decl_noflag  */
-#line 796 "src/gwion.y"
+#line 791 "src/gwion.y"
                                         { (yyvsp[-2].type_decl)->next = (yyvsp[0].type_decl); }
-#line 3922 "src/parser.c"
+#line 3917 "src/parser.c"
     break;
 
   case 214: /* option: "?"  */
-#line 799 "src/gwion.y"
+#line 794 "src/gwion.y"
             { (yyval.uval) = 1; }
-#line 3928 "src/parser.c"
+#line 3923 "src/parser.c"
     break;
 
   case 215: /* option: OPTIONS  */
-#line 799 "src/gwion.y"
+#line 794 "src/gwion.y"
                                   { (yyval.uval) = strlen(s_name((yyvsp[0].sym))); }
-#line 3934 "src/parser.c"
+#line 3929 "src/parser.c"
     break;
 
   case 216: /* option: %empty  */
-#line 799 "src/gwion.y"
+#line 794 "src/gwion.y"
                                                                         { (yyval.uval) = 0; }
-#line 3940 "src/parser.c"
+#line 3935 "src/parser.c"
     break;
 
   case 217: /* type_decl_opt: type_decl_noflag option  */
-#line 800 "src/gwion.y"
+#line 795 "src/gwion.y"
                                        { (yyval.type_decl) = (yyvsp[-1].type_decl); (yyval.type_decl)->option = (yyvsp[0].uval); }
-#line 3946 "src/parser.c"
+#line 3941 "src/parser.c"
     break;
 
   case 219: /* type_decl: type_decl_flag type_decl_opt  */
-#line 801 "src/gwion.y"
+#line 796 "src/gwion.y"
                                                         { (yyval.type_decl) = (yyvsp[0].type_decl); (yyval.type_decl)->flag |= (yyvsp[-1].flag); }
-#line 3952 "src/parser.c"
+#line 3947 "src/parser.c"
     break;
 
   case 220: /* type_decl_flag: "late"  */
-#line 804 "src/gwion.y"
+#line 799 "src/gwion.y"
             { (yyval.flag) = ae_flag_late; }
-#line 3958 "src/parser.c"
+#line 3953 "src/parser.c"
     break;
 
   case 221: /* type_decl_flag: "const"  */
-#line 805 "src/gwion.y"
+#line 800 "src/gwion.y"
             { (yyval.flag) = ae_flag_const; }
-#line 3964 "src/parser.c"
+#line 3959 "src/parser.c"
     break;
 
   case 222: /* type_decl_flag2: "var"  */
-#line 807 "src/gwion.y"
+#line 802 "src/gwion.y"
                         { (yyval.flag) = ae_flag_none; }
-#line 3970 "src/parser.c"
+#line 3965 "src/parser.c"
     break;
 
   case 224: /* variable: "<identifier>" ";"  */
-#line 810 "src/gwion.y"
+#line 805 "src/gwion.y"
                    {
   Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("None"), (yylsp[-1]));
   (yyval.variable) = MK_VAR(td, (Var_Decl){ .tag = MK_TAG((yyvsp[-1].sym), (yylsp[-1]))});
 }
-#line 3979 "src/parser.c"
+#line 3974 "src/parser.c"
     break;
 
   case 225: /* variable: type_decl_array "<identifier>" ";"  */
-#line 814 "src/gwion.y"
+#line 809 "src/gwion.y"
                          { (yyval.variable) = MK_VAR((yyvsp[-2].type_decl), (Var_Decl){ .tag = MK_TAG((yyvsp[-1].sym), (yylsp[-1]))});}
-#line 3985 "src/parser.c"
+#line 3980 "src/parser.c"
     break;
 
   case 226: /* variable_list: variable  */
-#line 816 "src/gwion.y"
+#line 811 "src/gwion.y"
                          { YYLIST_INI(Variable, (yyval.variable_list), (yyvsp[0].variable)); }
-#line 3991 "src/parser.c"
+#line 3986 "src/parser.c"
     break;
 
   case 227: /* variable_list: variable_list variable  */
-#line 817 "src/gwion.y"
+#line 812 "src/gwion.y"
                          { YYLIST_END(Variable, (yyval.variable_list), (yyvsp[-1].variable_list), (yyvsp[0].variable)); }
-#line 3997 "src/parser.c"
+#line 3992 "src/parser.c"
     break;
 
   case 228: /* union_def: "union" flag "<identifier>" decl_template "{" variable_list "}"  */
-#line 820 "src/gwion.y"
+#line 815 "src/gwion.y"
                                                         {
       (yyval.union_def) = new_union_def(mpool(arg), (yyvsp[-1].variable_list), (yylsp[-4]));
       (yyval.union_def)->tag.sym = (yyvsp[-4].sym); // put tag in ctor
@@ -4005,321 +4000,321 @@ yyreduce:
       if((yyvsp[-3].specialized_list))
         (yyval.union_def)->tmpl = new_tmpl(mpool(arg), (yyvsp[-3].specialized_list));
     }
-#line 4009 "src/parser.c"
+#line 4004 "src/parser.c"
     break;
 
   case 229: /* var_decl: "<identifier>"  */
-#line 829 "src/gwion.y"
+#line 824 "src/gwion.y"
              { (yyval.var_decl) = (struct Var_Decl_) { .tag = MK_TAG((yyvsp[0].sym), (yylsp[0]))}; }
-#line 4015 "src/parser.c"
+#line 4010 "src/parser.c"
     break;
 
   case 230: /* arg_decl: "<identifier>"  */
-#line 831 "src/gwion.y"
+#line 826 "src/gwion.y"
              { (yyval.var_decl) = (struct Var_Decl_) { .tag = MK_TAG((yyvsp[0].sym), (yylsp[0]))}; }
-#line 4021 "src/parser.c"
+#line 4016 "src/parser.c"
     break;
 
   case 231: /* arg_decl: %empty  */
-#line 832 "src/gwion.y"
+#line 827 "src/gwion.y"
                  { (yyval.var_decl) = (struct Var_Decl_) {
             .tag = { .loc = {.first = arg->pos, .last = arg->pos }}};
         }
-#line 4029 "src/parser.c"
+#line 4024 "src/parser.c"
     break;
 
   case 245: /* opt_exp: exp  */
-#line 842 "src/gwion.y"
+#line 837 "src/gwion.y"
              { (yyval.exp) = (yyvsp[0].exp); }
-#line 4035 "src/parser.c"
+#line 4030 "src/parser.c"
     break;
 
   case 246: /* opt_exp: %empty  */
-#line 842 "src/gwion.y"
+#line 837 "src/gwion.y"
                                    { (yyval.exp) = NULL; }
-#line 4041 "src/parser.c"
+#line 4036 "src/parser.c"
     break;
 
   case 248: /* con_exp: log_or_exp "?" opt_exp ":" con_exp  */
-#line 845 "src/gwion.y"
+#line 840 "src/gwion.y"
       { (yyval.exp) = new_exp_if(mpool(arg), (yyvsp[-4].exp), (yyvsp[-2].exp), (yyvsp[0].exp), (yyloc)); }
-#line 4047 "src/parser.c"
+#line 4042 "src/parser.c"
     break;
 
   case 249: /* con_exp: log_or_exp "?:" con_exp  */
-#line 847 "src/gwion.y"
+#line 842 "src/gwion.y"
       { (yyval.exp) = new_exp_if(mpool(arg), (yyvsp[-2].exp), NULL, (yyvsp[0].exp), (yyloc)); }
-#line 4053 "src/parser.c"
+#line 4048 "src/parser.c"
     break;
 
   case 251: /* log_or_exp: log_or_exp "||" log_and_exp  */
-#line 849 "src/gwion.y"
+#line 844 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4059 "src/parser.c"
+#line 4054 "src/parser.c"
     break;
 
   case 253: /* log_and_exp: log_and_exp "&&" inc_or_exp  */
-#line 850 "src/gwion.y"
+#line 845 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4065 "src/parser.c"
+#line 4060 "src/parser.c"
     break;
 
   case 255: /* inc_or_exp: inc_or_exp "|" exc_or_exp  */
-#line 851 "src/gwion.y"
+#line 846 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4071 "src/parser.c"
+#line 4066 "src/parser.c"
     break;
 
   case 257: /* exc_or_exp: exc_or_exp "^" and_exp  */
-#line 852 "src/gwion.y"
+#line 847 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4077 "src/parser.c"
+#line 4072 "src/parser.c"
     break;
 
   case 259: /* and_exp: and_exp "&" eq_exp  */
-#line 853 "src/gwion.y"
+#line 848 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4083 "src/parser.c"
+#line 4078 "src/parser.c"
     break;
 
   case 261: /* eq_exp: eq_exp eq_op rel_exp  */
-#line 854 "src/gwion.y"
+#line 849 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4089 "src/parser.c"
+#line 4084 "src/parser.c"
     break;
 
   case 263: /* rel_exp: rel_exp rel_op shift_exp  */
-#line 855 "src/gwion.y"
+#line 850 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4095 "src/parser.c"
+#line 4090 "src/parser.c"
     break;
 
   case 265: /* shift_exp: shift_exp shift_op add_exp  */
-#line 856 "src/gwion.y"
+#line 851 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4101 "src/parser.c"
+#line 4096 "src/parser.c"
     break;
 
   case 267: /* add_exp: add_exp add_op mul_exp  */
-#line 857 "src/gwion.y"
+#line 852 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4107 "src/parser.c"
+#line 4102 "src/parser.c"
     break;
 
   case 269: /* mul_exp: mul_exp mul_op dur_exp  */
-#line 858 "src/gwion.y"
+#line 853 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4113 "src/parser.c"
+#line 4108 "src/parser.c"
     break;
 
   case 271: /* dur_exp: dur_exp "::" cast_exp  */
-#line 859 "src/gwion.y"
+#line 854 "src/gwion.y"
                                                        { (yyval.exp) = new_exp_binary(mpool(arg), (yyvsp[-2].exp), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4119 "src/parser.c"
+#line 4114 "src/parser.c"
     break;
 
   case 273: /* cast_exp: cast_exp "$" type_decl_array  */
-#line 862 "src/gwion.y"
+#line 857 "src/gwion.y"
     { (yyval.exp) = new_exp_cast(mpool(arg), (yyvsp[0].type_decl), (yyvsp[-2].exp), (yyloc)); }
-#line 4125 "src/parser.c"
+#line 4120 "src/parser.c"
     break;
 
   case 280: /* unary_exp: unary_op unary_exp  */
-#line 869 "src/gwion.y"
+#line 864 "src/gwion.y"
                        { (yyval.exp) = new_exp_unary(mpool(arg), (yyvsp[-1].sym), (yyvsp[0].exp), (yyloc)); }
-#line 4131 "src/parser.c"
+#line 4126 "src/parser.c"
     break;
 
   case 281: /* unary_exp: "spork" unary_exp  */
-#line 870 "src/gwion.y"
+#line 865 "src/gwion.y"
                       { (yyval.exp) = new_exp_unary(mpool(arg), (yyvsp[-1].sym), (yyvsp[0].exp), (yylsp[-1])); }
-#line 4137 "src/parser.c"
+#line 4132 "src/parser.c"
     break;
 
   case 282: /* unary_exp: "fork" unary_exp  */
-#line 871 "src/gwion.y"
+#line 866 "src/gwion.y"
                      { (yyval.exp) = new_exp_unary(mpool(arg), (yyvsp[-1].sym), (yyvsp[0].exp), (yylsp[-1])); }
-#line 4143 "src/parser.c"
+#line 4138 "src/parser.c"
     break;
 
   case 283: /* unary_exp: "new" type_decl_array call_paren  */
-#line 872 "src/gwion.y"
+#line 867 "src/gwion.y"
                                      {
        (yyval.exp) = new_exp_unary2(mpool(arg), (yyvsp[-2].sym), (yyvsp[-1].type_decl), (yyvsp[0].exp) ?: new_prim_nil(mpool(arg), (yylsp[0])), (yyloc));
   }
-#line 4151 "src/parser.c"
+#line 4146 "src/parser.c"
     break;
 
   case 284: /* unary_exp: "new" type_decl_array  */
-#line 875 "src/gwion.y"
+#line 870 "src/gwion.y"
                           {(yyval.exp) = new_exp_unary2(mpool(arg), (yyvsp[-1].sym), (yyvsp[0].type_decl), NULL, (yyloc)); }
-#line 4157 "src/parser.c"
+#line 4152 "src/parser.c"
     break;
 
   case 285: /* unary_exp: "spork" code_list  */
-#line 876 "src/gwion.y"
+#line 871 "src/gwion.y"
                         { (yyval.exp) = new_exp_unary3(mpool(arg), (yyvsp[-1].sym), (yyvsp[0].stmt_list), (yylsp[-1])); }
-#line 4163 "src/parser.c"
+#line 4158 "src/parser.c"
     break;
 
   case 286: /* unary_exp: "fork" code_list  */
-#line 877 "src/gwion.y"
+#line 872 "src/gwion.y"
                        { (yyval.exp) = new_exp_unary3(mpool(arg), (yyvsp[-1].sym), (yyvsp[0].stmt_list), (yylsp[-1])); }
-#line 4169 "src/parser.c"
+#line 4164 "src/parser.c"
     break;
 
   case 287: /* unary_exp: "spork" captures code_list  */
-#line 878 "src/gwion.y"
+#line 873 "src/gwion.y"
                                  { (yyval.exp) = new_exp_unary3(mpool(arg), (yyvsp[-2].sym), (yyvsp[0].stmt_list), (yylsp[-2])); (yyval.exp)->d.exp_unary.captures = (yyvsp[-1].captures); }
-#line 4175 "src/parser.c"
+#line 4170 "src/parser.c"
     break;
 
   case 288: /* unary_exp: "fork" captures code_list  */
-#line 879 "src/gwion.y"
+#line 874 "src/gwion.y"
                                  { (yyval.exp) = new_exp_unary3(mpool(arg), (yyvsp[-2].sym), (yyvsp[0].stmt_list), (yylsp[-2])); (yyval.exp)->d.exp_unary.captures = (yyvsp[-1].captures); }
-#line 4181 "src/parser.c"
+#line 4176 "src/parser.c"
     break;
 
   case 289: /* unary_exp: "$" type_decl_array  */
-#line 880 "src/gwion.y"
+#line 875 "src/gwion.y"
                         { (yyval.exp) = new_exp_td(mpool(arg), (yyvsp[0].type_decl), (yylsp[0])); }
-#line 4187 "src/parser.c"
+#line 4182 "src/parser.c"
     break;
 
   case 290: /* lambda_list: "<identifier>"  */
-#line 883 "src/gwion.y"
+#line 878 "src/gwion.y"
     {
   Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){.tag = MK_TAG((yyvsp[0].sym), (yylsp[0]))})};
   YYLIST_INI(Arg, (yyval.arg_list), a); }
-#line 4195 "src/parser.c"
+#line 4190 "src/parser.c"
     break;
 
   case 291: /* lambda_list: lambda_list "<identifier>"  */
-#line 886 "src/gwion.y"
+#line 881 "src/gwion.y"
                     {
   Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){ .tag = MK_TAG((yyvsp[0].sym), (yylsp[0]))})};
   YYLIST_END(Arg, (yyval.arg_list), (yyvsp[-1].arg_list), a);
 }
-#line 4204 "src/parser.c"
+#line 4199 "src/parser.c"
     break;
 
   case 292: /* lambda_arg: "\\" lambda_list  */
-#line 891 "src/gwion.y"
+#line 886 "src/gwion.y"
                              { (yyval.arg_list) = (yyvsp[0].arg_list); }
-#line 4210 "src/parser.c"
+#line 4205 "src/parser.c"
     break;
 
   case 293: /* lambda_arg: "\\"  */
-#line 891 "src/gwion.y"
+#line 886 "src/gwion.y"
                                                       { (yyval.arg_list) = NULL; }
-#line 4216 "src/parser.c"
+#line 4211 "src/parser.c"
     break;
 
   case 295: /* tmplarg: type_decl_array  */
-#line 894 "src/gwion.y"
+#line 889 "src/gwion.y"
                          {
     (yyval.tmplarg) = (TmplArg) { .d = { .td = (yyvsp[0].type_decl)}, .type = tmplarg_td};
   }
-#line 4224 "src/parser.c"
+#line 4219 "src/parser.c"
     break;
 
   case 296: /* tmplarg: tmplarg_exp  */
-#line 897 "src/gwion.y"
+#line 892 "src/gwion.y"
                 {
     (yyval.tmplarg) = (TmplArg) { .d = { .exp = (yyvsp[0].exp)}, .type = tmplarg_exp};
   }
-#line 4232 "src/parser.c"
+#line 4227 "src/parser.c"
     break;
 
   case 297: /* tmplarg_list: tmplarg  */
-#line 901 "src/gwion.y"
+#line 896 "src/gwion.y"
                            { YYLIST_INI(TmplArg, (yyval.tmplarg_list), (yyvsp[0].tmplarg)); }
-#line 4238 "src/parser.c"
+#line 4233 "src/parser.c"
     break;
 
   case 298: /* tmplarg_list: tmplarg_list "," tmplarg  */
-#line 902 "src/gwion.y"
+#line 897 "src/gwion.y"
                            { YYLIST_END(TmplArg, (yyval.tmplarg_list), (yyvsp[-2].tmplarg_list), (yyvsp[0].tmplarg)); }
-#line 4244 "src/parser.c"
+#line 4239 "src/parser.c"
     break;
 
   case 299: /* call_paren: "(" exp ")"  */
-#line 905 "src/gwion.y"
+#line 900 "src/gwion.y"
             { (yyval.exp) = (yyvsp[-1].exp); }
-#line 4250 "src/parser.c"
+#line 4245 "src/parser.c"
     break;
 
   case 300: /* call_paren: "(" ")"  */
-#line 906 "src/gwion.y"
+#line 901 "src/gwion.y"
         { (yyval.exp) = NULL; }
-#line 4256 "src/parser.c"
+#line 4251 "src/parser.c"
     break;
 
   case 303: /* dot_exp: post_exp "." "<identifier>"  */
-#line 910 "src/gwion.y"
+#line 905 "src/gwion.y"
                          {
   (yyval.exp) = new_exp_dot(mpool(arg), (yyvsp[-2].exp), (yyvsp[0].sym), (yyloc));
 }
-#line 4264 "src/parser.c"
+#line 4259 "src/parser.c"
     break;
 
   case 305: /* post_exp: post_exp array  */
-#line 916 "src/gwion.y"
+#line 911 "src/gwion.y"
     { (yyval.exp) = new_exp_array(mpool(arg), (yyvsp[-1].exp), (yyvsp[0].array_sub), (yyloc)); }
-#line 4270 "src/parser.c"
+#line 4265 "src/parser.c"
     break;
 
   case 306: /* post_exp: post_exp range  */
-#line 918 "src/gwion.y"
+#line 913 "src/gwion.y"
     { (yyval.exp) = new_exp_slice(mpool(arg), (yyvsp[-1].exp), (yyvsp[0].range), (yyloc)); }
-#line 4276 "src/parser.c"
+#line 4271 "src/parser.c"
     break;
 
   case 307: /* post_exp: post_exp call_template call_paren  */
-#line 920 "src/gwion.y"
+#line 915 "src/gwion.y"
     { (yyval.exp) = new_exp_call(mpool(arg), (yyvsp[-2].exp), (yyvsp[0].exp), (yyloc));
       if((yyvsp[-1].tmplarg_list))(yyval.exp)->d.exp_call.tmpl = new_tmpl_call(mpool(arg), (yyvsp[-1].tmplarg_list)); }
-#line 4283 "src/parser.c"
+#line 4278 "src/parser.c"
     break;
 
   case 308: /* post_exp: post_exp post_op  */
-#line 923 "src/gwion.y"
+#line 918 "src/gwion.y"
     { (yyval.exp) = new_exp_post(mpool(arg), (yyvsp[-1].exp), (yyvsp[0].sym), (yyloc)); }
-#line 4289 "src/parser.c"
+#line 4284 "src/parser.c"
     break;
 
   case 309: /* post_exp: dot_exp  */
-#line 924 "src/gwion.y"
+#line 919 "src/gwion.y"
             { (yyval.exp) = (yyvsp[0].exp); }
-#line 4295 "src/parser.c"
+#line 4290 "src/parser.c"
     break;
 
   case 310: /* interp_exp: "<interp string end>"  */
-#line 928 "src/gwion.y"
+#line 923 "src/gwion.y"
                { (yyval.exp) = new_prim_string(mpool(arg), (yyvsp[0].string).data, (yyvsp[0].string).delim, (yyloc)); }
-#line 4301 "src/parser.c"
+#line 4296 "src/parser.c"
     break;
 
   case 311: /* interp_exp: "<interp string lit>" interp_exp  */
-#line 929 "src/gwion.y"
+#line 924 "src/gwion.y"
                           { (yyval.exp) = new_prim_string(mpool(arg), (yyvsp[-1].string).data, (yyvsp[-1].string).delim, (yyloc)); (yyval.exp)->next = (yyvsp[0].exp); }
-#line 4307 "src/parser.c"
+#line 4302 "src/parser.c"
     break;
 
   case 312: /* interp_exp: exp INTERP_EXP interp_exp  */
-#line 930 "src/gwion.y"
+#line 925 "src/gwion.y"
                               { (yyval.exp) = (yyvsp[-2].exp); (yyval.exp)->next = (yyvsp[0].exp); }
-#line 4313 "src/parser.c"
+#line 4308 "src/parser.c"
     break;
 
   case 313: /* interp: "${" interp_exp  */
-#line 932 "src/gwion.y"
+#line 927 "src/gwion.y"
                                 { (yyval.exp) = (yyvsp[0].exp); }
-#line 4319 "src/parser.c"
+#line 4314 "src/parser.c"
     break;
 
   case 314: /* interp: interp "${" interp_exp  */
-#line 933 "src/gwion.y"
+#line 928 "src/gwion.y"
                                  {
   if(!(yyvsp[0].exp)->next) {
     char c[strlen((yyvsp[-2].exp)->d.prim.d.string.data) + strlen((yyvsp[0].exp)->d.prim.d.string.data) + 1];
@@ -4330,160 +4325,160 @@ yyreduce:
   } else
   (yyvsp[-2].exp)->next = (yyvsp[0].exp);
 }
-#line 4334 "src/parser.c"
+#line 4329 "src/parser.c"
     break;
 
   case 315: /* capture: "<identifier>"  */
-#line 944 "src/gwion.y"
+#line 939 "src/gwion.y"
             { (yyval.capture) = (Capture){ .var = { .tag = MK_TAG((yyvsp[0].sym), (yylsp[0])) }};}
-#line 4340 "src/parser.c"
+#line 4335 "src/parser.c"
     break;
 
   case 316: /* capture: "&" "<identifier>"  */
-#line 944 "src/gwion.y"
+#line 939 "src/gwion.y"
                                                                            { (yyval.capture) = (Capture){ .var = { .tag = MK_TAG((yyvsp[0].sym), (yylsp[0])) }, .is_ref = true }; }
-#line 4346 "src/parser.c"
+#line 4341 "src/parser.c"
     break;
 
   case 317: /* capture_list: capture  */
-#line 946 "src/gwion.y"
+#line 941 "src/gwion.y"
                        { YYLIST_INI(Capture, (yyval.captures), (yyvsp[0].capture)); }
-#line 4352 "src/parser.c"
+#line 4347 "src/parser.c"
     break;
 
   case 318: /* capture_list: capture_list capture  */
-#line 947 "src/gwion.y"
+#line 942 "src/gwion.y"
                        { YYLIST_END(Capture, (yyval.captures), (yyvsp[-1].captures), (yyvsp[0].capture)); }
-#line 4358 "src/parser.c"
+#line 4353 "src/parser.c"
     break;
 
   case 319: /* captures: ":" capture_list ":"  */
-#line 948 "src/gwion.y"
+#line 943 "src/gwion.y"
                                { (yyval.captures) = (yyvsp[-1].captures); }
-#line 4364 "src/parser.c"
+#line 4359 "src/parser.c"
     break;
 
   case 320: /* captures: %empty  */
-#line 948 "src/gwion.y"
+#line 943 "src/gwion.y"
                                                       { (yyval.captures) = NULL; }
-#line 4370 "src/parser.c"
+#line 4365 "src/parser.c"
     break;
 
   case 323: /* basic_exp: number  */
-#line 952 "src/gwion.y"
+#line 947 "src/gwion.y"
                          {
   (yyval.exp) = new_prim_int(    mpool(arg), (yyvsp[0].gwint).num, (yyloc)); 
   (yyval.exp)->d.prim.d.gwint.int_type = (yyvsp[0].gwint).int_type;
   }
-#line 4379 "src/parser.c"
+#line 4374 "src/parser.c"
     break;
 
   case 324: /* basic_exp: "<float>"  */
-#line 956 "src/gwion.y"
+#line 951 "src/gwion.y"
                          { (yyval.exp) = new_prim_float(  mpool(arg), (yyvsp[0].fval), (yyloc)); }
-#line 4385 "src/parser.c"
+#line 4380 "src/parser.c"
     break;
 
   case 325: /* basic_exp: "<litteral string>"  */
-#line 957 "src/gwion.y"
+#line 952 "src/gwion.y"
                          { (yyval.exp) = new_prim_string( mpool(arg), (yyvsp[0].sval), 0, (yyloc)); }
-#line 4391 "src/parser.c"
+#line 4386 "src/parser.c"
     break;
 
   case 326: /* basic_exp: "<litteral char>"  */
-#line 958 "src/gwion.y"
+#line 953 "src/gwion.y"
                          { (yyval.exp) = new_prim_char(   mpool(arg), (yyvsp[0].sval), (yyloc)); }
-#line 4397 "src/parser.c"
+#line 4392 "src/parser.c"
     break;
 
   case 327: /* prim_exp: "<identifier>"  */
-#line 961 "src/gwion.y"
+#line 956 "src/gwion.y"
                          { (yyval.exp) = new_prim_id(     mpool(arg), (yyvsp[0].sym), (yyloc)); }
-#line 4403 "src/parser.c"
+#line 4398 "src/parser.c"
     break;
 
   case 329: /* prim_exp: interp  */
-#line 963 "src/gwion.y"
+#line 958 "src/gwion.y"
                          { (yyval.exp) = !(yyvsp[0].exp)->next ? (yyvsp[0].exp) : new_prim_interp(mpool(arg), (yyvsp[0].exp), (yyloc)); }
-#line 4409 "src/parser.c"
+#line 4404 "src/parser.c"
     break;
 
   case 330: /* prim_exp: "[" opt_exp array_lit_ed  */
-#line 964 "src/gwion.y"
+#line 959 "src/gwion.y"
                              { 
     Array_Sub array = new_array_sub(mpool(arg), (yyvsp[-1].exp));
     (yyval.exp) = new_prim_array(  mpool(arg), array, (yyloc));
   }
-#line 4418 "src/parser.c"
+#line 4413 "src/parser.c"
     break;
 
   case 331: /* prim_exp: "{" dict_list "}"  */
-#line 968 "src/gwion.y"
+#line 963 "src/gwion.y"
                          { (yyval.exp) = new_prim_dict(   mpool(arg), (yyvsp[-1].exp), (yyloc)); }
-#line 4424 "src/parser.c"
+#line 4419 "src/parser.c"
     break;
 
   case 332: /* prim_exp: range  */
-#line 969 "src/gwion.y"
+#line 964 "src/gwion.y"
                          { (yyval.exp) = new_prim_range(  mpool(arg), (yyvsp[0].range), (yyloc)); }
-#line 4430 "src/parser.c"
+#line 4425 "src/parser.c"
     break;
 
   case 333: /* prim_exp: "<<<" exp ">>>"  */
-#line 970 "src/gwion.y"
+#line 965 "src/gwion.y"
                          { (yyval.exp) = new_prim_hack(   mpool(arg), (yyvsp[-1].exp), (yyloc)); }
-#line 4436 "src/parser.c"
+#line 4431 "src/parser.c"
     break;
 
   case 334: /* prim_exp: "(" exp ")"  */
-#line 971 "src/gwion.y"
+#line 966 "src/gwion.y"
                          { (yyval.exp) = (yyvsp[-1].exp); if(!(yyvsp[-1].exp)->next) (yyval.exp)->paren = true; }
-#line 4442 "src/parser.c"
+#line 4437 "src/parser.c"
     break;
 
   case 335: /* prim_exp: "`foo`"  */
-#line 972 "src/gwion.y"
+#line 967 "src/gwion.y"
                          {
     const loc_t loc = { .first = { .line = (yylsp[0]).first.line, .column = (yylsp[0]).first.column - 1},
                         .last =  { .line = (yylsp[0]).last.line, .column = (yylsp[0]).last.column - 1}};
     (yyval.exp) = new_prim_id(mpool(arg), (yyvsp[0].sym), loc);
     (yyval.exp)->d.prim.prim_type = ae_prim_locale;
   }
-#line 4453 "src/parser.c"
+#line 4448 "src/parser.c"
     break;
 
   case 336: /* prim_exp: lambda_arg captures code_list  */
-#line 978 "src/gwion.y"
+#line 973 "src/gwion.y"
                                   { (yyval.exp) = new_exp_lambda( mpool(arg), lambda_name(arg, (yylsp[-2]).first), (yyvsp[-2].arg_list), (yyvsp[0].stmt_list), (yylsp[-2])); (yyval.exp)->d.exp_lambda.def->captures = (yyvsp[-1].captures);}
-#line 4459 "src/parser.c"
+#line 4454 "src/parser.c"
     break;
 
   case 337: /* prim_exp: lambda_arg captures "{" binary_exp "}"  */
-#line 979 "src/gwion.y"
+#line 974 "src/gwion.y"
                                            { (yyval.exp) = new_exp_lambda2( mpool(arg), lambda_name(arg, (yylsp[-4]).first), (yyvsp[-4].arg_list), (yyvsp[-1].exp), (yylsp[-4])); (yyval.exp)->d.exp_lambda.def->captures = (yyvsp[-3].captures);}
-#line 4465 "src/parser.c"
+#line 4460 "src/parser.c"
     break;
 
   case 338: /* prim_exp: "(" op_op ")"  */
-#line 980 "src/gwion.y"
+#line 975 "src/gwion.y"
                          { (yyval.exp) = new_prim_id(     mpool(arg), (yyvsp[-1].sym), (yyloc)); (yyval.exp)->paren = true; }
-#line 4471 "src/parser.c"
+#line 4466 "src/parser.c"
     break;
 
   case 339: /* prim_exp: "perform" opt_id  */
-#line 981 "src/gwion.y"
+#line 976 "src/gwion.y"
                          { (yyval.exp) = new_prim_perform(mpool(arg), (yyvsp[0].sym), (yylsp[0])); }
-#line 4477 "src/parser.c"
+#line 4472 "src/parser.c"
     break;
 
   case 340: /* prim_exp: "(" ")"  */
-#line 982 "src/gwion.y"
+#line 977 "src/gwion.y"
                          { (yyval.exp) = new_prim_nil(    mpool(arg),     (yyloc)); }
-#line 4483 "src/parser.c"
+#line 4478 "src/parser.c"
     break;
 
 
-#line 4487 "src/parser.c"
+#line 4482 "src/parser.c"
 
       default: break;
     }
@@ -4712,7 +4707,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 984 "src/gwion.y"
+#line 979 "src/gwion.y"
 
 #undef scan
 #undef insert_symbol
