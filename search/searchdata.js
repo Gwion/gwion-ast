@@ -5,10 +5,10 @@ var indexSectionsWithContent =
   2: "abcdfglmprs",
   3: "_acdefghimnopst",
   4: "_abcdefghilmnoprstuvwx",
-  5: "_acefghilmprstuv",
+  5: "acefghilmprstuv",
   6: "_acefgptu",
   7: "acegptu",
-  8: "_acdfgmpsuy",
+  8: "_adfgmpsuy",
   9: "mp"
 };
 

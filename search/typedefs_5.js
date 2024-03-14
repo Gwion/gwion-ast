@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['gwerr_5fbasic_5ffunction_5ft_0',['gwerr_basic_function_t',['../loc_8h.html#a4abab1f496f593c42fe60d5c68bf6a40',1,'loc.h']]],
-  ['gwerr_5fsecondary_5ffunction_5ft_1',['gwerr_secondary_function_t',['../loc_8h.html#a47969cc01456548f22684da775aade5e',1,'loc.h']]]
+  ['handler_0',['Handler',['../absyn_8h.html#a61fbf121c75dd2318bba2304cb8f0578',1,'absyn.h']]],
+  ['handler_5flist_1',['Handler_List',['../absyn_8h.html#af158a89f894abae804179811dc59275f',1,'absyn.h']]]
 ];

@@ -104,8 +104,6 @@ Functions</h2></td></tr>
 <tr class="separator:ab2c731d6e2e490d2084f5d853e6da71b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad844cd62747cb37bfcb866666b06ff3b" id="r_ad844cd62747cb37bfcb866666b06ff3b"><td class="memItemLeft" align="right" valign="top">ANN int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad844cd62747cb37bfcb866666b06ff3b">scanner_secondary</a> (<a class="el" href="#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const <a class="el" href="loc_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:ad844cd62747cb37bfcb866666b06ff3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a165d9a1c1b00eaffb2291f80fcb1c4d5" id="r_a165d9a1c1b00eaffb2291f80fcb1c4d5"><td class="memItemLeft" align="right" valign="top">ANN <a class="el" href="loc_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a165d9a1c1b00eaffb2291f80fcb1c4d5">defer_stmt</a> (<a class="el" href="structStmt.html">Stmt</a> *stmt)</td></tr>
-<tr class="separator:a165d9a1c1b00eaffb2291f80fcb1c4d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>scanner </p>
@@ -127,31 +125,6 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a165d9a1c1b00eaffb2291f80fcb1c4d5" name="a165d9a1c1b00eaffb2291f80fcb1c4d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a165d9a1c1b00eaffb2291f80fcb1c4d5">&#9670;&#160;</a></span>defer_stmt()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ANN <a class="el" href="loc_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> defer_stmt </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structStmt.html">Stmt</a> *</td>          <td class="paramname"><span class="paramname"><em>stmt</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="defer_8c_source.html#l00097">97</a> of file <a class="el" href="defer_8c_source.html">defer.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   97</span>                                 {</div>
-<div class="line"><span class="lineno">   98</span>  <span class="keywordflow">return</span> <a class="code hl_variable" href="defer_8c.html#a1201e7c311a291d852ab9d5ecbdd41b0">defer_stmt_func</a>[stmt-&gt;<a class="code hl_variable" href="structStmt.html#ac117446db99a8e22b4924e4ee24ccb43">stmt_type</a>](&amp;stmt-&gt;<a class="code hl_variable" href="structStmt.html#ae3592eeb232cc75fe7850f773032a0b3">d</a>);</div>
-<div class="line"><span class="lineno">   99</span>}</div>
-<div class="ttc" id="adefer_8c_html_a1201e7c311a291d852ab9d5ecbdd41b0"><div class="ttname"><a href="defer_8c.html#a1201e7c311a291d852ab9d5ecbdd41b0">defer_stmt_func</a></div><div class="ttdeci">const _defer_stmt_func defer_stmt_func[]</div><div class="ttdef"><b>Definition</b> <a href="defer_8c_source.html#l00078">defer.c:78</a></div></div>
-<div class="ttc" id="astructStmt_html_ac117446db99a8e22b4924e4ee24ccb43"><div class="ttname"><a href="structStmt.html#ac117446db99a8e22b4924e4ee24ccb43">Stmt::stmt_type</a></div><div class="ttdeci">ae_stmt_t stmt_type</div><div class="ttdef"><b>Definition</b> <a href="absyn_8h_source.html#l00681">absyn.h:681</a></div></div>
-<div class="ttc" id="astructStmt_html_ae3592eeb232cc75fe7850f773032a0b3"><div class="ttname"><a href="structStmt.html#ae3592eeb232cc75fe7850f773032a0b3">Stmt::d</a></div><div class="ttdeci">union Stmt::stmt_data d</div></div>
-</div><!-- fragment -->
-</div>
-</div>
 <a id="ab2c731d6e2e490d2084f5d853e6da71b" name="ab2c731d6e2e490d2084f5d853e6da71b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab2c731d6e2e490d2084f5d853e6da71b">&#9670;&#160;</a></span>scanner_error()</h2>
 

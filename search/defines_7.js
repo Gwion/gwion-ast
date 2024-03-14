@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['pp_5fsize_0',['PP_SIZE',['../scanner_8c.html#a1fceec76b7f0aa03952ab802d07b4792',1,'scanner.c']]]
+  ['safe_5fflag_0',['SAFE_FLAG',['../flags_8h.html#a2ad29bcc4ad469c255ae3b03a9d0710a',1,'flags.h']]],
+  ['set_5fflag_1',['SET_FLAG',['../flags_8h.html#a5650f8da2960d5e791264b64c6f6db58',1,'flags.h']]]
 ];
