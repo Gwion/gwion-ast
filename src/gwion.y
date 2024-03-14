@@ -825,7 +825,7 @@ var_decl: ID { $$ = (struct Var_Decl_) { .tag = MK_TAG($1, @1)}; };
 
 arg_decl: ID { $$ = (struct Var_Decl_) { .tag = MK_TAG($1, @1)}; };
         | %empty { $$ = (struct Var_Decl_) {
-            .tag = { .loc = {.first = arg->pos, .last = arg->pos }}};
+            .tag = { .sym = NULL, .loc = {.first = arg->pos, .last = arg->pos }}};
         };
 
 eq_op : "==" | "!=";

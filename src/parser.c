@@ -4018,7 +4018,7 @@ yyreduce:
   case 231: /* arg_decl: %empty  */
 #line 827 "src/gwion.y"
                  { (yyval.var_decl) = (struct Var_Decl_) {
-            .tag = { .loc = {.first = arg->pos, .last = arg->pos }}};
+            .tag = { .sym = NULL, .loc = {.first = arg->pos, .last = arg->pos }}};
         }
 #line 4024 "src/parser.c"
     break;
