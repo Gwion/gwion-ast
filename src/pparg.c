@@ -1,7 +1,7 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-ANN static Macro pparg_def(struct PPArg_ *ppa, const m_str str) {
+ANN static Macro pparg_def(PPArg *ppa, const m_str str) {
   const ssize_t sz = strlen(str);
   char          base[sz + 1];
   m_str         def = strchr(str, '(') ?: strchr(str, '=');
@@ -17,7 +17,7 @@ ANN static Macro pparg_def(struct PPArg_ *ppa, const m_str str) {
   return NULL;
 }
 
-ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
+ANN static MacroArg pparg_arg(PPArg *ppa, m_str src) {
   const size_t sz = strlen(src);
   char         buf[sz + 1];
   for (m_uint i = 0; i < sz; ++i) {
@@ -37,13 +37,13 @@ ANN static MacroArg pparg_arg(struct PPArg_ *ppa, m_str src) {
   return NULL;
 }
 
-ANN static GwText *pparg_body(struct PPArg_ *ppa, const m_str str) {
+ANN static GwText *pparg_body(PPArg *ppa, const m_str str) {
   GwText *text = new_text(ppa->hash.p);
   text_add(text, str);
   return text;
 }
 
-ANN2(1) bool pparg_add(struct PPArg_ *ppa, const m_str str) {
+ANN2(1) bool pparg_add(PPArg *ppa, const m_str str) {
   if (!ppa->hash.table) hini(&ppa->hash, 127);
   DECL_B(const Macro, m, = pparg_def(ppa, str));
   const m_str arg = strchr(str, '(');
@@ -54,12 +54,12 @@ ANN2(1) bool pparg_add(struct PPArg_ *ppa, const m_str str) {
   return true;
 }
 
-ANN void pparg_ini(MemPool mp, struct PPArg_ *a) {
+ANN void pparg_ini(MemPool mp, PPArg *a) {
   a->hash.p = mp;
   vector_init(&a->path);
 }
 
-ANN void pparg_end(struct PPArg_ *a) {
+ANN void pparg_end(PPArg *a) {
   vector_release(&a->path);
   if (a->hash.table) {
     macro_del(&a->hash);

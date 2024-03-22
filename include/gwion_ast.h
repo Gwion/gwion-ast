@@ -3,7 +3,6 @@
 */
 #ifndef __GWION_AST
 #define __GWION_AST
-#include "prettyerr_export.h"
 #include "loc.h"
 #include "flags.h"
 #include "absyn.h"

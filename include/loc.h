@@ -17,15 +17,20 @@ typedef struct loc_t_ {
   struct pos_t last;
 } loc_t;
 
-void     gwerr_basic(const char *main, const char *explain, const char *fix,
+void     gwlog_error(const char *main, const char *explain,
                      const char *filename, const loc_t loc, const uint error_code);
-void     gwerr_warn(const char *main, const char *explain, const char *fix,
-                     const char *filename, const loc_t loc);
-ANN void gwerr_secondary(const char *main, const char *filename,
+ANN void gwlog_warning(const char *main, const char *filename,
                          const loc_t loc);
-typedef void (*gwerr_basic_function_t)(const char *, const char *, const char *,
+ANN void gwlog_related(const char *main, const char *filename, 
+                         const loc_t loc);
+ANN void gwlog_hint(const char *main, const char *filename, 
+                         const loc_t loc);
+typedef void (*gwlog_error_function_t)(const char *, const char *,
   const char *, const loc_t,  const uint,  const enum libprettyerr_errtype);
-typedef void (*gwerr_secondary_function_t)(const char *main, const char *filename,
+typedef void (*gwlog_warning_function_t)(const char *main, const char *filename,
                          const loc_t loc);
-ANN void gwerr_set_func(gwerr_basic_function_t, gwerr_secondary_function_t);
+ANN void gwlog_set_func(gwlog_error_function_t error,
+                        gwlog_warning_function_t warning,
+                        gwlog_warning_function_t info,
+                        gwlog_warning_function_t hint);
 #endif

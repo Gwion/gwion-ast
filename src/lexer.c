@@ -3853,7 +3853,7 @@ ANN static double exponent_not(m_str str, size_t sz) {
 ANN void lexer_error(yyscan_t yyscanner, const char *msg, const uint error_code) {
   struct yyguts_t *yyg = (struct yyguts_t*)yyscanner;
   Scanner* scan = (Scanner*)yyg->yyextra_r;
-  scanner_error(scan, msg, NULL, NULL, *yyget_lloc(yyscanner), error_code);
+  scanner_error(scan, msg, NULL, *yyget_lloc(yyscanner), error_code);
 }
 
 char* strip_lit(char* str, const size_t len){
@@ -4406,7 +4406,7 @@ static bool handle_rpar(void* data, bool *in_macro) {
     loc_t loc = ppstate->loc;
     loc.first.column++;
     loc.last.column++;
-    scanner_error(scan, "not enough arguments", NULL, NULL, loc, ERRORCODE(110));
+    scanner_error(scan, "not enough arguments", NULL, loc, ERRORCODE(110));
     return false;
   }
   scan->pp->entry->args = NULL;

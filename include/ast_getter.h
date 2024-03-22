@@ -8,7 +8,7 @@ struct AstGetter_ {
   const m_str    name;
   FILE *         f;
   SymTable *     st;
-  struct PPArg_ *ppa;
+  PPArg *ppa;
 };
 
 ANN Ast parse_pos(struct AstGetter_ *const, const pos_t);

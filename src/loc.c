@@ -1,4 +1,3 @@
-#include "prettyerr_export.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "parser.h"
@@ -11,17 +10,31 @@ void gwion_parser_set_default_pos(const pos_t pos) {
 
 ANN void pos_ini(pos_t *pos) { *pos = default_pos; }
 
-static void _gwerr_basic(const char *main, const char *explain, const char *fix,
+static void _gwlog_error(const char *main, const char *explain,
                  const char *filename, const loc_t loc, const uint error_code,
                  const enum libprettyerr_errtype errtype);
-ANN static void _gwerr_secondary(const char *main, const char *filename,
+ANN static void _gwlog_warning(const char *main, const char *filename, 
                          const loc_t loc);
+ANN static void _gwlog_related(const char *main, const char *filename, 
+                         const loc_t loc);
+ANN static void _gwlog_hint(const char *main, const char *filename NUSED, 
+                         const loc_t loc NUSED) {
+  gw_err("{-}hint:{0} %s\n", main);
+}
 
-static gwerr_basic_function_t _basic = _gwerr_basic;
-static gwerr_secondary_function_t _secondary = _gwerr_secondary;
-ANN void gwerr_set_func(gwerr_basic_function_t basic, gwerr_secondary_function_t secondary) {
-  _basic = basic;
-  _secondary = secondary;
+static gwlog_error_function_t   _error   = _gwlog_error;
+static gwlog_warning_function_t _warning = _gwlog_warning;
+static gwlog_warning_function_t _related = _gwlog_related;
+static gwlog_warning_function_t _hint    = _gwlog_hint;
+
+ANN void gwlog_set_func(gwlog_error_function_t error,
+                        gwlog_warning_function_t warning,
+                        gwlog_warning_function_t related,
+                        gwlog_warning_function_t hint) {
+  _error = error;
+  _warning = warning;
+  _related = related;
+  _hint = hint;
 }
 
 ANN static char *get_src(const char *filename, const loc_t loc) {
@@ -53,7 +66,7 @@ static inline const char *get_filename(const char *filename) {
 
 ANN2(1, 2, 3)
 static void nosrc(const perr_printer_t *printer, const perr_t *err,
-                  const char *main, const char *explain, const char *fix) {
+                  const char *main, const char *explain) {
   size_t len;
   char   base[16];
   char   color[16];
@@ -67,10 +80,9 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
   perr_print_line_number(printer, err, color);
   gw_err("%s\n", main);
   if (explain) gw_err("%s\n", explain);
-  if (fix) gw_err("%s\n", fix);
 }
 
-static void _gwerr_basic(const char *main, const char *explain, const char *fix,
+static void _gwlog_error(const char *main, const char *explain,
                  const char *filename, const loc_t loc, const uint error_code,
                  const enum libprettyerr_errtype errtype) {
 #ifdef __FUZZING__
@@ -91,36 +103,23 @@ static void _gwerr_basic(const char *main, const char *explain, const char *fix,
   const perr_t err = PERR_Error(
       errtype, PERR_Str(loc.first.line, line),
       PERR_Pos(loc.first.column - 1, sz), main,
-      explain, fix, error_code, get_filename(filename));
+      explain, error_code, get_filename(filename));
 
   if (line) {
     perr_print_error(&printer, &err);
     xfree(line);
   } else
-    nosrc(&printer, &err, main, explain, fix);
+    nosrc(&printer, &err, main, explain);
 }
 
-void gwerr_basic(const char *main, const char *explain, const char *fix,
+void gwlog_error(const char *main, const char *explain,
                  const char *filename, const loc_t loc, const uint error_code) {
-#ifdef __FUZZING__
-  return;
-#endif
-  _basic(main, explain, fix, filename, loc, error_code, PERR_ERROR);
+  _error(main, explain, filename, loc, error_code, PERR_ERROR);
 }
 
-void gwerr_warn(const char *main, const char *explain, const char *fix,
-                 const char *filename, const loc_t loc) {
-#ifdef __FUZZING__
-  return;
-#endif
-  _basic(main, explain, fix, filename, loc, 0, PERR_WARNING);
-}
-
-ANN static void _gwerr_secondary(const char *main, const char *filename,
+ANN static void _gwlog_secondary(const char *main, const char *filename,
+                         const enum libprettyerr_errtype type,
                          const loc_t loc) {
-#ifdef __FUZZING__
-  return;
-#endif
   perr_printer_t printer;
   char *         line = get_src(filename, loc);
 
@@ -130,16 +129,35 @@ ANN static void _gwerr_secondary(const char *main, const char *filename,
   printer.rounded = true;
 
   const perr_t err = PERR_Secondary(
-      PERR_WARNING, PERR_Str(loc.first.line, line),
+      type, PERR_Str(loc.first.line, line),
       PERR_Pos(loc.first.column - 1, loc.last.column - loc.first.column), main,
-      NULL, get_filename(filename));
+          get_filename(filename));
   if (line) {
     perr_print_error(&printer, &err);
     xfree(line);
   } else
-    nosrc(&printer, &err, main, NULL, NULL);
+    nosrc(&printer, &err, main, NULL);
 }
-ANN void gwerr_secondary(const char *main, const char *filename,
+
+ANN void _gwlog_warning(const char *main, const char *filename,
                          const loc_t loc) {
-  _secondary(main, filename, loc);
+  _gwlog_secondary(main, filename, PERR_WARNING, loc);
+}
+ANN void gwlog_warning(const char *main, const char *filename,
+                         const loc_t loc) {
+  _warning(main, filename, loc);
+}
+
+ANN void _gwlog_related(const char *main, const char *filename,
+                         const loc_t loc) {
+  _gwlog_secondary(main, filename, PERR_INFO, loc);
+}
+ANN void gwlog_related(const char *main, const char *filename,
+                         const loc_t loc) {
+  _hint(main, filename, loc);
+}
+
+ANN void gwlog_hint(const char *main, const char *filename,
+                         const loc_t loc) {
+  _hint(main, filename, loc);
 }

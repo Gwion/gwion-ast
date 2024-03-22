@@ -8,7 +8,7 @@ typedef struct Scanner_ {
   void *         scanner;
   SymTable *     st;
   struct PP_ *   pp;
-  struct PPArg_ *ppa;
+  PPArg *ppa;
   struct Vector_ hashes;
   struct pos_t   pos;
   struct pos_t   tmp;
@@ -21,7 +21,7 @@ typedef struct Scanner_ {
 
 ANN2(1, 2)
 int     scanner_error(Scanner *scan, const char *main, const char *explain,
-                      const char *fix, const loc_t loc, const uint error_code);
+                      const loc_t loc, const uint error_code);
 ANN int scanner_secondary(Scanner *scan, const char *main, const loc_t loc);
 
 #endif

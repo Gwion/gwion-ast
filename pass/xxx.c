@@ -446,7 +446,7 @@ ANN static bool xxx_ast(XXX *a, Ast b) {
 int main(int argc, char **argv) {
   MemPool mp = mempool_ini(sizeof(Exp));
   SymTable* st = new_symbol_table(mp, 65347);
-  struct PPArg_ ppa = {};
+  PPArg ppa = {};
   XXX xxx = {};
   pparg_ini(mp, &ppa);
   for(int i = 1; i < argc; ++i) {

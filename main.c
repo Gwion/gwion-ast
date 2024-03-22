@@ -5,7 +5,7 @@ int main(int argc, char **argv) {
 //  MemPool p = mempool_ini(sizeof(Exp));
   MemPool p = mempool_ini(1024);
   SymTable *st = new_symbol_table(p, 65536);
-  struct PPArg_ ppa;
+  PPArg ppa;
   for(int i = 1; i < argc; i++) {
     FILE *f = fopen(argv[i], "r");
     if(!f) {
