@@ -154,7 +154,7 @@ ANN void _gwlog_related(const char *main, const char *filename,
 }
 ANN void gwlog_related(const char *main, const char *filename,
                          const loc_t loc) {
-  _hint(main, filename, loc);
+  _related(main, filename, loc);
 }
 
 ANN void gwlog_hint(const char *main, const char *filename,

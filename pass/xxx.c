@@ -1,446 +1,539 @@
+#include "defs.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "xxx.h"
 
-ANN static bool xxx_symbol(XXX *a, Symbol b) {
-  (bool)a;
-  (bool)b;
-}
+#define CHECK_RET(a, ret) \
+do {                      \
+  if(!(a))                \
+    ret = false;          \
+} while(0) 
 
-ANN static bool xxx_loc(XXX *a, loc_t b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_type_decl(XXX *a, Type_Decl* b);
+ANN static bool xxx_func_def(XXX *a, Func_Def b);
+
+ANN static bool xxx_symbol(XXX *a NUSED, Symbol b NUSED) {
+  return true;
 }
 
 ANN static bool xxx_tag(XXX *a, Tag *b) {
-  if(b->sym) xxx_symbol(a, b->sym);
-  xxx_loc(a, b->loc);
+  return b->sym ? xxx_symbol(a, b->sym) : true;
 }
 
 ANN static bool xxx_array_sub(XXX *a, Array_Sub b) {
-  if(b->exp) xxx_exp(a, b->exp);
+  return b->exp ? xxx_exp(a, b->exp) : true;
 }
 
 ANN static bool xxx_id_list(XXX *a, ID_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Symbol c = *mp_vector_at(b, Symbol, i);
-    xxx_symbol(a, c);
+    CHECK_RET(xxx_symbol(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_specialized(XXX *a, Specialized *b) {
-  xxx_tag(a, &b->tag);
-  if(b->traits) xxx_id_list(a, b->traits);
+  bool ret = true;
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  if(b->traits) CHECK_RET(xxx_id_list(a, b->traits), ret);
+  return ret;
 }
 
 ANN static bool xxx_specialized_list(XXX *a, Specialized_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Specialized * c = mp_vector_at(b, Specialized  , i);
-    xxx_specialized(a, c);
+    CHECK_RET(xxx_specialized(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_tmplarg(XXX *a, TmplArg *b) {
-  if (b->type == tmplarg_td) xxx_type_decl(a, b->d.td);
-  else xxx_exp(a, b->d.exp);
+  bool ret = true;
+  if (b->type == tmplarg_td) CHECK_RET(xxx_type_decl(a, b->d.td), ret);
+  else CHECK_RET(xxx_exp(a, b->d.exp), ret);
+  return ret;
 }
 
 ANN static bool xxx_tmplarg_list(XXX *a, TmplArg_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     TmplArg * c = mp_vector_at(b, TmplArg, i);
-    xxx_tmplarg(a, c);
+    CHECK_RET(xxx_tmplarg(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_tmpl(XXX *a, Tmpl *b) {
-  if(b->list) xxx_specialized_list(a, b->list);
-  if(b->call) xxx_tmplarg_list(a, b->call);
+  bool ret = true;
+  if(b->list) CHECK_RET(xxx_specialized_list(a, b->list), ret);
+  if(b->call) CHECK_RET(xxx_tmplarg_list(a, b->call), ret);
+  return ret;
 }
 
 ANN static bool xxx_range(XXX *a, Range *b) {
-  if(b->start) xxx_exp(a, b->start);
-  if(b->end) xxx_exp(a , b->end);
+  bool ret = true;
+  if(b->start) CHECK_RET(xxx_exp(a, b->start), ret);
+  if(b->end) CHECK_RET(xxx_exp(a , b->end), ret);
+  return ret;
 }
 
 ANN static bool xxx_type_decl(XXX *a, Type_Decl *b) {
-  xxx_tag(a, &b->tag);
-  if(b->array) xxx_array_sub(a, b->array);
-  if(b->types) xxx_tmplarg_list(a, b->types);
+  bool ret = true;
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  if(b->array) CHECK_RET(xxx_array_sub(a, b->array), ret);
+  if(b->types) CHECK_RET(xxx_tmplarg_list(a, b->types), ret);
+  return ret;
 }
 
 ANN static bool xxx_prim_id(XXX *a, Symbol *b) {
-  xxx_symbol(a, *b);
+  return xxx_symbol(a, *b);
 }
 
-ANN static bool xxx_prim_num(XXX *a, m_uint *b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_prim_num(XXX *a NUSED, m_uint *b NUSED) {
+  return true;
 }
 
-ANN static bool xxx_prim_float(XXX *a, m_float *b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_prim_float(XXX *a NUSED, m_float *b NUSED) {
+  return true;
 }
 
-ANN static bool xxx_prim_str(XXX *a, m_str *b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_prim_str(XXX *a NUSED, m_str *b NUSED) {
+  return true;
 }
 
 ANN static bool xxx_prim_array(XXX *a, Array_Sub *b) {
-  xxx_array_sub(a, *b);
+  return xxx_array_sub(a, *b);
 }
 
 ANN static bool xxx_prim_range(XXX *a, Range* *b) {
-  xxx_range(a, *b);
+  return xxx_range(a, *b);
 }
 
 ANN static bool xxx_prim_dict(XXX *a, Exp* *b) {
-  xxx_exp(a, *b);
+  return xxx_exp(a, *b);
 }
 
 ANN static bool xxx_prim_hack(XXX *a, Exp* *b) {
-  xxx_exp(a, *b);
+  return xxx_exp(a, *b);
 }
 
 ANN static bool xxx_prim_interp(XXX *a, Exp* *b) {
-  xxx_exp(a, *b);
+  return xxx_exp(a, *b);
 }
 
-ANN static bool xxx_prim_char(XXX *a, m_str *b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_prim_char(XXX *a NUSED, m_str *b NUSED) {
+  return true;
 }
 
-ANN static bool xxx_prim_nil(XXX *a, bool *b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_prim_nil(XXX *a NUSED, bool *b NUSED) {
+  return true;
 }
 
 ANN static bool xxx_prim_perform(XXX *a, Symbol *b) {
-  xxx_symbol(a, *b);
+  return xxx_symbol(a, *b);
 }
 
 ANN static bool xxx_prim_locale(XXX *a, Symbol *b) {
-  xxx_symbol(a, *b);
+  return xxx_symbol(a, *b);
 }
 
 DECL_PRIM_FUNC(xxx, bool, XXX *)
 ANN static bool xxx_prim(XXX *a, Exp_Primary *b) {
-  xxx_prim_func[b->prim_type](a, &b->d);
+  return xxx_prim_func[b->prim_type](a, &b->d);
 }
 
 ANN static bool xxx_var_decl(XXX *a, Var_Decl *b) {
-  xxx_tag(a, &b->tag);
+  return xxx_tag(a, &b->tag);
 }
 
 ANN static bool xxx_variable(XXX *a, Variable *b) {
-  if(b->td) xxx_type_decl(a, b->td);
-  xxx_var_decl(a, &b->vd);
+  bool ret = true;
+  if(b->td) CHECK_RET(xxx_type_decl(a, b->td), ret);
+  CHECK_RET(xxx_var_decl(a, &b->vd), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_decl(XXX *a, Exp_Decl *b) {
-  xxx_variable(a, &b->var);
+  bool ret = true;
+  if(b->args) CHECK_RET(xxx_exp(a, b->args), ret);
+  CHECK_RET(xxx_variable(a, &b->var), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_binary(XXX *a, Exp_Binary *b) {
-  xxx_exp(a, b->lhs);
-  xxx_exp(a, b->rhs);
-  xxx_symbol(a, b->op);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->lhs), ret);
+  CHECK_RET(xxx_exp(a, b->rhs), ret);
+  CHECK_RET(xxx_symbol(a, b->op), ret);
+  return ret;
 }
 
 ANN static bool xxx_capture(XXX *a, Capture *b) {
-  xxx_tag(a, &b->var.tag);
+  return xxx_tag(a, &b->var.tag);
 }
 
 ANN static bool xxx_captures(XXX *a, Capture_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Capture *c = mp_vector_at(b, Capture, i);
-    xxx_capture(a, c);
+    CHECK_RET(xxx_capture(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_exp_unary(XXX *a, Exp_Unary *b) {
-  xxx_symbol(a, b->op);
+  bool ret = true;
+  CHECK_RET(xxx_symbol(a, b->op), ret);
   const enum unary_type type = b->unary_type;
-  if(type == unary_exp) xxx_exp(a, b->exp);
-  else if(type == unary_td) xxx_type_decl(a, b->ctor.td);
+  if(type == unary_exp) CHECK_RET(xxx_exp(a, b->exp), ret);
+  else if(type == unary_td) CHECK_RET(xxx_type_decl(a, b->ctor.td), ret);
   else {
-    xxx_stmt_list(a, b->code);
-    if(b->captures)xxx_captures(a, b->captures);
+    CHECK_RET(xxx_stmt_list(a, b->code), ret);
+    if(b->captures)CHECK_RET(xxx_captures(a, b->captures), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_exp_cast(XXX *a, Exp_Cast *b) {
-  xxx_type_decl(a, b->td);
-  xxx_exp(a, b->exp);
+  bool ret = true;
+  CHECK_RET(xxx_type_decl(a, b->td), ret);
+  CHECK_RET(xxx_exp(a, b->exp), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_post(XXX *a, Exp_Postfix *b) {
-  xxx_symbol(a, b->op);
-  xxx_exp(a, b->exp);
+  bool ret = true;
+  CHECK_RET(xxx_symbol(a, b->op), ret);
+  CHECK_RET(xxx_exp(a, b->exp), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_call(XXX *a, Exp_Call *b) {
-  xxx_exp(a, b->func);
-  if(b->args) xxx_exp(a, b->args);
-  if(b->tmpl) xxx_tmpl(a, b->tmpl);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->func), ret);
+  if(b->args) CHECK_RET(xxx_exp(a, b->args), ret);
+  if(b->tmpl) CHECK_RET(xxx_tmpl(a, b->tmpl), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_array(XXX *a, Exp_Array *b) {
-  xxx_exp(a, b->base);
-  xxx_array_sub(a, b->array);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->base), ret);
+  CHECK_RET(xxx_array_sub(a, b->array), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_slice(XXX *a, Exp_Slice *b) {
-  xxx_exp(a, b->base);
-  xxx_range(a, b->range);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->base), ret);
+  CHECK_RET(xxx_range(a, b->range), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_if(XXX *a, Exp_If *b) {
-  xxx_exp(a, b->cond);
-  if(b->if_exp) xxx_exp(a, b->if_exp);
-  xxx_exp(a, b->else_exp);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->cond), ret);
+  if(b->if_exp) CHECK_RET(xxx_exp(a, b->if_exp), ret);
+  CHECK_RET(xxx_exp(a, b->else_exp), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_dot(XXX *a, Exp_Dot *b) {
-  xxx_exp(a, b->base);
-  xxx_symbol(a,  b->xid);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->base), ret);
+  CHECK_RET(xxx_symbol(a,  b->xid), ret);
+  return ret;
 }
 
 ANN static bool xxx_exp_lambda(XXX *a, Exp_Lambda *b) {
-  xxx_func_def(a, b->def);
+  return xxx_func_def(a, b->def);
 }
 
 ANN static bool xxx_exp_td(XXX *a, Type_Decl *b) {
-  xxx_type_decl(a, b);
+  return xxx_type_decl(a, b);
 }
 
 DECL_EXP_FUNC(xxx, bool, XXX*)
 ANN static bool xxx_exp(XXX *a, Exp* b) {
-  xxx_exp_func[b->exp_type](a, &b->d);
-  if(b->next) return xxx_exp(a, b ->next);
+  bool ret = b->poison
+    ? xxx_exp_func[b->exp_type](a, &b->d)
+    : false;
+  if(b->next) CHECK_RET(xxx_exp(a, b ->next), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_exp(XXX *a, Stmt_Exp b) {
-  if(b->val) xxx_exp(a,  b->val);
+  return b->val ? xxx_exp(a,  b->val) : true;
 }
 
 ANN static bool xxx_stmt_while(XXX *a, Stmt_Flow b) {
-  xxx_exp(a, b->cond);
-  xxx_stmt(a, b->body);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->cond), ret);
+  CHECK_RET(xxx_stmt(a, b->body), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_until(XXX *a, Stmt_Flow b) {
-  xxx_exp(a, b->cond);
-  xxx_stmt(a, b->body);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->cond), ret);
+  CHECK_RET(xxx_stmt(a, b->body), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_for(XXX *a, Stmt_For b) {
-  xxx_stmt(a, b->c1);
-  if(b->c2) xxx_stmt(a, b->c2);
-  if(b->c3) xxx_exp(a, b->c3);
-  xxx_stmt(a, b->body);
+  bool ret = true;
+  CHECK_RET(xxx_stmt(a, b->c1), ret);
+  if(b->c2) CHECK_RET(xxx_stmt(a, b->c2), ret);
+  if(b->c3) CHECK_RET(xxx_exp(a, b->c3), ret);
+  CHECK_RET(xxx_stmt(a, b->body), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_each(XXX *a, Stmt_Each b) {
-  if(b->idx.tag.sym) xxx_var_decl(a, &b->idx);
-  xxx_var_decl(a, &b->var);
-  xxx_exp(a, b->exp);
-  xxx_stmt(a, b->body);
+  bool ret = true;
+  if(b->idx.tag.sym) CHECK_RET(xxx_var_decl(a, &b->idx), ret);
+  CHECK_RET(xxx_var_decl(a, &b->var), ret);
+  CHECK_RET(xxx_exp(a, b->exp), ret);
+  CHECK_RET(xxx_stmt(a, b->body), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_loop(XXX *a, Stmt_Loop b) {
-  if(b->idx.tag.sym) xxx_var_decl(a, &b->idx);
-  xxx_exp(a,  b->cond);
-  xxx_stmt(a, b->body);
+  bool ret = true;
+  if(b->idx.tag.sym) CHECK_RET(xxx_var_decl(a, &b->idx), ret);
+  CHECK_RET(xxx_exp(a,  b->cond), ret);
+  CHECK_RET(xxx_stmt(a, b->body), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_if(XXX *a, Stmt_If b) {
-  xxx_exp(a,  b->cond);
-  xxx_stmt(a, b->if_body);
+  bool ret = true;
+  CHECK_RET(xxx_exp(a,  b->cond), ret);
+  CHECK_RET(xxx_stmt(a, b->if_body), ret);
   if(b->else_body) xxx_stmt(a, b->else_body);
+  return ret;
 }
 
 ANN static bool xxx_stmt_code(XXX *a, Stmt_Code b) {
-  if(b->stmt_list) xxx_stmt_list(a, b->stmt_list);
+  return b->stmt_list ? xxx_stmt_list(a, b->stmt_list) : true;
+}
+
+ANN static bool xxx_stmt_index(XXX *a NUSED, Stmt_Index b NUSED) {
+  return true;
 }
 
 ANN static bool xxx_stmt_break(XXX *a, Stmt_Index b) {
-  xxx_stmt_index(a, b);
+  return xxx_stmt_index(a, b);
 }
 
 ANN static bool xxx_stmt_continue(XXX *a, Stmt_Index b) {
-  xxx_stmt_index(a, b);
+  return xxx_stmt_index(a, b);
 }
 
 ANN static bool xxx_stmt_return(XXX *a, Stmt_Exp b) {
-  if(b->val) xxx_exp(a, b-> val);
-}
-
-ANN static bool xxx_case_list(XXX *a, Stmt_List b) {
-  for(uint32_t i = 0; i < b->len; i++) {
-    Stmt* c = mp_vector_at(b, Stmt, i);
-    xxx_stmt_case(a, &c->d.stmt_match);
-  }
-}
-
-ANN static bool xxx_stmt_match(XXX *a, Stmt_Match b) {
-  xxx_exp(a, b->cond);
-  xxx_case_list(a, b->list);
-  if(b->where) xxx_stmt(a, b->where);
+  return b->val ? xxx_exp(a, b-> val) : true;
 }
 
 ANN static bool xxx_stmt_case(XXX *a, Stmt_Match b) {
+  bool ret = true;
+  CHECK_RET(xxx_exp(a, b->cond), ret);
+  CHECK_RET(xxx_stmt_list(a, b->list), ret);
+  if(b->when) CHECK_RET(xxx_exp(a, b->when), ret);
+  return ret;
+}
+
+ANN static bool xxx_case_list(XXX *a, Stmt_List b) {
+  bool ret = true;
+  for(uint32_t i = 0; i < b->len; i++) {
+    Stmt* c = mp_vector_at(b, Stmt, i);
+    CHECK_RET(xxx_stmt_case(a, &c->d.stmt_match), ret);
+  }
+  return ret;
+}
+
+ANN static bool xxx_stmt_match(XXX *a, Stmt_Match b) {
+  bool ret = true;
   xxx_exp(a, b->cond);
-  xxx_stmt_list(a, b->list);
-  if(b->when) xxx_exp(a, b->when);
+  xxx_case_list(a, b->list);
+  if(b->where) xxx_stmt(a, b->where);
+  return ret;
 }
 
-ANN static bool xxx_stmt_index(XXX *a, Stmt_Index b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_stmt_pp(XXX *a NUSED, Stmt_PP b NUSED) {
+  return true;
 }
 
-ANN static bool xxx_stmt_pp(XXX *a, Stmt_PP b) {
-  (bool)a;
-  (bool)b;
-}
-
-ANN static bool xxx_stmt_retry(XXX *a, Stmt_Exp b) {
-  (bool)a;
-  (bool)b;
+ANN static bool xxx_stmt_retry(XXX *a NUSED, Stmt_Exp b NUSED) {
+  return true;
 }
 
 ANN static bool xxx_handler(XXX *a, Handler *b) {
-  xxx_tag(a, &b->tag);
-  xxx_stmt(a, b->stmt);
+  bool ret = true;
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  CHECK_RET(xxx_stmt(a, b->stmt), ret);
+  return ret;
 }
 
 ANN static bool xxx_handler_list(XXX *a, Handler_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Handler *handler = mp_vector_at(b, Handler, i);
-    xxx_handler(a, handler);
+    CHECK_RET(xxx_handler(a, handler), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_stmt_try(XXX *a, Stmt_Try b) {
-  xxx_stmt(a, b->stmt);
-  xxx_handler_list(a, b->handler);
+  bool ret = true;
+  CHECK_RET(xxx_stmt(a, b->stmt), ret);
+  CHECK_RET(xxx_handler_list(a, b->handler), ret);
+  return ret;
 }
 
 ANN static bool xxx_stmt_defer(XXX *a, Stmt_Defer b) {
-  xxx_stmt(a, b->stmt);
+  return xxx_stmt(a, b->stmt);
 }
 
 ANN static bool xxx_stmt_spread(XXX *a, Spread_Def b) {
-  xxx_tag(a, &b->tag);
-  xxx_id_list(a, b->list);
+  bool ret = true;
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  CHECK_RET(xxx_id_list(a, b->list), ret);
+  return ret;
 }
+
 DECL_STMT_FUNC(xxx, bool, XXX*)
 ANN static bool xxx_stmt(XXX *a, Stmt* b) {
-  xxx_stmt_func[b->stmt_type](a, &b->d);
+  return b->poison
+    ? xxx_stmt_func[b->stmt_type](a, &b->d)
+    : false;
 }
 
 ANN static bool xxx_arg(XXX *a, Arg *b) {
-  xxx_variable(a, &b->var);
+  return xxx_variable(a, &b->var);
 }
 
 ANN static bool xxx_arg_list(XXX *a, Arg_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Arg *c = mp_vector_at(b, Arg, i);
-    xxx_arg(a, c);
+    CHECK_RET(xxx_arg(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_variable_list(XXX *a, Variable_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Variable *c = mp_vector_at(b, Variable, i);
-    xxx_variable(a, c);
+    CHECK_RET(xxx_variable(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_stmt_list(XXX *a, Stmt_List b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Stmt* c = mp_vector_at(b, Stmt, i);
-    xxx_stmt(a, c);
+    CHECK_RET(xxx_stmt(a, c), ret);
   }
+  return ret;
 }
 
 ANN static bool xxx_func_base(XXX *a, Func_Base *b) {
-  if(b->td) xxx_type_decl(a, b->td);
-  xxx_tag(a, &b->tag);
-  if(b->args) xxx_arg_list(a, b->args);
-  if(b->tmpl) xxx_tmpl(a, b->tmpl);
+  bool ret = true;
+  if(b->td) CHECK_RET(xxx_type_decl(a, b->td), ret);
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  if(b->args) CHECK_RET(xxx_arg_list(a, b->args), ret);
+  if(b->tmpl) CHECK_RET(xxx_tmpl(a, b->tmpl), ret);
+  return ret;
 }
 
 ANN static bool xxx_func_def(XXX *a, Func_Def b) {
-  xxx_func_base(a, b->base);
-  if(b->d.code) xxx_stmt_list(a, b->d.code);
-  if(b->captures) xxx_captures(a, b->captures);
-}
-
-ANN static bool xxx_class_def(XXX *a, Class_Def b) {
-  xxx_type_def( a, &b->base);
-  if(b->body) xxx_ast(a, b->body);
-}
-
-ANN static bool xxx_trait_def(XXX *a, Trait_Def b) {
-  if(b->body) xxx_ast(a, b->body);
-}
-
-ANN static bool xxx_enumvalue(XXX *a, EnumValue *b) {
-  xxx_tag(a, &b->tag);
-  // gwint, set
-}
-
-ANN static bool xxx_enum_list(XXX *a, EnumValue_List b) {
-  for(uint32_t i = 0; i < b->len; i++) {
-    EnumValue *c = mp_vector_at(b, EnumValue, i);
-    xxx_enumvalue(a, c);
-  }
-}
-
-ANN static bool xxx_enum_def(XXX *a, Enum_Def b) {
-  xxx_enum_list(a, b->list);
-  xxx_tag(a, &b->tag);
-}
-
-ANN static bool xxx_union_def(XXX *a, Union_Def b) {
-  xxx_variable_list(a, b->l);
-  xxx_tag(a, &b->tag);
-  if(b->tmpl) xxx_tmpl(a, b->tmpl);
-}
-
-ANN static bool xxx_fptr_def(XXX *a, Fptr_Def b) {
-  xxx_func_base(a, b->base);
+  bool ret = true;
+  CHECK_RET(xxx_func_base(a, b->base), ret);
+  if(b->d.code) CHECK_RET(xxx_stmt_list(a, b->d.code), ret);
+  if(b->captures) CHECK_RET(xxx_captures(a, b->captures), ret);
+  return ret;
 }
 
 ANN static bool xxx_type_def(XXX *a, Type_Def b) {
-  if(b->ext) xxx_type_decl(a, b->ext);
-  xxx_tag(a, &b->tag);
-  if(b->tmpl) xxx_tmpl(a, b->tmpl);
+  bool ret = true;
+  if(b->ext) CHECK_RET(xxx_type_decl(a, b->ext), ret);
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  if(b->tmpl) CHECK_RET(xxx_tmpl(a, b->tmpl), ret);
+  return ret;
+}
+
+ANN static bool xxx_class_def(XXX *a, Class_Def b) {
+  bool ret = true;
+  CHECK_RET(xxx_type_def( a, &b->base), ret);
+  if(b->body) CHECK_RET(xxx_ast(a, b->body), ret);
+  return ret;
+}
+
+ANN static bool xxx_trait_def(XXX *a, Trait_Def b) {
+  return b->body ? xxx_ast(a, b->body) : true;
+}
+
+ANN static bool xxx_enumvalue(XXX *a, EnumValue *b) {
+  return xxx_tag(a, &b->tag);
+}
+
+ANN static bool xxx_enum_list(XXX *a, EnumValue_List b) {
+  bool ret = true;
+  for(uint32_t i = 0; i < b->len; i++) {
+    EnumValue *c = mp_vector_at(b, EnumValue, i);
+    CHECK_RET(xxx_enumvalue(a, c), ret);
+  }
+  return ret;
+}
+
+ANN static bool xxx_enum_def(XXX *a, Enum_Def b) {
+  bool ret = true;
+  CHECK_RET(xxx_enum_list(a, b->list), ret);
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  return ret;
+}
+
+ANN static bool xxx_union_def(XXX *a, Union_Def b) {
+  bool ret = true;
+  CHECK_RET(xxx_variable_list(a, b->l), ret);
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  if(b->tmpl) CHECK_RET(xxx_tmpl(a, b->tmpl), ret);
+  return ret;
+}
+
+ANN static bool xxx_fptr_def(XXX *a, Fptr_Def b) {
+  return xxx_func_base(a, b->base);
 }
 
 ANN static bool xxx_extend_def(XXX *a, Extend_Def b) {
-  xxx_type_decl(a, b->td);
-  xxx_id_list(a, b->traits);
+  bool ret = true;
+  CHECK_RET(xxx_type_decl(a, b->td), ret);
+  CHECK_RET(xxx_id_list(a, b->traits), ret);
+  return ret;
 }
 
 ANN static bool xxx_prim_def(XXX *a, Prim_Def b) {
-  xxx_tag(a, &b->tag);
+  return xxx_tag(a, &b->tag);
 }
 
 DECL_SECTION_FUNC(xxx, bool, XXX*)
 ANN static bool xxx_section(XXX *a, Section *b) {
-  xxx_section_func[b->section_type](a, *(void**)&b->d);
+  return  !b->poison
+    ? xxx_section_func[b->section_type](a, *(void**)&b->d)
+    : false;
 }
 
 ANN static bool xxx_ast(XXX *a, Ast b) {
+  bool ret = true;
   for(uint32_t i = 0; i < b->len; i++) {
     Section *c = mp_vector_at(b, Section, i);
-    xxx_section(a, c);
+    CHECK_RET(xxx_section(a, c), ret);
   }
+  return ret;
 }
 
 int main(int argc, char **argv) {
