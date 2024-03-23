@@ -86,24 +86,23 @@ $(function() { codefold.init(0); });
 <a href="gwion__ast_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifndef __GWION_AST</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define __GWION_AST</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;prettyerr_export.h&quot;</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="loc_8h.html">loc.h</a>&quot;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="flags_8h.html">flags.h</a>&quot;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;<a class="code" href="absyn_8h.html">absyn.h</a>&quot;</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="cpy__ast_8h.html">cpy_ast.h</a>&quot;</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="macro_8h.html">macro.h</a>&quot;</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="pparg_8h.html">pparg.h</a>&quot;</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="pp_8h.html">pp.h</a>&quot;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="scanner_8h.html">scanner.h</a>&quot;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="ast__getter_8h.html">ast_getter.h</a>&quot;</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;<a class="code" href="ast__pass_8h.html">ast_pass.h</a>&quot;</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="log_8h.html">log.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="flags_8h.html">flags.h</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="absyn_8h.html">absyn.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;<a class="code" href="cpy__ast_8h.html">cpy_ast.h</a>&quot;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="macro_8h.html">macro.h</a>&quot;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="pparg_8h.html">pparg.h</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="pp_8h.html">pp.h</a>&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="scanner_8h.html">scanner.h</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="ast__getter_8h.html">ast_getter.h</a>&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="ast__pass_8h.html">ast_pass.h</a>&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aabsyn_8h_html"><div class="ttname"><a href="absyn_8h.html">absyn.h</a></div><div class="ttdoc">Abstract Syntaxic tree.</div></div>
 <div class="ttc" id="aast__getter_8h_html"><div class="ttname"><a href="ast__getter_8h.html">ast_getter.h</a></div><div class="ttdoc">: helper structure to get an AST</div></div>
 <div class="ttc" id="aast__pass_8h_html"><div class="ttname"><a href="ast__pass_8h.html">ast_pass.h</a></div><div class="ttdoc">macros to simplify pass writing</div></div>
 <div class="ttc" id="acpy__ast_8h_html"><div class="ttname"><a href="cpy__ast_8h.html">cpy_ast.h</a></div><div class="ttdoc">copy ast nodes</div></div>
 <div class="ttc" id="aflags_8h_html"><div class="ttname"><a href="flags_8h.html">flags.h</a></div></div>
-<div class="ttc" id="aloc_8h_html"><div class="ttname"><a href="loc_8h.html">loc.h</a></div><div class="ttdoc">locations</div></div>
+<div class="ttc" id="alog_8h_html"><div class="ttname"><a href="log_8h.html">log.h</a></div></div>
 <div class="ttc" id="amacro_8h_html"><div class="ttname"><a href="macro_8h.html">macro.h</a></div><div class="ttdoc">macros</div></div>
 <div class="ttc" id="app_8h_html"><div class="ttname"><a href="pp_8h.html">pp.h</a></div><div class="ttdoc">parser state</div></div>
 <div class="ttc" id="apparg_8h_html"><div class="ttname"><a href="pparg_8h.html">pparg.h</a></div><div class="ttdoc">parser arguments</div></div>

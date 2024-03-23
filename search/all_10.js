@@ -6,7 +6,7 @@ var searchData=
   ['scanner_2ec_3',['scanner.c',['../scanner_8c.html',1,'']]],
   ['scanner_2eh_4',['scanner.h',['../scanner_8h.html',1,'']]],
   ['scanner_5f_5',['Scanner_',['../structScanner__.html',1,'']]],
-  ['scanner_5ferror_6',['scanner_error',['../scanner_8c.html#ab2c731d6e2e490d2084f5d853e6da71b',1,'scanner_error(Scanner *scan, const char *main, const char *explain, const char *fix, const loc_t loc, const uint error_code):&#160;scanner.c'],['../scanner_8h.html#ab2c731d6e2e490d2084f5d853e6da71b',1,'scanner_error(Scanner *scan, const char *main, const char *explain, const char *fix, const loc_t loc, const uint error_code):&#160;scanner.c']]],
+  ['scanner_5ferror_6',['scanner_error',['../scanner_8c.html#afbf896ea805d75e218d56f03b6fe22d9',1,'scanner_error(Scanner *scan, const char *main, const char *explain, const loc_t loc, const uint error_code):&#160;scanner.c'],['../scanner_8h.html#afbf896ea805d75e218d56f03b6fe22d9',1,'scanner_error(Scanner *scan, const char *main, const char *explain, const loc_t loc, const uint error_code):&#160;scanner.c']]],
   ['scanner_5fsecondary_7',['scanner_secondary',['../scanner_8c.html#ad844cd62747cb37bfcb866666b06ff3b',1,'scanner_secondary(Scanner *scan, const char *main, const loc_t loc):&#160;scanner.c'],['../scanner_8h.html#ad844cd62747cb37bfcb866666b06ff3b',1,'scanner_secondary(Scanner *scan, const char *main, const loc_t loc):&#160;scanner.c']]],
   ['secondary_8',['secondary',['../scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7',1,'scanner.c']]],
   ['section_9',['Section',['../absyn_8h.html#a180d0651f5b8b45da04c406a8bb8f10c',1,'absyn.h']]],

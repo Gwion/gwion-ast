@@ -112,14 +112,14 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">    5</span><span class="comment">//  MemPool p = mempool_ini(sizeof(Exp));</span></div>
 <div class="line"><span class="lineno">    6</span>  MemPool p = mempool_ini(1024);</div>
 <div class="line"><span class="lineno">    7</span>  SymTable *st = new_symbol_table(p, 65536);</div>
-<div class="line"><span class="lineno">    8</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structPPArg__.html">PPArg_</a> <a class="code hl_variable" href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a>;</div>
+<div class="line"><span class="lineno">    8</span>  <a class="code hl_struct" href="structPPArg__.html">PPArg</a> <a class="code hl_variable" href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a>;</div>
 <div class="line"><span class="lineno">    9</span>  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 1; i &lt; argc; i++) {</div>
 <div class="line"><span class="lineno">   10</span>    FILE *f = fopen(argv[i], <span class="stringliteral">&quot;r&quot;</span>);</div>
 <div class="line"><span class="lineno">   11</span>    <span class="keywordflow">if</span>(!f) {</div>
 <div class="line"><span class="lineno">   12</span>      gw_err(<span class="stringliteral">&quot;{R+}%s{0} not found\n&quot;</span>);</div>
 <div class="line"><span class="lineno">   13</span>      <span class="keywordflow">continue</span>;</div>
 <div class="line"><span class="lineno">   14</span>    }</div>
-<div class="line"><span class="lineno">   15</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structAstGetter__.html">AstGetter_</a> arg = { argv[i], <a class="code hl_variable" href="structAstGetter__.html#a5085eefb001b3cbcf414396daf19a02a">f</a>, <a class="code hl_variable" href="structAstGetter__.html#a91ff639e516c1a823b44c5b01e7a5926">st</a>, .<a class="code hl_variable" href="structAstGetter__.html#aa1bd91a5e79c8d48609879fae35dfea9">ppa</a> = &amp;<a class="code hl_variable" href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a>};</div>
+<div class="line"><span class="lineno">   15</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structAstGetter__.html">AstGetter_</a> arg = { argv[i], <a class="code hl_variable" href="structAstGetter__.html#a5085eefb001b3cbcf414396daf19a02a">f</a>, <a class="code hl_variable" href="structAstGetter__.html#a91ff639e516c1a823b44c5b01e7a5926">st</a>, .<a class="code hl_variable" href="structAstGetter__.html#aa79e84a3f31a9822194ad855091f91c1">ppa</a> = &amp;<a class="code hl_variable" href="pparg_8h.html#a865a8206007a3214b5f066281e0d53ca">ppa</a>};</div>
 <div class="line"><span class="lineno">   16</span>    <a class="code hl_function" href="ast__getter_8h.html#a81507cc5df529a3fa4a4abf276b0824c">parse</a>(&amp;arg);</div>
 <div class="line"><span class="lineno">   17</span>    fclose(<a class="code hl_variable" href="structAstGetter__.html#a5085eefb001b3cbcf414396daf19a02a">f</a>);</div>
 <div class="line"><span class="lineno">   18</span>  }</div>
@@ -129,7 +129,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="astructAstGetter___html"><div class="ttname"><a href="structAstGetter__.html">AstGetter_</a></div><div class="ttdef"><b>Definition</b> <a href="ast__getter_8h_source.html#l00007">ast_getter.h:7</a></div></div>
 <div class="ttc" id="astructAstGetter___html_a5085eefb001b3cbcf414396daf19a02a"><div class="ttname"><a href="structAstGetter__.html#a5085eefb001b3cbcf414396daf19a02a">AstGetter_::f</a></div><div class="ttdeci">FILE * f</div><div class="ttdef"><b>Definition</b> <a href="ast__getter_8h_source.html#l00009">ast_getter.h:9</a></div></div>
 <div class="ttc" id="astructAstGetter___html_a91ff639e516c1a823b44c5b01e7a5926"><div class="ttname"><a href="structAstGetter__.html#a91ff639e516c1a823b44c5b01e7a5926">AstGetter_::st</a></div><div class="ttdeci">SymTable * st</div><div class="ttdef"><b>Definition</b> <a href="ast__getter_8h_source.html#l00010">ast_getter.h:10</a></div></div>
-<div class="ttc" id="astructAstGetter___html_aa1bd91a5e79c8d48609879fae35dfea9"><div class="ttname"><a href="structAstGetter__.html#aa1bd91a5e79c8d48609879fae35dfea9">AstGetter_::ppa</a></div><div class="ttdeci">struct PPArg_ * ppa</div><div class="ttdef"><b>Definition</b> <a href="ast__getter_8h_source.html#l00011">ast_getter.h:11</a></div></div>
+<div class="ttc" id="astructAstGetter___html_aa79e84a3f31a9822194ad855091f91c1"><div class="ttname"><a href="structAstGetter__.html#aa79e84a3f31a9822194ad855091f91c1">AstGetter_::ppa</a></div><div class="ttdeci">PPArg * ppa</div><div class="ttdef"><b>Definition</b> <a href="ast__getter_8h_source.html#l00011">ast_getter.h:11</a></div></div>
 <div class="ttc" id="astructPPArg___html"><div class="ttname"><a href="structPPArg__.html">PPArg_</a></div><div class="ttdef"><b>Definition</b> <a href="pparg_8h_source.html#l00007">pparg.h:7</a></div></div>
 </div><!-- fragment -->
 </div>
