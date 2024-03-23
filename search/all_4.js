@@ -7,7 +7,7 @@ var searchData=
   ['decl_5fsection_5ffunc_4',['DECL_SECTION_FUNC',['../ast__pass_8h.html#a3ac748666a56d3c3ad41458916422c69',1,'ast_pass.h']]],
   ['decl_5fstmt_5ffunc_5',['DECL_STMT_FUNC',['../ast__pass_8h.html#ac2042ebc89a1389e080ea8c97705f97c',1,'DECL_STMT_FUNC:&#160;ast_pass.h'],['../ast__free_8c.html#ab5884c90fbbfcf7e542b19aacda1e9c0',1,'DECL_STMT_FUNC(free, void, MemPool):&#160;ast_free.c']]],
   ['def_6',['def',['../structExp__Lambda.html#ac9e50eb9b975ca96d320ef3d7d76b723',1,'Exp_Lambda']]],
-  ['default_5fpos_7',['default_pos',['../log_8c.html#a5809c35456dde96297859fed77537b80',1,'log.c']]],
+  ['default_5fpos_7',['default_pos',['../gwlog_8c.html#a5809c35456dde96297859fed77537b80',1,'gwlog.c']]],
   ['delim_8',['delim',['../structAstString.html#ad2687af81f037a22c95eaac1f1aa8528',1,'AstString']]],
   ['depth_9',['depth',['../structArray__Sub__.html#a9a9ee9e0f1aa1ab7dc7b0671bd12912c',1,'Array_Sub_']]],
   ['distinct_10',['distinct',['../structType__Def__.html#aa038a06498bd062f0ff2b582428a595a',1,'Type_Def_']]],

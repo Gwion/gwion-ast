@@ -8,5 +8,5 @@ var searchData=
   ['new_5fppstate_5',['new_ppstate',['../pp_8c.html#ae3f798aeae8ae2ee8fb5db622fc34f3e',1,'new_ppstate(MemPool p, const m_str filename):&#160;pp.c'],['../pp_8h.html#a13756c584cf5b1c208b0bff5105bbb78',1,'new_ppstate(MemPool, const m_str):&#160;pp.c']]],
   ['new_5fscanner_6',['new_scanner',['../scanner_8c.html#a7408c8f9b0bd048c38522771a81cd071',1,'scanner.c']]],
   ['new_5ftrait_5fdef_7',['new_trait_def',['../absyn_8h.html#a040b7e438c5ed6b6af2210f85b1a91d2',1,'absyn.h']]],
-  ['nosrc_8',['nosrc',['../log_8c.html#aeba8e54c62dcb5e472e9b5d97cfc00aa',1,'log.c']]]
+  ['nosrc_8',['nosrc',['../gwlog_8c.html#aeba8e54c62dcb5e472e9b5d97cfc00aa',1,'gwlog.c']]]
 ];

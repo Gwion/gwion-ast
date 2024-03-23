@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: src/log.c File Reference</title>
+<title>My Project: src/gwlog.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -78,14 +78,14 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">log.c File Reference</div></div>
+  <div class="headertitle"><div class="title">gwlog.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;gwion_util.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="gwion__ast_8h_source.html">gwion_ast.h</a>&quot;</code><br />
 <code>#include &quot;parser.h&quot;</code><br />
 </div>
-<p><a href="log_8c_source.html">Go to the source code of this file.</a></p>
+<p><a href="gwlog_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -93,44 +93,44 @@ Functions</h2></td></tr>
 <tr class="separator:adf250533978b7d13390fa3381eb3c33a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae5bda3d9dc27e7dc56cf1bd9e6c39ae" id="r_aae5bda3d9dc27e7dc56cf1bd9e6c39ae"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae5bda3d9dc27e7dc56cf1bd9e6c39ae">pos_ini</a> (<a class="el" href="structpos__t.html">pos_t</a> *pos)</td></tr>
 <tr class="separator:aae5bda3d9dc27e7dc56cf1bd9e6c39ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac60dc95b21ecfce935ac49a48bd4ac74" id="r_ac60dc95b21ecfce935ac49a48bd4ac74"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac60dc95b21ecfce935ac49a48bd4ac74">_gwlog_error</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc, const uint error_code, const enum libprettyerr_errtype errtype)</td></tr>
+<tr class="memitem:ac60dc95b21ecfce935ac49a48bd4ac74" id="r_ac60dc95b21ecfce935ac49a48bd4ac74"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac60dc95b21ecfce935ac49a48bd4ac74">_gwlog_error</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc, const uint error_code, const enum libprettyerr_errtype errtype)</td></tr>
 <tr class="separator:ac60dc95b21ecfce935ac49a48bd4ac74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6d3c8e902d0df90607e828b029f5218" id="r_ab6d3c8e902d0df90607e828b029f5218"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6d3c8e902d0df90607e828b029f5218">_gwlog_warning</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:ab6d3c8e902d0df90607e828b029f5218" id="r_ab6d3c8e902d0df90607e828b029f5218"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6d3c8e902d0df90607e828b029f5218">_gwlog_warning</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:ab6d3c8e902d0df90607e828b029f5218"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf419d853ed908e9400dc0f3140021ea" id="r_acf419d853ed908e9400dc0f3140021ea"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf419d853ed908e9400dc0f3140021ea">_gwlog_related</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:acf419d853ed908e9400dc0f3140021ea" id="r_acf419d853ed908e9400dc0f3140021ea"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf419d853ed908e9400dc0f3140021ea">_gwlog_related</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:acf419d853ed908e9400dc0f3140021ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad534f18a5ad7cca6d3f4fcafbeb61ce2" id="r_ad534f18a5ad7cca6d3f4fcafbeb61ce2"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad534f18a5ad7cca6d3f4fcafbeb61ce2">_gwlog_hint</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename NUSED, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc NUSED)</td></tr>
+<tr class="memitem:ad534f18a5ad7cca6d3f4fcafbeb61ce2" id="r_ad534f18a5ad7cca6d3f4fcafbeb61ce2"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad534f18a5ad7cca6d3f4fcafbeb61ce2">_gwlog_hint</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename NUSED, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc NUSED)</td></tr>
 <tr class="separator:ad534f18a5ad7cca6d3f4fcafbeb61ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbe0a1d756c6d78b789c0c9561080431" id="r_acbe0a1d756c6d78b789c0c9561080431"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acbe0a1d756c6d78b789c0c9561080431">gwlog_set_func</a> (<a class="el" href="log_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a> error, <a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> warning, <a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> related, <a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> hint)</td></tr>
+<tr class="memitem:acbe0a1d756c6d78b789c0c9561080431" id="r_acbe0a1d756c6d78b789c0c9561080431"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acbe0a1d756c6d78b789c0c9561080431">gwlog_set_func</a> (<a class="el" href="gwlog_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a> error, <a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> warning, <a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> related, <a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> hint)</td></tr>
 <tr class="separator:acbe0a1d756c6d78b789c0c9561080431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9df7824e02bf82c7eac3346a481832ec" id="r_a9df7824e02bf82c7eac3346a481832ec"><td class="memItemLeft" align="right" valign="top">static ANN char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a> (const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:a9df7824e02bf82c7eac3346a481832ec" id="r_a9df7824e02bf82c7eac3346a481832ec"><td class="memItemLeft" align="right" valign="top">static ANN char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a> (const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:a9df7824e02bf82c7eac3346a481832ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc44582744a9f13c063dcd1ebf7177ff" id="r_acc44582744a9f13c063dcd1ebf7177ff"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a> (const char *filename)</td></tr>
 <tr class="separator:acc44582744a9f13c063dcd1ebf7177ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeba8e54c62dcb5e472e9b5d97cfc00aa" id="r_aeba8e54c62dcb5e472e9b5d97cfc00aa"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a> (const perr_printer_t *printer, const perr_t *err, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain)</td></tr>
 <tr class="separator:aeba8e54c62dcb5e472e9b5d97cfc00aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bd57c1e595a4c0fa221c6a71571b6d2" id="r_a9bd57c1e595a4c0fa221c6a71571b6d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc, const uint error_code)</td></tr>
+<tr class="memitem:a9bd57c1e595a4c0fa221c6a71571b6d2" id="r_a9bd57c1e595a4c0fa221c6a71571b6d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc, const uint error_code)</td></tr>
 <tr class="separator:a9bd57c1e595a4c0fa221c6a71571b6d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a8dfdbaab8444f6783f728234282bc6" id="r_a4a8dfdbaab8444f6783f728234282bc6"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const enum libprettyerr_errtype type, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:a4a8dfdbaab8444f6783f728234282bc6" id="r_a4a8dfdbaab8444f6783f728234282bc6"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const enum libprettyerr_errtype type, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:a4a8dfdbaab8444f6783f728234282bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf935f0ad8fce3afec5170c0db5049e5" id="r_acf935f0ad8fce3afec5170c0db5049e5"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf935f0ad8fce3afec5170c0db5049e5">gwlog_warning</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:acf935f0ad8fce3afec5170c0db5049e5" id="r_acf935f0ad8fce3afec5170c0db5049e5"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf935f0ad8fce3afec5170c0db5049e5">gwlog_warning</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:acf935f0ad8fce3afec5170c0db5049e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a381e197265b37ca5768683019252131e" id="r_a381e197265b37ca5768683019252131e"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a381e197265b37ca5768683019252131e">gwlog_related</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:a381e197265b37ca5768683019252131e" id="r_a381e197265b37ca5768683019252131e"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a381e197265b37ca5768683019252131e">gwlog_related</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:a381e197265b37ca5768683019252131e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af76af0ade32d50d3a330df2e22bdf4c0" id="r_af76af0ade32d50d3a330df2e22bdf4c0"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af76af0ade32d50d3a330df2e22bdf4c0">gwlog_hint</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:af76af0ade32d50d3a330df2e22bdf4c0" id="r_af76af0ade32d50d3a330df2e22bdf4c0"><td class="memItemLeft" align="right" valign="top">ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af76af0ade32d50d3a330df2e22bdf4c0">gwlog_hint</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:af76af0ade32d50d3a330df2e22bdf4c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a5809c35456dde96297859fed77537b80" id="r_a5809c35456dde96297859fed77537b80"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structpos__t.html">pos_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5809c35456dde96297859fed77537b80">default_pos</a> = { .line = 1, .column = 1 }</td></tr>
 <tr class="separator:a5809c35456dde96297859fed77537b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4c46cf4f529920215d1b9883bb0da4b" id="r_ac4c46cf4f529920215d1b9883bb0da4b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a> = <a class="el" href="#ac60dc95b21ecfce935ac49a48bd4ac74">_gwlog_error</a></td></tr>
+<tr class="memitem:ac4c46cf4f529920215d1b9883bb0da4b" id="r_ac4c46cf4f529920215d1b9883bb0da4b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="gwlog_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a> = <a class="el" href="#ac60dc95b21ecfce935ac49a48bd4ac74">_gwlog_error</a></td></tr>
 <tr class="separator:ac4c46cf4f529920215d1b9883bb0da4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc2d9f13f2a4a1325bbec3c1e56ad5cf" id="r_acc2d9f13f2a4a1325bbec3c1e56ad5cf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a> = <a class="el" href="#ab6d3c8e902d0df90607e828b029f5218">_gwlog_warning</a></td></tr>
+<tr class="memitem:acc2d9f13f2a4a1325bbec3c1e56ad5cf" id="r_acc2d9f13f2a4a1325bbec3c1e56ad5cf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a> = <a class="el" href="#ab6d3c8e902d0df90607e828b029f5218">_gwlog_warning</a></td></tr>
 <tr class="separator:acc2d9f13f2a4a1325bbec3c1e56ad5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a182ddf2640782cd7d78d704831de9d10" id="r_a182ddf2640782cd7d78d704831de9d10"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a182ddf2640782cd7d78d704831de9d10">_related</a> = <a class="el" href="#acf419d853ed908e9400dc0f3140021ea">_gwlog_related</a></td></tr>
+<tr class="memitem:a182ddf2640782cd7d78d704831de9d10" id="r_a182ddf2640782cd7d78d704831de9d10"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a182ddf2640782cd7d78d704831de9d10">_related</a> = <a class="el" href="#acf419d853ed908e9400dc0f3140021ea">_gwlog_related</a></td></tr>
 <tr class="separator:a182ddf2640782cd7d78d704831de9d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69504920e9904cbcb0bf08a7f200b28e" id="r_a69504920e9904cbcb0bf08a7f200b28e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a> = <a class="el" href="#ad534f18a5ad7cca6d3f4fcafbeb61ce2">_gwlog_hint</a></td></tr>
+<tr class="memitem:a69504920e9904cbcb0bf08a7f200b28e" id="r_a69504920e9904cbcb0bf08a7f200b28e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a> = <a class="el" href="#ad534f18a5ad7cca6d3f4fcafbeb61ce2">_gwlog_hint</a></td></tr>
 <tr class="separator:a69504920e9904cbcb0bf08a7f200b28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -161,7 +161,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em>, </span></td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -181,7 +181,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00085">85</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00085">85</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   87</span>                                                          {</div>
 <div class="line"><span class="lineno">   88</span><span class="preprocessor">#ifdef __FUZZING__</span></div>
 <div class="line"><span class="lineno">   89</span>  <span class="keywordflow">return</span>;</div>
@@ -209,14 +209,14 @@ Variables</h2></td></tr>
 <div class="line"><span class="lineno">  111</span>  } <span class="keywordflow">else</span></div>
 <div class="line"><span class="lineno">  112</span>    <a class="code hl_function" href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a>(&amp;printer, &amp;err, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain);</div>
 <div class="line"><span class="lineno">  113</span>}</div>
-<div class="ttc" id="alog_8c_html_a9df7824e02bf82c7eac3346a481832ec"><div class="ttname"><a href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a></div><div class="ttdeci">static ANN char * get_src(const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00040">log.c:40</a></div></div>
-<div class="ttc" id="alog_8c_html_acc44582744a9f13c063dcd1ebf7177ff"><div class="ttname"><a href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a></div><div class="ttdeci">static const char * get_filename(const char *filename)</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00055">log.c:55</a></div></div>
-<div class="ttc" id="alog_8c_html_aeba8e54c62dcb5e472e9b5d97cfc00aa"><div class="ttname"><a href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a></div><div class="ttdeci">static void nosrc(const perr_printer_t *printer, const perr_t *err, const char *main, const char *explain)</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00068">log.c:68</a></div></div>
+<div class="ttc" id="agwlog_8c_html_a9df7824e02bf82c7eac3346a481832ec"><div class="ttname"><a href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a></div><div class="ttdeci">static ANN char * get_src(const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00040">gwlog.c:40</a></div></div>
+<div class="ttc" id="agwlog_8c_html_acc44582744a9f13c063dcd1ebf7177ff"><div class="ttname"><a href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a></div><div class="ttdeci">static const char * get_filename(const char *filename)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00055">gwlog.c:55</a></div></div>
+<div class="ttc" id="agwlog_8c_html_aeba8e54c62dcb5e472e9b5d97cfc00aa"><div class="ttname"><a href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a></div><div class="ttdeci">static void nosrc(const perr_printer_t *printer, const perr_t *err, const char *main, const char *explain)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00068">gwlog.c:68</a></div></div>
 <div class="ttc" id="amain_8c_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8c_source.html#l00004">main.c:4</a></div></div>
-<div class="ttc" id="astructloc__t___html_a6661658c024ee942da7441d0afffea1b"><div class="ttname"><a href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">loc_t_::last</a></div><div class="ttdeci">struct pos_t last</div><div class="ttdef"><b>Definition</b> <a href="log_8h_source.html#l00017">log.h:17</a></div></div>
-<div class="ttc" id="astructloc__t___html_ac3836867620bbe7074f7d04c78e75f26"><div class="ttname"><a href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">loc_t_::first</a></div><div class="ttdeci">struct pos_t first</div><div class="ttdef"><b>Definition</b> <a href="log_8h_source.html#l00016">log.h:16</a></div></div>
-<div class="ttc" id="astructpos__t_html_aa5910ccb9c6e11dcdf071751b3053964"><div class="ttname"><a href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">pos_t::column</a></div><div class="ttdeci">short unsigned int column</div><div class="ttdef"><b>Definition</b> <a href="log_8h_source.html#l00009">log.h:9</a></div></div>
-<div class="ttc" id="astructpos__t_html_ab51255fd45533a2412b08649ec3629de"><div class="ttname"><a href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">pos_t::line</a></div><div class="ttdeci">short unsigned int line</div><div class="ttdef"><b>Definition</b> <a href="log_8h_source.html#l00008">log.h:8</a></div></div>
+<div class="ttc" id="astructloc__t___html_a6661658c024ee942da7441d0afffea1b"><div class="ttname"><a href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">loc_t_::last</a></div><div class="ttdeci">struct pos_t last</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8h_source.html#l00017">gwlog.h:17</a></div></div>
+<div class="ttc" id="astructloc__t___html_ac3836867620bbe7074f7d04c78e75f26"><div class="ttname"><a href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">loc_t_::first</a></div><div class="ttdeci">struct pos_t first</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8h_source.html#l00016">gwlog.h:16</a></div></div>
+<div class="ttc" id="astructpos__t_html_aa5910ccb9c6e11dcdf071751b3053964"><div class="ttname"><a href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">pos_t::column</a></div><div class="ttdeci">short unsigned int column</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8h_source.html#l00009">gwlog.h:9</a></div></div>
+<div class="ttc" id="astructpos__t_html_ab51255fd45533a2412b08649ec3629de"><div class="ttname"><a href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">pos_t::line</a></div><div class="ttdeci">short unsigned int line</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8h_source.html#l00008">gwlog.h:8</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -242,7 +242,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc</td>          <td class="paramname"><span class="paramname"><em>NUSED</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc</td>          <td class="paramname"><span class="paramname"><em>NUSED</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -252,7 +252,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00020">20</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00020">20</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   21</span>                                                {</div>
 <div class="line"><span class="lineno">   22</span>  gw_err(<span class="stringliteral">&quot;{-}hint:{0} %s\n&quot;</span>, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>);</div>
 <div class="line"><span class="lineno">   23</span>}</div>
@@ -281,7 +281,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -291,11 +291,11 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00151">151</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00151">151</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  152</span>                                          {</div>
 <div class="line"><span class="lineno">  153</span>  <a class="code hl_function" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, PERR_INFO, loc);</div>
 <div class="line"><span class="lineno">  154</span>}</div>
-<div class="ttc" id="alog_8c_html_a4a8dfdbaab8444f6783f728234282bc6"><div class="ttname"><a href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a></div><div class="ttdeci">static ANN void _gwlog_secondary(const char *main, const char *filename, const enum libprettyerr_errtype type, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00120">log.c:120</a></div></div>
+<div class="ttc" id="agwlog_8c_html_a4a8dfdbaab8444f6783f728234282bc6"><div class="ttname"><a href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a></div><div class="ttdeci">static ANN void _gwlog_secondary(const char *main, const char *filename, const enum libprettyerr_errtype type, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00120">gwlog.c:120</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -326,7 +326,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -336,7 +336,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00120">120</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00120">120</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  122</span>                                          {</div>
 <div class="line"><span class="lineno">  123</span>  perr_printer_t printer;</div>
 <div class="line"><span class="lineno">  124</span>  <span class="keywordtype">char</span> *         line = <a class="code hl_function" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a>(filename, loc);</div>
@@ -382,7 +382,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -392,7 +392,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00142">142</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00142">142</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  143</span>                                          {</div>
 <div class="line"><span class="lineno">  144</span>  <a class="code hl_function" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, PERR_WARNING, loc);</div>
 <div class="line"><span class="lineno">  145</span>}</div>
@@ -422,7 +422,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00055">55</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00055">55</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   55</span>                                                             {</div>
 <div class="line"><span class="lineno">   56</span><span class="preprocessor">#ifndef BUILD_ON_WINDOWS</span></div>
 <div class="line"><span class="lineno">   57</span>  <span class="keyword">const</span> <span class="keywordtype">char</span> *pwd = getenv(<span class="stringliteral">&quot;PWD&quot;</span>);</div>
@@ -454,7 +454,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -464,7 +464,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00040">40</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00040">40</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   40</span>                                                                {</div>
 <div class="line"><span class="lineno">   41</span>  <span class="keywordtype">char</span> * line = <a class="code hl_variable" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>;</div>
 <div class="line"><span class="lineno">   42</span>  <span class="keywordtype">size_t</span> len  = 0;</div>
@@ -497,11 +497,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00007">7</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00007">7</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">    7</span>                                                   {</div>
 <div class="line"><span class="lineno">    8</span>  <a class="code hl_variable" href="#a5809c35456dde96297859fed77537b80">default_pos</a> = pos;</div>
 <div class="line"><span class="lineno">    9</span>}</div>
-<div class="ttc" id="alog_8c_html_a5809c35456dde96297859fed77537b80"><div class="ttname"><a href="#a5809c35456dde96297859fed77537b80">default_pos</a></div><div class="ttdeci">static pos_t default_pos</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00005">log.c:5</a></div></div>
+<div class="ttc" id="agwlog_8c_html_a5809c35456dde96297859fed77537b80"><div class="ttname"><a href="#a5809c35456dde96297859fed77537b80">default_pos</a></div><div class="ttdeci">static pos_t default_pos</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00005">gwlog.c:5</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -529,7 +529,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em>, </span></td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -539,11 +539,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00115">115</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00115">115</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  116</span>                                                                               {</div>
 <div class="line"><span class="lineno">  117</span>  <a class="code hl_variable" href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, filename, loc, error_code, PERR_ERROR);</div>
 <div class="line"><span class="lineno">  118</span>}</div>
-<div class="ttc" id="alog_8c_html_ac4c46cf4f529920215d1b9883bb0da4b"><div class="ttname"><a href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a></div><div class="ttdeci">static gwlog_error_function_t _error</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00025">log.c:25</a></div></div>
+<div class="ttc" id="agwlog_8c_html_ac4c46cf4f529920215d1b9883bb0da4b"><div class="ttname"><a href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a></div><div class="ttdeci">static gwlog_error_function_t _error</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00025">gwlog.c:25</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -566,16 +566,16 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00160">160</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00160">160</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  161</span>                                          {</div>
 <div class="line"><span class="lineno">  162</span>  <a class="code hl_variable" href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
 <div class="line"><span class="lineno">  163</span>}</div>
-<div class="ttc" id="alog_8c_html_a69504920e9904cbcb0bf08a7f200b28e"><div class="ttname"><a href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a></div><div class="ttdeci">static gwlog_warning_function_t _hint</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00028">log.c:28</a></div></div>
+<div class="ttc" id="agwlog_8c_html_a69504920e9904cbcb0bf08a7f200b28e"><div class="ttname"><a href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a></div><div class="ttdeci">static gwlog_warning_function_t _hint</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00028">gwlog.c:28</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -598,16 +598,16 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00155">155</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00155">155</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  156</span>                                          {</div>
 <div class="line"><span class="lineno">  157</span>  <a class="code hl_variable" href="#a182ddf2640782cd7d78d704831de9d10">_related</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
 <div class="line"><span class="lineno">  158</span>}</div>
-<div class="ttc" id="alog_8c_html_a182ddf2640782cd7d78d704831de9d10"><div class="ttname"><a href="#a182ddf2640782cd7d78d704831de9d10">_related</a></div><div class="ttdeci">static gwlog_warning_function_t _related</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00027">log.c:27</a></div></div>
+<div class="ttc" id="agwlog_8c_html_a182ddf2640782cd7d78d704831de9d10"><div class="ttname"><a href="#a182ddf2640782cd7d78d704831de9d10">_related</a></div><div class="ttdeci">static gwlog_warning_function_t _related</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00027">gwlog.c:27</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -620,34 +620,34 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">ANN void gwlog_set_func </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="log_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a></td>          <td class="paramname"><span class="paramname"><em>error</em>, </span></td>
+          <td class="paramtype"><a class="el" href="gwlog_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a></td>          <td class="paramname"><span class="paramname"><em>error</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a></td>          <td class="paramname"><span class="paramname"><em>warning</em>, </span></td>
+          <td class="paramtype"><a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a></td>          <td class="paramname"><span class="paramname"><em>warning</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a></td>          <td class="paramname"><span class="paramname"><em>related</em>, </span></td>
+          <td class="paramtype"><a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a></td>          <td class="paramname"><span class="paramname"><em>related</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a></td>          <td class="paramname"><span class="paramname"><em>hint</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a></td>          <td class="paramname"><span class="paramname"><em>hint</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00030">30</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00030">30</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   33</span>                                                       {</div>
 <div class="line"><span class="lineno">   34</span>  <a class="code hl_variable" href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a> = error;</div>
 <div class="line"><span class="lineno">   35</span>  <a class="code hl_variable" href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a> = warning;</div>
 <div class="line"><span class="lineno">   36</span>  <a class="code hl_variable" href="#a182ddf2640782cd7d78d704831de9d10">_related</a> = related;</div>
 <div class="line"><span class="lineno">   37</span>  <a class="code hl_variable" href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a> = hint;</div>
 <div class="line"><span class="lineno">   38</span>}</div>
-<div class="ttc" id="alog_8c_html_acc2d9f13f2a4a1325bbec3c1e56ad5cf"><div class="ttname"><a href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a></div><div class="ttdeci">static gwlog_warning_function_t _warning</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00026">log.c:26</a></div></div>
+<div class="ttc" id="agwlog_8c_html_acc2d9f13f2a4a1325bbec3c1e56ad5cf"><div class="ttname"><a href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a></div><div class="ttdeci">static gwlog_warning_function_t _warning</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00026">gwlog.c:26</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -670,12 +670,12 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00146">146</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00146">146</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  147</span>                                          {</div>
 <div class="line"><span class="lineno">  148</span>  <a class="code hl_variable" href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
 <div class="line"><span class="lineno">  149</span>}</div>
@@ -719,7 +719,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00068">68</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00068">68</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   69</span>                                                         {</div>
 <div class="line"><span class="lineno">   70</span>  <span class="keywordtype">size_t</span> len;</div>
 <div class="line"><span class="lineno">   71</span>  <span class="keywordtype">char</span>   base[16];</div>
@@ -753,7 +753,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00011">11</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00011">11</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   11</span>{ *pos = <a class="code hl_variable" href="#a5809c35456dde96297859fed77537b80">default_pos</a>; }</div>
 </div><!-- fragment -->
 </div>
@@ -769,7 +769,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="log_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a> _error = <a class="el" href="#ac60dc95b21ecfce935ac49a48bd4ac74">_gwlog_error</a></td>
+          <td class="memname"><a class="el" href="gwlog_8h.html#ad3a51f562f6544593ad50e46a9432b43">gwlog_error_function_t</a> _error = <a class="el" href="#ac60dc95b21ecfce935ac49a48bd4ac74">_gwlog_error</a></td>
         </tr>
       </table>
   </td>
@@ -779,7 +779,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00025">25</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00025">25</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 
 </div>
 </div>
@@ -793,7 +793,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> _hint = <a class="el" href="#ad534f18a5ad7cca6d3f4fcafbeb61ce2">_gwlog_hint</a></td>
+          <td class="memname"><a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> _hint = <a class="el" href="#ad534f18a5ad7cca6d3f4fcafbeb61ce2">_gwlog_hint</a></td>
         </tr>
       </table>
   </td>
@@ -803,7 +803,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00028">28</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00028">28</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 
 </div>
 </div>
@@ -817,7 +817,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> _related = <a class="el" href="#acf419d853ed908e9400dc0f3140021ea">_gwlog_related</a></td>
+          <td class="memname"><a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> _related = <a class="el" href="#acf419d853ed908e9400dc0f3140021ea">_gwlog_related</a></td>
         </tr>
       </table>
   </td>
@@ -827,7 +827,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00027">27</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00027">27</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 
 </div>
 </div>
@@ -841,7 +841,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="log_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> _warning = <a class="el" href="#ab6d3c8e902d0df90607e828b029f5218">_gwlog_warning</a></td>
+          <td class="memname"><a class="el" href="gwlog_8h.html#acb15bf93592875da6ad52ed2e4136ccc">gwlog_warning_function_t</a> _warning = <a class="el" href="#ab6d3c8e902d0df90607e828b029f5218">_gwlog_warning</a></td>
         </tr>
       </table>
   </td>
@@ -851,7 +851,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00026">26</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00026">26</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 
 </div>
 </div>
@@ -875,7 +875,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="log_8c_source.html#l00005">5</a> of file <a class="el" href="log_8c_source.html">log.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00005">5</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">    5</span>{ .line = 1, .column = 1 };</div>
 </div><!-- fragment -->
 </div>

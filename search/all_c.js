@@ -10,7 +10,7 @@ var searchData=
   ['new_5fscanner_7',['new_scanner',['../scanner_8c.html#a7408c8f9b0bd048c38522771a81cd071',1,'scanner.c']]],
   ['new_5ftrait_5fdef_8',['new_trait_def',['../absyn_8h.html#a040b7e438c5ed6b6af2210f85b1a91d2',1,'absyn.h']]],
   ['next_9',['next',['../structType__Decl__.html#a758cce5bfb53ce0712237f321964fca8',1,'Type_Decl_::next'],['../structExp.html#af2dc83de312b235f940f6192af5916ee',1,'Exp::next'],['../structMacroArg__.html#a16f93eea94ef77d533084d0a6862a712',1,'MacroArg_::next'],['../structMacro__.html#aad299c29a4fc190f0e1b49797fd8da65',1,'Macro_::next']]],
-  ['nosrc_10',['nosrc',['../log_8c.html#aeba8e54c62dcb5e472e9b5d97cfc00aa',1,'log.c']]],
+  ['nosrc_10',['nosrc',['../gwlog_8c.html#aeba8e54c62dcb5e472e9b5d97cfc00aa',1,'gwlog.c']]],
   ['not_11',['not',['../License_8txt.html#a842224abbb72b50c9703a22030a36ee4',1,'License.txt']]],
   ['npar_12',['npar',['../structPP__.html#a8bc6a6f870d79d6b15cfb54b4e94dfbe',1,'PP_']]],
   ['null_13',['NULL',['../macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397',1,'macro.c']]],

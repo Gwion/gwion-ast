@@ -100,9 +100,9 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:afbf896ea805d75e218d56f03b6fe22d9" id="r_afbf896ea805d75e218d56f03b6fe22d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afbf896ea805d75e218d56f03b6fe22d9">scanner_error</a> (<a class="el" href="#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc, const uint error_code)</td></tr>
+<tr class="memitem:afbf896ea805d75e218d56f03b6fe22d9" id="r_afbf896ea805d75e218d56f03b6fe22d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afbf896ea805d75e218d56f03b6fe22d9">scanner_error</a> (<a class="el" href="#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc, const uint error_code)</td></tr>
 <tr class="separator:afbf896ea805d75e218d56f03b6fe22d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad844cd62747cb37bfcb866666b06ff3b" id="r_ad844cd62747cb37bfcb866666b06ff3b"><td class="memItemLeft" align="right" valign="top">ANN int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad844cd62747cb37bfcb866666b06ff3b">scanner_secondary</a> (<a class="el" href="#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
+<tr class="memitem:ad844cd62747cb37bfcb866666b06ff3b" id="r_ad844cd62747cb37bfcb866666b06ff3b"><td class="memItemLeft" align="right" valign="top">ANN int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad844cd62747cb37bfcb866666b06ff3b">scanner_secondary</a> (<a class="el" href="#a618a070c95c9123eacffcb024f0c68bd">Scanner</a> *scan, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a> loc)</td></tr>
 <tr class="separator:ad844cd62747cb37bfcb866666b06ff3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -149,7 +149,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em>, </span></td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -163,11 +163,11 @@ Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">   71</span>                                                          {</div>
 <div class="line"><span class="lineno">   72</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structPPState__.html">PPState</a> *ppstate = (<a class="code hl_struct" href="structPPState__.html">PPState</a>*)vector_back(&amp;scan-&gt;<a class="code hl_variable" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code hl_variable" href="structPP__.html#aa8c713af0892c6689609764cd51bf939">state</a>);</div>
 <div class="line"><span class="lineno">   73</span>  <span class="keyword">const</span> m_str filename = <a class="code hl_function" href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a>(scan, ppstate);</div>
-<div class="line"><span class="lineno">   74</span>  <a class="code hl_function" href="log_8c.html#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, filename, loc, error_code);</div>
+<div class="line"><span class="lineno">   74</span>  <a class="code hl_function" href="gwlog_8c.html#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, filename, loc, error_code);</div>
 <div class="line"><span class="lineno">   75</span>  <a class="code hl_function" href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a>(scan);</div>
 <div class="line"><span class="lineno">   76</span>  <span class="keywordflow">return</span> 0;</div>
 <div class="line"><span class="lineno">   77</span>}</div>
-<div class="ttc" id="alog_8c_html_a9bd57c1e595a4c0fa221c6a71571b6d2"><div class="ttname"><a href="log_8c.html#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a></div><div class="ttdeci">void gwlog_error(const char *main, const char *explain, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00115">log.c:115</a></div></div>
+<div class="ttc" id="agwlog_8c_html_a9bd57c1e595a4c0fa221c6a71571b6d2"><div class="ttname"><a href="gwlog_8c.html#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a></div><div class="ttdeci">void gwlog_error(const char *main, const char *explain, const char *filename, const loc_t loc, const uint error_code)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00115">gwlog.c:115</a></div></div>
 <div class="ttc" id="amain_8c_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8c_source.html#l00004">main.c:4</a></div></div>
 <div class="ttc" id="ascanner_8c_html_a8362650680765e7516e32ea47c022abb"><div class="ttname"><a href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a></div><div class="ttdeci">static ANN char * get_filename(Scanner *scan, const PPState *ppstate)</div><div class="ttdef"><b>Definition</b> <a href="scanner_8c_source.html#l00044">scanner.c:44</a></div></div>
 <div class="ttc" id="ascanner_8c_html_ae3993e1e5ca9f4a83c324cdb6b8e87a7"><div class="ttname"><a href="scanner_8c.html#ae3993e1e5ca9f4a83c324cdb6b8e87a7">secondary</a></div><div class="ttdeci">static ANN void secondary(Scanner *scan)</div><div class="ttdef"><b>Definition</b> <a href="scanner_8c_source.html#l00062">scanner.c:62</a></div></div>
@@ -196,7 +196,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="log_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="gwlog_8h.html#a655cbae003f79edb646769bdd1dc78a8">loc_t</a></td>          <td class="paramname"><span class="paramname"><em>loc</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -205,10 +205,10 @@ Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">   79</span>                                                                            {</div>
 <div class="line"><span class="lineno">   80</span>  <span class="keyword">const</span> <a class="code hl_struct" href="structPPState__.html">PPState</a> *ppstate = (<a class="code hl_struct" href="structPPState__.html">PPState</a>*)vector_back(&amp;scan-&gt;<a class="code hl_variable" href="structScanner__.html#a07a2dea3f79d47bd6dab8658c6c8e4d4">pp</a>-&gt;<a class="code hl_variable" href="structPP__.html#aa8c713af0892c6689609764cd51bf939">state</a>);</div>
 <div class="line"><span class="lineno">   81</span>  <span class="keyword">const</span> m_str filename = <a class="code hl_function" href="scanner_8c.html#a8362650680765e7516e32ea47c022abb">get_filename</a>(scan, ppstate);</div>
-<div class="line"><span class="lineno">   82</span>  <a class="code hl_function" href="log_8c.html#acf935f0ad8fce3afec5170c0db5049e5">gwlog_warning</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
+<div class="line"><span class="lineno">   82</span>  <a class="code hl_function" href="gwlog_8c.html#acf935f0ad8fce3afec5170c0db5049e5">gwlog_warning</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
 <div class="line"><span class="lineno">   83</span>  <span class="keywordflow">return</span> 0;</div>
 <div class="line"><span class="lineno">   84</span>}</div>
-<div class="ttc" id="alog_8c_html_acf935f0ad8fce3afec5170c0db5049e5"><div class="ttname"><a href="log_8c.html#acf935f0ad8fce3afec5170c0db5049e5">gwlog_warning</a></div><div class="ttdeci">ANN void gwlog_warning(const char *main, const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="log_8c_source.html#l00146">log.c:146</a></div></div>
+<div class="ttc" id="agwlog_8c_html_acf935f0ad8fce3afec5170c0db5049e5"><div class="ttname"><a href="gwlog_8c.html#acf935f0ad8fce3afec5170c0db5049e5">gwlog_warning</a></div><div class="ttdeci">ANN void gwlog_warning(const char *main, const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00146">gwlog.c:146</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
