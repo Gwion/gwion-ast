@@ -133,7 +133,7 @@ AST_NEW(Exp*, prim_float, const m_float num, const loc_t loc) {
 }
 
 AST_NEW(Exp*, prim_string, const m_str s, const uint16_t delim, const loc_t loc) {
-  Exp* a                    = new_prim(p, loc);
+  Exp* a                   = new_prim(p, loc);
   a->d.prim.prim_type      = ae_prim_str;
   a->d.prim.d.string.data  = s;
   a->d.prim.d.string.delim = delim;

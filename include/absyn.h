@@ -70,6 +70,17 @@ typedef struct TmplArg {
   enum tmplarg_t type;
 } TmplArg;
 
+#define MK_TMPLARG_TD(a)  \
+  (TmplArg) {             \
+    .type = tmplarg_td,   \
+    .d = { .td = (a) },   \
+  }
+#define MK_TMPLARG_EXP(a) \
+  (TmplArg) {             \
+    .type = tmplarg_exp,  \
+    .d = { .exp = (a) },  \
+  }
+
 ANN static inline uint32_t tmplarg_has_const(TmplArg_List tl) {
   for(uint32_t i = 0; i < tl->len; i++) {
     TmplArg *ta = mp_vector_at(tl, TmplArg, i);
@@ -453,6 +464,16 @@ ANEW ANN AST_NEW(Exp*, exp_unary3, const Symbol, const Stmt_List,
 ANN void free_stmt_list(MemPool, Stmt_List);
 ANEW ANN AST_NEW(Exp*, exp_td, Type_Decl *, const loc_t);
 
+static inline uint32_t exp_count(Exp* exp) {
+  uint32_t n = 0;
+  while(exp) {
+    n++;
+    exp = exp->next;
+  }
+  return n;
+}
+
+// TODO: rename to exp_take
 static inline Exp* take_exp(Exp* exp, const uint32_t n) {
   Exp* e = exp;
   for (uint32_t i = 1; i < n; i++) CHECK_O((e = e->next));
