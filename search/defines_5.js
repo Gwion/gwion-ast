@@ -8,5 +8,7 @@ var searchData=
   ['mk_5fstmt_5fpp_5',['MK_STMT_PP',['../absyn_8h.html#ac995353d4293a00d414939bd10706736',1,'absyn.h']]],
   ['mk_5fstmt_5freturn_6',['MK_STMT_RETURN',['../absyn_8h.html#a15d6bab6048c7ed4440d25eef84783b5',1,'absyn.h']]],
   ['mk_5ftag_7',['MK_TAG',['../absyn_8h.html#a6b5f249dc516af193ad67fb7a2179c23',1,'absyn.h']]],
-  ['mk_5fvar_8',['MK_VAR',['../absyn_8h.html#a128325b2b2631ad05216eb6fe0387f40',1,'absyn.h']]]
+  ['mk_5ftmplarg_5fexp_8',['MK_TMPLARG_EXP',['../absyn_8h.html#a886ec4d8b61df935911b6d7a8da55ee7',1,'absyn.h']]],
+  ['mk_5ftmplarg_5ftd_9',['MK_TMPLARG_TD',['../absyn_8h.html#a829eeb9f44546ffbc348aa347fbaeb5a',1,'absyn.h']]],
+  ['mk_5fvar_10',['MK_VAR',['../absyn_8h.html#a128325b2b2631ad05216eb6fe0387f40',1,'absyn.h']]]
 ];
