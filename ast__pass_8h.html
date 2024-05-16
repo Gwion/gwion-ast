@@ -264,20 +264,20 @@ Functions</h2></td></tr>
 <div class="line">      (_##prefix##_section_func)prefix##_type_def,                             \</div>
 <div class="line">      (_##prefix##_section_func)prefix##_prim_def};</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00067">67</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   67</span><span class="preprocessor">#define DECL_SECTION_FUNC(prefix, type, arg)                                   \</span></div>
-<div class="line"><span class="lineno">   68</span><span class="preprocessor">  typedef type (*_##prefix##_section_func)(const arg, union section_data *);   \</span></div>
-<div class="line"><span class="lineno">   69</span><span class="preprocessor">  const _##prefix##_section_func prefix##_section_func[] = {                   \</span></div>
-<div class="line"><span class="lineno">   70</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_stmt_list,                            \</span></div>
-<div class="line"><span class="lineno">   71</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_func_def,                             \</span></div>
-<div class="line"><span class="lineno">   72</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_class_def,                            \</span></div>
-<div class="line"><span class="lineno">   73</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_trait_def,                            \</span></div>
-<div class="line"><span class="lineno">   74</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_extend_def,                           \</span></div>
-<div class="line"><span class="lineno">   75</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_enum_def,                             \</span></div>
-<div class="line"><span class="lineno">   76</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_union_def,                            \</span></div>
-<div class="line"><span class="lineno">   77</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_fptr_def,                             \</span></div>
-<div class="line"><span class="lineno">   78</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_type_def,                             \</span></div>
-<div class="line"><span class="lineno">   79</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_prim_def};</span></div>
+<p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00068">68</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   68</span><span class="preprocessor">#define DECL_SECTION_FUNC(prefix, type, arg)                                   \</span></div>
+<div class="line"><span class="lineno">   69</span><span class="preprocessor">  typedef type (*_##prefix##_section_func)(const arg, union section_data *);   \</span></div>
+<div class="line"><span class="lineno">   70</span><span class="preprocessor">  const _##prefix##_section_func prefix##_section_func[] = {                   \</span></div>
+<div class="line"><span class="lineno">   71</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_stmt_list,                            \</span></div>
+<div class="line"><span class="lineno">   72</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_func_def,                             \</span></div>
+<div class="line"><span class="lineno">   73</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_class_def,                            \</span></div>
+<div class="line"><span class="lineno">   74</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_trait_def,                            \</span></div>
+<div class="line"><span class="lineno">   75</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_extend_def,                           \</span></div>
+<div class="line"><span class="lineno">   76</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_enum_def,                             \</span></div>
+<div class="line"><span class="lineno">   77</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_union_def,                            \</span></div>
+<div class="line"><span class="lineno">   78</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_fptr_def,                             \</span></div>
+<div class="line"><span class="lineno">   79</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_type_def,                             \</span></div>
+<div class="line"><span class="lineno">   80</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_prim_def};</span></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -322,7 +322,8 @@ Functions</h2></td></tr>
 <div class="line">      (_##prefix##_stmt_func)prefix##_stmt_match,                              \</div>
 <div class="line">      (_##prefix##_stmt_func)prefix##_stmt_pp,                                 \</div>
 <div class="line">      (_##prefix##_stmt_func)prefix##_stmt_defer,                              \</div>
-<div class="line">      (_##prefix##_stmt_func)prefix##_stmt_spread};</div>
+<div class="line">      (_##prefix##_stmt_func)prefix##_stmt_spread,                             \</div>
+<div class="line">      (_##prefix##_stmt_func)prefix##_stmt_using};</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="ast__pass_8h_source.html#l00046">46</a> of file <a class="el" href="ast__pass_8h_source.html">ast_pass.h</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   46</span><span class="preprocessor">#define DECL_STMT_FUNC(prefix, type, arg)                                      \</span></div>
@@ -344,7 +345,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   62</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_match,                              \</span></div>
 <div class="line"><span class="lineno">   63</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_pp,                                 \</span></div>
 <div class="line"><span class="lineno">   64</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_defer,                              \</span></div>
-<div class="line"><span class="lineno">   65</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_spread};</span></div>
+<div class="line"><span class="lineno">   65</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_spread,                             \</span></div>
+<div class="line"><span class="lineno">   66</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_using};</span></div>
 </div><!-- fragment -->
 </div>
 </div>

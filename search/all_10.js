@@ -71,8 +71,11 @@ var searchData=
   ['stmt_5ftry_68',['Stmt_Try',['../absyn_8h.html#ab41e25d44d75a4a17961001ae53c4539',1,'absyn.h']]],
   ['stmt_5ftry_5f_69',['Stmt_Try_',['../structStmt__Try__.html',1,'']]],
   ['stmt_5ftype_70',['stmt_type',['../structStmt.html#ac117446db99a8e22b4924e4ee24ccb43',1,'Stmt']]],
-  ['str_71',['str',['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'pparg.h']]],
-  ['string_72',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
-  ['sym_73',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
-  ['symbol_74',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
+  ['stmt_5fusing_71',['stmt_using',['../unionStmt_1_1stmt__data.html#aa7d2c60b09b08b310b752c2028290715',1,'Stmt::stmt_data']]],
+  ['stmt_5fusing_72',['Stmt_Using',['../absyn_8h.html#afff85d46c2a8c16a3eb54b03ecabcf19',1,'absyn.h']]],
+  ['stmt_5fusing_5f_73',['Stmt_Using_',['../structStmt__Using__.html',1,'']]],
+  ['str_74',['str',['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'pparg.h']]],
+  ['string_75',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
+  ['sym_76',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
+  ['symbol_77',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
 ];

@@ -18,5 +18,6 @@ var searchData=
   ['stmt_5floop_15',['Stmt_Loop',['../absyn_8h.html#a7191008a608469fbd11a881b45a845af',1,'absyn.h']]],
   ['stmt_5fmatch_16',['Stmt_Match',['../absyn_8h.html#afad1b8a29f398c3aa325c93934563478',1,'absyn.h']]],
   ['stmt_5fpp_17',['Stmt_PP',['../absyn_8h.html#a2ed4f68b922e2ece5e4fa206feed9346',1,'absyn.h']]],
-  ['stmt_5ftry_18',['Stmt_Try',['../absyn_8h.html#ab41e25d44d75a4a17961001ae53c4539',1,'absyn.h']]]
+  ['stmt_5ftry_18',['Stmt_Try',['../absyn_8h.html#ab41e25d44d75a4a17961001ae53c4539',1,'absyn.h']]],
+  ['stmt_5fusing_19',['Stmt_Using',['../absyn_8h.html#afff85d46c2a8c16a3eb54b03ecabcf19',1,'absyn.h']]]
 ];

@@ -18,5 +18,6 @@ var searchData=
   ['stmt_5floop_5f_15',['Stmt_Loop_',['../structStmt__Loop__.html',1,'']]],
   ['stmt_5fmatch_5f_16',['Stmt_Match_',['../structStmt__Match__.html',1,'']]],
   ['stmt_5fpp_5f_17',['Stmt_PP_',['../structStmt__PP__.html',1,'']]],
-  ['stmt_5ftry_5f_18',['Stmt_Try_',['../structStmt__Try__.html',1,'']]]
+  ['stmt_5ftry_5f_18',['Stmt_Try_',['../structStmt__Try__.html',1,'']]],
+  ['stmt_5fusing_5f_19',['Stmt_Using_',['../structStmt__Using__.html',1,'']]]
 ];

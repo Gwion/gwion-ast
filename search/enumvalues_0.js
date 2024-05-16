@@ -76,5 +76,6 @@ var searchData=
   ['ae_5fstmt_5fspread_73',['ae_stmt_spread',['../absyn_8h.html#a02e6e36e3712e41f123cbdeb47e6424ba1ce93d13e9cca0111777c217ba0262c7',1,'absyn.h']]],
   ['ae_5fstmt_5ftry_74',['ae_stmt_try',['../absyn_8h.html#a02e6e36e3712e41f123cbdeb47e6424bacdc122590f7963e9ab7851ace39db769',1,'absyn.h']]],
   ['ae_5fstmt_5funtil_75',['ae_stmt_until',['../absyn_8h.html#a02e6e36e3712e41f123cbdeb47e6424bab19b1d1d6831d007e915b76d9b735f31',1,'absyn.h']]],
-  ['ae_5fstmt_5fwhile_76',['ae_stmt_while',['../absyn_8h.html#a02e6e36e3712e41f123cbdeb47e6424ba66ef24596b276f4c1861ab9e5d25c20d',1,'absyn.h']]]
+  ['ae_5fstmt_5fusing_76',['ae_stmt_using',['../absyn_8h.html#a02e6e36e3712e41f123cbdeb47e6424baeea206c1a6e8632d7c407513f16ff22f',1,'absyn.h']]],
+  ['ae_5fstmt_5fwhile_77',['ae_stmt_while',['../absyn_8h.html#a02e6e36e3712e41f123cbdeb47e6424ba66ef24596b276f4c1861ab9e5d25c20d',1,'absyn.h']]]
 ];

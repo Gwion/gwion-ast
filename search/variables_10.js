@@ -25,8 +25,9 @@ var searchData=
   ['stmt_5fspread_22',['stmt_spread',['../unionStmt_1_1stmt__data.html#a108d2505debdce6604dd627768ca2ead',1,'Stmt::stmt_data']]],
   ['stmt_5ftry_23',['stmt_try',['../unionStmt_1_1stmt__data.html#a37dbc307964c3bc7614cfe2364ef5c48',1,'Stmt::stmt_data']]],
   ['stmt_5ftype_24',['stmt_type',['../structStmt.html#ac117446db99a8e22b4924e4ee24ccb43',1,'Stmt']]],
-  ['str_25',['str',['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'pparg.h']]],
-  ['string_26',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
-  ['sym_27',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
-  ['symbol_28',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
+  ['stmt_5fusing_25',['stmt_using',['../unionStmt_1_1stmt__data.html#aa7d2c60b09b08b310b752c2028290715',1,'Stmt::stmt_data']]],
+  ['str_26',['str',['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'pparg.h']]],
+  ['string_27',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
+  ['sym_28',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
+  ['symbol_29',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
 ];
