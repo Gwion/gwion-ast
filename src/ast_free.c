@@ -265,6 +265,13 @@ AST_FREE(Spread_Def, stmt_spread) {
   free_mstr(p, a->data);
 }
 
+AST_FREE(Stmt_Using, stmt_using) {
+  if(a->alias.sym)
+    free_exp(p, a->d.exp);
+  else
+    free_type_decl(p, a->d.td);
+}
+
 DECL_STMT_FUNC(free, void, MemPool);
 static AST_FREE(Stmt*, stmt2) {
   free_stmt_func[a->stmt_type](p, &a->d);

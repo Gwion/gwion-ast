@@ -103,7 +103,7 @@ ANN void lex_spread(void *data);
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." DEFER "defer"
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
-  LATE "late"
+  LATE "late" USING "using"
 
 %token<yyint> INTEGER
 %type<gwint> decimal number "<integer>"
@@ -139,7 +139,7 @@ ANN void lex_spread(void *data);
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt defer_stmt spread_stmt
-%type<stmt> match_case_stmt match_stmt stmt_pp
+%type<stmt> match_case_stmt match_stmt stmt_pp using_stmt
 %type<handler> handler
 %type<handler_list> handler_list
 %type<stmt_list> stmt_list match_list code_list
@@ -406,6 +406,7 @@ stmt
   | try_stmt
   | retry_stmt
   | spread_stmt
+  | using_stmt
   ;
 
 spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
@@ -416,6 +417,18 @@ spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
   };
   $$ = MK_STMT(ae_stmt_spread, @2, .stmt_spread = spread);
 }
+
+using_stmt: "using" type_decl ";" { $$ = MK_STMT(ae_stmt_using, @$);
+    $$.d.stmt_using.d.td = $2;
+    }
+          | "using" ID ":" dot_exp ";" { $$ = MK_STMT(ae_stmt_using, @$);
+    $$.d.stmt_using.d.exp = $4;
+    $$.d.stmt_using.alias = MK_TAG($2, @2);
+  }
+          | "using" ID ":" ID ";" { $$ = MK_STMT(ae_stmt_using, @$);
+    $$.d.stmt_using.d.exp = new_prim_id(mpool(arg), $4, @4);
+    $$.d.stmt_using.alias = MK_TAG($2, @2);
+  }
 
 retry_stmt: "retry" ";" { $$ = MK_STMT(ae_stmt_retry, @1); }
 
@@ -836,8 +849,10 @@ mul_op: "*" | "/" | "%";
 
 opt_exp: exp { $$ = $1; } | %empty { $$ = NULL; }
 con_exp: log_or_exp
-  | log_or_exp "?" opt_exp ":" con_exp
+  | log_or_exp "?" con_exp ":" con_exp
       { $$ = new_exp_if(mpool(arg), $1, $3, $5, @$); };
+  | log_or_exp "?" ":" con_exp
+      { $$ = new_exp_if(mpool(arg), $1, NULL, $4, @$); };
   | log_or_exp "?:" con_exp
       { $$ = new_exp_if(mpool(arg), $1, NULL, $3, @$); };
 

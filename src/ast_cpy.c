@@ -449,6 +449,15 @@ ANN static void cpy_stmt_spread(MemPool p, Spread_Def a, const Spread_Def src) {
   a->data = mstrdup(p, src->data);
 }
 
+ANN static void cpy_stmt_using(MemPool p, Stmt_Using a, const Stmt_Using src) {
+  if(src->alias.sym) {
+    a->d.exp = cpy_exp(p, src->d.exp);
+    a->alias = src->alias;
+  } else
+    a->d.td = cpy_type_decl(p, src->d.td);
+}
+
+
 ANN static void cpy_stmt2(MemPool p, Stmt* a, Stmt* src) {
   switch (src->stmt_type) {
   case ae_stmt_exp:
@@ -488,6 +497,9 @@ ANN static void cpy_stmt2(MemPool p, Stmt* a, Stmt* src) {
     break;
   case ae_stmt_spread:
     cpy_stmt_spread(p, &a->d.stmt_spread, &src->d.stmt_spread);
+    break;
+  case ae_stmt_using:
+    cpy_stmt_using(p, &a->d.stmt_using, &src->d.stmt_using);
     break;
   case ae_stmt_break:
   case ae_stmt_continue:

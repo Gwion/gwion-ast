@@ -505,7 +505,8 @@ typedef enum {
   ae_stmt_match,
   ae_stmt_pp,
   ae_stmt_defer,
-  ae_stmt_spread
+  ae_stmt_spread,
+  ae_stmt_using,
 } ae_stmt_t;
 
 typedef struct Stmt_For_ *    Stmt_For;
@@ -682,6 +683,15 @@ struct Stmt_Defer_ {
   Stmt* stmt;
 };
 
+typedef struct Stmt_Using_ {
+  union {
+    Type_Decl *td;
+    Exp *exp;
+  } d;
+  Tag alias;
+} *Stmt_Using;
+
+
 struct Stmt {
   union stmt_data {
     struct Stmt_Exp_     stmt_exp;
@@ -696,7 +706,8 @@ struct Stmt {
     struct Stmt_Index_   stmt_index;
     struct Stmt_PP_      stmt_pp;
     struct Stmt_Defer_   stmt_defer;
-    struct Spread_Def_    stmt_spread;
+    struct Spread_Def_   stmt_spread;
+    struct Stmt_Using_   stmt_using;
   } d;
   loc_t loc; ///< position
   ae_stmt_t stmt_type;

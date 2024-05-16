@@ -340,6 +340,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "const"                             { adjust(yyscanner); return CONSTT;}
 "late"                              { adjust(yyscanner); return LATE;}
 
+"using"                             { adjust(yyscanner); return USING;}
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}
 "break"                             { adjust(yyscanner); return BREAK;}

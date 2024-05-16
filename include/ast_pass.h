@@ -62,7 +62,8 @@ static inline bool dummy_func(const void *a NUSED, const void *b NUSED) {
       (_##prefix##_stmt_func)prefix##_stmt_match,                              \
       (_##prefix##_stmt_func)prefix##_stmt_pp,                                 \
       (_##prefix##_stmt_func)prefix##_stmt_defer,                              \
-      (_##prefix##_stmt_func)prefix##_stmt_spread};
+      (_##prefix##_stmt_func)prefix##_stmt_spread,                             \
+      (_##prefix##_stmt_func)prefix##_stmt_using};
 
 #define DECL_SECTION_FUNC(prefix, type, arg)                                   \
   typedef type (*_##prefix##_section_func)(const arg, union section_data *);   \
