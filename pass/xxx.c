@@ -403,6 +403,30 @@ ANN static bool xxx_stmt_spread(XXX *a, Spread_Def b) {
   return ret;
 }
 
+ANN static bool xxx_stmt_using(XXX *a, Stmt_Using b) {
+  bool ret = true;
+  if(b->alias.sym) {
+    CHECK_RET(xxx_tag(a, &b->alias), ret);
+    CHECK_RET(xxx_exp(a, b->d.exp), ret);
+  } else
+    CHECK_RET(xxx_type_decl(a, b->d.td), ret);
+  return ret;
+}
+
+ANN static bool xxx_stmt_import(XXX *a, Stmt_Import b) {
+  bool ret = true;
+  CHECK_RET(xxx_tag(a, &b->tag), ret);
+  if(b->selection) {
+    for(uint32_t i = 0; i < b->selection->len; i++) {
+      ImportItem ii = *mp_vector_at(b->selection, ImportItem, i);
+      CHECK_RET(xxx_tag(a, &ii.tag), ret);
+      if(ii.exp)
+        CHECK_RET(xxx_exp(a, ii.exp), ret);
+    }
+  }
+  return ret;
+}
+
 DECL_STMT_FUNC(xxx, bool, XXX*)
 ANN static bool xxx_stmt(XXX *a, Stmt* b) {
   return b->poison

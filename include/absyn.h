@@ -507,6 +507,7 @@ typedef enum {
   ae_stmt_defer,
   ae_stmt_spread,
   ae_stmt_using,
+  ae_stmt_import,
 } ae_stmt_t;
 
 typedef struct Stmt_For_ *    Stmt_For;
@@ -667,7 +668,6 @@ enum ae_pp_type {
   ae_pp_ifndef,
   ae_pp_else,
   ae_pp_endif,
-  ae_pp_import,
   ae_pp_locale,
   ae_pp_nl
 };
@@ -688,9 +688,15 @@ typedef struct Stmt_Using_ {
     Type_Decl *td;
     Exp *exp;
   } d;
-  Tag alias;
+  Tag tag;
 } *Stmt_Using;
 
+typedef MP_Vector *ImportList;
+
+typedef struct Stmt_Import_ {
+  Tag tag;
+  ImportList selection;
+} *Stmt_Import;
 
 struct Stmt {
   union stmt_data {
@@ -708,6 +714,7 @@ struct Stmt {
     struct Stmt_Defer_   stmt_defer;
     struct Spread_Def_   stmt_spread;
     struct Stmt_Using_   stmt_using;
+    struct Stmt_Import_  stmt_import;
   } d;
   loc_t loc; ///< position
   ae_stmt_t stmt_type;

@@ -465,9 +465,7 @@ void yyfree ( void * , yyscan_t yyscanner );
 #define interp 9
 #define include_start 10
 #define include_end 11
-#define import 12
-#define import_end 13
-#define locale_end 14
+#define locale_end 12
 
 #endif
 
@@ -719,9 +717,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 447 "src/gwion.l"
+#line 445 "src/gwion.l"
 
 
-#line 725 "include/lexer.h"
+#line 723 "include/lexer.h"
 #undef gwion_IN_HEADER
 #endif /* gwion_HEADER_H */

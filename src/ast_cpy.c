@@ -450,11 +450,29 @@ ANN static void cpy_stmt_spread(MemPool p, Spread_Def a, const Spread_Def src) {
 }
 
 ANN static void cpy_stmt_using(MemPool p, Stmt_Using a, const Stmt_Using src) {
-  if(src->alias.sym) {
+  if(src->tag.sym) {
     a->d.exp = cpy_exp(p, src->d.exp);
-    a->alias = src->alias;
+    a->tag = src->tag;
   } else
     a->d.td = cpy_type_decl(p, src->d.td);
+}
+
+ANN static ImportList cpy_import_list(MemPool p, const ImportList src) {
+  ImportList tgt = new_mp_vector(p, struct Stmt_Using_, src->len);
+  for(uint32_t i = 0; i < src->len; i++) {
+    Stmt_Using  src_item = mp_vector_at(src, struct Stmt_Using_, i);
+    Stmt_Using  tgt_item = mp_vector_at(tgt, struct Stmt_Using_, i);
+    tgt_item->tag = src_item->tag;
+    if(src_item->d.exp)
+      tgt_item->d.exp = cpy_exp(p, src_item->d.exp);
+  }
+  return tgt;
+}
+
+ANN static void cpy_stmt_import(MemPool p, Stmt_Import a, const Stmt_Import src) {
+  a->tag = src->tag;
+  if(src->selection)
+    a->selection = cpy_import_list(p, src->selection);
 }
 
 
@@ -500,6 +518,9 @@ ANN static void cpy_stmt2(MemPool p, Stmt* a, Stmt* src) {
     break;
   case ae_stmt_using:
     cpy_stmt_using(p, &a->d.stmt_using, &src->d.stmt_using);
+    break;
+  case ae_stmt_import:
+    cpy_stmt_import(p, &a->d.stmt_import, &src->d.stmt_import);
     break;
   case ae_stmt_break:
   case ae_stmt_continue:

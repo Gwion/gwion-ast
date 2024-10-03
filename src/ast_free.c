@@ -265,12 +265,24 @@ AST_FREE(Spread_Def, stmt_spread) {
   free_mstr(p, a->data);
 }
 
-AST_FREE(Stmt_Using, stmt_using) {
-  if(a->alias.sym)
+static AST_FREE(Stmt_Using, stmt_using) {
+  if(a->tag.sym)
     free_exp(p, a->d.exp);
   else
     free_type_decl(p, a->d.td);
 }
+
+static AST_FREE(Stmt_Import, stmt_import) {
+  if(a->selection) {
+    for(uint32_t i = 0; i < a->selection->len; i++) {
+      Stmt_Using item = mp_vector_at(a->selection, struct Stmt_Using_, i);
+      if(item->d.exp)
+        free_exp(p, item->d.exp);
+    }
+    free_mp_vector(p, struct Stmt_Using_, a->selection);
+  }
+}
+
 
 DECL_STMT_FUNC(free, void, MemPool);
 static AST_FREE(Stmt*, stmt2) {

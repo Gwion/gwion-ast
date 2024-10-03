@@ -81,6 +81,8 @@ ANN void lex_spread(void *data);
   TmplArg_List tmplarg_list;
   Variable variable;
   Variable_List variable_list;
+  struct Stmt_Using_ import_item;
+  ImportList import_list;
   Extend_Def extend_def;
   Class_Def class_def;
   Trait_Def trait_def;
@@ -103,7 +105,7 @@ ANN void lex_spread(void *data);
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." DEFER "defer"
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
-  LATE "late" USING "using"
+  LATE "late" USING "using" IMPORT "import" NAMED "="
 
 %token<yyint> INTEGER
 %type<gwint> decimal number "<integer>"
@@ -112,7 +114,7 @@ ANN void lex_spread(void *data);
 %token<fval> FLOATT "<float>"
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "${" INTERP_EXP
   PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
-  PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n" PP_IMPORT "import"
+  PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
   SPREAD "}..."
 
 %token<string> INTERP_LIT "<interp string lit>" INTERP_END "<interp string end>"
@@ -139,7 +141,8 @@ ANN void lex_spread(void *data);
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt defer_stmt spread_stmt
-%type<stmt> match_case_stmt match_stmt stmt_pp using_stmt
+%type<stmt> match_case_stmt match_stmt stmt_pp using_stmt import_stmt
+%type<import_item> import_item
 %type<handler> handler
 %type<handler_list> handler_list
 %type<stmt_list> stmt_list match_list code_list
@@ -168,6 +171,7 @@ ANN void lex_spread(void *data);
 %type<tmplarg_list> tmplarg_list call_template
 %type<variable> variable
 %type<variable_list> variable_list
+%type<import_list> import_list
 %type<prim_def> prim_def
 %type<ast> ast section_list
 
@@ -389,7 +393,6 @@ stmt_pp
   | PP_ELSE    { $$ = MK_STMT_PP(else,    @$, .data = $1); }
   | PP_ENDIF   { $$ = MK_STMT_PP(endif,   @$, .data = $1); }
   | PP_NL      { if(!arg->ppa->fmt)return 0; $$ = MK_STMT_PP(nl, @$, .data = $1); }
-  | PP_IMPORT  { $$ = MK_STMT_PP(import, @$, .data = $1); }
   | LOCALE_INI ID opt_exp LOCALE_END
     { $$ = MK_STMT_PP(locale, @$, .xid = $2, .exp = $3); }
   ;
@@ -407,6 +410,7 @@ stmt
   | retry_stmt
   | spread_stmt
   | using_stmt
+  | import_stmt
   ;
 
 spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
@@ -423,11 +427,46 @@ using_stmt: "using" type_decl ";" { $$ = MK_STMT(ae_stmt_using, @$);
     }
           | "using" ID ":" dot_exp ";" { $$ = MK_STMT(ae_stmt_using, @$);
     $$.d.stmt_using.d.exp = $4;
-    $$.d.stmt_using.alias = MK_TAG($2, @2);
+    $$.d.stmt_using.tag = MK_TAG($2, @2);
   }
           | "using" ID ":" ID ";" { $$ = MK_STMT(ae_stmt_using, @$);
     $$.d.stmt_using.d.exp = new_prim_id(mpool(arg), $4, @4);
-    $$.d.stmt_using.alias = MK_TAG($2, @2);
+    $$.d.stmt_using.tag = MK_TAG($2, @2);
+  }
+
+import_item: ID {
+    $$ = (struct Stmt_Using_) {
+      .tag = MK_TAG($1, @1)
+    };
+  }        | ID ":" dot_exp {
+    $$ = (struct Stmt_Using_) {
+      .tag = MK_TAG($1, @1),
+      .d = { .exp = $3 }
+    };
+  }        | ID ":" ID {
+    $$ = (struct Stmt_Using_) {
+      .tag = MK_TAG($1, @1),
+      .d = { .exp = new_prim_id(mpool(arg), $3, @3) }
+    };
+  }
+
+
+import_list: import_item {
+    $$ = new_mp_vector(mpool(arg), struct Stmt_Using_, 1);
+    mp_vector_set($$, struct Stmt_Using_, 0, $1);
+  }
+           | import_list "," import_item {
+    mp_vector_add(mpool(arg), &$1, struct Stmt_Using_, $3);
+    $$ = $1;
+  }
+
+import_stmt: "import" ID ";" {
+    $$ = MK_STMT(ae_stmt_import, @$);
+    $$.d.stmt_import.tag = MK_TAG($2, @2);
+  } | "import" ID ":" import_list ";" {
+    $$ = MK_STMT(ae_stmt_import, @$);
+    $$.d.stmt_import.tag = MK_TAG($2, @2);
+    $$.d.stmt_import.selection = $4;
   }
 
 retry_stmt: "retry" ";" { $$ = MK_STMT(ae_stmt_retry, @1); }
@@ -614,6 +653,7 @@ exp:
 
 binary_exp
   : decl_exp
+//  | ID "=" binary_exp {exit(10);}
   | binary_exp "@"     decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
   | binary_exp DYNOP   decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }

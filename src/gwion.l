@@ -101,7 +101,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment spread
-%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end import import_end locale_end
+%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end locale_end
 %%
 
 <spread>"}..." {
@@ -254,10 +254,6 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <include_start><{FILENAME}> { adjust(yyscanner); BEGIN(INITIAL); GWYY_INCLUDE; /*BEGIN(include_end); */ /*BEGIN(INITIAL); */yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
 <include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
 
-<import>{LEX_ID}(":["{LEX_ID}"]"){0,1} { adjust(yyscanner); BEGIN(import_end); yylval->sval = strdup(yytext); return PP_IMPORT; }
-<import_end>.*\n   { newline(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
-^{SPACE}*#import{SPACE}+ { adjust(yyscanner); BEGIN(import); }
-
 ^{SPACE}*#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
 
 ^{SPACE}*"#locale" { adjust(yyscanner); Scanner* scan = yyget_extra(yyscanner); scan->locale = true; return LOCALE_INI; }
@@ -281,6 +277,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 ":["                                { adjust(yyscanner); return TMPL;}
 {SPACE}*                             { adjust(yyscanner); continue; }
+"="                                 { adjust(yyscanner); return NAMED; }
 {OP}{1}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op1(yytext); }
 \?{2,}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return OPTIONS; }
 {OP}{2}  { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return op2(yytext); }
@@ -341,6 +338,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "late"                              { adjust(yyscanner); return LATE;}
 
 "using"                             { adjust(yyscanner); return USING;}
+"import"                            { adjust(yyscanner); return IMPORT;}
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}
 "break"                             { adjust(yyscanner); return BREAK;}
