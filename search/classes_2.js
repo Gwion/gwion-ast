@@ -12,9 +12,10 @@ var searchData=
   ['exp_5fdot_9',['Exp_Dot',['../structExp__Dot.html',1,'']]],
   ['exp_5fif_10',['Exp_If',['../structExp__If.html',1,'']]],
   ['exp_5flambda_11',['Exp_Lambda',['../structExp__Lambda.html',1,'']]],
-  ['exp_5fpostfix_12',['Exp_Postfix',['../structExp__Postfix.html',1,'']]],
-  ['exp_5fprimary_13',['Exp_Primary',['../structExp__Primary.html',1,'']]],
-  ['exp_5fslice_14',['Exp_Slice',['../structExp__Slice.html',1,'']]],
-  ['exp_5funary_15',['Exp_Unary',['../structExp__Unary.html',1,'']]],
-  ['extend_5fdef_5f_16',['Extend_Def_',['../structExtend__Def__.html',1,'']]]
+  ['exp_5fnamed_12',['Exp_Named',['../structExp__Named.html',1,'']]],
+  ['exp_5fpostfix_13',['Exp_Postfix',['../structExp__Postfix.html',1,'']]],
+  ['exp_5fprimary_14',['Exp_Primary',['../structExp__Primary.html',1,'']]],
+  ['exp_5fslice_15',['Exp_Slice',['../structExp__Slice.html',1,'']]],
+  ['exp_5funary_16',['Exp_Unary',['../structExp__Unary.html',1,'']]],
+  ['extend_5fdef_5f_17',['Extend_Def_',['../structExtend__Def__.html',1,'']]]
 ];

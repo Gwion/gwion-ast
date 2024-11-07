@@ -19,8 +19,8 @@ var searchData=
   ['fmt_16',['fmt',['../structPPArg__.html#a6cd122b86eb2d4ad470e80e27f37f6d5',1,'PPArg_']]],
   ['fnum_17',['fnum',['../unionExp__Primary_1_1prim__data.html#a209f24694b2ad93beee8f0d36918a750',1,'Exp_Primary::prim_data']]],
   ['fptr_18',['fptr',['../structType__Decl__.html#aed5eaa855f1c770be0f7b80dbba656be',1,'Type_Decl_']]],
-  ['fptr_5fdef_19',['fptr_def',['../unionSection___1_1section__data.html#adb21dff5bd9c2e06230f9a754125a947',1,'Section_::section_data']]],
-  ['fptr_5fdef_20',['Fptr_Def',['../absyn_8h.html#aa29acb9fc50b0fd64145c6ef99add0c6',1,'absyn.h']]],
+  ['fptr_5fdef_19',['Fptr_Def',['../absyn_8h.html#aa29acb9fc50b0fd64145c6ef99add0c6',1,'absyn.h']]],
+  ['fptr_5fdef_20',['fptr_def',['../unionSection___1_1section__data.html#adb21dff5bd9c2e06230f9a754125a947',1,'Section_::section_data']]],
   ['fptr_5fdef_5f_21',['Fptr_Def_',['../structFptr__Def__.html',1,'']]],
   ['free_5farg_5flist_22',['free_arg_list',['../absyn_8h.html#a1a2718da3a93d912587d7aa62fb4964d',1,'absyn.h']]],
   ['free_5fargs_23',['free_args',['../macro_8c.html#a91a5ab48ddba8a1ccfbf9e9322fb84e4',1,'macro.c']]],
@@ -57,8 +57,8 @@ var searchData=
   ['func_54',['func',['../structExp__Call__.html#ab721c0d727d9ea7f980752d48b693f0c',1,'Exp_Call_::func'],['../structFunc__Base__.html#ace8d2c0cf0fa400561991d131521f4e1',1,'Func_Base_::func']]],
   ['func_5fbase_55',['Func_Base',['../absyn_8h.html#aa47db48f1d22b1c5db9ccf1b43d7f240',1,'absyn.h']]],
   ['func_5fbase_5f_56',['Func_Base_',['../structFunc__Base__.html',1,'']]],
-  ['func_5fdef_57',['func_def',['../unionSection___1_1section__data.html#a31a209ddce2a822a4c694cb647c50d45',1,'Section_::section_data']]],
-  ['func_5fdef_58',['Func_Def',['../absyn_8h.html#a9439ca24d35531b04cea2dcaa85f56fd',1,'absyn.h']]],
+  ['func_5fdef_57',['Func_Def',['../absyn_8h.html#a9439ca24d35531b04cea2dcaa85f56fd',1,'absyn.h']]],
+  ['func_5fdef_58',['func_def',['../unionSection___1_1section__data.html#a31a209ddce2a822a4c694cb647c50d45',1,'Section_::section_data']]],
   ['func_5fdef_5f_59',['Func_Def_',['../structFunc__Def__.html',1,'']]],
   ['func_5fdef_5fdata_60',['func_def_data',['../unionFunc__Def___1_1func__def__data.html',1,'Func_Def_']]]
 ];

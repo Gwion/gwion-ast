@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['handler_0',['handler',['../structStmt__Try__.html#a8ddfe24fd860156819378cfb8c4e32fe',1,'Stmt_Try_']]],
-  ['handler_1',['Handler',['../absyn_8h.html#a61fbf121c75dd2318bba2304cb8f0578',1,'absyn.h']]],
+  ['handler_0',['Handler',['../absyn_8h.html#a61fbf121c75dd2318bba2304cb8f0578',1,'absyn.h']]],
+  ['handler_1',['handler',['../structStmt__Try__.html#a8ddfe24fd860156819378cfb8c4e32fe',1,'Stmt_Try_']]],
   ['handler_5f_2',['Handler_',['../structHandler__.html',1,'']]],
   ['handler_5flist_3',['Handler_List',['../absyn_8h.html#af158a89f894abae804179811dc59275f',1,'absyn.h']]],
   ['handlers_4',['handlers',['../structParserHandler.html#a569eac8368906f8536684cb7160be629',1,'ParserHandler']]],
