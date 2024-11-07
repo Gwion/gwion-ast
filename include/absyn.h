@@ -5,6 +5,7 @@
 #ifndef __ABSYN
 #define __ABSYN
 
+#include <inttypes.h>
 #define AST_NEW(type, name, ...) type new_##name(MemPool p, __VA_ARGS__)
 
 #define AST_FREE(type, name) void free_##name(MemPool p NUSED, type a NUSED)
@@ -117,8 +118,8 @@ enum fbflag {
 
 /** a dot expression. @code object.member @endcode */
 typedef struct {
-  Exp*    base;
-  Symbol xid;
+  Tag  tag;
+  Exp *base;
 } Exp_Dot;
 
 typedef struct Capture {
@@ -200,7 +201,8 @@ typedef enum {
   ae_exp_if,
   ae_exp_dot,
   ae_exp_lambda,
-  ae_exp_td
+  ae_exp_td,
+  ae_exp_named,
 } ae_exp_t;
 typedef enum { ae_meta_var, ae_meta_value, ae_meta_protect } ae_Exp_Meta;
 
@@ -325,6 +327,14 @@ typedef struct {
   enum unary_type unary_type;
 } Exp_Unary;
 
+typedef struct {
+  Exp *exp;
+  Tag  tag;
+  bool is_arg;
+} Exp_Named;
+
+AST_NEW(Exp*, exp_named, Exp *exp, const Tag tag, const loc_t loc);
+
 enum exp_state {
   exp_state_meta, // ae_meta_value
   exp_state_prot, // ae_meta_protect
@@ -353,6 +363,7 @@ struct Exp {
     Exp_Slice   exp_slice;
     Exp_Lambda  exp_lambda;
     Type_Decl * exp_td;
+    Exp_Named   exp_named;
   } d;
   struct Type_ *type;
   struct Type_ *cast_to;
@@ -454,7 +465,7 @@ ANEW     AST_NEW(Exp*, exp_call, Exp*, Exp* args, const loc_t);
 ANEW ANN AST_NEW(Exp*, exp_cast, Type_Decl *, Exp*, const loc_t);
 ANN2(1, 2, 4)
 ANEW AST_NEW(Exp*, exp_if, Exp*, Exp*, Exp*, const loc_t);
-ANEW ANN AST_NEW(Exp*, exp_dot, Exp*, struct Symbol_ *,
+ANEW ANN AST_NEW(Exp*, exp_dot, Exp*, const Tag tag,
                  const loc_t);
 ANEW ANN AST_NEW(Exp*, exp_unary, const Symbol, Exp*, const loc_t);
 ANEW ANN2(1,2,3) AST_NEW(Exp*, exp_unary2, const Symbol, Type_Decl *,
@@ -649,11 +660,11 @@ ANEW ANN AST_NEW(Type_Def, type_def, Type_Decl *, const Symbol, const loc_t);
 ANN void free_type_def(MemPool p, Type_Def);
 
 typedef struct Union_Def_ {
-  Variable_List      l;
-  Tag tag;
-  struct Type_ *  type;
-  Tmpl *          tmpl;
-  ae_flag         flag;
+  Variable_List l;
+  Tag           tag;
+  struct Type_ *type;
+  Tmpl *        tmpl;
+  ae_flag       flag;
 } * Union_Def;
 ANEW ANN AST_NEW(Union_Def, union_def, const Variable_List, const loc_t);
 ANN void free_union_def(MemPool p, Union_Def);

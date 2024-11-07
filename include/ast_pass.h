@@ -41,6 +41,7 @@ static inline bool dummy_func(const void *a NUSED, const void *b NUSED) {
       (_##prefix##_exp_func)prefix##_exp_dot,                                  \
       (_##prefix##_exp_func)prefix##_exp_lambda,                               \
       (_##prefix##_exp_func)prefix##_exp_td,                                   \
+      (_##prefix##_exp_func)prefix##_exp_named,                                \
   };
 
 #define DECL_STMT_FUNC(prefix, type, arg)                                      \

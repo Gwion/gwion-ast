@@ -11,7 +11,7 @@ ANN static Stmt_List cpy_stmt_list(MemPool p, Stmt_List src);
 
 ANN static void cpy_exp_dot(MemPool p, Exp_Dot *a, const Exp_Dot *src) {
   a->base = cpy_exp(p, src->base);
-  a->xid  = src->xid;
+  a->tag  = src->tag;
 }
 
 ANN static void cpy_exp_lambda(MemPool p, Exp_Lambda *a,
@@ -265,6 +265,8 @@ ANN Exp* cpy_exp(MemPool p, const Exp* src) {
   case ae_exp_td:
     a->d.exp_td = cpy_type_decl(p, src->d.exp_td);
     break;
+  case ae_exp_named:
+    a->d.exp_named.exp = cpy_exp(p, src->d.exp_named.exp);
   }
   a->exp_type = src->exp_type;
   a->emit_var = src->emit_var;
@@ -423,11 +425,9 @@ ANN Variable_List cpy_variable_list(MemPool p, const Variable_List src) {
 ANN Union_Def cpy_union_def(MemPool p, const Union_Def src) {
   Union_Def a = mp_calloc(p, Union_Def);
   a->tag = src->tag;
-  a->l        = cpy_variable_list(p, src->l);         // 1
-//  if (src->xid) a->xid = src->xid;                 // 1
-  if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl); // 1
-//  a->pos  = src->pos;
-  a->flag = src->flag; // 1
+  a->l        = cpy_variable_list(p, src->l);
+  if (src->tmpl) a->tmpl = cpy_tmpl(p, src->tmpl);
+  a->flag = src->flag;
   return a;
 }
 

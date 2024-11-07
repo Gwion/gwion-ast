@@ -127,7 +127,8 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
   vector_add(&scan->hashes, yyleng);
   scan->interp_state++;
   BEGIN(interp);
-  return INTERP_START;
+  return (vector_size(&scan->hashes) != (m_uint)scan->interp_state) ? STRING_LIT : INTERP_START;
+//  return INTERP_START;
 }
 
 <interp>\"#* {

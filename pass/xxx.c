@@ -255,6 +255,10 @@ ANN static bool xxx_exp_td(XXX *a, Type_Decl *b) {
   return xxx_type_decl(a, b);
 }
 
+ANN static bool xxx_exp_named(XXX *a, Exp_Named *b) {
+  return xxx_exp(a, b->exp);
+}
+
 DECL_EXP_FUNC(xxx, bool, XXX*)
 ANN static bool xxx_exp(XXX *a, Exp* b) {
   bool ret = b->poison
@@ -405,8 +409,8 @@ ANN static bool xxx_stmt_spread(XXX *a, Spread_Def b) {
 
 ANN static bool xxx_stmt_using(XXX *a, Stmt_Using b) {
   bool ret = true;
-  if(b->alias.sym) {
-    CHECK_RET(xxx_tag(a, &b->alias), ret);
+  if(b->tag.sym) {
+    CHECK_RET(xxx_tag(a, &b->tag), ret);
     CHECK_RET(xxx_exp(a, b->d.exp), ret);
   } else
     CHECK_RET(xxx_type_decl(a, b->d.td), ret);
@@ -418,10 +422,12 @@ ANN static bool xxx_stmt_import(XXX *a, Stmt_Import b) {
   CHECK_RET(xxx_tag(a, &b->tag), ret);
   if(b->selection) {
     for(uint32_t i = 0; i < b->selection->len; i++) {
-      ImportItem ii = *mp_vector_at(b->selection, ImportItem, i);
-      CHECK_RET(xxx_tag(a, &ii.tag), ret);
-      if(ii.exp)
-        CHECK_RET(xxx_exp(a, ii.exp), ret);
+      Stmt_Using using = mp_vector_at(b->selection, struct Stmt_Using_, i);
+      CHECK_RET(xxx_tag(a, &using->tag), ret);
+      if(using->tag.sym)
+        CHECK_RET(xxx_exp(a, using->d.exp), ret);
+      else
+        CHECK_RET(xxx_type_decl(a, using->d.td), ret);
     }
   }
   return ret;
@@ -516,6 +522,7 @@ ANN static bool xxx_enum_list(XXX *a, EnumValue_List b) {
 
 ANN static bool xxx_enum_def(XXX *a, Enum_Def b) {
   bool ret = true;
+  if(b->ext) CHECK_RET(xxx_type_decl(a, b->ext), ret);
   CHECK_RET(xxx_enum_list(a, b->list), ret);
   CHECK_RET(xxx_tag(a, &b->tag), ret);
   return ret;
@@ -523,6 +530,7 @@ ANN static bool xxx_enum_def(XXX *a, Enum_Def b) {
 
 ANN static bool xxx_union_def(XXX *a, Union_Def b) {
   bool ret = true;
+  if(b->ext) CHECK_RET(xxx_type_decl(a, b->ext), ret);
   CHECK_RET(xxx_variable_list(a, b->l), ret);
   CHECK_RET(xxx_tag(a, &b->tag), ret);
   if(b->tmpl) CHECK_RET(xxx_tmpl(a, b->tmpl), ret);

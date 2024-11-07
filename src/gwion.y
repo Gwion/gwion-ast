@@ -133,7 +133,7 @@ ANN void lex_spread(void *data);
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
 %type<var_decl> var_decl arg_decl
-%type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array class_ext
+%type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array extends
 %type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp dict_list
@@ -170,7 +170,7 @@ ANN void lex_spread(void *data);
 %type<tmplarg> tmplarg;
 %type<tmplarg_list> tmplarg_list call_template
 %type<variable> variable
-%type<variable_list> variable_list
+%type<variable_list> variable_list 
 %type<import_list> import_list
 %type<prim_def> prim_def
 %type<ast> ast section_list
@@ -227,7 +227,7 @@ section
 
 class_flag: flag modifier { $$ = $1 | $2; }
 class_def
-  : "class" class_flag ID decl_template class_ext traits class_body
+  : "class" class_flag ID decl_template extends traits class_body
     {
       $$ = new_class_def(mpool(arg), $2, MK_TAG($3, @3), $5, $7);
       if($4)
@@ -269,11 +269,11 @@ prim_def: "primitive" class_flag ID decimal ";"
     {
       $$ = new_prim_def(mpool(arg), $3, $4.num, @3, $2);
     }
-class_ext : "extends" type_decl_array { $$ = $2; } | %empty { $$ = NULL; };
+extends : "extends" type_decl_array { $$ = $2; } | %empty { $$ = NULL; };
 traits: %empty { $$ = NULL; } | ":" id_list { $$ = $2; };
 
-extend_def: "extends" type_decl_array ":" id_list ";" {
-  $$ = new_extend_def(mpool(arg), $2, $4);
+extend_def: extends ":" id_list ";" {
+  $$ = new_extend_def(mpool(arg), $1, $3);
 }
 
 
@@ -413,7 +413,7 @@ stmt
   | import_stmt
   ;
 
-spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} SPREAD {
+spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} "}..." {
   struct Spread_Def_ spread = {
     .tag = MK_TAG($2, @2),
     .list = $4,
@@ -494,6 +494,7 @@ enum_value: ID { $$ = (EnumValue) { .tag = MK_TAG($1, @1) }; }
 
 enum_list:      enum_value  { YYLIST_INI(EnumValue, $$, $1); }
 | enum_list "," enum_value  { YYLIST_END(EnumValue, $$, $1, $3) ;}
+| stmt_pp { return 0;}
 
 enum_def
   : "enum" flag ID "{" enum_list opt_comma "}" {
@@ -653,7 +654,7 @@ exp:
 
 binary_exp
   : decl_exp
-//  | ID "=" binary_exp {exit(10);}
+  | ID "=" binary_exp { $$ = new_exp_named(mpool(arg), $3, MK_TAG($1, @1), @$);}
   | binary_exp "@"     decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
   | binary_exp DYNOP   decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
   | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
@@ -860,8 +861,8 @@ variable:
   $$ = MK_VAR(td, (Var_Decl){ .tag = MK_TAG($1, @1)});
 }
 | type_decl_array ID ";" { $$ = MK_VAR($1, (Var_Decl){ .tag = MK_TAG($2, @2)});}
-
-variable_list:  variable { YYLIST_INI(Variable, $$, $1); }
+| stmt_pp { return 0;}
+variable_list: variable { YYLIST_INI(Variable, $$, $1); }
 | variable_list variable { YYLIST_END(Variable, $$, $1, $2); }
 
 union_def
@@ -940,7 +941,7 @@ lambda_list:
 
 lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
 
-tmplarg_exp: basic_exp;
+tmplarg_exp: basic_exp | interp;
 tmplarg: type_decl_array {
     $$ = (TmplArg) { .d = { .td = $1}, .type = tmplarg_td};
   }
@@ -958,7 +959,7 @@ call_paren :
 post_op : "++" | "--";
 
 dot_exp: post_exp "." ID {
-  $$ = new_exp_dot(mpool(arg), $1, $3, @$);
+  $$ = new_exp_dot(mpool(arg), $1, MK_TAG($3, @3), @$);
 };
 
 post_exp: prim_exp

@@ -112,6 +112,14 @@ AST_NEW(Exp*, exp_td, Type_Decl *td, const loc_t loc) {
   return a;
 }
 
+AST_NEW(Exp*, exp_named, Exp *exp, const Tag tag, const loc_t loc) {
+  Exp* a       = new_exp(p, ae_exp_named, loc);
+  a->d.exp_named.exp = exp;
+  a->d.exp_named.tag = tag;
+  return a;
+}
+
+
 static AST_NEW(Exp*, prim, const loc_t loc) {
   Exp* a = new_exp(p, ae_exp_primary, loc);
   exp_setmeta(a, 1);
@@ -302,11 +310,11 @@ AST_NEW(Exp*, exp_call, Exp* base, Exp* args,
   return a;
 }
 
-AST_NEW(Exp*, exp_dot, Exp* base, struct Symbol_ *xid,
+AST_NEW(Exp*, exp_dot, Exp* base, const Tag tag,
         const loc_t loc) {
   Exp* a             = new_exp(p, ae_exp_dot, loc);
   a->d.exp_dot.base = base;
-  a->d.exp_dot.xid  = xid;
+  a->d.exp_dot.tag  = tag;
   return a;
 }
 /*
@@ -395,7 +403,6 @@ AST_NEW(Enum_Def, enum_def, const EnumValue_List list, struct Symbol_ *xid,
   Enum_Def a = mp_calloc(p, Enum_Def);
   a->tag     = MK_TAG(xid, loc);
   a->list    = list;
-  //  vector_init(&a->values);
   return a;
 }
 
