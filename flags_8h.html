@@ -149,19 +149,19 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">  ANN <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> a##flag(A a, <span class="keyword">const</span> <span class="keyword">enum</span> a##flag flag) {                \</div>
+<b>Value:</b><div class="fragment"><div class="line">  ANN <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> a##flag(<span class="keyword">const</span> A a, <span class="keyword">const</span> <span class="keyword">enum</span> a##flag flag) {          \</div>
 <div class="line">    return (a-&gt;a##flag &amp; flag) == flag;                                        \</div>
 <div class="line">  }                                                                            \</div>
-<div class="line">  <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> safe_##a##flag(A a, <span class="keyword">const</span> <span class="keyword">enum</span> a##flag flag) {             \</div>
+<div class="line">  <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> safe_##a##flag(<span class="keyword">const</span> A a, <span class="keyword">const</span> <span class="keyword">enum</span> a##flag flag) {       \</div>
 <div class="line">    <span class="keywordflow">return</span> a ? ((a-&gt;a##flag &amp; flag) == flag) : 0;                              \</div>
 <div class="line">  }</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="flags_8h_source.html#l00033">33</a> of file <a class="el" href="flags_8h_source.html">flags.h</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   33</span><span class="preprocessor">#define _FLAG_FUNC(A, a)                                                       \</span></div>
-<div class="line"><span class="lineno">   34</span><span class="preprocessor">  ANN static inline int a##flag(A a, const enum a##flag flag) {                \</span></div>
+<div class="line"><span class="lineno">   34</span><span class="preprocessor">  ANN static inline int a##flag(const A a, const enum a##flag flag) {          \</span></div>
 <div class="line"><span class="lineno">   35</span><span class="preprocessor">    return (a-&gt;a##flag &amp; flag) == flag;                                        \</span></div>
 <div class="line"><span class="lineno">   36</span><span class="preprocessor">  }                                                                            \</span></div>
-<div class="line"><span class="lineno">   37</span><span class="preprocessor">  static inline int safe_##a##flag(A a, const enum a##flag flag) {             \</span></div>
+<div class="line"><span class="lineno">   37</span><span class="preprocessor">  static inline int safe_##a##flag(const A a, const enum a##flag flag) {       \</span></div>
 <div class="line"><span class="lineno">   38</span><span class="preprocessor">    return a ? ((a-&gt;a##flag &amp; flag) == flag) : 0;                              \</span></div>
 <div class="line"><span class="lineno">   39</span><span class="preprocessor">  }</span></div>
 </div><!-- fragment -->

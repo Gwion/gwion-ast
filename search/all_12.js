@@ -9,5 +9,7 @@ var searchData=
   ['union_5fdef_6',['union_def',['../unionSection___1_1section__data.html#a380a1401a35603834d31b0b994f0e704',1,'Section_::section_data']]],
   ['union_5fdef_5f_7',['Union_Def_',['../structUnion__Def__.html',1,'']]],
   ['unset_5fflag_8',['UNSET_FLAG',['../flags_8h.html#a74c408e5772910a002071d42764a23d2',1,'flags.h']]],
-  ['upvalues_9',['Upvalues',['../structUpvalues.html',1,'Upvalues'],['../absyn_8h.html#a97ef2a589b5dc94609f7fd06cd54ed68',1,'Upvalues:&#160;absyn.h']]]
+  ['upvalues_9',['Upvalues',['../structUpvalues.html',1,'Upvalues'],['../absyn_8h.html#a97ef2a589b5dc94609f7fd06cd54ed68',1,'Upvalues:&#160;absyn.h']]],
+  ['using_10',['Using',['../absyn_8h.html#aaf1c356a6972937b7bb06d23a073bdf7',1,'absyn.h']]],
+  ['usingstmt_11',['UsingStmt',['../absyn_8h.html#a55224e30f55692790808d7b6edf15a77',1,'absyn.h']]]
 ];

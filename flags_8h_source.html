@@ -125,10 +125,10 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">// function factory for other flag</span></div>
 <div class="foldopen" id="foldopen00033" data-start="" data-end="">
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="flags_8h.html#a663e117db3e04208fc776b6a0346c518">   33</a></span><span class="preprocessor">#define _FLAG_FUNC(A, a)                                                       \</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">  ANN static inline int a##flag(A a, const enum a##flag flag) {                \</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">  ANN static inline int a##flag(const A a, const enum a##flag flag) {          \</span></div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">    return (a-&gt;a##flag &amp; flag) == flag;                                        \</span></div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">  }                                                                            \</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">  static inline int safe_##a##flag(A a, const enum a##flag flag) {             \</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">  static inline int safe_##a##flag(const A a, const enum a##flag flag) {       \</span></div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">    return a ? ((a-&gt;a##flag &amp; flag) == flag) : 0;                              \</span></div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">  }</span></div>
 </div>

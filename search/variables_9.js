@@ -9,5 +9,5 @@ var searchData=
   ['is_5farg_6',['is_arg',['../structExp__Named.html#a121304524efd586f07f3e17757d3e079',1,'Exp_Named']]],
   ['is_5fcall_7',['is_call',['../structExp.html#adf0a6bae75bcfd2f3d3e4933bcdf7a25',1,'Exp']]],
   ['is_5fdo_8',['is_do',['../structStmt__Flow__.html#a65b95a16523722799b2a3a277823e388',1,'Stmt_Flow_']]],
-  ['is_5fref_9',['is_ref',['../structCapture.html#ac31de3059d3f503f826925dd4e574395',1,'Capture::is_ref'],['../structStmt__Each__.html#ad4c3b0ee9285c06617294d70ddde62a5',1,'Stmt_Each_::is_ref']]]
+  ['is_5fref_9',['is_ref',['../structStmt__Each__.html#ad4c3b0ee9285c06617294d70ddde62a5',1,'Stmt_Each_::is_ref'],['../structCapture.html#ac31de3059d3f503f826925dd4e574395',1,'Capture::is_ref']]]
 ];

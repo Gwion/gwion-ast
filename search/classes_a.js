@@ -17,8 +17,7 @@ var searchData=
   ['stmt_5fimport_5f_14',['Stmt_Import_',['../structStmt__Import__.html',1,'']]],
   ['stmt_5findex_5f_15',['Stmt_Index_',['../structStmt__Index__.html',1,'']]],
   ['stmt_5floop_5f_16',['Stmt_Loop_',['../structStmt__Loop__.html',1,'']]],
-  ['stmt_5fmatch_5f_17',['Stmt_Match_',['../structStmt__Match__.html',1,'']]],
-  ['stmt_5fpp_5f_18',['Stmt_PP_',['../structStmt__PP__.html',1,'']]],
-  ['stmt_5ftry_5f_19',['Stmt_Try_',['../structStmt__Try__.html',1,'']]],
-  ['stmt_5fusing_5f_20',['Stmt_Using_',['../structStmt__Using__.html',1,'']]]
+  ['stmt_5fpp_5f_17',['Stmt_PP_',['../structStmt__PP__.html',1,'']]],
+  ['stmt_5ftry_5f_18',['Stmt_Try_',['../structStmt__Try__.html',1,'']]],
+  ['stmt_5fusing_5f_19',['Stmt_Using_',['../structStmt__Using__.html',1,'']]]
 ];
