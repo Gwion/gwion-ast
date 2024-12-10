@@ -1,4 +1,4 @@
-*.o
+build
 *.a
 config.mk
 .d

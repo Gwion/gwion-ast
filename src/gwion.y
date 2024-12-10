@@ -25,12 +25,12 @@ ANN static Symbol sig_name(const Scanner*, const pos_t);
 ANN static Symbol lambda_name(const Scanner*, const pos_t);
 ANN void lex_spread(void *data);
 
-#define YYLIST_INI(type, dest, src)          \
-  dest = new_mp_vector(mpool(arg), type, 1); \
-  mp_vector_set(dest, type, 0, src);
+#define LIST_INI(type, dest, src)              \
+  dest = new_##type##list(mpool(arg), 1);      \
+  type##list_set(dest, 0, (src));
 
-#define YYLIST_END(type, dest, src, new )          \
-    mp_vector_add(mpool(arg), &(src), type, new);  \
+#define LIST_END(type, dest, src, new )        \
+    type##list_add(mpool(arg), &(src), (new)); \
     dest = src;
 
 %}
@@ -61,28 +61,28 @@ ANN void lex_spread(void *data);
   Stmt* stmt_ptr;
   Handler handler;
   ParserHandler handler_list;
-  Stmt_List stmt_list;
-  Arg_List arg_list;
+  StmtList *stmt_list;
+  ArgList *arg_list;
   Capture capture;
-  Capture_List captures;
+  CaptureList *captures;
   Arg arg;
   Func_Def func_def;
   EnumValue enum_value;
-  EnumValue_List enum_list;
+  EnumValueList *enum_list;
   Enum_Def enum_def;
   Union_Def union_def;
   Fptr_Def fptr_def;
   Type_Def type_def;
   Section section;
-  ID_List id_list;
+  TagList *taglist;
   Specialized specialized;
-  Specialized_List specialized_list;
+  SpecializedList *specialized_list;
   TmplArg tmplarg;
-  TmplArg_List tmplarg_list;
+  TmplArgList *tmplarg_list;
   Variable variable;
-  Variable_List variable_list;
+  VariableList *variable_list;
   struct Stmt_Using_ import_item;
-  ImportList import_list;
+  UsingStmtList *import_list;
   Extend_Def extend_def;
   Class_Def class_def;
   Trait_Def trait_def;
@@ -164,7 +164,7 @@ ANN void lex_spread(void *data);
 %type<class_def> class_def
 %type<trait_def> trait_def
 %type<ast> class_body
-%type<id_list> id_list traits
+%type<taglist> taglist traits
 %type<specialized> specialized
 %type<specialized_list> specialized_list decl_template
 %type<tmplarg> tmplarg;
@@ -208,8 +208,8 @@ ast: section_list { arg->ppa->ast = $$ = $1; }
   | %empty { $$ = NULL; }
 
 section_list
-  : section { YYLIST_INI(Section, $$, $1); }
-  | section_list %prec SECTION_LIST section { YYLIST_END(Section, $$, $1, $2); }
+  : section { LIST_INI(section, $$, $1); }
+  | section_list %prec SECTION_LIST section { LIST_END(section, $$, $1, $2); }
   | section_list error
 
 section
@@ -243,8 +243,8 @@ class_def
       $$->traits = $5;
     };
 
-class_body : "{" section_list "}"  { $$ = $2; } | "{" "}" { $$ = NULL; } | ";" { $$ = NULL; };
-
+class_body : "{" section_list "}"  { $$ = $2; }
+           | "{" "}" { $$ = NULL; } | ";" { $$ = NULL; } | "{" error "{" { $$ = NULL; }
 trait_def: "trait" opt_global ID traits class_body
     {
       $$ = new_trait_def(mpool(arg), $2, $3, $5, @3);
@@ -270,15 +270,15 @@ prim_def: "primitive" class_flag ID decimal ";"
       $$ = new_prim_def(mpool(arg), $3, $4.num, @3, $2);
     }
 extends : "extends" type_decl_array { $$ = $2; } | %empty { $$ = NULL; };
-traits: %empty { $$ = NULL; } | ":" id_list { $$ = $2; };
+traits: %empty { $$ = NULL; } | ":" taglist { $$ = $2; };
 
-extend_def: extends ":" id_list ";" {
+extend_def: extends ":" taglist ";" {
   $$ = new_extend_def(mpool(arg), $1, $3);
 }
 
 
-id_list:      ID { YYLIST_INI(Symbol, $$, $1); }
-| id_list "," ID { YYLIST_END(Symbol, $$, $1, $3); }
+taglist:      ID { LIST_INI(tag, $$, MK_TAG($1, @1)); }
+| taglist "," ID { LIST_END(tag, $$, $1, MK_TAG($3, @3)); }
 
 specialized: ID traits {
     $$ = (Specialized) {
@@ -293,12 +293,12 @@ specialized: ID traits {
       };
   }
 
-specialized_list: specialized { YYLIST_INI(Specialized, $$, $1); }
-  | specialized_list "," specialized { YYLIST_END(Specialized, $$, $1, $3); }
+specialized_list: specialized { LIST_INI(specialized, $$, $1); }
+  | specialized_list "," specialized { LIST_END(specialized, $$, $1, $3); }
 
-stmt_list:  stmt %prec STMT_LIST2  { YYLIST_INI(Stmt, $$, $1); } 
-| stmt_list stmt %prec STMT_LIST1  { YYLIST_END(Stmt, $$, $1, $2); }
-
+stmt_list:  stmt %prec STMT_LIST2  { LIST_INI(stmt, $$, $1); } 
+| stmt_list stmt %prec STMT_LIST1  { LIST_END(stmt, $$, $1, $2); }
+| stmt_list error
 fptr_base: flag type_decl_array ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
   if($4) { $$->tmpl = new_tmpl(mpool(arg), $4); } }
 
@@ -336,27 +336,27 @@ arg
   };
 arg_list:
      arg {
-       YYLIST_INI(Arg, $$, $1);
+       LIST_INI(arg, $$, $1);
      }
 	  |  arg_list "," arg {
-     mp_vector_add(mpool(arg), &$1, Arg, $3);
+     arglist_add(mpool(arg), &$1, $3);
      $$ = $1;
    };
 
 locale_arg:
     arg {
-       $$ = new_mp_vector(mpool(arg), Arg, 2);
+       $$ = new_arglist(mpool(arg), 2);
        Arg self = {
          .var = MK_VAR(
             new_type_decl(mpool(arg), insert_symbol("string"), @$),
             (struct Var_Decl_) { .tag = MK_TAG(insert_symbol("self"), @$)}),
          .exp = NULL
        };
-       mp_vector_set($$, Arg, 0, self);
-       mp_vector_set($$, Arg, 1, $1);
+       arglist_set($$, 0, self);
+       arglist_set($$, 1, $1);
      }
 	  |  locale_arg "," arg {
-     mp_vector_add(mpool(arg), &$1, Arg, $3);
+     arglist_add(mpool(arg), &$1, $3);
      $$ = $1;
    };
 locale_list:
@@ -369,7 +369,7 @@ locale_list:
           ),
          .exp = NULL
        };
-       YYLIST_INI(Arg, $$, self);
+       LIST_INI(arg, $$, self);
     }
 
 code_stmt
@@ -379,8 +379,9 @@ code_stmt
     $$ = MK_STMT(ae_stmt_code, @$, .stmt_code = { .stmt_list = $2 });}
 
 code_list
-  : "{" "}" { $$ = new_mp_vector(mpool(arg), Stmt, 0); }
+  : "{" "}" { $$ = new_stmtlist(mpool(arg), 0); }
   | "{" stmt_list "}" { $$ = $2; }
+  | "{" stmt_list error "}" { $$ = $2; }
 
 stmt_pp
   : PP_COMMENT { /*if(!arg->ppa->fmt)return 0; */$$ = MK_STMT_PP(comment, @$, .data = $1); }
@@ -413,7 +414,7 @@ stmt
   | import_stmt
   ;
 
-spread_stmt: "..." ID ":" id_list "{" {lex_spread(((Scanner*)scan));} "}..." {
+spread_stmt: "..." ID ":" taglist "{" {lex_spread(((Scanner*)scan));} "}..." {
   struct Spread_Def_ spread = {
     .tag = MK_TAG($2, @2),
     .list = $4,
@@ -452,11 +453,11 @@ import_item: ID {
 
 
 import_list: import_item {
-    $$ = new_mp_vector(mpool(arg), struct Stmt_Using_, 1);
-    mp_vector_set($$, struct Stmt_Using_, 0, $1);
+    $$ = new_usingstmtlist(mpool(arg), 1);
+    usingstmtlist_set($$, 0, $1);
   }
            | import_list "," import_item {
-    mp_vector_add(mpool(arg), &$1, struct Stmt_Using_, $3);
+    usingstmtlist_add(mpool(arg), &$1, $3);
     $$ = $1;
   }
 
@@ -473,11 +474,11 @@ retry_stmt: "retry" ";" { $$ = MK_STMT(ae_stmt_retry, @1); }
 
 handler: "handle" opt_id stmt { $$ = (Handler){ .tag = MK_TAG($2, $2 ? @2 :@1), .stmt = cpy_stmt3(mpool(arg), &$3) }; };
 handler_list: handler {
-    YYLIST_INI(Handler, $$.handlers, $1);
+    LIST_INI(handler, $$.handlers, $1);
     $$.has_xid = !!$1.tag.sym;
   }
   | handler_list handler  {
-    mp_vector_add(mpool(arg), &$1.handlers, Handler, $2);
+    handlerlist_add(mpool(arg), &$1.handlers, $2);
     $$ = $1;
   }
 try_stmt: "try" stmt handler_list { $$ = MK_STMT(ae_stmt_try, @1,
@@ -492,8 +493,8 @@ enum_value: ID { $$ = (EnumValue) { .tag = MK_TAG($1, @1) }; }
             $$ = (EnumValue) {.tag = MK_TAG($1, @1), .gwint = $3, .set = true };
           }
 
-enum_list:      enum_value  { YYLIST_INI(EnumValue, $$, $1); }
-| enum_list "," enum_value  { YYLIST_END(EnumValue, $$, $1, $3) ;}
+enum_list:      enum_value  { LIST_INI(enumvalue, $$, $1); }
+| enum_list "," enum_value  { LIST_END(enumvalue, $$, $1, $3) ;}
 | stmt_pp { return 0;}
 
 enum_def
@@ -514,8 +515,8 @@ match_case_stmt
     });
 }
 
-match_list: match_case_stmt { YYLIST_INI(Stmt, $$, $1); }
-| match_list match_case_stmt { YYLIST_END(Stmt, $$, $1, $2); }
+match_list: match_case_stmt { LIST_INI(stmt, $$, $1); }
+| match_list match_case_stmt { LIST_END(stmt, $$, $1, $2); }
 
 match_stmt: "match" exp "{" match_list "}" "where" stmt {
   $$ = MK_STMT(ae_stmt_match, @1,
@@ -703,11 +704,11 @@ decl_template
 : ":[" specialized_list "]" { $$ = $2; }
 |             ":[" specialized_list "..." "]" {
   Specialized spec = { .tag = MK_TAG(insert_symbol("..."), @3) };
-  YYLIST_END(Specialized, $$, $2, spec);
+  LIST_END(specialized, $$, $2, spec);
 }
 |                ":[" "..." "]" {
   Specialized spec = { .tag = MK_TAG(insert_symbol("..."), @2) };
-  YYLIST_INI(Specialized, $$, spec);
+  LIST_INI(specialized, $$, spec);
 }
              | %empty { $$ = NULL; };
 
@@ -767,23 +768,23 @@ op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
   :  type_decl_array op_op decl_template "(" arg "," arg ")"
     {
-      MP_Vector *args = new_mp_vector(mpool(arg), Arg, 2);
-      *(Arg*)args->ptr = $5;
-      *(Arg*)(args->ptr + sizeof(Arg)) = $7;
+      ArgList *args = new_arglist(mpool(arg), 2);
+      arglist_set(args, 0, $5);
+      arglist_set(args, 0, $7);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
   |  type_decl_array post_op decl_template "(" arg ")"
     {
-      Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
-      mp_vector_set(args, Arg, 0, $5);
+      ArgList *args = new_arglist(mpool(arg), 1);
+      arglist_set(args, 0, $5);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
   |  unary_op type_decl_array decl_template "(" arg ")"
     {
-      Arg_List args = new_mp_vector(mpool(arg), Arg, 1);
-      mp_vector_set(args, Arg, 0, $5);
+      ArgList *args = new_arglist(mpool(arg), 1);
+      arglist_set(args, 0, $5);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
@@ -862,8 +863,8 @@ variable:
 }
 | type_decl_array ID ";" { $$ = MK_VAR($1, (Var_Decl){ .tag = MK_TAG($2, @2)});}
 | stmt_pp { return 0;}
-variable_list: variable { YYLIST_INI(Variable, $$, $1); }
-| variable_list variable { YYLIST_END(Variable, $$, $1, $2); }
+variable_list: variable { LIST_INI(variable, $$, $1); }
+| variable_list variable { LIST_END(variable, $$, $1, $2); }
 
 union_def
   : "union" flag ID decl_template "{" variable_list "}" {
@@ -933,10 +934,10 @@ unary_exp : post_exp
 lambda_list:
  ID {
   Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){.tag = MK_TAG($1, @1)})};
-  YYLIST_INI(Arg, $$, a); }
+  LIST_INI(arg, $$, a); }
 |    lambda_list ID {
   Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){ .tag = MK_TAG($2, @2)})};
-  YYLIST_END(Arg, $$, $1, a);
+  LIST_END(arg, $$, $1, a);
 }
 
 lambda_arg: "\\" lambda_list { $$ = $2; } | BACKSLASH { $$ = NULL; }
@@ -949,8 +950,8 @@ tmplarg: type_decl_array {
     $$ = (TmplArg) { .d = { .exp = $1}, .type = tmplarg_exp};
   }
 
-tmplarg_list:      tmplarg { YYLIST_INI(TmplArg, $$, $1); }
-| tmplarg_list "," tmplarg { YYLIST_END(TmplArg, $$, $1, $3); }
+tmplarg_list:      tmplarg { LIST_INI(tmplarg, $$, $1); }
+| tmplarg_list "," tmplarg { LIST_END(tmplarg, $$, $1, $3); }
 
 call_paren :
 "(" exp ")" { $$ = $2; } | 
@@ -960,7 +961,10 @@ post_op : "++" | "--";
 
 dot_exp: post_exp "." ID {
   $$ = new_exp_dot(mpool(arg), $1, MK_TAG($3, @3), @$);
-};
+}
+| post_exp "." error {
+  $$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@"), @3), @$); // suus
+}
 
 post_exp: prim_exp
   | post_exp array
@@ -970,6 +974,8 @@ post_exp: prim_exp
   | post_exp call_template call_paren
     { $$ = new_exp_call(mpool(arg), $1, $3, @$);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
+  | post_exp call_template "(" error
+    {$$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@"), @3), @$); }
   | post_exp post_op
     { $$ = new_exp_post(mpool(arg), $1, $2, @$); }
   | dot_exp { $$ = $1; }
@@ -994,8 +1000,8 @@ interp: INTERP_START interp_exp { $$ = $2; }
 
 capture: ID { $$ = (Capture){ .var = { .tag = MK_TAG($1, @1) }};} | "&" ID { $$ = (Capture){ .var = { .tag = MK_TAG($2, @2) }, .is_ref = true }; };
 
-capture_list:  capture { YYLIST_INI(Capture, $$, $1); }
-| capture_list capture { YYLIST_END(Capture, $$, $1, $2); }
+capture_list:  capture { LIST_INI(capture, $$, $1); }
+| capture_list capture { LIST_END(capture, $$, $1, $2); }
 captures: ":" capture_list ":" { $$ = $2; } |  %empty { $$ = NULL; };
 array_lit_ed: ",]" | "]"
 

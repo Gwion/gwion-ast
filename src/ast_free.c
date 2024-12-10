@@ -1,7 +1,7 @@
 #include "gwion_util.h"
 #include "gwion_ast.h"
 
-AST_FREE(Stmt_List, stmt_list);
+AST_FREE(StmtList*, stmt_list);
 static AST_FREE(Stmt*, stmt2);
 
 AST_FREE(Array_Sub, array_sub) {
@@ -27,16 +27,12 @@ ANN AST_FREE(Exp_Slice *, exp_slice) {
   free_exp(p, a->base);
 }
 
-AST_FREE(ID_List, id_list) {
-  free_mp_vector(p, ID_List, a);
-}
-
-AST_FREE(Specialized_List, specialized_list) {
+AST_FREE(SpecializedList*, specialized_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    Specialized *spec = mp_vector_at(a, Specialized, i);
-    if (spec->traits) free_id_list(p, spec->traits);
+    const Specialized spec = specializedlist_at(a, i);
+    if (spec.traits) free_taglist(p, spec.traits);
   }
-  free_mp_vector(p, Specialized, a);
+  free_specializedlist(p, a);
 }
 
 AST_FREE(Type_Decl *, type_decl) {
@@ -82,7 +78,7 @@ free_exp(p, a->exp);
     if (a->code) free_stmt_list(p, a->code);
     break;
   }
-  if (a->captures) free_mp_vector(p, Capture, a->captures);
+  if (a->captures) free_capturelist(p, a->captures);
 }
 
 ANN static AST_FREE(Exp_If *, exp_if) {
@@ -107,7 +103,7 @@ ANN AST_FREE(Func_Base *, func_base) {
 AST_FREE(Func_Def, func_def) {
   free_func_base(p, a->base);
   if (!a->builtin && a->d.code) free_stmt_list(p, a->d.code);
-  if (a->captures) free_mp_vector(p, Capture, a->captures);
+  if (a->captures) free_capturelist(p, a->captures);
   mp_free(p, Func_Def, a);
 }
 
@@ -150,7 +146,7 @@ ANN static AST_FREE(Exp_Named *, exp_named) {
 }
 
 ANN static AST_FREE(Type_Decl **, exp_td) { free_type_decl(p, *a); }
-DECL_EXP_FUNC(free, void, MemPool)
+DECL_EXP_FUNC(free, void, MemPool,)
 
 AST_FREE(Exp*, exp) {
   free_exp_func[a->exp_type](p, &a->d);
@@ -159,12 +155,13 @@ AST_FREE(Exp*, exp) {
   if (next) free_exp(p, next);
 }
 
-AST_FREE(Arg_List, arg_list) {
+AST_FREE(ArgList*, arg_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    Arg *arg = mp_vector_at(a, Arg, i);
+    Arg *arg = arglist_ptr_at(a, i);
     free_variable(p, &arg->var);
     if (arg->exp) free_exp(p, arg->exp);
   }
+  free_arglist(p, a);
 }
 
 ANN static AST_FREE(Stmt_Code, stmt_code) {
@@ -180,18 +177,18 @@ ANN static AST_FREE(struct Stmt_Flow_ *, stmt_flow) {
   free_stmt(p, a->body);
 }
 
-ANN static AST_FREE(struct Stmt_Match_ *, stmt_case) {
+ANN static AST_FREE(struct Match *, stmt_case) {
   free_exp(p, a->cond);
   free_stmt_list(p, a->list);
   if (a->when) free_exp(p, a->when);
 }
 
-ANN static AST_FREE(Handler_List, handler_list) {
+ANN static AST_FREE(HandlerList*, handler_list) {
   for(uint32_t i = 0; i  < a->len; i++) {
-    Handler * handler = mp_vector_at(a, Handler, i);
-    free_stmt(p, handler->stmt);
+    const Handler handler = handlerlist_at(a, i);
+    free_stmt(p, handler.stmt);
   }
-  free_mp_vector(p, Handler, a);
+  free_handlerlist(p, a);
 }
 
 ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
@@ -199,13 +196,13 @@ ANN static AST_FREE(struct Stmt_Try_ *, stmt_try) {
   free_handler_list(p, a->handler);
 }
 
-ANN static AST_FREE(struct Stmt_Match_ *, stmt_match) {
+ANN static AST_FREE(struct Match *, stmt_match) {
   free_exp(p, a->cond);
   for(m_uint i = 0; i  < a->list->len; i++) {
-    Stmt* stmt = mp_vector_at(a->list, Stmt, i);
+    Stmt* stmt = stmtlist_ptr_at(a->list, i);
     free_stmt_case(p, &stmt->d.stmt_match);
   }
-  free_mp_vector(p, Stmt, a->list);
+  free_stmtlist(p, a->list);
   if (a->where) free_stmt(p, a->where);
 }
 
@@ -233,7 +230,7 @@ ANN static AST_FREE(Stmt_If, stmt_if) {
 }
 
 ANN AST_FREE(Enum_Def, enum_def) {
-  free_mp_vector(p, EnumValue, a->list);
+  free_enumvaluelist(p, a->list);
   mp_free(p, Enum_Def, a);
 }
 
@@ -244,12 +241,12 @@ ANN static AST_FREE(Stmt_PP, stmt_pp) {
 
 ANN static AST_FREE(Stmt_Defer, stmt_defer) { free_stmt(p, a->stmt); }
 
-ANN AST_FREE(Variable_List, variable_list) {
+ANN AST_FREE(VariableList*, variable_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    Variable *tgt = mp_vector_at(a, Variable, i);
-    free_type_decl(p, tgt->td);
+    const Variable tgt = variablelist_at(a, i);
+    free_type_decl(p, tgt.td);
   }
-  free_mp_vector(p, Variable, a);
+  free_variablelist(p, a);
 }
 
 ANN AST_FREE(Union_Def, union_def) {
@@ -265,7 +262,7 @@ ANN AST_FREE(Union_Def, union_def) {
 #define free_stmt_until    free_stmt_flow
 
 AST_FREE(Spread_Def, stmt_spread) {
-  free_id_list(p, a->list);
+  free_taglist(p, a->list);
   free_mstr(p, a->data);
 }
 
@@ -279,16 +276,16 @@ static AST_FREE(Stmt_Using, stmt_using) {
 static AST_FREE(Stmt_Import, stmt_import) {
   if(a->selection) {
     for(uint32_t i = 0; i < a->selection->len; i++) {
-      Stmt_Using item = mp_vector_at(a->selection, struct Stmt_Using_, i);
+      Stmt_Using item = usingstmtlist_ptr_at(a->selection, i);
       if(item->d.exp)
         free_exp(p, item->d.exp);
     }
-    free_mp_vector(p, struct Stmt_Using_, a->selection);
+    free_usingstmtlist(p, a->selection);
   }
 }
 
 
-DECL_STMT_FUNC(free, void, MemPool);
+DECL_STMT_FUNC(free, void, MemPool,);
 static AST_FREE(Stmt*, stmt2) {
   free_stmt_func[a->stmt_type](p, &a->d);
 }
@@ -298,12 +295,12 @@ AST_FREE(Stmt*, stmt) {
   mp_free2(p, sizeof(Stmt), a);
 }
 
-AST_FREE(Stmt_List, stmt_list) {
+AST_FREE(StmtList*, stmt_list) {
   for(m_uint i = 0; i  < a->len; i++) {
-    Stmt* stmt = mp_vector_at(a, Stmt, i);
-    free_stmt2(p, stmt);
+    Stmt stmt = stmtlist_at(a, i);
+    free_stmt2(p, &stmt);
   }
-  free_mp_vector(p, Stmt, a);
+  free_stmtlist(p, a);
 }
 
 AST_FREE(Extend_Def, extend_def) {
@@ -314,13 +311,13 @@ AST_FREE(Extend_Def, extend_def) {
 AST_FREE(Class_Def, class_def) {
   if (a->base.ext) free_type_decl(p, a->base.ext);
   if (a->base.tmpl) free_tmpl(p, a->base.tmpl);
-  if (a->traits) free_id_list(p, a->traits);
+  if (a->traits) free_taglist(p, a->traits);
   if (a->body) free_ast(p, a->body);
   mp_free(p, Class_Def, a);
 }
 
 AST_FREE(Trait_Def, trait_def) {
-  if (a->traits) free_id_list(p, a->traits);
+  if (a->traits) free_taglist(p, a->traits);
   if (a->body) free_ast(p, a->body);
   mp_free(p, Trait_Def, a);
 }
@@ -329,7 +326,7 @@ AST_FREE(Prim_Def, prim_def) {
   mp_free(p, Prim_Def, a);
 }
 
-ANN static AST_FREE(Section *, section) {
+ANN static AST_FREE(const Section *, section) {
   const ae_section_t t = a->section_type;
   if (t == ae_section_class)
     free_class_def(p, a->d.class_def);
@@ -353,19 +350,19 @@ ANN static AST_FREE(Section *, section) {
     free_prim_def(p, a->d.prim_def);
 }
 
-AST_FREE(TmplArg_List, tmplarg_list) {
+AST_FREE(TmplArgList*, tmplarg_list) {
   for(uint32_t i = 0; i < a->len; i++) {
-    TmplArg arg = *mp_vector_at(a, TmplArg, i);
+    const TmplArg arg = tmplarglist_at(a, i);
     if(arg.type == tmplarg_td) free_type_decl(p, arg.d.td);
     else free_exp(p, arg.d.exp);
   }
-  free_mp_vector(p, TmplArg, a);
+  free_tmplarglist(p, a);
 }
 
 AST_FREE(Ast, ast) {
   for(m_uint i = 0; i < a->len; i++) {
-    Section *section = mp_vector_at(a, Section, i);
-    free_section(p, section);
+    Section section = sectionlist_at(a, i);
+    free_section(p, &section);
   }
-  free_mp_vector(p, Section, a);
+  free_sectionlist(p, a);
 }

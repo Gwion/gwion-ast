@@ -14,8 +14,8 @@ CFLAGS += -DYY_NO_UNISTD_H
 endif
 endif
 
-obj    := $(src:.c=.o)
-obj += src/lexer.o src/parser.o
+OBJ := $(src:src/%.c=build/%.o)
+OBJ += build/lexer.o build/parser.o
 
 CFLAGS += -Iinclude -D_GNU_SOURCE -I${UTIL_DIR}/libtermcolor/include
 
@@ -29,7 +29,7 @@ all: options-show libgwion_ast.a
 options-show:
 	@$(call _options)
 
-libgwion_ast.a: ${obj}
+libgwion_ast.a: ${OBJ}
 	@$(info linking $@)
 	${AR} ${AR_OPT}
 
@@ -60,8 +60,10 @@ uninstall: translation-uninstall
 gwparse: main.o
 	${CC} -o $@ $< -lfl libgwion_ast.a libprettyerr/libprettyerr.a ../util/libgwion_util.a -lpthread -lm
 
-test: pass/xxx.o
-	rm $<
+test: 
+	CFLAGS="${CFLAGS} -Dmod=" make pass/xxx.o
+	rm pass/xxx.o
+
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/locale.mk
 

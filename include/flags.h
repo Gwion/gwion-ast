@@ -31,10 +31,10 @@ typedef enum {
 
 // function factory for other flag
 #define _FLAG_FUNC(A, a)                                                       \
-  ANN static inline int a##flag(A a, const enum a##flag flag) {                \
+  ANN static inline int a##flag(const A a, const enum a##flag flag) {          \
     return (a->a##flag & flag) == flag;                                        \
   }                                                                            \
-  static inline int safe_##a##flag(A a, const enum a##flag flag) {             \
+  static inline int safe_##a##flag(const A a, const enum a##flag flag) {       \
     return a ? ((a->a##flag & flag) == flag) : 0;                              \
   }
 #ifndef __cplusplus

@@ -37,7 +37,7 @@ ANN static AST_NEW(Exp*, exp, const ae_exp_t type, const loc_t loc) {
   return a;
 }
 
-AST_NEW(Exp*, exp_lambda, const Symbol xid, const Arg_List args, const Stmt_List code,
+AST_NEW(Exp*, exp_lambda, const Symbol xid, ArgList *args, StmtList *code,
         const loc_t loc) {
   Exp*        a    = new_exp(p, ae_exp_lambda, loc);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, loc);
@@ -46,14 +46,14 @@ AST_NEW(Exp*, exp_lambda, const Symbol xid, const Arg_List args, const Stmt_List
   return a;
 }
 
-AST_NEW(Exp*, exp_lambda2, const Symbol xid, const Arg_List args, Exp* exp,
+AST_NEW(Exp*, exp_lambda2, const Symbol xid, ArgList *args, Exp* exp,
         const loc_t loc) {
   Exp*        a    = new_exp(p, ae_exp_lambda, loc);
   Func_Base *base = new_func_base(p, NULL, xid, args, ae_flag_none, loc);
   base->fbflag |= fbflag_lambda;
-  Stmt_List code = new_mp_vector(p, Stmt, 1);
+  StmtList *code = new_stmtlist(p, 1);
   Stmt stmt = MK_STMT_RETURN(loc, exp);
-  mp_vector_set(code, Stmt, 0, stmt);
+  stmtlist_set(code, 0, stmt);
   a->d.exp_lambda.def = new_func_def(p, base, code);
   return a;
 }
@@ -238,7 +238,7 @@ AST_NEW(Exp*, exp_unary2, const Symbol oper, Type_Decl *td,
   return a;
 }
 
-AST_NEW(Exp*, exp_unary3, const Symbol oper, const Stmt_List code,
+AST_NEW(Exp*, exp_unary3, const Symbol oper, StmtList *code,
         const loc_t loc) {
   Exp* a = new_exp_unary_base(p, oper, loc);
   exp_setmeta(a, 1);
@@ -259,13 +259,13 @@ AST_NEW(Exp*, exp_if, Exp* cond, Exp* if_exp,
   return a;
 }
 
-AST_NEW(Tmpl *, tmpl, const Specialized_List list) {
+AST_NEW(Tmpl *, tmpl, SpecializedList *list) {
   Tmpl *a = mp_calloc(p, Tmpl);
   a->list = list;
   return a;
 }
 
-Func_Def new_func_def(MemPool p, Func_Base *base, const Stmt_List code) {
+Func_Def new_func_def(MemPool p, Func_Base *base, StmtList *code) {
   Func_Def a = mp_calloc(p, Func_Def);
   a->base    = base;
   a->d.code  = code;
@@ -273,7 +273,7 @@ Func_Def new_func_def(MemPool p, Func_Base *base, const Stmt_List code) {
 }
 
 AST_NEW(Func_Base *, func_base, Type_Decl *td, const Symbol xid,
-        const Arg_List args, const ae_flag flag, const loc_t loc) {
+        ArgList *args, const ae_flag flag, const loc_t loc) {
   Func_Base *a = (Func_Base *)mp_calloc(p, Func_Base);
   a->td        = td;
   a->tag       = MK_TAG(xid, loc);
@@ -295,7 +295,7 @@ AST_NEW(Type_Def, type_def, Type_Decl *ext, const Symbol xid, const loc_t loc) {
   return a;
 }
 
-AST_NEW(Tmpl *, tmpl_call, const TmplArg_List tl) {
+AST_NEW(Tmpl *, tmpl_call, TmplArgList *tl) {
   Tmpl *a = mp_calloc(p, Tmpl);
   a->call = tl;
   return a;
@@ -314,7 +314,7 @@ AST_NEW(Exp*, exp_dot, Exp* base, const Tag tag,
         const loc_t loc) {
   Exp* a             = new_exp(p, ae_exp_dot, loc);
   a->d.exp_dot.base = base;
-  a->d.exp_dot.tag  = tag;
+  a->d.exp_dot.var.tag  = tag;
   return a;
 }
 /*
@@ -334,7 +334,7 @@ AST_NEW(Stmt*, stmt_exp, const ae_stmt_t type, Exp* exp,
   return a;
 }
 
-AST_NEW(Stmt*, stmt_code, const Stmt_List list, const loc_t loc) {
+AST_NEW(Stmt*, stmt_code, StmtList *list, const loc_t loc) {
   Stmt* a                   = new_stmt(p, ae_stmt_code, loc);
   a->d.stmt_code.stmt_list = list;
   return a;
@@ -383,7 +383,7 @@ AST_NEW(Stmt*, stmt_loop, Exp* cond, Stmt* body,
   return a;
 }
 
-AST_NEW(Stmt*, stmt_try, Stmt* stmt, const Handler_List handler) {
+AST_NEW(Stmt*, stmt_try, Stmt* stmt, HandlerList *handler) {
   Stmt* a                = new_stmt(p, ae_stmt_try, stmt->loc);
   a->d.stmt_try.stmt    = cpy_stmt3(p, stmt);
   a->d.stmt_try.handler = handler;
@@ -398,7 +398,7 @@ AST_NEW(Stmt*, stmt_if, Exp* cond, Stmt* if_body,
   return a;
 }
 
-AST_NEW(Enum_Def, enum_def, const EnumValue_List list, struct Symbol_ *xid,
+AST_NEW(Enum_Def, enum_def, EnumValueList *list, struct Symbol_ *xid,
         const loc_t loc) {
   Enum_Def a = mp_calloc(p, Enum_Def);
   a->tag     = MK_TAG(xid, loc);
@@ -406,7 +406,7 @@ AST_NEW(Enum_Def, enum_def, const EnumValue_List list, struct Symbol_ *xid,
   return a;
 }
 
-AST_NEW(Union_Def, union_def, const Variable_List l, const loc_t loc) {
+AST_NEW(Union_Def, union_def, VariableList *l, const loc_t loc) {
   Union_Def a = mp_calloc(p, Union_Def);
   a->l        = l;
   a->tag.loc  = loc; // change ctor
@@ -428,13 +428,14 @@ AST_NEW(Stmt*, stmt_defer, Stmt* stmt, const loc_t loc) {
 }
 
 #define mk_section(Type, name, sec_type)                                       \
-  AST_NEW(Section *, section_##name, const Type name) {                        \
+  AST_NEW(Section *, section_##name, Type name) {                              \
     Section *a      = mp_calloc(p, Section);                                   \
     a->section_type = ae_section_##sec_type;                                   \
     a->d.name       = name;                                                    \
     return a;                                                                  \
   }
-mk_section(Stmt_List, stmt_list, stmt) mk_section(Func_Def, func_def, func);
+mk_section(StmtList*, stmt_list, stmt);
+mk_section(Func_Def, func_def, func);
 mk_section(Class_Def, class_def, class);
 mk_section(Trait_Def, trait_def, trait);
 mk_section(Extend_Def, extend_def, extend);
@@ -443,7 +444,7 @@ mk_section(Union_Def, union_def, union);
 mk_section(Fptr_Def, fptr_def, fptr);
 mk_section(Type_Def, type_def, type);
 
-AST_NEW(Extend_Def, extend_def, Type_Decl *const td, const ID_List trait) {
+AST_NEW(Extend_Def, extend_def, Type_Decl *const td, TagList *const trait) {
   Extend_Def a = mp_calloc(p, Class_Def);
   a->td        = td;
   a->traits    = trait;
