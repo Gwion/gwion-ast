@@ -5,7 +5,7 @@
 
 #define PP_SIZE 127
 
-ANEW static Scanner *new_scanner(const struct AstGetter_ *arg) {
+ANEW static Scanner *new_scanner(AstGetter *arg) {
   Scanner *scan = (Scanner *)mp_calloc(arg->st->p, Scanner);
   vector_init(&scan->hashes);
   gwion_lex_init(&scan->scanner);
@@ -13,10 +13,10 @@ ANEW static Scanner *new_scanner(const struct AstGetter_ *arg) {
   scan->pp = new_pp(arg->st->p, PP_SIZE, arg->name);
   gwion_set_in(arg->f, scan->scanner);
   scan->st  = arg->st;
-  scan->ppa = arg->ppa;
+  scan->getter = arg;
   pos_ini(&scan->pos);
 //  pos_ini(&scan->old);
-  scan->ppa->ast = NULL; // ???
+  scan->getter->ppa->ast = NULL; // ???
   return scan;
 }
 
@@ -28,8 +28,8 @@ ANN static void free_scanner(Scanner *scan) {
 }
 
 ANN static Ast get_ast(MemPool mp, Scanner *s) {
-  if (!gwion_parse(s)) return s->ppa->ast;
-  if (s->ppa->ast) free_ast(mp, s->ppa->ast);
+  if (!gwion_parse(s)) return s->getter->ppa->ast;
+  if (s->getter->ppa->ast) free_ast(mp, s->getter->ppa->ast);
   return NULL;
 }
 

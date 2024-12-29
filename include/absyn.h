@@ -107,7 +107,6 @@ typedef struct Stmt_Try_ {
 } * Stmt_Try;
 
 enum ae_pp_type {
-  ae_pp_comment,
   ae_pp_include,
   ae_pp_define,
   ae_pp_pragma,

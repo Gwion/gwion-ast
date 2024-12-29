@@ -113,7 +113,7 @@ ANN void lex_spread(void *data);
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "${" INTERP_EXP
-  PP_COMMENT "<comment>" PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
+  PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
   SPREAD "}..."
 
@@ -204,7 +204,7 @@ ANN void lex_spread(void *data);
 
 %%
 
-ast: section_list { arg->ppa->ast = $$ = $1; }
+ast: section_list { arg->getter->ppa->ast = $$ = $1; }
   | %empty { $$ = NULL; }
 
 section_list
@@ -384,8 +384,7 @@ code_list
   | "{" stmt_list error "}" { $$ = $2; }
 
 stmt_pp
-  : PP_COMMENT { /*if(!arg->ppa->fmt)return 0; */$$ = MK_STMT_PP(comment, @$, .data = $1); }
-  | PP_INCLUDE { $$ = MK_STMT_PP(include, @$, .data = $1); }
+  : PP_INCLUDE { $$ = MK_STMT_PP(include, @$, .data = $1); }
   | PP_DEFINE  { $$ = MK_STMT_PP(define,  @$, .data = $1); }
   | PP_PRAGMA  { $$ = MK_STMT_PP(pragma,  @$, .data = $1); }
   | PP_UNDEF   { $$ = MK_STMT_PP(undef,   @$, .data = $1); }
@@ -393,7 +392,7 @@ stmt_pp
   | PP_IFNDEF  { $$ = MK_STMT_PP(ifndef,  @$, .data = $1); }
   | PP_ELSE    { $$ = MK_STMT_PP(else,    @$, .data = $1); }
   | PP_ENDIF   { $$ = MK_STMT_PP(endif,   @$, .data = $1); }
-  | PP_NL      { if(!arg->ppa->fmt)return 0; $$ = MK_STMT_PP(nl, @$, .data = $1); }
+  | PP_NL      { if(!arg->getter->fmt)return 0; $$ = MK_STMT_PP(nl, @$, .data = $1); }
   | LOCALE_INI ID opt_exp LOCALE_END
     { $$ = MK_STMT_PP(locale, @$, .xid = $2, .exp = $3); }
   ;

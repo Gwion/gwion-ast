@@ -55,6 +55,10 @@ ANN static bool handle_rpar(void* data, bool*);
 // we should use yymore instead
 ANN static void handle_char(void* data, m_str str);
 
+ANN static void comment_ini(void* data);
+ANN static void comment_end(void* data, const m_str str);
+
+
 ANN static m_str strip_comment(Scanner* scan, const m_str str);
 ANN static m_str get_arg_text(void* data, const m_str id);
 ANN static m_str macro_data(void* data, const bool);
@@ -65,16 +69,16 @@ ANN static double exponent_not(m_str, size_t);
 
 static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
-#define SCAN_LINT(a)     if(scan->ppa->fmt)a;
-#define SCAN_NOLINT      if(!scan->ppa->fmt)
-#define GWYY_ISLINT      ((Scanner*)yyextra)->ppa->fmt
+#define SCAN_LINT(a)     if(scan->getter->fmt)a;
+#define SCAN_NOLINT      if(!scan->getter->fmt)
+#define GWYY_ISLINT      ((Scanner*)yyextra)->getter->fmt
 #define GWYY_DOLINT(a)   if(GWYY_ISLINT) { a; }
 #define GWYY_LINT(a,b)   if(GWYY_ISLINT) { yylval->sval = a; return b; }
 #define GWYY_NL          if(GWYY_ISLINT) { yylval->sval = NULL; return PP_NL; }
 
 #define GWYY_COMMENT     /*if(GWYY_ISLINT)*/{ yymore(); continue; }
 #define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END BEGIN(INITIAL); if(GWYY_ISLINT)/*if(*yytext == '+' || *yytext == '-')*/ { yylval->sval = strndup(yytext, yyleng -1); return PP_COMMENT; }
+#define GWYY_COMMENT_END { yymore(); comment_end(yyscanner, yytext); }
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(!handle_include(yyscanner, yytext, YY_CURRENT_BUFFER))yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(!rem_macro(yyscanner, yytext)) yyterminate();
@@ -261,10 +265,10 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 ^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; Scanner* scan = yyget_extra(yyscanner); if(!scan->locale)continue; scan->locale = false; return LOCALE_END;}
 
-"#!"             { /*YY_USER_ACTION; */ adjust(yyscanner); BEGIN(comment); }
+"#!"             { if(((Scanner*)yyextra)->getter->comments) comment_ini(yyscanner); adjust(yyscanner); BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
-<comment>\n      { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT_END }
-<comment>"!#"    { /*YY_USER_ACTION; */adjust(yyscanner); BEGIN(INITIAL); }
+<comment>\n      { if(((Scanner*)yyextra)->getter->comments) GWYY_COMMENT_END; unput('\n');BEGIN(INITIAL); }
+<comment>"!#"    { if(((Scanner*)yyextra)->getter->comments) { yymore(); yytext[yyleng - 2] = '\n'; yytext[yyleng-1] = '\0';comment_end(yyscanner, yytext); }/*YY_USER_ACTION; */adjust(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
 <comment>.       { adjust(yyscanner); GWYY_COMMENT;  }
 
 "\n"                                {
@@ -426,7 +430,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 {LEX_ID}                            {
   adjust(yyscanner);
   Scanner *scan = yyget_extra(yyscanner);
-  if(scan->ppa->fmt) {
+  if(scan->getter->fmt) {
     yylval->sym = alloc_sym(yyscanner, yytext);
     return ID;
   }
@@ -559,8 +563,8 @@ static void newline(void* data) {
   scan->old.column = scan->tmp.column;
   scan->tmp.line = scan->pos.line;
   scan->tmp.column = scan->pos.column;
-  ++scan->pos.line;
-  scan->pos.column = 1;
+  pos_ini(&scan->pos);
+  scan->pos.line = scan->tmp.line +1;
 }
 
 static uint get_currline(void* data) {
@@ -602,7 +606,7 @@ static Macro add_macro(void* data, const m_str line) {
   ppstate->loc.first = scan->pos;
   ppstate->loc.last = scan->pos;
   scan->pp->entry->pos = yyget_lloc(data)->first;//scan->pos;
-  scan->pp->entry->text = new_text(scan->ppa->hash.p);
+  scan->pp->entry->text = new_text(scan->getter->ppa->hash.p);
   return scan->pp->entry;
 }
 
@@ -612,6 +616,32 @@ static m_str strip_include(const m_str line, const bool fmt) {
   *end = '\0';
   return !fmt ? realpath(str, NULL) : strdup(str);
 }
+
+ANN static void comment_ini(void* data) { 
+  Scanner* scan = yyget_extra(data);
+  Comment c = { .loc = { .first = scan->pos } };
+  commentlist_add(scan->st->p, scan->getter->comments, c);
+}
+
+ANN static void comment_end(void* data, const m_str str) {
+  Scanner* scan = yyget_extra(data);
+  CommentList *comments = *scan->getter->comments;
+  Comment *c = commentlist_ptr_at(comments, comments->len -1);
+  c->loc.last = scan->pos;
+  switch(*str) {
+    case '-':
+      c->type = comment_after;
+      break;
+    case '^':
+      c->type = comment_before;
+      break;
+    default:
+     c->type = comment_normal;
+     break;
+  }
+  c->str = mstrdup(scan->st->p, str + 1 + !!c->type); // use strip and skip
+}
+
 
 static m_str strip_comment(Scanner* scan, const m_str s) {
   m_str str = s;
@@ -625,7 +655,7 @@ static m_str strip_comment(Scanner* scan, const m_str s) {
 static inline bool scan_rem_macro(Scanner *scan, const m_str id) {
   const Symbol sym = insert_symbol(scan->st, id);
   if(macro_rem(scan->pp->macros, id)) {
-    const bool ret = ppa_rem_macro(scan->ppa, sym);
+    const bool ret = ppa_rem_macro(scan->getter->ppa, sym);
     if(ret)
       vector_add(&scan->pp->global_undef, (vtype)sym);
     return ret;
@@ -650,7 +680,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id) {
   const m_int ret = vector_size(&scan->pp->global_undef) ? vector_find(&scan->pp->global_undef, (vtype)sym) : -1;
   if(ret != -1)
     return NULL;
-  const Macro global = ppa_has_macro(scan->ppa, insert_symbol(scan->st, id));
+  const Macro global = ppa_has_macro(scan->getter->ppa, insert_symbol(scan->st, id));
   if(global)
     return global;
   return macro_has(scan->pp->macros, id);
@@ -717,7 +747,7 @@ static FILE* get_include(void *data, const m_str str) {
     if(f) return f;
   }
   Scanner* scan = yyget_extra(data);
-  return get_include_from_path(str, &scan->ppa->path);
+  return get_include_from_path(str, &scan->getter->ppa->path);
 }
 
 static m_str get_current_filename(void* data) {

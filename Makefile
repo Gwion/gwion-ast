@@ -43,7 +43,7 @@ include/parser.h src/parser.c: src/gwion.y
 
 clean:
 	$(info cleaning)
-	@rm -f src/*.o *.a src/*.gcno src/*.gcda
+	@rm -f build/*.o *.a src/*.gcno src/*.gcda
 	@rm -f grammar/*.o tool/*.o
 
 install: translation-install libgwion_ast.a

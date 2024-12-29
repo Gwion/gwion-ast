@@ -18,7 +18,7 @@ typedef struct PPState_ {
     MacroArg arg;
     void *   data;
   };
-  m_str       filename;
+  char*       filename;
   loc_t       loc;
   enum pptype type;
 } PPState;
@@ -32,7 +32,7 @@ typedef struct PP_ {
   int            npar;
 } PP;
 
-ANN PPState *new_ppstate(MemPool, const m_str);
-ANEW PP *new_pp(MemPool p, const uint size, const m_str);
+ANN PPState *new_ppstate(MemPool, const char *name);
+ANEW PP *new_pp(MemPool p, const uint size, const char *name);
 ANN void free_pp(MemPool p, PP *pp, void *data);
 #endif

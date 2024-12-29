@@ -8,7 +8,7 @@ typedef struct Scanner_ {
   void *         scanner;
   SymTable *     st;
   struct PP_ *   pp;
-  PPArg *ppa;
+  AstGetter     *getter;
   struct Vector_ hashes;
   struct pos_t   pos;
   struct pos_t   tmp;
