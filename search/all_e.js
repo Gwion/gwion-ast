@@ -18,7 +18,7 @@ var searchData=
   ['pp_5fpost_15',['pp_post',['../pp_8c.html#aee06fac92dbf124e031edf293c8040e5',1,'pp.c']]],
   ['pp_5fsize_16',['PP_SIZE',['../scanner_8c.html#a1fceec76b7f0aa03952ab802d07b4792',1,'scanner.c']]],
   ['pp_5ftype_17',['pp_type',['../structStmt__PP__.html#af85d03d3097b39c003bd4f9239acc6ea',1,'Stmt_PP_']]],
-  ['ppa_18',['ppa',['../structAstGetter__.html#aa79e84a3f31a9822194ad855091f91c1',1,'AstGetter_::ppa'],['../structScanner__.html#a8fef319762fd618cc0c77c17cc6de82e',1,'Scanner_::ppa'],['../pparg_8h.html#a865a8206007a3214b5f066281e0d53ca',1,'ppa:&#160;pparg.h']]],
+  ['ppa_18',['ppa',['../structAstGetter__.html#aa79e84a3f31a9822194ad855091f91c1',1,'AstGetter_::ppa'],['../pparg_8h.html#a865a8206007a3214b5f066281e0d53ca',1,'ppa:&#160;pparg.h']]],
   ['ppa_5fhas_5fmacro_19',['ppa_has_macro',['../pparg_8h.html#a98d79f482199b145f11fd43067d27dbc',1,'pparg.h']]],
   ['ppa_5frem_5fmacro_20',['ppa_rem_macro',['../pparg_8h.html#a9632641e0296c9f2e7eff961f6e002eb',1,'pparg.h']]],
   ['pparg_21',['PPArg',['../pparg_8h.html#ad388cbd7e2c26a87775e80820b39ce88',1,'pparg.h']]],

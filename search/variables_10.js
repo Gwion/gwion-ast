@@ -28,7 +28,7 @@ var searchData=
   ['stmt_5ftry_25',['stmt_try',['../unionStmt_1_1stmt__data.html#a37dbc307964c3bc7614cfe2364ef5c48',1,'Stmt::stmt_data']]],
   ['stmt_5ftype_26',['stmt_type',['../structStmt.html#ac117446db99a8e22b4924e4ee24ccb43',1,'Stmt']]],
   ['stmt_5fusing_27',['stmt_using',['../unionStmt_1_1stmt__data.html#aa7d2c60b09b08b310b752c2028290715',1,'Stmt::stmt_data']]],
-  ['str_28',['str',['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'pparg.h']]],
+  ['str_28',['str',['../structComment.html#a27d929fc3f8100900b39d38f2613f4f8',1,'Comment::str'],['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'str:&#160;pparg.h']]],
   ['string_29',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
   ['sym_30',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
   ['symbol_31',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
