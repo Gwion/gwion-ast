@@ -1,7 +1,10 @@
 #include "defs.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
-#include "xxx.h"
+
+typedef struct {
+
+} XXX;
 
 #define CHECK_RET(a, ret) \
 do {                      \
@@ -9,6 +12,10 @@ do {                      \
     ret = false;          \
 } while(0) 
 
+ANN static bool xxx_exp(XXX *a, mod Exp* b);
+ANN static bool xxx_stmt(XXX *a, mod Stmt* b);
+ANN static bool xxx_stmt_list(XXX *a, mod StmtList* b);
+ANN static bool xxx_ast(XXX *a, mod Ast b);
 ANN static bool xxx_type_decl(XXX *a, mod Type_Decl* b);
 ANN static bool xxx_func_def(XXX *a, mod Func_Def b);
 

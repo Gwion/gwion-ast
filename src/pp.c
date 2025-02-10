@@ -2,13 +2,13 @@
 #include "gwion_ast.h"
 #include "bison_compat.h"
 
-ANN PPState *new_ppstate(MemPool p, const char* filename) {
+ANN PPState *new_ppstate(MemPool p, char* filename) {
   PPState *ppstate = mp_calloc(p, PPState);
   ppstate->filename        = filename;
   return ppstate;
 };
 
-ANEW PP *new_pp(MemPool p, const uint size, const char* name) {
+ANEW PP *new_pp(MemPool p, const uint size, char* name) {
   PP *pp = (PP *)mp_calloc(p, PP);
   vector_init(&pp->data);
   pp->macros = (Hash)mp_calloc(p, Hash);

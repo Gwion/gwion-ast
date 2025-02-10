@@ -311,6 +311,7 @@ typedef struct Arg_ {
   Variable      var;
   Exp*           exp;
   struct Type_ *type; // can be removed by using var_decl.value->type
+  loc_t         loc;
 } Arg;
 MK_VECTOR_TYPE(Arg, arg)
 

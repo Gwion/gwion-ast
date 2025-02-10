@@ -94,7 +94,6 @@ ANN void lex_spread(void *data);
 %token SEMICOLON ";" COMMA ","
   LPAREN "(" RPAREN ")" LBRACK "[" RBRACK "]" RBRACK2 ",]" LBRACE "{" RBRACE "}"
   FUNCTION "fun" VAR "var"
-
   IF "if" ELSE "else" WHILE "while" DO "do" UNTIL "until"
   LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue" TRY "try" PERFORM "perform" HANDLET "handle" RETRY "retry"
@@ -350,7 +349,8 @@ locale_arg:
          .var = MK_VAR(
             new_type_decl(mpool(arg), insert_symbol("string"), @$),
             (struct Var_Decl_) { .tag = MK_TAG(insert_symbol("self"), @$)}),
-         .exp = NULL
+         .exp = NULL,
+         .loc = @$
        };
        arglist_set($$, 0, self);
        arglist_set($$, 1, $1);
@@ -367,7 +367,8 @@ locale_list:
             new_type_decl(mpool(arg), insert_symbol("string"), @$),
             (struct Var_Decl_) { .tag = MK_TAG(insert_symbol("self"), @$)}
           ),
-         .exp = NULL
+         .exp = NULL,
+         .loc = @$
        };
        LIST_INI(arg, $$, self);
     }
@@ -638,8 +639,8 @@ jump_stmt
   | breaks ";" { $$ = MK_STMT($1, @1, .stmt_index = { .idx = -1 });}
 
 exp_stmt
-  : exp ";" { $$ = MK_STMT_EXP(@1, $1); }
-  | ";"     { $$ = MK_STMT(ae_stmt_exp, @1); }
+  : exp ";" { $$ = MK_STMT_EXP(@$, $1); }
+  | ";"     { $$ = MK_STMT(ae_stmt_exp, @$); }
 
 exp:
     binary_exp           { $$ = $1; }
@@ -692,7 +693,7 @@ array: array_exp | array_empty;
 decl_exp: con_exp
   | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.var.td->flag |= $1 | $2; };
   | type_decl_flag2 flag type_decl_array call_paren var_decl {
-      $$ = new_exp_decl(mpool(arg), $3, &$5, @5);
+      $$ = new_exp_decl(mpool(arg), $3, &$5, @$);
       $$->d.exp_decl.var.td->flag |= $1 | $2;
       $$->d.exp_decl.args = $4 ?: new_prim_nil(mpool(arg), @4);
   };
@@ -769,7 +770,7 @@ op_base
     {
       ArgList *args = new_arglist(mpool(arg), 2);
       arglist_set(args, 0, $5);
-      arglist_set(args, 0, $7);
+      arglist_set(args, 1, $7);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
       if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
@@ -932,10 +933,10 @@ unary_exp : post_exp
 
 lambda_list:
  ID {
-  Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){.tag = MK_TAG($1, @1)})};
+  Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){.tag = MK_TAG($1, @1)}), .loc = @$};
   LIST_INI(arg, $$, a); }
 |    lambda_list ID {
-  Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){ .tag = MK_TAG($2, @2)})};
+  Arg a = (Arg) { .var = MK_VAR(NULL, (Var_Decl){ .tag = MK_TAG($2, @2)}), .loc = @$};
   LIST_END(arg, $$, $1, a);
 }
 

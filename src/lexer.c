@@ -1418,7 +1418,7 @@ ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static Macro add_macro(void* data, const m_str id);
 ANN static m_str strip_include(const m_str line, const bool);
-ANN static m_str get_current_filename(void*);
+ANN static const char* get_current_filename(void*);
 ANN2(1,2) static bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static bool rem_macro(void* data, const m_str id);
 ANN static bool has_macro(void* data, const m_str id);
@@ -1438,7 +1438,7 @@ ANN static bool handle_rpar(void* data, bool*);
 ANN static void handle_char(void* data, m_str str);
 
 ANN static void comment_ini(void* data);
-ANN static void comment_end(void* data, const m_str str);
+ANN static void comment_end(void* data, const m_str str, const bool block);
 
 
 ANN static m_str strip_comment(Scanner* scan, const m_str str);
@@ -1460,7 +1460,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 #define GWYY_COMMENT     /*if(GWYY_ISLINT)*/{ yymore(); continue; }
 #define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
-#define GWYY_COMMENT_END { yymore(); comment_end(yyscanner, yytext); }
+#define GWYY_COMMENT_END { yymore(); comment_end(yyscanner, yytext, false); }
 
 #define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(!handle_include(yyscanner, yytext, YY_CURRENT_BUFFER))yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(!rem_macro(yyscanner, yytext)) yyterminate();
@@ -2180,7 +2180,7 @@ YY_RULE_SETUP
 case 52:
 YY_RULE_SETUP
 #line 271 "src/gwion.l"
-{ if(((Scanner*)yyextra)->getter->comments) { yymore(); yytext[yyleng - 2] = '\n'; yytext[yyleng-1] = '\0';comment_end(yyscanner, yytext); }/*YY_USER_ACTION; */adjust(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
+{ if(((Scanner*)yyextra)->getter->comments) { yymore(); yytext[yyleng - 2] = '\n'; yytext[yyleng-1] = '\0';comment_end(yyscanner, yytext, true); }/*YY_USER_ACTION; */adjust(yyscanner); YY_USER_ACTION; BEGIN(INITIAL); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
@@ -3902,8 +3902,6 @@ static void newline(void* data) {
   scan->tmp.column = scan->pos.column;
   pos_ini(&scan->pos);
   scan->pos.line = scan->tmp.line +1;
-//  ++scan->pos.line;
-//  scan->pos.column = 1;
 }
 
 static uint get_currline(void* data) {
@@ -3962,11 +3960,12 @@ ANN static void comment_ini(void* data) {
   commentlist_add(scan->st->p, scan->getter->comments, c);
 }
 
-ANN static void comment_end(void* data, const m_str str) {
+ANN static void comment_end(void* data, const m_str str, const bool block) {
   Scanner* scan = yyget_extra(data);
   CommentList *comments = *scan->getter->comments;
   Comment *c = commentlist_ptr_at(comments, comments->len -1);
   c->loc.last = scan->pos;
+  c->block = block;
   switch(*str) {
     case '-':
       c->type = comment_after;
@@ -4066,7 +4065,7 @@ static FILE* get_include_from_path(const m_str str, const Vector v) {
   return NULL;
 }
 
-static bool get_dirname(m_str str, m_str c) {
+static bool get_dirname(const char *str, m_str c) {
   m_str end = strrchr(str, '/');
   if(!end) return false;
   strncpy(c, str, end - str);
@@ -4075,7 +4074,7 @@ static bool get_dirname(m_str str, m_str c) {
 }
 
 static FILE* get_include(void *data, const m_str str) {
-  const m_str filename = get_current_filename(data);
+  const char *filename = get_current_filename(data);
   const size_t _sz = strlen(filename);
   char dir[_sz + 1];
   if(get_dirname(filename, dir)) {
@@ -4089,7 +4088,7 @@ static FILE* get_include(void *data, const m_str str) {
   return get_include_from_path(str, &scan->getter->ppa->path);
 }
 
-static m_str get_current_filename(void* data) {
+static const char* get_current_filename(void* data) {
   Scanner* scan = yyget_extra(data);
   for(m_uint i = vector_size(&scan->pp->state) + 1; --i;) {
     const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i - 1);
@@ -4195,7 +4194,7 @@ static void macro_end(void* data) {
   vector_rem(v, VLEN(v) - 1);
 }
 
-static m_str concat(const m_str a, const m_str b) {
+static m_str concat(const char *a, const char *b) {
   const size_t len = strlen(a) + strlen(b) + 4;
   const m_str c = (m_str)xmalloc(len);
   sprintf(c, "%s '%s'", a, b);

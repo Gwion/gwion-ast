@@ -32,7 +32,7 @@ typedef struct PP_ {
   int            npar;
 } PP;
 
-ANN PPState *new_ppstate(MemPool, const char *name);
-ANEW PP *new_pp(MemPool p, const uint size, const char *name);
+ANN PPState *new_ppstate(MemPool, char *name);
+ANEW PP *new_pp(MemPool p, const uint size, char *name);
 ANN void free_pp(MemPool p, PP *pp, void *data);
 #endif

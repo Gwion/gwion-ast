@@ -13,13 +13,14 @@ typedef struct Comment {
   m_str     str;
   loc_t     loc;
   comment_t type;
-  bool      alone;
+  bool      alone; // TODO: use it!
+  bool      block;
 } Comment;
 MK_VECTOR_TYPE(Comment, comment)
 
 
 typedef struct AstGetter_ {
-  const char    *name;
+  char    *name;
   FILE *         f;
   SymTable *     st;
   PPArg *ppa;
