@@ -66,7 +66,7 @@ static inline const char *get_filename(const char *filename) {
 
 ANN2(1, 2, 3)
 static void nosrc(const perr_printer_t *printer, const perr_t *err,
-                  const char *main, const char *explain) {
+                  const char *main, const char *explain, const char *filename) {
   size_t len;
   char   base[16];
   char   color[16];
@@ -76,10 +76,14 @@ static void nosrc(const perr_printer_t *printer, const perr_t *err,
     color[0] = 0;
   else
     color[len] = 0;
-  gw_err("[internal]\n");
+  gw_err("{+}%s{0} [internal]\n", filename);
   perr_print_line_number(printer, err, color);
-  gw_err("%s\n", main);
-  if (explain) gw_err("%s\n", explain);
+  gw_err(main);
+  gw_err("\n");
+  if (explain) {
+    gw_err(explain);
+    gw_err("\n");
+  }
 }
 
 static void _gwlog_error(const char *main, const char *explain,
@@ -109,7 +113,7 @@ static void _gwlog_error(const char *main, const char *explain,
     perr_print_error(&printer, &err);
     xfree(line);
   } else
-    nosrc(&printer, &err, main, explain);
+    nosrc(&printer, &err, main, explain, filename);
 }
 
 void gwlog_error(const char *main, const char *explain,
@@ -136,7 +140,7 @@ ANN static void _gwlog_secondary(const char *main, const char *filename,
     perr_print_error(&printer, &err);
     xfree(line);
   } else
-    nosrc(&printer, &err, main, NULL);
+    nosrc(&printer, &err, main, NULL, filename);
 }
 
 ANN void _gwlog_warning(const char *main, const char *filename,
