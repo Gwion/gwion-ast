@@ -60,11 +60,12 @@ uninstall: translation-uninstall
 gwparse: main.o
 	${CC} -o $@ $< -lfl libgwion_ast.a libprettyerr/libprettyerr.a ../util/libgwion_util.a -lpthread -lm
 
+counterexamples:
+	touch src/gwion.y
+	YACC_OPT="${YACC_OPT} -Wcex" make src/parser.c 2> counterexample.txt
 test: 
 	CFLAGS="${CFLAGS} -Dmod=" make pass/xxx.o
 	rm pass/xxx.o
 
 include $(wildcard .d/*.d)
 include ${UTIL_DIR}/locale.mk
-
-

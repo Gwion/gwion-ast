@@ -5,4 +5,5 @@ config.mk
 .po
 html
 .mo
+counterexample.txt
 gwparse
