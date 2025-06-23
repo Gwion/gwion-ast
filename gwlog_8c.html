@@ -120,8 +120,8 @@ Functions</h2></td></tr>
 <tr class="separator:a9df7824e02bf82c7eac3346a481832ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc44582744a9f13c063dcd1ebf7177ff" id="r_acc44582744a9f13c063dcd1ebf7177ff"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a> (const char *filename)</td></tr>
 <tr class="separator:acc44582744a9f13c063dcd1ebf7177ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeba8e54c62dcb5e472e9b5d97cfc00aa" id="r_aeba8e54c62dcb5e472e9b5d97cfc00aa"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a> (const perr_printer_t *printer, const perr_t *err, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain)</td></tr>
-<tr class="separator:aeba8e54c62dcb5e472e9b5d97cfc00aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d9b11002259adaf21d033fa588238a9" id="r_a6d9b11002259adaf21d033fa588238a9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d9b11002259adaf21d033fa588238a9">nosrc</a> (const perr_printer_t *printer, const perr_t *err, const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const char *filename)</td></tr>
+<tr class="separator:a6d9b11002259adaf21d033fa588238a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bd57c1e595a4c0fa221c6a71571b6d2" id="r_a9bd57c1e595a4c0fa221c6a71571b6d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bd57c1e595a4c0fa221c6a71571b6d2">gwlog_error</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *explain, const char *filename, const <a class="el" href="gwlog_8h.html#a6aa9ffcb0eb631d2a25a8303ef53b1f9">loc_t</a> loc, const uint error_code)</td></tr>
 <tr class="separator:a9bd57c1e595a4c0fa221c6a71571b6d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a8dfdbaab8444f6783f728234282bc6" id="r_a4a8dfdbaab8444f6783f728234282bc6"><td class="memItemLeft" align="right" valign="top">static ANN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a> (const char *<a class="el" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, const char *filename, const enum libprettyerr_errtype type, const <a class="el" href="gwlog_8h.html#a6aa9ffcb0eb631d2a25a8303ef53b1f9">loc_t</a> loc)</td></tr>
@@ -194,37 +194,37 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00085">85</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   87</span>                                                          {</div>
-<div class="line"><span class="lineno">   88</span><span class="preprocessor">#ifdef __FUZZING__</span></div>
-<div class="line"><span class="lineno">   89</span>  <span class="keywordflow">return</span>;</div>
-<div class="line"><span class="lineno">   90</span><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="lineno">   91</span>  <span class="keywordtype">char</span> *line = <a class="code hl_function" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a>(filename, loc);</div>
-<div class="line"><span class="lineno">   92</span> </div>
-<div class="line"><span class="lineno">   93</span>  perr_printer_t printer;</div>
-<div class="line"><span class="lineno">   94</span>  perr_printer_init(&amp;printer, stderr, line,</div>
-<div class="line"><span class="lineno">   95</span>                    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
-<div class="line"><span class="lineno">   96</span>                    perr_runner_basic_style);</div>
-<div class="line"><span class="lineno">   97</span> </div>
-<div class="line"><span class="lineno">   98</span>  printer.rounded = <span class="keyword">true</span>;</div>
-<div class="line"><span class="lineno">   99</span> </div>
-<div class="line"><span class="lineno">  100</span>  <span class="keyword">const</span> <span class="keywordtype">size_t</span> sz = line ? (loc.<a class="code hl_variable" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a> == loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a></div>
-<div class="line"><span class="lineno">  101</span>     ? (size_t)(loc.<a class="code hl_variable" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>)</div>
-<div class="line"><span class="lineno">  102</span>     : strlen(line) - loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) : 0;</div>
-<div class="line"><span class="lineno">  103</span>  <span class="keyword">const</span> perr_t err = PERR_Error(</div>
-<div class="line"><span class="lineno">  104</span>      errtype, PERR_Str(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line),</div>
-<div class="line"><span class="lineno">  105</span>      PERR_Pos(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - 1, sz), <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>,</div>
-<div class="line"><span class="lineno">  106</span>      explain, error_code, <a class="code hl_function" href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a>(filename));</div>
-<div class="line"><span class="lineno">  107</span> </div>
-<div class="line"><span class="lineno">  108</span>  <span class="keywordflow">if</span> (line) {</div>
-<div class="line"><span class="lineno">  109</span>    perr_print_error(&amp;printer, &amp;err);</div>
-<div class="line"><span class="lineno">  110</span>    xfree(line);</div>
-<div class="line"><span class="lineno">  111</span>  } <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno">  112</span>    <a class="code hl_function" href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a>(&amp;printer, &amp;err, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain);</div>
-<div class="line"><span class="lineno">  113</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00089">89</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   91</span>                                                          {</div>
+<div class="line"><span class="lineno">   92</span><span class="preprocessor">#ifdef __FUZZING__</span></div>
+<div class="line"><span class="lineno">   93</span>  <span class="keywordflow">return</span>;</div>
+<div class="line"><span class="lineno">   94</span><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="lineno">   95</span>  <span class="keywordtype">char</span> *line = <a class="code hl_function" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a>(filename, loc);</div>
+<div class="line"><span class="lineno">   96</span> </div>
+<div class="line"><span class="lineno">   97</span>  perr_printer_t printer;</div>
+<div class="line"><span class="lineno">   98</span>  perr_printer_init(&amp;printer, stderr, line,</div>
+<div class="line"><span class="lineno">   99</span>                    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
+<div class="line"><span class="lineno">  100</span>                    perr_runner_basic_style);</div>
+<div class="line"><span class="lineno">  101</span> </div>
+<div class="line"><span class="lineno">  102</span>  printer.rounded = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  103</span> </div>
+<div class="line"><span class="lineno">  104</span>  <span class="keyword">const</span> <span class="keywordtype">size_t</span> sz = line ? (loc.<a class="code hl_variable" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a> == loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a></div>
+<div class="line"><span class="lineno">  105</span>     ? (size_t)(loc.<a class="code hl_variable" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>)</div>
+<div class="line"><span class="lineno">  106</span>     : strlen(line) - loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>) : 0;</div>
+<div class="line"><span class="lineno">  107</span>  <span class="keyword">const</span> perr_t err = PERR_Error(</div>
+<div class="line"><span class="lineno">  108</span>      errtype, PERR_Str(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line),</div>
+<div class="line"><span class="lineno">  109</span>      PERR_Pos(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - 1, sz), <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>,</div>
+<div class="line"><span class="lineno">  110</span>      explain, error_code, <a class="code hl_function" href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a>(filename));</div>
+<div class="line"><span class="lineno">  111</span> </div>
+<div class="line"><span class="lineno">  112</span>  <span class="keywordflow">if</span> (line) {</div>
+<div class="line"><span class="lineno">  113</span>    perr_print_error(&amp;printer, &amp;err);</div>
+<div class="line"><span class="lineno">  114</span>    xfree(line);</div>
+<div class="line"><span class="lineno">  115</span>  } <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  116</span>    <a class="code hl_function" href="#a6d9b11002259adaf21d033fa588238a9">nosrc</a>(&amp;printer, &amp;err, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, filename);</div>
+<div class="line"><span class="lineno">  117</span>}</div>
+<div class="ttc" id="agwlog_8c_html_a6d9b11002259adaf21d033fa588238a9"><div class="ttname"><a href="#a6d9b11002259adaf21d033fa588238a9">nosrc</a></div><div class="ttdeci">static void nosrc(const perr_printer_t *printer, const perr_t *err, const char *main, const char *explain, const char *filename)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00068">gwlog.c:68</a></div></div>
 <div class="ttc" id="agwlog_8c_html_a9df7824e02bf82c7eac3346a481832ec"><div class="ttname"><a href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a></div><div class="ttdeci">static ANN char * get_src(const char *filename, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00040">gwlog.c:40</a></div></div>
 <div class="ttc" id="agwlog_8c_html_acc44582744a9f13c063dcd1ebf7177ff"><div class="ttname"><a href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a></div><div class="ttdeci">static const char * get_filename(const char *filename)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00055">gwlog.c:55</a></div></div>
-<div class="ttc" id="agwlog_8c_html_aeba8e54c62dcb5e472e9b5d97cfc00aa"><div class="ttname"><a href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a></div><div class="ttdeci">static void nosrc(const perr_printer_t *printer, const perr_t *err, const char *main, const char *explain)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00068">gwlog.c:68</a></div></div>
 <div class="ttc" id="amain_8c_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8c_source.html#l00004">main.c:4</a></div></div>
 <div class="ttc" id="astructloc__t___html_a6661658c024ee942da7441d0afffea1b"><div class="ttname"><a href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">loc_t_::last</a></div><div class="ttdeci">struct pos_t last</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8h_source.html#l00017">gwlog.h:17</a></div></div>
 <div class="ttc" id="astructloc__t___html_ac3836867620bbe7074f7d04c78e75f26"><div class="ttname"><a href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">loc_t_::first</a></div><div class="ttdeci">struct pos_t first</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8h_source.html#l00016">gwlog.h:16</a></div></div>
@@ -304,11 +304,11 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00151">151</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  152</span>                                          {</div>
-<div class="line"><span class="lineno">  153</span>  <a class="code hl_function" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, PERR_INFO, loc);</div>
-<div class="line"><span class="lineno">  154</span>}</div>
-<div class="ttc" id="agwlog_8c_html_a4a8dfdbaab8444f6783f728234282bc6"><div class="ttname"><a href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a></div><div class="ttdeci">static ANN void _gwlog_secondary(const char *main, const char *filename, const enum libprettyerr_errtype type, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00120">gwlog.c:120</a></div></div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00155">155</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  156</span>                                          {</div>
+<div class="line"><span class="lineno">  157</span>  <a class="code hl_function" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, PERR_INFO, loc);</div>
+<div class="line"><span class="lineno">  158</span>}</div>
+<div class="ttc" id="agwlog_8c_html_a4a8dfdbaab8444f6783f728234282bc6"><div class="ttname"><a href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a></div><div class="ttdeci">static ANN void _gwlog_secondary(const char *main, const char *filename, const enum libprettyerr_errtype type, const loc_t loc)</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00124">gwlog.c:124</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -349,26 +349,26 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00120">120</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  122</span>                                          {</div>
-<div class="line"><span class="lineno">  123</span>  perr_printer_t printer;</div>
-<div class="line"><span class="lineno">  124</span>  <span class="keywordtype">char</span> *         line = <a class="code hl_function" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a>(filename, loc);</div>
-<div class="line"><span class="lineno">  125</span> </div>
-<div class="line"><span class="lineno">  126</span>  perr_printer_init(&amp;printer, stderr, line,</div>
-<div class="line"><span class="lineno">  127</span>                    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
-<div class="line"><span class="lineno">  128</span>                    perr_runner_secondary_style);</div>
-<div class="line"><span class="lineno">  129</span>  printer.rounded = <span class="keyword">true</span>;</div>
-<div class="line"><span class="lineno">  130</span> </div>
-<div class="line"><span class="lineno">  131</span>  <span class="keyword">const</span> perr_t err = PERR_Secondary(</div>
-<div class="line"><span class="lineno">  132</span>      type, PERR_Str(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line),</div>
-<div class="line"><span class="lineno">  133</span>      PERR_Pos(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - 1, loc.<a class="code hl_variable" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>), <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>,</div>
-<div class="line"><span class="lineno">  134</span>          <a class="code hl_function" href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a>(filename));</div>
-<div class="line"><span class="lineno">  135</span>  <span class="keywordflow">if</span> (line) {</div>
-<div class="line"><span class="lineno">  136</span>    perr_print_error(&amp;printer, &amp;err);</div>
-<div class="line"><span class="lineno">  137</span>    xfree(line);</div>
-<div class="line"><span class="lineno">  138</span>  } <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno">  139</span>    <a class="code hl_function" href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">nosrc</a>(&amp;printer, &amp;err, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, <a class="code hl_variable" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>);</div>
-<div class="line"><span class="lineno">  140</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00124">124</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  126</span>                                          {</div>
+<div class="line"><span class="lineno">  127</span>  perr_printer_t printer;</div>
+<div class="line"><span class="lineno">  128</span>  <span class="keywordtype">char</span> *         line = <a class="code hl_function" href="#a9df7824e02bf82c7eac3346a481832ec">get_src</a>(filename, loc);</div>
+<div class="line"><span class="lineno">  129</span> </div>
+<div class="line"><span class="lineno">  130</span>  perr_printer_init(&amp;printer, stderr, line,</div>
+<div class="line"><span class="lineno">  131</span>                    <span class="keyword">true</span>, <span class="comment">// use utf8,</span></div>
+<div class="line"><span class="lineno">  132</span>                    perr_runner_secondary_style);</div>
+<div class="line"><span class="lineno">  133</span>  printer.rounded = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  134</span> </div>
+<div class="line"><span class="lineno">  135</span>  <span class="keyword">const</span> perr_t err = PERR_Secondary(</div>
+<div class="line"><span class="lineno">  136</span>      type, PERR_Str(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#ab51255fd45533a2412b08649ec3629de">line</a>, line),</div>
+<div class="line"><span class="lineno">  137</span>      PERR_Pos(loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - 1, loc.<a class="code hl_variable" href="structloc__t__.html#a6661658c024ee942da7441d0afffea1b">last</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a> - loc.<a class="code hl_variable" href="structloc__t__.html#ac3836867620bbe7074f7d04c78e75f26">first</a>.<a class="code hl_variable" href="structpos__t.html#aa5910ccb9c6e11dcdf071751b3053964">column</a>), <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>,</div>
+<div class="line"><span class="lineno">  138</span>          <a class="code hl_function" href="#acc44582744a9f13c063dcd1ebf7177ff">get_filename</a>(filename));</div>
+<div class="line"><span class="lineno">  139</span>  <span class="keywordflow">if</span> (line) {</div>
+<div class="line"><span class="lineno">  140</span>    perr_print_error(&amp;printer, &amp;err);</div>
+<div class="line"><span class="lineno">  141</span>    xfree(line);</div>
+<div class="line"><span class="lineno">  142</span>  } <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  143</span>    <a class="code hl_function" href="#a6d9b11002259adaf21d033fa588238a9">nosrc</a>(&amp;printer, &amp;err, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, <a class="code hl_variable" href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a>, filename);</div>
+<div class="line"><span class="lineno">  144</span>}</div>
 <div class="ttc" id="amacro_8c_html_a1a05ede2ad100bf5de5dfa7ccdfa4397"><div class="ttname"><a href="macro_8c.html#a1a05ede2ad100bf5de5dfa7ccdfa4397">NULL</a></div><div class="ttdeci">return NULL</div><div class="ttdef"><b>Definition</b> <a href="macro_8c_source.html#l00041">macro.c:41</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -405,10 +405,10 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00142">142</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  143</span>                                          {</div>
-<div class="line"><span class="lineno">  144</span>  <a class="code hl_function" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, PERR_WARNING, loc);</div>
-<div class="line"><span class="lineno">  145</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00146">146</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  147</span>                                          {</div>
+<div class="line"><span class="lineno">  148</span>  <a class="code hl_function" href="#a4a8dfdbaab8444f6783f728234282bc6">_gwlog_secondary</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, PERR_WARNING, loc);</div>
+<div class="line"><span class="lineno">  149</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -552,10 +552,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00115">115</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  116</span>                                                                               {</div>
-<div class="line"><span class="lineno">  117</span>  <a class="code hl_variable" href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, filename, loc, error_code, PERR_ERROR);</div>
-<div class="line"><span class="lineno">  118</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00119">119</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  120</span>                                                                               {</div>
+<div class="line"><span class="lineno">  121</span>  <a class="code hl_variable" href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, explain, filename, loc, error_code, PERR_ERROR);</div>
+<div class="line"><span class="lineno">  122</span>}</div>
 <div class="ttc" id="agwlog_8c_html_ac4c46cf4f529920215d1b9883bb0da4b"><div class="ttname"><a href="#ac4c46cf4f529920215d1b9883bb0da4b">_error</a></div><div class="ttdeci">static gwlog_error_function_t _error</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00025">gwlog.c:25</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -584,10 +584,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00160">160</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  161</span>                                          {</div>
-<div class="line"><span class="lineno">  162</span>  <a class="code hl_variable" href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
-<div class="line"><span class="lineno">  163</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00164">164</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  165</span>                                          {</div>
+<div class="line"><span class="lineno">  166</span>  <a class="code hl_variable" href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
+<div class="line"><span class="lineno">  167</span>}</div>
 <div class="ttc" id="agwlog_8c_html_a69504920e9904cbcb0bf08a7f200b28e"><div class="ttname"><a href="#a69504920e9904cbcb0bf08a7f200b28e">_hint</a></div><div class="ttdeci">static gwlog_warning_function_t _hint</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00028">gwlog.c:28</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -616,10 +616,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00155">155</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  156</span>                                          {</div>
-<div class="line"><span class="lineno">  157</span>  <a class="code hl_variable" href="#a182ddf2640782cd7d78d704831de9d10">_related</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
-<div class="line"><span class="lineno">  158</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00159">159</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  160</span>                                          {</div>
+<div class="line"><span class="lineno">  161</span>  <a class="code hl_variable" href="#a182ddf2640782cd7d78d704831de9d10">_related</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
+<div class="line"><span class="lineno">  162</span>}</div>
 <div class="ttc" id="agwlog_8c_html_a182ddf2640782cd7d78d704831de9d10"><div class="ttname"><a href="#a182ddf2640782cd7d78d704831de9d10">_related</a></div><div class="ttdeci">static gwlog_warning_function_t _related</div><div class="ttdef"><b>Definition</b> <a href="gwlog_8c_source.html#l00027">gwlog.c:27</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -688,15 +688,15 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00146">146</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  147</span>                                          {</div>
-<div class="line"><span class="lineno">  148</span>  <a class="code hl_variable" href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
-<div class="line"><span class="lineno">  149</span>}</div>
+<p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00150">150</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  151</span>                                          {</div>
+<div class="line"><span class="lineno">  152</span>  <a class="code hl_variable" href="#acc2d9f13f2a4a1325bbec3c1e56ad5cf">_warning</a>(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, filename, loc);</div>
+<div class="line"><span class="lineno">  153</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="aeba8e54c62dcb5e472e9b5d97cfc00aa" name="aeba8e54c62dcb5e472e9b5d97cfc00aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeba8e54c62dcb5e472e9b5d97cfc00aa">&#9670;&#160;</a></span>nosrc()</h2>
+<a id="a6d9b11002259adaf21d033fa588238a9" name="a6d9b11002259adaf21d033fa588238a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d9b11002259adaf21d033fa588238a9">&#9670;&#160;</a></span>nosrc()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -722,7 +722,12 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>explain</em></span>&#160;)</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>explain</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -733,7 +738,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="gwlog_8c_source.html#l00068">68</a> of file <a class="el" href="gwlog_8c_source.html">gwlog.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   69</span>                                                         {</div>
+<div class="fragment"><div class="line"><span class="lineno">   69</span>                                                                               {</div>
 <div class="line"><span class="lineno">   70</span>  <span class="keywordtype">size_t</span> len;</div>
 <div class="line"><span class="lineno">   71</span>  <span class="keywordtype">char</span>   base[16];</div>
 <div class="line"><span class="lineno">   72</span>  <span class="keywordtype">char</span>   color[16];</div>
@@ -743,11 +748,15 @@ Variables</h2></td></tr>
 <div class="line"><span class="lineno">   76</span>    color[0] = 0;</div>
 <div class="line"><span class="lineno">   77</span>  <span class="keywordflow">else</span></div>
 <div class="line"><span class="lineno">   78</span>    color[len] = 0;</div>
-<div class="line"><span class="lineno">   79</span>  gw_err(<span class="stringliteral">&quot;[internal]\n&quot;</span>);</div>
+<div class="line"><span class="lineno">   79</span>  gw_err(<span class="stringliteral">&quot;{+}%s{0} [internal]\n&quot;</span>, filename);</div>
 <div class="line"><span class="lineno">   80</span>  perr_print_line_number(printer, err, color);</div>
-<div class="line"><span class="lineno">   81</span>  gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, <a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>);</div>
-<div class="line"><span class="lineno">   82</span>  <span class="keywordflow">if</span> (explain) gw_err(<span class="stringliteral">&quot;%s\n&quot;</span>, explain);</div>
-<div class="line"><span class="lineno">   83</span>}</div>
+<div class="line"><span class="lineno">   81</span>  gw_err(<a class="code hl_function" href="main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>);</div>
+<div class="line"><span class="lineno">   82</span>  gw_err(<span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><span class="lineno">   83</span>  <span class="keywordflow">if</span> (explain) {</div>
+<div class="line"><span class="lineno">   84</span>    gw_err(explain);</div>
+<div class="line"><span class="lineno">   85</span>    gw_err(<span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><span class="lineno">   86</span>  }</div>
+<div class="line"><span class="lineno">   87</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
