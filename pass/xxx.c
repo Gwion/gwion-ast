@@ -268,7 +268,7 @@ ANN static bool xxx_exp_named(XXX *a, mod Exp_Named *b) {
 
 DECL_EXP_FUNC(xxx, bool, XXX*, mod)
 ANN static bool xxx_exp(XXX *a, mod Exp* b) {
-  bool ret = b->poison
+  bool ret = !b->poison
     ? xxx_exp_func[b->exp_type](a, &b->d)
     : false;
   if(b->next) CHECK_RET(xxx_exp(a, b ->next), ret);
@@ -442,7 +442,7 @@ ANN static bool xxx_stmt_import(XXX *a, mod Stmt_Import b) {
 
 DECL_STMT_FUNC(xxx, bool, XXX*, mod)
 ANN static bool xxx_stmt(XXX *a, mod Stmt* b) {
-  return b->poison
+  return !b->poison
     ? xxx_stmt_func[b->stmt_type](a, &b->d)
     : false;
 }
