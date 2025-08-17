@@ -163,26 +163,27 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_defer,                                \</span></div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_spread,                               \</span></div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_using,                                \</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_import};</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_import,                               \</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="preprocessor">      (_##prefix##_stmt_func)prefix##_stmt_require};</span></div>
 </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
-<div class="foldopen" id="foldopen00070" data-start="" data-end="">
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#a677feb3fb2569beb26e13490a9705639">   70</a></span><span class="preprocessor">#define DECL_SECTION_FUNC(prefix, type, arg, mod)                                \</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="preprocessor">  typedef type (*_##prefix##_section_func)(const arg, mod union section_data *); \</span></div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">  const _##prefix##_section_func prefix##_section_func[] = {                     \</span></div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_stmt_list,                              \</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_func_def,                               \</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_class_def,                              \</span></div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_trait_def,                              \</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_extend_def,                             \</span></div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_enum_def,                               \</span></div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_union_def,                              \</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_fptr_def,                               \</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_type_def,                               \</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_prim_def};</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="foldopen" id="foldopen00071" data-start="" data-end="">
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="ast__pass_8h.html#a677feb3fb2569beb26e13490a9705639">   71</a></span><span class="preprocessor">#define DECL_SECTION_FUNC(prefix, type, arg, mod)                                \</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">  typedef type (*_##prefix##_section_func)(const arg, mod union section_data *); \</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="preprocessor">  const _##prefix##_section_func prefix##_section_func[] = {                     \</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_stmt_list,                              \</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_func_def,                               \</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_class_def,                              \</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_trait_def,                              \</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_extend_def,                             \</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_enum_def,                               \</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_union_def,                              \</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_fptr_def,                               \</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_type_def,                               \</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="preprocessor">      (_##prefix##_section_func)prefix##_prim_def};</span></div>
 </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aast__pass_8h_html_a322e6ce467585661daeb66f62db2fb34"><div class="ttname"><a href="ast__pass_8h.html#a322e6ce467585661daeb66f62db2fb34">dummy_func</a></div><div class="ttdeci">static bool dummy_func(const void *a NUSED, const void *b NUSED)</div><div class="ttdef"><b>Definition</b> <a href="#l00007">ast_pass.h:7</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

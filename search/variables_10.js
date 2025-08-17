@@ -24,12 +24,13 @@ var searchData=
   ['stmt_5floop_21',['stmt_loop',['../unionStmt_1_1stmt__data.html#a0008e89b1883fc80676ab84e81c3f084',1,'Stmt::stmt_data']]],
   ['stmt_5fmatch_22',['stmt_match',['../unionStmt_1_1stmt__data.html#add1a599985a8c02a1416ae628ede3290',1,'Stmt::stmt_data']]],
   ['stmt_5fpp_23',['stmt_pp',['../unionStmt_1_1stmt__data.html#aff31ab8031d0f620242038ed0b88bb6d',1,'Stmt::stmt_data::stmt_pp'],['../absyn_8h.html#a58fdb84dbdfd7749298a88e48523678e',1,'stmt_pp:&#160;absyn.h']]],
-  ['stmt_5fspread_24',['stmt_spread',['../unionStmt_1_1stmt__data.html#a108d2505debdce6604dd627768ca2ead',1,'Stmt::stmt_data']]],
-  ['stmt_5ftry_25',['stmt_try',['../unionStmt_1_1stmt__data.html#a37dbc307964c3bc7614cfe2364ef5c48',1,'Stmt::stmt_data']]],
-  ['stmt_5ftype_26',['stmt_type',['../structStmt.html#ac117446db99a8e22b4924e4ee24ccb43',1,'Stmt']]],
-  ['stmt_5fusing_27',['stmt_using',['../unionStmt_1_1stmt__data.html#aa7d2c60b09b08b310b752c2028290715',1,'Stmt::stmt_data']]],
-  ['str_28',['str',['../structComment.html#a27d929fc3f8100900b39d38f2613f4f8',1,'Comment::str'],['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'str:&#160;pparg.h']]],
-  ['string_29',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
-  ['sym_30',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
-  ['symbol_31',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
+  ['stmt_5frequire_24',['stmt_require',['../unionStmt_1_1stmt__data.html#acbad164b1b002863b129c63de2f5aa50',1,'Stmt::stmt_data']]],
+  ['stmt_5fspread_25',['stmt_spread',['../unionStmt_1_1stmt__data.html#a108d2505debdce6604dd627768ca2ead',1,'Stmt::stmt_data']]],
+  ['stmt_5ftry_26',['stmt_try',['../unionStmt_1_1stmt__data.html#a37dbc307964c3bc7614cfe2364ef5c48',1,'Stmt::stmt_data']]],
+  ['stmt_5ftype_27',['stmt_type',['../structStmt.html#ac117446db99a8e22b4924e4ee24ccb43',1,'Stmt']]],
+  ['stmt_5fusing_28',['stmt_using',['../unionStmt_1_1stmt__data.html#aa7d2c60b09b08b310b752c2028290715',1,'Stmt::stmt_data']]],
+  ['str_29',['str',['../structComment.html#a27d929fc3f8100900b39d38f2613f4f8',1,'Comment::str'],['../pparg_8h.html#a0239af1910a651022fe355153574de87',1,'str:&#160;pparg.h']]],
+  ['string_30',['string',['../unionExp__Primary_1_1prim__data.html#acd103684f24f5194978d26d08e718b13',1,'Exp_Primary::prim_data']]],
+  ['sym_31',['sym',['../structTag.html#a46281a1c2ce3c2faa5e4533c431e8784',1,'Tag']]],
+  ['symbol_32',['Symbol',['../absyn_8h.html#ad45341c0e15f90fcc2130a491552f0f1',1,'absyn.h']]]
 ];

@@ -17,6 +17,7 @@ var searchData=
   ['stmt_5floop_14',['Stmt_Loop',['../absyn_8h.html#a7191008a608469fbd11a881b45a845af',1,'absyn.h']]],
   ['stmt_5fmatch_15',['Stmt_Match',['../absyn_8h.html#a78896d4dd972b42ffb3285ccbd27c80e',1,'absyn.h']]],
   ['stmt_5fpp_16',['Stmt_PP',['../absyn_8h.html#a2ed4f68b922e2ece5e4fa206feed9346',1,'absyn.h']]],
-  ['stmt_5ftry_17',['Stmt_Try',['../absyn_8h.html#ab41e25d44d75a4a17961001ae53c4539',1,'absyn.h']]],
-  ['stmt_5fusing_18',['Stmt_Using',['../absyn_8h.html#afff85d46c2a8c16a3eb54b03ecabcf19',1,'absyn.h']]]
+  ['stmt_5frequire_17',['Stmt_Require',['../absyn_8h.html#a3022d47f4524c203057f0c8706a0dde1',1,'absyn.h']]],
+  ['stmt_5ftry_18',['Stmt_Try',['../absyn_8h.html#ab41e25d44d75a4a17961001ae53c4539',1,'absyn.h']]],
+  ['stmt_5fusing_19',['Stmt_Using',['../absyn_8h.html#afff85d46c2a8c16a3eb54b03ecabcf19',1,'absyn.h']]]
 ];

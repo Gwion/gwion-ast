@@ -13,5 +13,6 @@ var searchData=
   ['is_5fprim_5ffloat_10',['is_prim_float',['../absyn_8h.html#a06d7b19b37d627cee4189afdfac43397',1,'absyn.h']]],
   ['is_5fprim_5fint_11',['is_prim_int',['../absyn_8h.html#a84e7ed326956cba2cc72c7692b5a516e',1,'absyn.h']]],
   ['is_5fref_12',['is_ref',['../structStmt__Each__.html#ad4c3b0ee9285c06617294d70ddde62a5',1,'Stmt_Each_::is_ref'],['../structCapture.html#ac31de3059d3f503f826925dd4e574395',1,'Capture::is_ref']]],
-  ['is_5fspread_5ftmpl_13',['is_spread_tmpl',['../absyn_8h.html#ad71fec5459dcf9ab419a8a55ef0295b9',1,'absyn.h']]]
+  ['is_5frequire_13',['is_require',['../structPPArg__.html#ab4e67636c9f00900fa7d54b732a5dff5',1,'PPArg_']]],
+  ['is_5fspread_5ftmpl_14',['is_spread_tmpl',['../absyn_8h.html#ad71fec5459dcf9ab419a8a55ef0295b9',1,'absyn.h']]]
 ];
