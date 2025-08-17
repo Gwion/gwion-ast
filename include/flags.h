@@ -21,12 +21,12 @@ typedef enum {
   ae_flag_none     = 1 << 0,
   ae_flag_static   = 1 << 1,
   ae_flag_private  = 1 << 2,
-  ae_flag_global   = 1 << 3,
-  ae_flag_const    = 1 << 4,
-  ae_flag_late     = 1 << 5,
-  ae_flag_abstract = 1 << 6,
-  ae_flag_final    = 1 << 7,
-  ae_flag_protect  = 1 << 8,
+  ae_flag_const    = 1 << 3,
+  ae_flag_late     = 1 << 4,
+  ae_flag_abstract = 1 << 5,
+  ae_flag_final    = 1 << 6,
+  ae_flag_protect  = 1 << 7,
+  ae_flag_export   = 1 << 8,
 } __attribute__((packed)) ae_flag;
 
 // function factory for other flag

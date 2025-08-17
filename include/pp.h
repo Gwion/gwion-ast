@@ -6,7 +6,6 @@
 #define __PP
 
 enum pptype {
-  pptype_file,
   pptype_arg,
   pptype_handle,
 };
@@ -14,7 +13,6 @@ enum pptype {
 typedef struct PPState_ {
   void *state;
   union {
-    FILE *   file;
     MacroArg arg;
     void *   data;
   };

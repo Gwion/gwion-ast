@@ -17,6 +17,7 @@ typedef struct Scanner_ {
   short int      spread_state;
 //  bool           error;
   bool           locale; // handle \n in the lexer
+  bool helper;
 } Scanner;
 
 ANN2(1, 2)

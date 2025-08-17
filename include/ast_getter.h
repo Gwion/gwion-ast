@@ -26,6 +26,7 @@ typedef struct AstGetter_ {
   PPArg *ppa;
   CommentList  **comments;
   bool fmt;
+  bool error;
 } AstGetter;
 
 ANN Ast parse_pos(struct AstGetter_ *const, const pos_t);

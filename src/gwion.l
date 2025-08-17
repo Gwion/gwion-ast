@@ -35,9 +35,6 @@ ANN static void adjust(void* data);
 ANN static uint  get_currline(void* data);
 ANN static uint  get_currpos(void* data);
 ANN static Macro add_macro(void* data, const m_str id);
-ANN static m_str strip_include(const m_str line, const bool);
-ANN static const char* get_current_filename(void*);
-ANN2(1,2) static bool handle_include(void*, const m_str, YY_BUFFER_STATE);
 ANN static bool rem_macro(void* data, const m_str id);
 ANN static bool has_macro(void* data, const m_str id);
 static m_str pp_data(void* data, const m_str id);
@@ -80,7 +77,6 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 #define GWYY_COMMENT2    /*if(GWYY_ISLINT)*/{ yymore(); YY_USER_ACTION; continue; }
 #define GWYY_COMMENT_END { yymore(); comment_end(yyscanner, yytext, false); }
 
-#define GWYY_INCLUDE  GWYY_LINT(strip_include(yytext, true), PP_INCLUDE) if(!handle_include(yyscanner, yytext, YY_CURRENT_BUFFER))yyterminate();
 #define GWYY_UNDEF    GWYY_LINT(strdup(yytext + 7), PP_UNDEF) if(!rem_macro(yyscanner, yytext)) yyterminate();
 
 // 23 BEGIN(INITIAL)?
@@ -105,7 +101,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 %option never-interactive batch
 %option nobackup nodebug
 %x comment spread
-%x define define_arg_start define_arg skip get_arg pragma interp include_start include_end locale_end
+%x define define_arg_start define_arg skip get_arg pragma interp locale_end
 %%
 
 <spread>"}..." {
@@ -241,29 +237,14 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 <skip>^{SPACE}*#endif{SPACE}*\n { adjust(yyscanner); newline(yyscanner); macro_end(yyscanner); BEGIN(INITIAL); }
 <skip>.*         { adjust(yyscanner); continue;}
 
-<include_end>{SPACE}*\n {
-  adjust(yyscanner);
-  Scanner *s = yyget_extra(yyscanner);
-  PPState *pps = (PPState*)vector_back(&s->pp->state);
-  BEGIN(INITIAL);
-  newline(yyscanner);
-  yylval->sval = strdup(pps->filename);
-  return PP_INCLUDE;
-}
-<include_end>. {
-  lexer_error(yyscanner, _("illegal characters after include"), 0);
-  return 1;
-}
-
-^{SPACE}*#include{SPACE}+ { adjust(yyscanner); YY_USER_ACTION; BEGIN(include_start); }
-<include_start><{FILENAME}> { adjust(yyscanner); BEGIN(INITIAL); GWYY_INCLUDE; /*BEGIN(include_end); */ /*BEGIN(INITIAL); */yylval->sval = strdup(get_current_filename(yyscanner)); return PP_INCLUDE; }
-<include_start>. { adjust(yyscanner); lexer_error(yyscanner, _("invalid include. expected #include <filename>"), 102); return 1;}
-
 ^{SPACE}*#undef{SPACE}+{LEX_ID}{SPACE}* { adjust(yyscanner); GWYY_UNDEF }
 
 ^{SPACE}*"#locale" { adjust(yyscanner); Scanner* scan = yyget_extra(yyscanner); scan->locale = true; return LOCALE_INI; }
 
-^{SPACE}*"\n"                       { newline(yyscanner); YY_USER_ACTION; GWYY_NL; Scanner* scan = yyget_extra(yyscanner); if(!scan->locale)continue; scan->locale = false; return LOCALE_END;}
+^{SPACE}*"\n"                       { newline(yyscanner); 
+
+YY_USER_ACTION; GWYY_NL; Scanner* scan = yyget_extra(yyscanner); if(!scan->locale)continue; scan->locale = false; return LOCALE_END;
+}
 
 "#!"             { if(((Scanner*)yyextra)->getter->comments) comment_ini(yyscanner); adjust(yyscanner); BEGIN(comment); }
 <comment>\\\n    { newline(yyscanner); YY_USER_ACTION; GWYY_COMMENT2 }
@@ -290,7 +271,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 {OP}{4,} { adjust(yyscanner);  yylval->sym = alloc_sym(yyscanner, yytext); return DYNOP; }
 ";"                                 { adjust(yyscanner); return SEMICOLON;}
 "]"                                 { adjust(yyscanner); return RBRACK; }
-,{SPACE_NL}*"]"                                 { adjust(yyscanner); return RBRACK2; }
+,{SPACE_NL}*"]"                     { adjust(yyscanner); return RBRACK2; }
 ","                                 { adjust(yyscanner); return COMMA;}
 "fun"|"function"                    { adjust(yyscanner); return FUNCTION;}
 "locale"                            { adjust(yyscanner); return LOCALE;}
@@ -326,10 +307,14 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 "operator"                          { adjust(yyscanner); return OPERATOR;}
 "extends"                           { adjust(yyscanner); return EXTENDS;}
 "..."|,{SPACE}*"..."                { adjust(yyscanner); return ELLIPSE;}
-"."                                 { adjust(yyscanner); return DOT;}
+"."                                 {
+  Scanner *scan = yyget_extra(yyscanner);
+  scan->helper = true;
+  adjust(yyscanner); return DOT;
+}
 
 %{ /* storage modifiers */ %}
-"global"                            { adjust(yyscanner); return GLOBAL;}
+"export"                            { adjust(yyscanner); return EXPORT;}
 "static"                            { adjust(yyscanner); return STATIC;}
 
 %{ /* modifiers */ %}
@@ -344,6 +329,7 @@ static inline Macro scan_has_macro(Scanner *scan, const m_str id);
 
 "using"                             { adjust(yyscanner); return USING;}
 "import"                            { adjust(yyscanner); return IMPORT;}
+"require"                           { adjust(yyscanner); return REQUIRE;}
 "if"                                { adjust(yyscanner); return IF;}
 "else"                              { adjust(yyscanner); return ELSE;}
 "break"                             { adjust(yyscanner); return BREAK;}
@@ -610,13 +596,6 @@ static Macro add_macro(void* data, const m_str line) {
   return scan->pp->entry;
 }
 
-static m_str strip_include(const m_str line, const bool fmt) {
-  const m_str str = line + 1;
-  m_str end = strstr(str, ">");
-  *end = '\0';
-  return !fmt ? realpath(str, NULL) : strdup(str);
-}
-
 ANN static void comment_ini(void* data) { 
   Scanner* scan = yyget_extra(data);
   Comment c = { .loc = { .first = scan->pos } };
@@ -714,70 +693,6 @@ static void gwpp_stack(Scanner* scan, YY_BUFFER_STATE state, void* opt,
   ppstate->loc.last = scan->pos;
   ppstate->type = type;
   vector_add(&scan->pp->state, (vtype)ppstate);
-}
-
-static FILE* get_include_from_path(const m_str str, const Vector v) {
-  const size_t sz = strlen(str);
-  for(m_uint i = 0; i < vector_size(v); ++i) {
-    const m_str dir = (m_str)vector_at(v, i);
-    char c[strlen(dir) + sz + 2];
-    sprintf(c, "%s/%s", dir, str);
-    FILE *f = fopen(c, "r");
-    if(f) return f;
-  }
-  return NULL;
-}
-
-static bool get_dirname(const char *str, m_str c) {
-  m_str end = strrchr(str, '/');
-  if(!end) return false;
-  strncpy(c, str, end - str);
-  c[end - str] = '\0';
-  return true;
-}
-
-static FILE* get_include(void *data, const m_str str) {
-  const char *filename = get_current_filename(data);
-  const size_t _sz = strlen(filename);
-  char dir[_sz + 1];
-  if(get_dirname(filename, dir)) {
-    const size_t sz = strlen(dir);
-    char c[strlen(dir) + sz + 2];
-    sprintf(c, "%s/%s", dir, str);
-    FILE *f = fopen(c, "r");
-    if(f) return f;
-  }
-  Scanner* scan = yyget_extra(data);
-  return get_include_from_path(str, &scan->getter->ppa->path);
-}
-
-static const char* get_current_filename(void* data) {
-  Scanner* scan = yyget_extra(data);
-  for(m_uint i = vector_size(&scan->pp->state) + 1; --i;) {
-    const PPState *ppstate = (PPState*)vector_at(&scan->pp->state, i - 1);
-    if(*ppstate->filename != '@')
-      return ppstate->filename;
-  }
-  return NULL;
-}
-
-static bool handle_include(void* data, const m_str filename, YY_BUFFER_STATE handle) {
-  Scanner* scan = yyget_extra(data);
-  const m_str str = strip_include(filename, false);
-  if(!str) {
-    lexer_error(data, "file not found", ERRORCODE(105));
-    return false;
-  }
-  FILE* f = fopen(str, "r") ?: get_include(data, str);
-  if(!f) {
-    xfree(str);
-    lexer_error(data, "file not found", ERRORCODE(105));
-    return false;
-  }
-  gwpp_stack(scan, handle, f, str, pptype_file);
-  pos_ini(&scan->pos);
-  yy_switch_to_buffer(yy_create_buffer(f, YY_BUF_SIZE, data), data);
-  return true;
 }
 
 static m_str macro_data(void* data, const bool call) {
@@ -1000,8 +915,6 @@ ANN void clear_buffer(void *state, void* scan) {
   struct yyguts_t *yyg = (struct yyguts_t*)scan;
   YY_BUFFER_STATE curr = yyg->yy_buffer_stack[yyg->yy_buffer_stack_top];
   YY_BUFFER_STATE base = yyg->yy_buffer_stack[0];
-  if(ppstate->type == pptype_file)
-    fclose(ppstate->file);
   if(fini != base && fini != curr)
     yy_delete_buffer(fini, scan);
   xfree(ppstate->filename);
@@ -1017,10 +930,7 @@ int yywrap(void* data) {
       yy_switch_to_buffer(ppstate->state, data);
       yy_delete_buffer(handle, data);
     }
-    if(ppstate->type == pptype_file && ppstate->file) {
-      fclose(ppstate->file);
-      BEGIN(include_end);
-    } else if(ppstate->type == pptype_arg && ppstate->arg)
+    if(ppstate->type == pptype_arg && ppstate->arg)
       clean_macroarg(ppstate->arg);
     if(strlen(ppstate->filename))
       xfree(ppstate->filename);

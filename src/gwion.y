@@ -98,13 +98,13 @@ ANN void lex_spread(void *data);
   LOOP "repeat" FOR "for" FOREACH "foreach" MATCH "match" CASE "case" WHEN "when" WHERE "where" ENUM "enum"
   TRETURN "return" BREAK "break" CONTINUE "continue" TRY "try" PERFORM "perform" HANDLET "handle" RETRY "retry"
   CLASS "class" STRUCT "struct" TRAIT "trait"
-  STATIC "static" GLOBAL "global" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
-  EXTENDS "extends" DOT "."
+  STATIC "static" PRIVATE "private" PROTECT "protect" ABSTRACT "abstract" FINAL "final"
+  EXTENDS "extends" DOT "." HELPER
   OPERATOR "operator" PRIMITIVE "primitive"
   TYPEDEF "typedef" DISTINCT "distinct" FUNPTR "funptr"
   NOELSE UNION "union" CONSTT "const" ELLIPSE "..." DEFER "defer"
   BACKSLASH "\\" OPID_A LOCALE LOCALE_INI LOCALE_END
-  LATE "late" USING "using" IMPORT "import" NAMED "="
+  LATE "late" USING "using" IMPORT "import" REQUIRE "require" EXPORT "export" NAMED "="
 
 %token<yyint> INTEGER
 %type<gwint> decimal number "<integer>"
@@ -112,7 +112,7 @@ ANN void lex_spread(void *data);
 %type<yybool> type_def_type
 %token<fval> FLOATT "<float>"
 %token<sval> STRING_LIT "<litteral string>" CHAR_LIT "<litteral char>" INTERP_START "${" INTERP_EXP
-  PP_INCLUDE "#include" PP_DEFINE "#define" PP_PRAGMA "#pragma"
+  PP_DEFINE "#define" PP_PRAGMA "#pragma"
   PP_UNDEF "#undef" PP_IFDEF "#ifdef" PP_IFNDEF "#ifndef" PP_ELSE "#else" PP_ENDIF "#if" PP_NL "\n"
   SPREAD "}..."
 
@@ -128,19 +128,19 @@ ANN void lex_spread(void *data);
   TILDA "~" EXCLAMATION "!" AROBASE "@" DYNOP "<dynamic_operator>" LOCALE_EXP "`foo`"
 %type<uval> option
 %type<flag> flag final modifier operator class_flag
-  global opt_global storage_flag access_flag type_decl_flag type_decl_flag2
+  export opt_export storage_flag access_flag type_decl_flag type_decl_flag2
 %type<sym>opt_id
 %type<vector>func_effects _func_effects
 %type<var_decl> var_decl arg_decl
 %type<type_decl> type_decl_tmpl type_decl_base type_decl_noflag type_decl_opt type_decl type_decl_array extends
-%type<exp> prim_exp decl_exp binary_exp call_paren interp interp_exp
+%type<exp> prim_exp decl_exp binary_exp call_paren arg_exps interp interp_exp
 %type<exp> opt_exp con_exp log_or_exp log_and_exp inc_or_exp exc_or_exp and_exp eq_exp
 %type<exp> rel_exp shift_exp add_exp mul_exp dur_exp unary_exp dict_list
-%type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when basic_exp tmplarg_exp
+%type<exp> post_exp dot_exp cast_exp exp when_exp typedef_when basic_exp tmplarg_exp exp_error
 %type<array_sub> array_exp array_empty array
 %type<range> range
 %type<stmt> stmt loop_stmt selection_stmt jump_stmt try_stmt retry_stmt code_stmt exp_stmt defer_stmt spread_stmt
-%type<stmt> match_case_stmt match_stmt stmt_pp using_stmt import_stmt
+%type<stmt> match_case_stmt match_stmt stmt_pp using_stmt import_stmt require_stmt
 %type<import_item> import_item
 %type<handler> handler
 %type<handler_list> handler_list
@@ -163,9 +163,9 @@ ANN void lex_spread(void *data);
 %type<class_def> class_def
 %type<trait_def> trait_def
 %type<ast> class_body
-%type<taglist> taglist traits
+%type<taglist> taglist taglist2 traits
 %type<specialized> specialized
-%type<specialized_list> specialized_list decl_template function
+%type<specialized_list> specialized_list decl_template
 %type<tmplarg> tmplarg;
 %type<tmplarg_list> tmplarg_list call_template
 %type<variable> variable
@@ -181,14 +181,6 @@ ANN void lex_spread(void *data);
 %right "!" "~"
 %left "*" "/" "%"
 %left "+" "-"
-%left "#include" "#define" "#pragma" "#undef"
-%left "#ifdef" "#ifndef" "#if" "#else" "#endif" "#locale" PP_NL
-%left LOCALE_INI "..." "using" "import" "try" "retry" "for" "foreach" "until" "while" "do" "match"
-%left "repeat" "if" "defer" "break" "continue" "return" "perform" "handle" ";"
-%left "const" "late" "var" "new" "$" "\\" "++" "--" "${" "<<<"
-%left "spork" "fork" "`foo`"
-%left INTEGER "<float>" "<litteral string>" "<litteral char>" "<identifier>" "<dynamic_operator>"
-%nonassoc "," "(" "{" "[" "@" OPTIONS
 %right UMINUS UTIMES
 %left "<<" ">>"
 %left "&"
@@ -202,15 +194,12 @@ ANN void lex_spread(void *data);
 %right "="
 
 %left SECTION_LIST
-%left error
 %precedence STMT_LIST3
 %nonassoc STMT_LIST2
 %right STMT_LIST1
-%right "?"
+
 %precedence NOELSE
 %precedence ELSE
-%precedence TYPE_OPTION
-%precedence TERNARY
 
 %%
 
@@ -219,11 +208,11 @@ ast: section_list { arg->getter->ppa->ast = $$ = $1; }
 
 section_list
   : section { LIST_INI(section, $$, $1); }
+  | section error { LIST_INI(section, $$, $1); }
   | section_list %prec SECTION_LIST section { LIST_END(section, $$, $1, $2); }
-  | section_list error
 
 section
-  : stmt_list %prec STMT_LIST3   { $$ = MK_SECTION(stmt, stmt_list, $1, @1); }
+  : stmt_list %prec STMT_LIST3   { $$ = MK_SECTION(stmt, stmt_list, $1, @1);}
   | func_def     { $$ = MK_SECTION(func, func_def, $1, @1);  }
   | class_def    { $$ = MK_SECTION(class, class_def, $1, @1); }
   | trait_def    { $$ = MK_SECTION(trait, trait_def, $1, @1); }
@@ -237,25 +226,26 @@ section
 
 class_flag: flag modifier { $$ = $1 | $2; }
 class_def
-  : "class" decl_template class_flag ID extends traits class_body
+  : "class" class_flag ID decl_template extends traits class_body
     {
-      $$ = new_class_def(mpool(arg), $3, MK_TAG($4, @4), $5, $7);
-      if($2)
-        $$->base.tmpl = new_tmpl(mpool(arg), $2);
+      $$ = new_class_def(mpool(arg), $2, MK_TAG($3, @3), $5, $7);
+      if($4)
+        $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->traits = $6;
     }
-  | "struct" decl_template class_flag ID traits class_body
+  | "struct" class_flag ID decl_template traits class_body
     {
-      $$ = new_class_def(mpool(arg), $3, MK_TAG($4, @4), NULL, $6);
-      if($2)
-        $$->base.tmpl = new_tmpl(mpool(arg), $2);
+      $$ = new_class_def(mpool(arg), $2, MK_TAG($3, @3), NULL, $6);
+      if($4)
+        $$->base.tmpl = new_tmpl(mpool(arg), $4);
       $$->cflag |= cflag_struct;
       $$->traits = $5;
     };
 
 class_body : "{" section_list "}"  { $$ = $2; }
            | "{" "}" { $$ = NULL; } | ";" { $$ = NULL; } | "{" error "}" { $$ = NULL; }
-trait_def: "trait" opt_global ID traits class_body
+        | "{" section_list error "}"  { $$ = $2; }
+trait_def: "trait" opt_export ID traits class_body
     {
       $$ = new_trait_def(mpool(arg), $2, $3, $5, @3);
       $$->traits = $4;
@@ -280,15 +270,18 @@ prim_def: "primitive" class_flag ID decimal ";"
       $$ = new_prim_def(mpool(arg), $3, $4.num, @3, $2);
     }
 extends : "extends" type_decl_array { $$ = $2; } | %empty { $$ = NULL; };
-traits: %empty { $$ = NULL; } | "(" taglist ")" { $$ = $2; };
+traits: %empty { $$ = NULL; } | ":" taglist { $$ = $2; };
 
-extend_def: "extends" type_decl_array ":" taglist ";" {
-  $$ = new_extend_def(mpool(arg), $2, $4);
+extend_def: extends ":" taglist ";" {
+  $$ = new_extend_def(mpool(arg), $1, $3);
 }
-
 
 taglist:      ID { LIST_INI(tag, $$, MK_TAG($1, @1)); }
 | taglist "," ID { LIST_END(tag, $$, $1, MK_TAG($3, @3)); }
+
+
+taglist2:      ID { LIST_INI(tag, $$, MK_TAG($1, @1)); }
+| taglist2 "." ID { LIST_END(tag, $$, $1, MK_TAG($3, @3)); }
 
 specialized: ID traits {
     $$ = (Specialized) {
@@ -307,34 +300,35 @@ specialized_list: specialized { LIST_INI(specialized, $$, $1); }
   | specialized_list "," specialized { LIST_END(specialized, $$, $1, $3); }
 
 stmt_list:  stmt %prec STMT_LIST2  { LIST_INI(stmt, $$, $1); } 
-| stmt_list stmt %prec STMT_LIST1  { LIST_END(stmt, $$, $1, $2); }
-| stmt_list error
-fptr_base: flag type_decl_array ID { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2); }
+| stmt_list stmt %prec STMT_LIST1  { LIST_END(stmt, $$, $1, $2);}
+
+fptr_base: flag type_decl_array ID decl_template { $$ = new_func_base(mpool(arg), $2, $3, NULL, $1, @2);
+  if($4) { $$->tmpl = new_tmpl(mpool(arg), $4); } }
 
 _func_effects: "perform" ID { vector_init(&$$); vector_add(&$$, (m_uint)$2); } | _func_effects ID { vector_add(&$$, (m_uint)$2); }
 func_effects: %empty { $$.ptr = NULL; } | _func_effects { $$.ptr = $1.ptr; }
 
-func_base: flag final type_decl_array ID { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4); }
+func_base: flag final type_decl_array ID decl_template { $$ = new_func_base(mpool(arg), $3, $4, NULL, $1 | $2, @4);
+  if($5) { $$->tmpl = new_tmpl(mpool(arg), $5); } }
 
-fptr_def: "funptr" decl_template fptr_base func_args func_effects ";" {
-  $3->args = $4;
-  $$ = new_fptr_def(mpool(arg), $3);
-  $$->base->effects.ptr = $5.ptr;
-  if($2) { $3->tmpl = new_tmpl(mpool(arg), $2); }
+fptr_def: "funptr" fptr_base func_args func_effects ";" {
+  $2->args = $3;
+  $$ = new_fptr_def(mpool(arg), $2);
+  $$->base->effects.ptr = $4.ptr;
 };
 
 typedef_when: %empty { $$ = NULL;} | "when" exp { $$ = $2; }
 type_def_type: "typedef" { $$ = false; } | "distinct" { $$ = true; };
-type_def: type_def_type decl_template flag type_decl_array ID typedef_when ";" {
-  $$ = new_type_def(mpool(arg), $4, $5, @5);
-  $4->flag |= $3;
+type_def: type_def_type flag type_decl_array ID decl_template typedef_when ";" {
+  $$ = new_type_def(mpool(arg), $3, $4, @4);
+  $3->flag |= $2;
   $$->when = $6;
-  if($2)
-    $$->tmpl = new_tmpl(mpool(arg), $2);
+  if($5)
+    $$->tmpl = new_tmpl(mpool(arg), $5);
   $$->distinct = $1;
 };
 
-type_decl_array: type_decl array { $1->array = $2; } | type_decl
+type_decl_array: type_decl array { $1->array = $2; } | type_decl 
 
 arg
   : type_decl_array arg_decl ":" binary_exp {
@@ -388,14 +382,18 @@ code_stmt
     $$ = MK_STMT(ae_stmt_code, @$); }
   | "{" stmt_list "}" {
     $$ = MK_STMT(ae_stmt_code, @$, .stmt_code = { .stmt_list = $2 });}
+  | "{" stmt_list error  {
+    $$ = MK_STMT(ae_stmt_code, @$, .stmt_code = { .stmt_list = $2 });}
+
 
 code_list
   : "{" "}" { $$ = new_stmtlist(mpool(arg), 0); }
   | "{" stmt_list "}" { $$ = $2; }
+  | "{" stmt_list error "}" { $$ = $2; }
+  | "{" stmt_list error { $$ = $2; }
 
 stmt_pp
-  : PP_INCLUDE { $$ = MK_STMT_PP(include, @$, .data = $1); }
-  | PP_DEFINE  { $$ = MK_STMT_PP(define,  @$, .data = $1); }
+  : PP_DEFINE  { $$ = MK_STMT_PP(define,  @$, .data = $1); }
   | PP_PRAGMA  { $$ = MK_STMT_PP(pragma,  @$, .data = $1); }
   | PP_UNDEF   { $$ = MK_STMT_PP(undef,   @$, .data = $1); }
   | PP_IFDEF   { $$ = MK_STMT_PP(ifdef,   @$, .data = $1); }
@@ -409,6 +407,15 @@ stmt_pp
 
 stmt
   : exp_stmt
+  | exp_error {
+  $$ = MK_STMT_EXP(@1, $1);
+        parser_error(&@1, arg, "unfinished expression 2", 0);
+}
+  | exp error {
+  $$ = MK_STMT_EXP(@1, $1);
+        parser_error(&@1, arg, "unfinished expression", 0);
+}
+
   | loop_stmt
   | selection_stmt
   | code_stmt
@@ -421,7 +428,17 @@ stmt
   | spread_stmt
   | using_stmt
   | import_stmt
-  ;
+  | require_stmt
+  | exp YYEOF {
+  $$ = MK_STMT_EXP(@1, $1);
+        parser_error(&@1, arg, "unfinished expression", 0);
+}
+  | exp_error YYEOF {
+  $$ = MK_STMT_EXP(@1, $1);
+        parser_error(&@1, arg, "unfinished expression 3", 0);
+}
+
+
 
 spread_stmt: "..." ID ":" taglist "{" {lex_spread(((Scanner*)scan));} "}..." {
   struct Spread_Def_ spread = {
@@ -478,12 +495,14 @@ import_stmt: "import" ID ";" {
     $$.d.stmt_import.tag = MK_TAG($2, @2);
     $$.d.stmt_import.selection = $4;
   }
+require_stmt: "require" taglist2 ";" {
+    $$ = MK_STMT(ae_stmt_require, @$);
+    $$.d.stmt_require.tags = $2;
+  }
 
 retry_stmt: "retry" ";" { $$ = MK_STMT(ae_stmt_retry, @1); }
 
-handler:
-       "handle" ":[" ID "]" stmt { $$ = (Handler){ .tag = MK_TAG($3, @3), .stmt = cpy_stmt3(mpool(arg), &$5) }; };
-     | "handle" stmt { $$ = (Handler){ .tag = MK_TAG(NULL, @1), .stmt = cpy_stmt3(mpool(arg), &$2) }; };
+handler: "handle" opt_id stmt { $$ = (Handler){ .tag = MK_TAG($2, $2 ? @2 :@1), .stmt = cpy_stmt3(mpool(arg), &$3) }; };
 handler_list: handler {
     LIST_INI(handler, $$.handlers, $1);
     $$.has_xid = !!$1.tag.sym;
@@ -644,15 +663,15 @@ selection_stmt
 
 breaks: "break"     { $$ = ae_stmt_break; } | CONTINUE  { $$ = ae_stmt_continue; };
 jump_stmt
-  : "return" exp ";" { $$ = MK_STMT_RETURN(@1, $2); }
-  | "return" ";"     { $$ = MK_STMT_RETURN(@1, NULL); }
-  | breaks decimal ";"   { $$ = MK_STMT($1, @1, .stmt_index = { .idx = $2.num });}
-  | breaks ";" { $$ = MK_STMT($1, @1, .stmt_index = { .idx = -1 });}
+  : "return" exp ";" { $$ = MK_STMT_RETURN(@$, $2); }
+  | "return" ";"     { $$ = MK_STMT_RETURN(@$, NULL); }
+  | breaks decimal ";"   { $$ = MK_STMT($1, @$, .stmt_index = { .idx = $2.num });}
+  | breaks ";" { $$ = MK_STMT($1, @$, .stmt_index = { .idx = -1 });}
 
 exp_stmt
   : exp ";" { $$ = MK_STMT_EXP(@$, $1); }
   | ";"     { $$ = MK_STMT(ae_stmt_exp, @$); }
-
+  ;
 exp:
     binary_exp           { $$ = $1; }
   | binary_exp "," exp
@@ -667,12 +686,13 @@ exp:
 binary_exp
   : decl_exp
   | ID "=" binary_exp { $$ = new_exp_named(mpool(arg), $3, MK_TAG($1, @1), @$);}
-  | binary_exp "@"     decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
-  | binary_exp DYNOP   decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @2); }
+  | binary_exp "@"     decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp DYNOP   decl_exp   { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
+  | binary_exp OPTIONS decl_exp { $$ = new_exp_binary(mpool(arg), $1, $2, $3, @$); }
 
 call_template: ":[" tmplarg_list "]" { $$ = $2; } | %empty { $$ = NULL; };
 
-op: "==" | "!=" | "@" | DYNOP;
+op: "==" | "!=" | "@" | DYNOP | OPTIONS;
 
 array_exp
   : "[" exp "]"           { $$ = new_array_sub(mpool(arg), $2); }
@@ -701,11 +721,15 @@ range
 
 array: array_exp | array_empty;
 decl_exp: con_exp
-  | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.var.td->flag |= $1 | $2; };
+  | type_decl_flag2 flag type_decl_array var_decl { $$= new_exp_decl(mpool(arg), $3, &$4, @$); $$->d.exp_decl.var.td->flag |= $1 | $2; }
   | type_decl_flag2 flag type_decl_array call_paren var_decl {
       $$ = new_exp_decl(mpool(arg), $3, &$5, @$);
       $$->d.exp_decl.var.td->flag |= $1 | $2;
       $$->d.exp_decl.args = $4 ?: new_prim_nil(mpool(arg), @4);
+  }
+  | type_decl_flag2 flag type_decl_array error {
+    Var_Decl vd = { .tag = MK_TAG(insert_symbol("@error"), @4) };
+    $$= new_exp_decl(mpool(arg), $3, &vd, @$); $$->d.exp_decl.var.td->flag |= $1 | $2;
   };
 
 func_args: "(" arg_list  ")" { $$ = $2; } | "(" ")"{ $$ = NULL; };
@@ -722,10 +746,10 @@ decl_template
 }
              | %empty { $$ = NULL; };
 
-global: GLOBAL { $$ = ae_flag_global; /*arg->global = true;*/ }
-opt_global: global | %empty { $$ = ae_flag_none; }
+export: "export" { $$ = ae_flag_export; }
+opt_export: export | %empty { $$ = ae_flag_none; }
 
-storage_flag: STATIC { $$ = ae_flag_static; } | global;
+storage_flag: STATIC { $$ = ae_flag_static; } | export;
 
 access_flag: PRIVATE { $$ = ae_flag_private; }
   | PROTECT { $$ = ae_flag_protect; }
@@ -741,20 +765,17 @@ final: "final" { $$ = ae_flag_final; } | %empty { $$ = ae_flag_none; };
 
 modifier: "abstract" final { $$ = ae_flag_abstract | $2; } | final ;
 
-function: FUNCTION decl_template { $$ = $2; }
 func_def_base
-  : function func_base func_args code_list {
+  : FUNCTION func_base func_args code_list {
     $2->args = $3;
-    if($1) $2->tmpl = new_tmpl(mpool(arg), $1);
     $$ = new_func_def(mpool(arg), $2, $4);
   }
-  | function func_base func_args ";" {
+  | FUNCTION func_base func_args ";" {
     $2->args = $3;
-    if($1) $2->tmpl = new_tmpl(mpool(arg), $1);
     SET_FLAG($2, abstract);
     $$ = new_func_def(mpool(arg), $2, NULL);
   }
-  | LOCALE global ID LPAREN locale_list RPAREN code_list {
+  | LOCALE export ID LPAREN locale_list RPAREN code_list {
     Type_Decl *td = new_type_decl(mpool(arg), insert_symbol("float"), @3);
     Func_Base *base = new_func_base(mpool(arg), td, $3, $5, $2, @3);
     base->fbflag |= fbflag_locale;
@@ -768,36 +789,39 @@ func_def_base
   }
 
 abstract_fdef
-  : function flag "abstract" type_decl_array ID func_args ";"
+  : FUNCTION flag "abstract" type_decl_array ID decl_template func_args ";"
     {
       Func_Base *base = new_func_base(mpool(arg), $4, $5, NULL, $2 | ae_flag_abstract, @5);
-      if($1)
-        base->tmpl = new_tmpl(mpool(arg), $1);
-      base->args = $6;
+      if($6)
+        base->tmpl = new_tmpl(mpool(arg), $6);
+      base->args = $7;
       $$ = new_func_def(mpool(arg), base, NULL);
     };
 
 op_op: op | shift_op | rel_op | mul_op | add_op;
 op_base
-  :  type_decl_array op_op "(" arg "," arg ")"
+  :  type_decl_array op_op decl_template "(" arg "," arg ")"
     {
       ArgList *args = new_arglist(mpool(arg), 2);
-      arglist_set(args, 0, $4);
-      arglist_set(args, 1, $6);
+      arglist_set(args, 0, $5);
+      arglist_set(args, 1, $7);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
+      if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
-  |  type_decl_array post_op "(" arg ")"
+  |  type_decl_array post_op decl_template "(" arg ")"
     {
       ArgList *args = new_arglist(mpool(arg), 1);
-      arglist_set(args, 0, $4);
+      arglist_set(args, 0, $5);
       $$ = new_func_base(mpool(arg), $1, $2, args, ae_flag_none, @2);
+      if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
-  |  unary_op type_decl_array "(" arg ")"
+  |  unary_op type_decl_array decl_template "(" arg ")"
     {
       ArgList *args = new_arglist(mpool(arg), 1);
-      arglist_set(args, 0, $4);
+      arglist_set(args, 0, $5);
       $$ = new_func_base(mpool(arg), $2, $1, args, ae_flag_none, @1);
       $$->fbflag |= fbflag_unary;
+      if($3)$$->tmpl = new_tmpl(mpool(arg), $3);
     }
   | type_decl_array OPID_A func_args
     {
@@ -805,21 +829,14 @@ op_base
       $$->fbflag |= fbflag_internal;
     };
 
-operator: "operator" { $$ = ae_flag_none; } | "operator" global { $$ = $2; };
+operator: "operator" { $$ = ae_flag_none; } | "operator" export { $$ = $2; };
 op_def
-  : operator decl_template op_base code_list
-  { $$ = new_func_def(mpool(arg), $3, $4); $3->fbflag |= fbflag_op; $3->flag |= $1;
-      if($2) $3->tmpl = new_tmpl(mpool(arg), $2);
-  }
-  | operator decl_template op_base ";"
-  { $$ = new_func_def(mpool(arg), $3, NULL); $3->fbflag |= fbflag_op; $3->flag |= $1 | ae_flag_abstract;
-      if($2) $3->tmpl = new_tmpl(mpool(arg), $2);
-  }
-  | operator "abstract" decl_template op_base ";"
-  {
-    $$ = new_func_def(mpool(arg), $4, NULL); $4->fbflag |= fbflag_op; $4->flag |= $1 | ae_flag_abstract;
-      if($3) $4->tmpl = new_tmpl(mpool(arg), $3);
-  }
+  : operator op_base code_list
+  { $$ = new_func_def(mpool(arg), $2, $3); $2->fbflag |= fbflag_op; $2->flag |= $1; }
+  | operator op_base ";"
+  { $$ = new_func_def(mpool(arg), $2, NULL); $2->fbflag |= fbflag_op; $2->flag |= $1 | ae_flag_abstract; }
+  | operator "abstract" op_base ";"
+  { $$ = new_func_def(mpool(arg), $3, NULL); $3->fbflag |= fbflag_op; $3->flag |= $1 | ae_flag_abstract; }
 
 func_def: func_def_base | abstract_fdef | op_def
   |  operator "new" func_args code_list
@@ -840,17 +857,18 @@ func_def: func_def_base | abstract_fdef | op_def
 
 type_decl_base
   : ID { $$ = new_type_decl(mpool(arg), $1, @$); }
-  | "(" decl_template flag type_decl_array func_args func_effects ")" {
-      const Symbol name = sig_name(arg, @4.first);
+  | "(" flag type_decl_array decl_template func_args func_effects ")" {
+      const Symbol name = sig_name(arg, @3.first);
       $$ = new_type_decl(mpool(arg), name, @1);
-      Func_Base *fb = new_func_base(mpool(arg), $4, name, NULL, $3, @2);
-      if($2)
-        fb->tmpl = new_tmpl(mpool(arg), $2);
+      Func_Base *fb = new_func_base(mpool(arg), $3, name, NULL, $2, @1);
+      if($4)
+        fb->tmpl = new_tmpl(mpool(arg), $4);
       fb->args = $5;
       const Fptr_Def fptr = new_fptr_def(mpool(arg), fb);
       fptr->base->effects.ptr = $6.ptr;
       $$->fptr = fptr;
   }
+  | error { $$ = new_type_decl(mpool(arg), insert_symbol("@error"), @$); }
   ;
 
 type_decl_tmpl
@@ -860,11 +878,11 @@ type_decl_tmpl
 
 type_decl_noflag
   : type_decl_tmpl
-  | type_decl_tmpl "." type_decl_noflag { $1->next = $3; }
+  | type_decl_tmpl "." { arg->helper = false; } type_decl_noflag { $1->next = $4; }
   ;
 
 option: "?" { $$ = 1; } | OPTIONS { $$ = strlen(s_name($1)); } | %empty { $$ = 0; };
-type_decl_opt: type_decl_noflag %prec TYPE_OPTION option { $$ = $1; $$->option = $2; };
+type_decl_opt: type_decl_noflag option { $$ = $1; $$->option = $2; };
 type_decl: type_decl_opt | type_decl_flag type_decl_opt { $$ = $2; $$->flag |= $1; };
 
 type_decl_flag
@@ -884,12 +902,12 @@ variable_list: variable { LIST_INI(variable, $$, $1); }
 | variable_list variable { LIST_END(variable, $$, $1, $2); }
 
 union_def
-  : "union" decl_template flag ID "{" variable_list "}" {
-      $$ = new_union_def(mpool(arg), $6, @4);
-      $$->tag.sym = $4; // put tag in ctor
-      $$->flag = $3;
-      if($2)
-        $$->tmpl = new_tmpl(mpool(arg), $2);
+  : "union" flag ID decl_template "{" variable_list "}" {
+      $$ = new_union_def(mpool(arg), $6, @3);
+      $$->tag.sym = $3; // put tag in ctor
+      $$->flag = $2;
+      if($4)
+        $$->tmpl = new_tmpl(mpool(arg), $4);
     }
   ;
 
@@ -908,9 +926,9 @@ mul_op: "*" | "/" | "%";
 
 opt_exp: exp { $$ = $1; } | %empty { $$ = NULL; }
 con_exp: log_or_exp
-  | log_or_exp %prec TERNARY "?" con_exp ":" con_exp
+  | log_or_exp "?" con_exp ":" con_exp
       { $$ = new_exp_if(mpool(arg), $1, $3, $5, @$); };
-  | log_or_exp %prec TERNARY "?" ":" con_exp
+  | log_or_exp "?" ":" con_exp
       { $$ = new_exp_if(mpool(arg), $1, NULL, $4, @$); };
   | log_or_exp "?:" con_exp
       { $$ = new_exp_if(mpool(arg), $1, NULL, $3, @$); };
@@ -944,8 +962,8 @@ unary_exp : post_exp
   | "new" type_decl_array {$$ = new_exp_unary2(mpool(arg), $1, $2, NULL, @$); }
   | "spork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
   | "fork" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $2, @1); };
-  | "spork" ":" capture_list ":" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $5, @1); $$->d.exp_unary.captures = $3; };
-  | "fork"  ":" capture_list ":" code_list   { $$ = new_exp_unary3(mpool(arg), $1, $5, @1); $$->d.exp_unary.captures = $3; };
+  | "spork" captures code_list   { $$ = new_exp_unary3(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; };
+  | "fork"  captures code_list   { $$ = new_exp_unary3(mpool(arg), $1, $3, @1); $$->d.exp_unary.captures = $2; };
   | "$" type_decl_array { $$ = new_exp_td(mpool(arg), $2, @2); };
 
 lambda_list:
@@ -970,19 +988,66 @@ tmplarg: type_decl_array {
 tmplarg_list:      tmplarg { LIST_INI(tmplarg, $$, $1); }
 | tmplarg_list "," tmplarg { LIST_END(tmplarg, $$, $1, $3); }
 
-call_paren :
-"(" exp ")" { $$ = $2; } | 
-"(" ")" { $$ = NULL; };
+arg_exps:
+        "(" binary_exp { $$ = $2; } |
+        arg_exps "," binary_exp { 
+ $$ = $1;
+ Exp *e = $1;
+ while (e->next) e = e->next;
+  e->next = $3;
+} |
+arg_exps "," "," binary_exp { 
+ $$ = $1;
+ Exp *e = $1;
+ while (e->next) e = e->next;
+  e->next = new_prim_id(mpool(arg), insert_symbol("@error"), @2);
+  e->next->next = $4;
+};
+call_paren:
+ arg_exps ")" { $$ = $1; } | 
+"(" ")" { $$ = NULL; } |
+arg_exps error {
+  if($1) {
+    $$ = $1;
+    Exp *e = $1;
+    while (e->next) e = e->next;
+    e->next = new_prim_id(mpool(arg), insert_symbol("@error"), @2);
+ } else
+  $$ = new_prim_id(mpool(arg), insert_symbol("@error"), @2);
+} | "(" error {
+
+  $$ = new_prim_id(mpool(arg), insert_symbol("@error"), @2);
+ }
+ | "(" YYEOF {
+  $$ = new_prim_id(mpool(arg), insert_symbol("@error"), @2);
+};
+
+
+
 
 post_op : "++" | "--";
 
-dot_exp: post_exp "." ID {
-  $$ = new_exp_dot(mpool(arg), $1, MK_TAG($3, @3), @$);
-}
-| post_exp "." error {
-  $$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@"), @3), @$); // suus
+exp_error:
+post_exp "." error  {
+puts("yeah post");
+arg->helper = false;
+  //$$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@"), @3), @$); // suus
+  $$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@error"), @$), @$); // suus
 }
 
+|post_exp "." HELPER {
+puts("yeah error");
+arg->helper = false;
+  //$$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@"), @3), @$); // suus
+  $$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@error!"), @$), @$); // suus
+}
+
+
+
+dot_exp: post_exp "." ID {
+  arg->helper = false;
+  $$ = new_exp_dot(mpool(arg), $1, MK_TAG($3, @3), @$);
+};
 post_exp: prim_exp
   | post_exp array
     { $$ = new_exp_array(mpool(arg), $1, $2, @$); }
@@ -991,9 +1056,7 @@ post_exp: prim_exp
   | post_exp call_template call_paren
     { $$ = new_exp_call(mpool(arg), $1, $3, @$);
       if($2)$$->d.exp_call.tmpl = new_tmpl_call(mpool(arg), $2); }
-  | post_exp call_template "(" error
-    {$$ = new_exp_dot(mpool(arg), $1, MK_TAG(insert_symbol("@"), @3), @$); }
-  | post_exp post_op
+ | post_exp post_op
     { $$ = new_exp_post(mpool(arg), $1, $2, @$); }
   | dot_exp { $$ = $1; }
   ;
@@ -1079,6 +1142,7 @@ ANN static int parser_error(const loc_t *loc, Scanner *const scan, const char* d
     _main[_explain - _main] = '\0';
     _explain += 2;
   }
+  scan->getter->error = true;
   scanner_error(scan, _main, _explain, *loc, error_code);
   loc_t _loc = { scan->old, scan->old};
   const char *syntaxerr = YY_("syntax error");

@@ -283,7 +283,9 @@ static AST_FREE(Stmt_Import, stmt_import) {
     free_usingstmtlist(p, a->selection);
   }
 }
-
+static AST_FREE(Stmt_Require, stmt_require) {
+//  free_taglist(p, a->tags);
+}
 
 DECL_STMT_FUNC(free, void, MemPool,);
 static AST_FREE(Stmt*, stmt2) {

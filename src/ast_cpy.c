@@ -475,6 +475,14 @@ ANN static void cpy_stmt_import(MemPool p, Stmt_Import a, const struct Stmt_Impo
     a->selection = cpy_import_list(p, src->selection);
 }
 
+ANN static void cpy_stmt_require(MemPool p, Stmt_Require a, const struct Stmt_Require_ *src) {
+  a->tags = new_taglist(p, src->tags->len);
+  for(uint32_t i = 0; i < src->tags->len; i++) {
+    const Tag src_item = taglist_at(src->tags, i);
+    taglist_set(a->tags, i, src_item);
+  }
+}
+
 
 ANN static void cpy_stmt2(MemPool p, Stmt* a, const Stmt* src) {
   switch (src->stmt_type) {
@@ -521,6 +529,9 @@ ANN static void cpy_stmt2(MemPool p, Stmt* a, const Stmt* src) {
     break;
   case ae_stmt_import:
     cpy_stmt_import(p, &a->d.stmt_import, &src->d.stmt_import);
+    break;
+  case ae_stmt_require:
+    cpy_stmt_require(p, &a->d.stmt_require, &src->d.stmt_require);
     break;
   case ae_stmt_break:
   case ae_stmt_continue:

@@ -8,6 +8,7 @@ typedef struct PPArg_ {
   struct Vector_ path;
   struct Hash_   hash;
   Ast            ast;
+  bool           is_require;
 } PPArg;
 
 ANN void pparg_ini(MemPool, PPArg *);
